@@ -1,11 +1,12 @@
-import './App.css'
+import Header from "./components/Header";
 
 function App() {
   return (
     <>
-      <h1 className='text-2xl text-amber-600'>Hello React</h1>
+      <Header />
+      {/* 페이지 내용 */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
