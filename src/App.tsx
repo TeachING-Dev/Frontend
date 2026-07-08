@@ -1,11 +1,16 @@
-import Header from "./components/Header";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import ArchivePage from "./pages/ArchivePage";
 
 function App() {
   return (
-    <>
-      <Header />
-      {/* 페이지 내용 */}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<ArchivePage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
