@@ -21,5 +21,5 @@ const AddFolderGrid = ({ onClick }: AddFolderGridProps) => {
     </button>
   );
 };
-
+// 이 문장 삭제
 export default AddFolderGrid;
