@@ -26,7 +26,10 @@ const SignupPage = () => {
   const handleBack = () => {
     if (step === "terms") {
       setStep("nickname");
+      return;
     }
+
+    navigate("/login");
   };
 
   const handleNext = () => {
@@ -272,3 +275,4 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+
