@@ -1,10 +1,14 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/common/Header";
 
-const MainLayout = () => {
+type MainLayoutProps = {
+  showRightIcons?: boolean;
+};
+
+const MainLayout = ({ showRightIcons = true }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-[#090713]">
-      <Header />
+      <Header showRightIcons={showRightIcons} />
 
       <main>
         <Outlet />
