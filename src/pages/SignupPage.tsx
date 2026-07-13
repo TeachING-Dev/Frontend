@@ -1,9 +1,11 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 
 type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
+
+const REQUIRED_TERMS: TermKey[] = ["age", "service"];
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ const SignupPage = () => {
   const isNicknameTaken = normalizedNickname === "이미사용중";
   const isNicknameNextEnabled = normalizedNickname.length > 0 && !isNicknameTaken;
   const isAllTermsChecked = Object.values(terms).every(Boolean);
-  const isTermsNextEnabled = terms.age && terms.service;
+  const isTermsNextEnabled = REQUIRED_TERMS.every((key) => terms[key]);
   const isNextEnabled = step === "nickname" ? isNicknameNextEnabled : isTermsNextEnabled;
 
   const handleBack = () => {
@@ -42,6 +44,29 @@ const SignupPage = () => {
       navigate("/signup/complete");
     }
   };
+
+  useEffect(() => {
+    const handleEnterKey = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" || event.isComposing || !isNextEnabled) {
+        return;
+      }
+
+      const activeElement = document.activeElement as HTMLElement | null;
+      const isNonNextButton =
+        activeElement?.tagName === "BUTTON" &&
+        activeElement.textContent?.trim() !== "다음";
+
+      if (isNonNextButton) {
+        return;
+      }
+
+      event.preventDefault();
+      handleNext();
+    };
+
+    window.addEventListener("keydown", handleEnterKey);
+    return () => window.removeEventListener("keydown", handleEnterKey);
+  }, [isNextEnabled, step, isNicknameNextEnabled, isTermsNextEnabled]);
 
   const toggleTerm = (key: TermKey) => {
     setTerms((prevTerms) => ({
@@ -275,4 +300,7 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+
+
+
 
