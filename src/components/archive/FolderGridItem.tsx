@@ -12,7 +12,7 @@ type FolderGridItemProps = {
 };
 
 const FolderGridItem = ({
-  id,
+  // id,
   name,
   count,
   date,
@@ -20,10 +20,12 @@ const FolderGridItem = ({
   const navigate = useNavigate();
 
   const handleFolderClick = () => {
-    navigate(`/archive/${id}`);
+    navigate("/archive/folder");
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLDivElement>,
+  ) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       handleFolderClick();
@@ -56,9 +58,6 @@ const FolderGridItem = ({
                 <EllipsisVertical size={20} strokeWidth={4} />
               </button>
             }
-            onMoveFolder={() => {
-              console.log(`${name} 폴더 이동`);
-            }}
             onMoveToTrash={() => {
               console.log(`${name} 휴지통으로 이동`);
             }}

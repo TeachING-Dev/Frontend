@@ -12,7 +12,7 @@ type FolderListItemProps = {
 };
 
 const FolderListItem = ({
-  id,
+  // id,
   name,
   count,
   date,
@@ -20,10 +20,12 @@ const FolderListItem = ({
   const navigate = useNavigate();
 
   const handleFolderClick = () => {
-    navigate(`/archive/${id}`);
+    navigate("/archive/folder");
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLDivElement>,
+  ) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       handleFolderClick();
@@ -68,9 +70,6 @@ const FolderListItem = ({
             <EllipsisVertical size={20} strokeWidth={4} />
           </button>
         }
-        onMoveFolder={() => {
-          console.log(`${name} 폴더 이동`);
-        }}
         onMoveToTrash={() => {
           console.log(`${name} 휴지통으로 이동`);
         }}
