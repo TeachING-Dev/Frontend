@@ -1,27 +1,81 @@
-type FolderItemProps = {
+import type { KeyboardEvent } from "react";
+import { EllipsisVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import FolderPopover from "./popover/FolderPopover";
+
+type FolderListItemProps = {
+  id: number;
   name: string;
   count: number;
   date: string;
+  onMoveToTrash?: (folderId: number) => void;
 };
 
-const FolderListItem = ({ name, count, date }: FolderItemProps) => {
-  return (
-    <div className="flex h-[90px] w-full items-center border-b border-[#252131]">
-      <img src="/Folder.png" alt="폴더" className="h-[54px] w-[62px]" />
+const FolderListItem = ({
+  id,
+  name,
+  count,
+  date,
+  onMoveToTrash,
+}: FolderListItemProps) => {
+  const navigate = useNavigate();
 
-      <p className="ml-6 w-[360px] text-[22px] font-semibold text-[#BCA7FF]">
+  const handleFolderClick = () => {
+    navigate("/archive/folder");
+  };
+
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleFolderClick();
+    }
+  };
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleFolderClick}
+      onKeyDown={handleKeyDown}
+      className="flex h-[88px] w-full cursor-pointer items-center border-b border-[#252131] transition hover:bg-white/5"
+    >
+      <img
+        src="/Folder.png"
+        alt=""
+        aria-hidden="true"
+        className="h-[64px] w-[64px]"
+      />
+
+      <p className="ml-[22px] w-[360px] truncate text-[24px] font-semibold text-[#BCA7FF]">
         {name}
       </p>
 
-      <p className="w-[240px] text-[16px] text-white">
+      <p className="ml-[40px] w-[240px] text-[16px] text-white">
         {String(count).padStart(2, "0")}개 항목
       </p>
 
-      <p className="w-[220px] text-[16px] text-white">{date}</p>
+      <p className="ml-[60px] w-[220px] text-[16px] text-white">
+        {date}
+      </p>
 
-      <button className="ml-auto text-[28px] leading-none text-white">
-        ⋮
-      </button>
+      <FolderPopover
+        trigger={
+          <button
+            type="button"
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`${name} 폴더 메뉴`}
+            className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
+          >
+            <EllipsisVertical size={20} strokeWidth={4} />
+          </button>
+        }
+        onMoveToTrash={() => {
+          onMoveToTrash?.(id);
+        }}
+      />
     </div>
   );
 };

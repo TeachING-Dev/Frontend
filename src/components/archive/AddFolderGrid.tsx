@@ -7,19 +7,20 @@ const AddFolderGrid = ({ onClick }: AddFolderGridProps) => {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[110px] w-full flex-col items-center justify-center rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A]"
+      className="flex h-[128px] w-[352px] cursor-pointer flex-col items-center justify-center rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] transition hover:border-[#8B6DFF]"
     >
       <img
         src="/folder-add.png"
-        alt="새 폴더 추가"
-        className="mb-2 h-[45px] w-[53px]"
+        alt=""
+        aria-hidden="true"
+        className="mb-2 h-[64px] w-[64px]"
       />
 
-      <span className="text-[14px] font-medium text-white">
+      <span className="text-[16px] font-medium text-white">
         새 폴더 추가
       </span>
     </button>
   );
 };
-// 이 문장 삭제
+
 export default AddFolderGrid;
