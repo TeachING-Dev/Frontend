@@ -14,22 +14,22 @@ const ArchiveDataAnalysis = ({
   return (
     <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#2B2C35]">
       {/* 상단 제목 영역 */}
-      <div className="flex h-[75px] items-center px-[29px]">
-        <h2 className="font-['42dot_Sans'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#FAFAFA]">
+      <div className="flex h-[60px] items-center px-[20px]">
+        <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
           AI 상세 분석
         </h2>
       </div>
 
       {/* 상세 분석 내용 */}
-      <div className="rounded-t-[10px] bg-[#11121A] px-[30px] py-[40px]">
-        <div className="flex flex-col gap-[32px]">
+      <div className="rounded-t-[10px] bg-[#11121A] px-[30px] py-[20px]">
+        <div className="flex flex-col gap-[30px]">
           {analysis.map((item) => (
             <article key={item.id}>
-              <h3 className="mb-[12px] font-['ABeeZee'] text-[20px] font-normal italic leading-[160%] tracking-[-0.4px] text-[#D0D0D2]">
+              <h3 className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] text-[#A1A1A5]">
                 {item.id}. {item.title}
               </h3>
 
-              <p className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] tracking-[-0.4px] text-[#898A8F]">
+              <p className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] text-[#A1A1A5]">
                 {item.content}
               </p>
             </article>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
@@ -7,6 +7,7 @@ import ArchiveDataList, {
 } from "../components/archive/ArchiveDataList";
 import EmptyArchiveData from "../components/archive/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
+import Toast from "../components/common/Toast";
 
 type SelectMode = "move" | "trash" | null;
 
@@ -83,11 +84,27 @@ const ArchiveFolderPage = () => {
     number[]
   >([]);
 
+  const [toastMessage, setToastMessage] = useState<
+    string | null
+  >(null);
+
   const isSelectMode = selectMode !== null;
 
   const isAllSelected =
     dummyData.length > 0 &&
     selectedItemIds.length === dummyData.length;
+
+  useEffect(() => {
+    if (!toastMessage) return;
+
+    const timer = window.setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [toastMessage]);
 
   const handleEditFolderName = (
     newFolderName: string,
@@ -155,6 +172,10 @@ const ArchiveFolderPage = () => {
     setIsMoveModalOpen(false);
     setSelectMode(null);
     setSelectedItemIds([]);
+
+    setToastMessage(
+      "자료가 해당 폴더로 이동되었습니다",
+    );
   };
 
   const handleMoveToTrash = () => {
@@ -169,6 +190,10 @@ const ArchiveFolderPage = () => {
 
     setSelectMode(null);
     setSelectedItemIds([]);
+
+    setToastMessage(
+      "자료가 휴지통으로 이동되었습니다",
+    );
   };
 
   const handleSelectAction = () => {
@@ -185,6 +210,13 @@ const ArchiveFolderPage = () => {
   // 일반 모드에서 자료 카드를 클릭했을 때 상세 페이지로 이동
   const handleOpenDataPage = (id: number) => {
     navigate(`/archive/folder/data/${id}`);
+  };
+
+  const handleUndoToast = () => {
+    // TODO: 실행 취소 API 연결
+    console.log("이동 실행 취소");
+
+    setToastMessage(null);
   };
 
   return (
@@ -278,6 +310,14 @@ const ArchiveFolderPage = () => {
           folders={folderOptions}
           onClose={handleCloseMoveModal}
           onMove={handleMoveData}
+        />
+      )}
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          actionText="실행취소"
+          onAction={handleUndoToast}
         />
       )}
     </>
