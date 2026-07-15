@@ -13,6 +13,9 @@ type ArchiveDataListProps = {
   isMoveMode: boolean;
   selectedItemIds: number[];
   onToggleItem: (id: number) => void;
+  onItemClick: (id: number) => void;
+  onAiAnalysis?: (id: number) => void;
+  onOpenOriginal?: (id: number) => void;
 };
 
 const ArchiveDataList = ({
@@ -20,6 +23,9 @@ const ArchiveDataList = ({
   isMoveMode,
   selectedItemIds,
   onToggleItem,
+  onItemClick,
+  onAiAnalysis,
+  onOpenOriginal,
 }: ArchiveDataListProps) => {
   return (
     <div className="flex flex-col gap-5">
@@ -33,6 +39,11 @@ const ArchiveDataList = ({
           isMoveMode={isMoveMode}
           isSelected={selectedItemIds.includes(item.id)}
           onSelect={() => onToggleItem(item.id)}
+          onClick={() => onItemClick(item.id)}
+          onAiAnalysis={() => onAiAnalysis?.(item.id)}
+          onOpenOriginal={() =>
+            onOpenOriginal?.(item.id)
+          }
         />
       ))}
     </div>

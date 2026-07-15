@@ -9,13 +9,15 @@ type FolderGridItemProps = {
   name: string;
   count: number;
   date: string;
+  onMoveToTrash?: (folderId: number) => void;
 };
 
 const FolderGridItem = ({
-  // id,
+  id,
   name,
   count,
   date,
+  onMoveToTrash,
 }: FolderGridItemProps) => {
   const navigate = useNavigate();
 
@@ -59,7 +61,7 @@ const FolderGridItem = ({
               </button>
             }
             onMoveToTrash={() => {
-              console.log(`${name} 휴지통으로 이동`);
+              onMoveToTrash?.(id);
             }}
           />
         </div>

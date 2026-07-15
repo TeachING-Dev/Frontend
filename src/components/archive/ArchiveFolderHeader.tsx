@@ -1,4 +1,9 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { Ellipsis, Search } from "lucide-react";
 
 import DataPopover from "./popover/DataPopover";
@@ -7,7 +12,7 @@ type ArchiveFolderHeaderProps = {
   folderName: string;
   savedItemCount: number;
   onBack: () => void;
-  onEditFolderName?: () => void;
+  onEditFolderName?: (newFolderName: string) => void;
   onMoveFolder?: () => void;
   onMoveToTrash?: () => void;
 };
@@ -27,10 +32,64 @@ const ArchiveFolderHeader = ({
 
   const [isSortOpen, setIsSortOpen] = useState(false);
 
+  // 폴더명 수정 상태
+  const [isEditingFolderName, setIsEditingFolderName] =
+    useState(false);
+
+  const [editedFolderName, setEditedFolderName] =
+    useState(folderName);
+
+  const folderNameInputRef =
+    useRef<HTMLInputElement>(null);
+
   const handleSortSelect = (option: SortOption) => {
     setSortOption(option);
     setIsSortOpen(false);
   };
+
+  const handleStartEdit = () => {
+    setEditedFolderName(folderName);
+    setIsEditingFolderName(true);
+  };
+
+  const handleSaveFolderName = () => {
+    const trimmedFolderName = editedFolderName.trim();
+
+    if (!trimmedFolderName) {
+      return;
+    }
+
+    onEditFolderName?.(trimmedFolderName);
+    setIsEditingFolderName(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditedFolderName(folderName);
+    setIsEditingFolderName(false);
+  };
+
+  const handleFolderNameKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Enter") {
+      handleSaveFolderName();
+    }
+
+    if (event.key === "Escape") {
+      handleCancelEdit();
+    }
+  };
+
+  useEffect(() => {
+    if (isEditingFolderName) {
+      folderNameInputRef.current?.focus();
+      folderNameInputRef.current?.select();
+    }
+  }, [isEditingFolderName]);
+
+  const isSaveDisabled =
+    editedFolderName.trim().length === 0 ||
+    editedFolderName.trim() === folderName;
 
   return (
     <section className="mb-[60px]">
@@ -53,24 +112,60 @@ const ArchiveFolderHeader = ({
       </button>
 
       {/* 폴더명 */}
-      <div className="mb-3 flex items-center gap-5">
-        <h1 className="text-[36px] font-bold text-white">
-          {folderName}
-        </h1>
+      <div className="mb-3 flex min-h-[54px] items-center gap-5">
+        {isEditingFolderName ? (
+          <>
+            <input
+              ref={folderNameInputRef}
+              type="text"
+              value={editedFolderName}
+              onChange={(event) =>
+                setEditedFolderName(event.target.value)
+              }
+              onKeyDown={handleFolderNameKeyDown}
+              maxLength={10}
+              aria-label="수정할 폴더 이름"
+              className="h-[54px] min-w-0 w-auto max-w-[500px] border-b border-[#917DEC] bg-transparent text-[36px] font-bold text-white outline-none"
+            />
 
-        <button
-          type="button"
-          onClick={onEditFolderName}
-          aria-label="폴더 이름 수정"
-          className="flex h-8 w-8 items-center justify-center rounded transition hover:bg-white/10"
-        >
-          <img
-            src="/edit-03.png"
-            alt=""
-            aria-hidden="true"
-            className="h-[36px] w-[36px]"
-          />
-        </button>
+            <button
+              type="button"
+              onClick={handleSaveFolderName}
+              disabled={isSaveDisabled}
+              className="ml-2 flex h-[36px] w-[96px] items-center justify-center rounded-[8px] bg-[#917DEC] text-[16px] font-medium text-white transition hover:bg-[#7E68D8] disabled:cursor-not-allowed disabled:bg-[#42444C] disabled:text-[#A5A5AB]"
+            >
+              저장
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="flex h-[36px] w-[96px] items-center justify-center rounded-[8px] bg-[#FAFAFA] text-[16px] font-medium text-[#77777E] transition hover:bg-[#E7E7E9]"
+            >
+              취소
+            </button>
+          </>
+        ) : (
+          <>
+            <h1 className="text-[36px] font-bold text-white">
+              {folderName}
+            </h1>
+
+            <button
+              type="button"
+              onClick={handleStartEdit}
+              aria-label="폴더 이름 수정"
+              className="flex h-8 w-8 items-center justify-center rounded transition hover:bg-white/10"
+            >
+              <img
+                src="/edit-03.png"
+                alt=""
+                aria-hidden="true"
+                className="h-[36px] w-[36px]"
+              />
+            </button>
+          </>
+        )}
       </div>
 
       {/* 저장된 자료 개수 */}
@@ -96,7 +191,9 @@ const ArchiveFolderHeader = ({
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsSortOpen((prev) => !prev)}
+              onClick={() =>
+                setIsSortOpen((prev) => !prev)
+              }
               className="flex h-[40px] w-[160px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold text-white"
             >
               <span>{sortOption}</span>
@@ -112,7 +209,9 @@ const ArchiveFolderHeader = ({
               <div className="absolute top-[46px] z-10 w-[160px] overflow-hidden rounded bg-[#24232D] shadow-lg">
                 <button
                   type="button"
-                  onClick={() => handleSortSelect("최신순")}
+                  onClick={() =>
+                    handleSortSelect("최신순")
+                  }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
                   최신순

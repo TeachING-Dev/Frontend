@@ -8,6 +8,7 @@ type ArchiveDataItemProps = {
   isMoveMode?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
+  onClick?: () => void;
   onAiAnalysis?: () => void;
   onOpenOriginal?: () => void;
 };
@@ -20,13 +21,34 @@ const ArchiveDataItem = ({
   isMoveMode = false,
   isSelected = false,
   onSelect,
+  onClick,
   onAiAnalysis,
   onOpenOriginal,
 }: ArchiveDataItemProps) => {
   const handleItemClick = () => {
-    if (!isMoveMode) return;
+    // 선택 모드일 때는 상세 페이지로 이동하지 않고
+    // 해당 자료의 선택 상태만 변경
+    if (isMoveMode) {
+      onSelect?.();
+      return;
+    }
 
-    onSelect?.();
+    // 일반 모드일 때는 상세 페이지 이동 이벤트 실행
+    onClick?.();
+  };
+
+  const handleItemKeyDown = (
+    event: React.KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      event.key !== "Enter" &&
+      event.key !== " "
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    handleItemClick();
   };
 
   const handleAiAnalysis = (
@@ -45,9 +67,14 @@ const ArchiveDataItem = ({
 
   return (
     <article
+      role="button"
+      tabIndex={0}
       onClick={handleItemClick}
+      onKeyDown={handleItemKeyDown}
       className={`relative flex h-[335px] w-full flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
-        isMoveMode ? "cursor-pointer" : ""
+        isMoveMode
+          ? "cursor-pointer"
+          : "cursor-pointer"
       } ${
         isSelected
           ? "border-[#917DEC] shadow-[0_0_30px_rgba(134,111,241,0.3)]"

@@ -3,17 +3,22 @@ import FolderGridItem from "./FolderGridItem";
 
 type ArchiveFolderGridProps = {
   onAddFolder: () => void;
+  onMoveToTrash?: (folderId: number) => void;
 };
 
-const dummyFolders = Array.from({ length: 8 }, (_, index) => ({
-  id: index + 1,
-  name: "폴더명",
-  count: 0,
-  date: "2026-01-01",
-}));
+const dummyFolders = Array.from(
+  { length: 8 },
+  (_, index) => ({
+    id: index + 1,
+    name: "폴더명",
+    count: 0,
+    date: "2026-01-01",
+  }),
+);
 
 const ArchiveFolderGrid = ({
   onAddFolder,
+  onMoveToTrash,
 }: ArchiveFolderGridProps) => {
   return (
     <section className="grid grid-cols-3 gap-7">
@@ -28,6 +33,7 @@ const ArchiveFolderGrid = ({
           name={folder.name}
           count={folder.count}
           date={folder.date}
+          onMoveToTrash={onMoveToTrash}
         />
       ))}
     </section>

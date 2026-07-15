@@ -9,13 +9,15 @@ type FolderListItemProps = {
   name: string;
   count: number;
   date: string;
+  onMoveToTrash?: (folderId: number) => void;
 };
 
 const FolderListItem = ({
-  // id,
+  id,
   name,
   count,
   date,
+  onMoveToTrash,
 }: FolderListItemProps) => {
   const navigate = useNavigate();
 
@@ -71,7 +73,7 @@ const FolderListItem = ({
           </button>
         }
         onMoveToTrash={() => {
-          console.log(`${name} 휴지통으로 이동`);
+          onMoveToTrash?.(id);
         }}
       />
     </div>
