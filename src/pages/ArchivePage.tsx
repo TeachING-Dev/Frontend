@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
@@ -11,16 +11,9 @@ const ArchivePage = () => {
   return (
     <main className="py-10">
       <div className="mx-auto w-[1120px]">
-        <ArchiveHeader
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
+        <ArchiveHeader viewMode={viewMode} onViewModeChange={setViewMode} />
 
-        {viewMode === "list" ? (
-          <ArchiveFolderList />
-        ) : (
-          <ArchiveFolderGrid />
-        )}
+        {viewMode === "list" ? <ArchiveFolderList /> : <ArchiveFolderGrid />}
 
         <ArchivePagination />
       </div>
