@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Ellipsis, Search } from "lucide-react";
 
-import DataPopover from "./DataPopover";
+import DataPopover from "./popover/DataPopover";
 
 type ArchiveFolderHeaderProps = {
   folderName: string;

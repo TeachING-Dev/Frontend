@@ -4,7 +4,7 @@ import ArchiveHeader from "../components/archive/ArchiveHeader";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
 import ArchiveFolderGrid from "../components/archive/ArchiveFolderGrid";
 import ArchivePagination from "../components/archive/ArchivePagination";
-import CreateFolderModal from "../components/archive/CreateFolderModal";
+import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 
 const ArchivePage = () => {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");

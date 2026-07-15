@@ -1,8 +1,12 @@
+import { useEffect, useState } from "react";
+
 import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
 import ArchiveDataList, {
   type ArchiveData,
 } from "../components/archive/ArchiveDataList";
 import EmptyArchiveData from "../components/archive/EmptyArchiveData";
+import MoveDataModal from "../components/archive/modal/MoveDataModal";
+import Toast from "../components/common/Toast";
 
 const dummyData: ArchiveData[] = [
   {
@@ -39,25 +43,200 @@ const dummyData: ArchiveData[] = [
   },
 ];
 
-const ArchiveFolderPage = () => {
-  return (
-    <main className="py-10">
-      <div className="mx-auto w-[1120px]">
-        <ArchiveFolderHeader
-          folderName="Backend"
-          savedItemCount={dummyData.length}
-          onBack={() => {}}
-        />
+const folderOptions = [
+  {
+    id: 1,
+    name: "Backend",
+  },
+  {
+    id: 2,
+    name: "Frontend",
+  },
+  {
+    id: 3,
+    name: "React",
+  },
+  {
+    id: 4,
+    name: "TypeScript",
+  },
+];
 
-        <div className="mt-10">
-          {dummyData.length === 0 ? (
-            <EmptyArchiveData />
-          ) : (
-            <ArchiveDataList data={dummyData} />
+const ArchiveFolderPage = () => {
+  const [isMoveMode, setIsMoveMode] = useState(false);
+
+  const [isMoveModalOpen, setIsMoveModalOpen] =
+    useState(false);
+
+  const [selectedItemIds, setSelectedItemIds] = useState<
+    number[]
+  >([]);
+
+  const [showToast, setShowToast] = useState(false);
+
+  const isAllSelected =
+    dummyData.length > 0 &&
+    selectedItemIds.length === dummyData.length;
+
+  const handleOpenMoveMode = () => {
+    setIsMoveMode(true);
+    setSelectedItemIds([]);
+  };
+
+  const handleCancelMoveMode = () => {
+    setIsMoveMode(false);
+    setSelectedItemIds([]);
+  };
+
+  const handleToggleItem = (id: number) => {
+    setSelectedItemIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((itemId) => itemId !== id)
+        : [...prev, id],
+    );
+  };
+
+  const handleToggleAll = () => {
+    if (isAllSelected) {
+      setSelectedItemIds([]);
+      return;
+    }
+
+    setSelectedItemIds(dummyData.map((item) => item.id));
+  };
+
+  const handleOpenMoveModal = () => {
+    if (selectedItemIds.length === 0) return;
+
+    setIsMoveModalOpen(true);
+  };
+
+  const handleCloseMoveModal = () => {
+    setIsMoveModalOpen(false);
+  };
+
+  const handleMoveData = (folderId: number) => {
+    console.log("이동할 자료 ID:", selectedItemIds);
+    console.log("이동할 폴더 ID:", folderId);
+
+    // TODO: 자료 이동 API 연결
+
+    setIsMoveModalOpen(false);
+    setIsMoveMode(false);
+    setSelectedItemIds([]);
+    setShowToast(true);
+  };
+
+  useEffect(() => {
+    if (!showToast) return;
+
+    const timer = setTimeout(() => {
+      setShowToast(false);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [showToast]);
+
+  return (
+    <>
+      <main className="py-10">
+        <div className="mx-auto w-[1120px]">
+          <ArchiveFolderHeader
+            folderName="Backend"
+            savedItemCount={dummyData.length}
+            onBack={() => {}}
+            onMoveFolder={handleOpenMoveMode}
+          />
+
+          {isMoveMode && dummyData.length > 0 && (
+            <div className="mb-5 flex items-center justify-between">
+              {/* 전체 선택 버튼 */}
+              <button
+                type="button"
+                onClick={handleToggleAll}
+                className="flex items-center gap-[17px]"
+              >
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded border transition ${
+                    isAllSelected
+                      ? "border-[#917DEC] bg-[#917DEC]"
+                      : "border-[#777482] bg-[#24232D]"
+                  }`}
+                >
+                  {isAllSelected && (
+                    <span className="text-[18px] leading-none text-white">
+                      ✓
+                    </span>
+                  )}
+                </span>
+
+                <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
+                  {selectedItemIds.length}개 선택됨
+                </span>
+              </button>
+
+              {/* 이동 및 취소 버튼 */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenMoveModal}
+                  disabled={selectedItemIds.length === 0}
+                  className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
+                    selectedItemIds.length > 0
+                      ? "bg-[#917DEC] hover:bg-[#8068E2]"
+                      : "cursor-not-allowed bg-[#42444C]"
+                  }`}
+                >
+                  이동하기
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCancelMoveMode}
+                  className="flex h-[40px] w-[147px] items-center justify-center rounded bg-[#42444C] font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition hover:bg-[#50505A]"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
           )}
+
+          <div className="mt-10">
+            {dummyData.length === 0 ? (
+              <EmptyArchiveData />
+            ) : (
+              <ArchiveDataList
+                data={dummyData}
+                isMoveMode={isMoveMode}
+                selectedItemIds={selectedItemIds}
+                onToggleItem={handleToggleItem}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      {isMoveModalOpen && (
+        <MoveDataModal
+          currentFolderId={1}
+          currentFolderName="Backend"
+          folders={folderOptions}
+          onClose={handleCloseMoveModal}
+          onMove={handleMoveData}
+        />
+      )}
+
+      {showToast && (
+  <Toast
+    message="자료가 해당 폴더로 이동되었습니다"
+    actionText="실행취소"
+    onAction={() => {
+      // TODO: 실행 취소 API 연결
+      setShowToast(false);
+    }}
+  />
+      )}
+    </>
   );
 };
 

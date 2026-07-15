@@ -10,9 +10,17 @@ export type ArchiveData = {
 
 type ArchiveDataListProps = {
   data: ArchiveData[];
+  isMoveMode: boolean;
+  selectedItemIds: number[];
+  onToggleItem: (id: number) => void;
 };
 
-const ArchiveDataList = ({ data }: ArchiveDataListProps) => {
+const ArchiveDataList = ({
+  data,
+  isMoveMode,
+  selectedItemIds,
+  onToggleItem,
+}: ArchiveDataListProps) => {
   return (
     <div className="flex flex-col gap-5">
       {data.map((item) => (
@@ -22,6 +30,9 @@ const ArchiveDataList = ({ data }: ArchiveDataListProps) => {
           date={item.date}
           title={item.title}
           description={item.description}
+          isMoveMode={isMoveMode}
+          isSelected={selectedItemIds.includes(item.id)}
+          onSelect={() => onToggleItem(item.id)}
         />
       ))}
     </div>

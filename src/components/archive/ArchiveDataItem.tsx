@@ -1,10 +1,13 @@
-import { Globe, Sparkles } from "lucide-react";
+import { Check, Globe, Sparkles } from "lucide-react";
 
 type ArchiveDataItemProps = {
   tag: string;
   date: string;
   title: string;
   description: string;
+  isMoveMode?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
   onAiAnalysis?: () => void;
   onOpenOriginal?: () => void;
 };
@@ -14,11 +17,62 @@ const ArchiveDataItem = ({
   date,
   title,
   description,
+  isMoveMode = false,
+  isSelected = false,
+  onSelect,
   onAiAnalysis,
   onOpenOriginal,
 }: ArchiveDataItemProps) => {
+  const handleItemClick = () => {
+    if (!isMoveMode) return;
+
+    onSelect?.();
+  };
+
+  const handleAiAnalysis = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    onAiAnalysis?.();
+  };
+
+  const handleOpenOriginal = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    onOpenOriginal?.();
+  };
+
   return (
-    <article className="flex h-[335px] w-full flex-col overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#2B2C35]">
+    <article
+      onClick={handleItemClick}
+      className={`relative flex h-[335px] w-full flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
+        isMoveMode ? "cursor-pointer" : ""
+      } ${
+        isSelected
+          ? "border-[#917DEC] shadow-[0_0_30px_rgba(134,111,241,0.3)]"
+          : "border-[#3A3946]"
+      }`}
+    >
+      {/* 선택 체크박스 */}
+      {isMoveMode && (
+        <div
+          className={`absolute right-4 top-4 z-10 flex h-[30px] w-[30px] items-center justify-center rounded-[5px] border transition ${
+            isSelected
+              ? "border-[#917DEC] bg-[#917DEC]"
+              : "border-[#777482] bg-[#24242E]"
+          }`}
+        >
+          {isSelected && (
+            <Check
+              size={22}
+              strokeWidth={3}
+              className="text-white"
+            />
+          )}
+        </div>
+      )}
+
       {/* 상단 정보 및 버튼 */}
       <div className="flex h-[75px] shrink-0 items-center justify-between px-[29px]">
         <div className="flex items-center gap-8 font-['ABeeZee'] text-[18px] font-normal italic leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">
@@ -26,33 +80,35 @@ const ArchiveDataItem = ({
           <span>{date}</span>
         </div>
 
-        <div className="flex items-center gap-[10px]">
-          <button
-            type="button"
-            onClick={onAiAnalysis}
-            className="flex h-[40px] w-[180px] items-center justify-center gap-[8px] rounded-[8px] bg-[#917DEC] text-[20px] font-semibold text-white transition-colors hover:bg-[#7D66E8]"
-          >
-            <Sparkles
-              size={22}
-              className="shrink-0"
-            />
+        {!isMoveMode && (
+          <div className="flex items-center gap-[10px]">
+            <button
+              type="button"
+              onClick={handleAiAnalysis}
+              className="flex h-[40px] w-[180px] items-center justify-center gap-[8px] rounded-[8px] bg-[#917DEC] text-[20px] font-semibold text-white transition-colors hover:bg-[#7D66E8]"
+            >
+              <Sparkles
+                size={22}
+                className="shrink-0"
+              />
 
-            <span>AI 분석 결과</span>
-          </button>
+              <span>AI 분석 결과</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={onOpenOriginal}
-            className="flex h-[42px] w-[180px] items-center justify-center gap-[8px] rounded-[8px] bg-[#24242E] text-[20px] font-semibold text-white transition-colors hover:bg-[#343444]"
-          >
-            <Globe
-              size={22}
-              className="shrink-0"
-            />
+            <button
+              type="button"
+              onClick={handleOpenOriginal}
+              className="flex h-[42px] w-[180px] items-center justify-center gap-[8px] rounded-[8px] bg-[#24242E] text-[20px] font-semibold text-white transition-colors hover:bg-[#343444]"
+            >
+              <Globe
+                size={22}
+                className="shrink-0"
+              />
 
-            <span>원문으로 이동</span>
-          </button>
-        </div>
+              <span>원문으로 이동</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 저장된 데이터 내용 */}
