@@ -5,6 +5,7 @@ import ChatBubble from "../components/chatbot/ChatBubble";
 import ChatLimitModal from "../components/chatbot/ChatLimitModal";
 import ChatSidebar from "../components/chatbot/ChatSidebar";
 import SourceList from "../components/chatbot/SourceList";
+import Toast from "../components/common/Toast";
 import type { SourceItem } from "../components/chatbot/SourceList";
 
 const mockFiles = ["파일 이름", "파일 이름", "파일 이름", "파일 이름", "파일 이름"];
@@ -187,11 +188,11 @@ const ChatbotPage = () => {
             </p>
           </div>
         )}
-
         {isCopyToastVisible ? (
-          <div className="absolute bottom-[78px] left-1/2 z-20 flex h-14 w-[672px] max-w-[calc(100%-160px)] -translate-x-1/2 items-center rounded-[5px] bg-violet-50 px-5 font-['SUIT_Variable'] text-sm font-semibold leading-5 text-zinc-900 shadow-[0_0_30px_rgba(145,125,236,0.35)]">
-            ✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.
-          </div>
+          <Toast
+            variant="chat"
+            message="✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요."
+          />
         ) : null}
 
         <form
@@ -235,5 +236,7 @@ const ChatbotPage = () => {
 };
 
 export default ChatbotPage;
+
+
 
 
