@@ -1,10 +1,13 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+﻿import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
 import MainLayout from "./layouts/MainLayout";
 import ArchivePage from "./pages/ArchivePage";
 import ChatbotPage from "./pages/ChatbotPage";
 import LoginPage from "./pages/LoginPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
+import ArchiveFolderPage from "./pages/ArchiveFolderPage";
+import ArchiveDataPage from "./pages/ArchiveDataPage";
 
 function App() {
   return (
@@ -12,12 +15,18 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/complete" element={<SignupCompletePage />} />
+
         <Route element={<MainLayout />}>
-          <Route path="/" element={<ArchivePage />} />
+          <Route path="/" element={<Navigate to="/archive" replace />} />
+          <Route path="/archive" element={<ArchivePage />} />
+          <Route path="/archive/folder" element={<ArchiveFolderPage />} />
+          <Route path="/archive/folder/data/:dataId" element={<ArchiveDataPage />} />
         </Route>
+
         <Route element={<MainLayout insetMenu />}>
           <Route path="/chatbot" element={<ChatbotPage />} />
         </Route>
+
         <Route element={<MainLayout showRightIcons={false} />}>
           <Route path="/signup" element={<SignupPage />} />
         </Route>
@@ -27,5 +36,3 @@ function App() {
 }
 
 export default App;
-
-
