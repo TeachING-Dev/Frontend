@@ -1,14 +1,23 @@
-type ToastProps = {
+﻿type ToastProps = {
   message: string;
   actionText?: string;
   onAction?: () => void;
+  variant?: "default" | "chat";
 };
 
-const Toast = ({
-  message,
-  actionText,
-  onAction,
-}: ToastProps) => {
+const Toast = ({ message, actionText, onAction, variant = "default" }: ToastProps) => {
+  if (variant === "chat") {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="fixed bottom-[78px] left-1/2 z-[200] flex h-14 w-[672px] max-w-[calc(100%-160px)] -translate-x-1/2 items-center rounded-[5px] bg-violet-50 px-5 font-['SUIT_Variable'] text-sm font-semibold leading-5 text-zinc-900 shadow-[0_0_30px_rgba(145,125,236,0.35)]"
+      >
+        {message}
+      </div>
+    );
+  }
+
   return (
     <div
       role="status"

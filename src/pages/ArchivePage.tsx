@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 import ArchiveHeader from "../components/archive/ArchiveHeader";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
@@ -8,26 +8,15 @@ import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
 
 const ArchivePage = () => {
-  const [viewMode, setViewMode] = useState<
-    "list" | "grid"
-  >("grid");
-
-  const [isCreateModalOpen, setIsCreateModalOpen] =
-    useState(false);
-
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
   const handleMoveToTrash = (folderId: number) => {
-    console.log(
-      "휴지통으로 이동할 폴더 ID:",
-      folderId,
-    );
+    console.log("휴지통으로 이동할 폴더 ID:", folderId);
 
     // TODO: 폴더 휴지통 이동 API 연결
-
-    setToastMessage(
-      "폴더가 휴지통으로 이동되었습니다",
-    );
+    setToastMessage("폴더가 휴지통으로 이동되었습니다");
   };
 
   useEffect(() => {
@@ -46,24 +35,17 @@ const ArchivePage = () => {
     <>
       <main className="py-10">
         <div className="mx-auto w-[1120px]">
-          <ArchiveHeader
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
+          <ArchiveHeader viewMode={viewMode} onViewModeChange={setViewMode} />
 
           <div className="min-h-[540px]">
             {viewMode === "list" ? (
               <ArchiveFolderList
-                onAddFolder={() =>
-                  setIsCreateModalOpen(true)
-                }
+                onAddFolder={() => setIsCreateModalOpen(true)}
                 onMoveToTrash={handleMoveToTrash}
               />
             ) : (
               <ArchiveFolderGrid
-                onAddFolder={() =>
-                  setIsCreateModalOpen(true)
-                }
+                onAddFolder={() => setIsCreateModalOpen(true)}
                 onMoveToTrash={handleMoveToTrash}
               />
             )}
@@ -74,9 +56,7 @@ const ArchivePage = () => {
       </main>
 
       {isCreateModalOpen && (
-        <CreateFolderModal
-          onClose={() => setIsCreateModalOpen(false)}
-        />
+        <CreateFolderModal onClose={() => setIsCreateModalOpen(false)} />
       )}
 
       {toastMessage && (
