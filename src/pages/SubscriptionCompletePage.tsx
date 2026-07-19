@@ -38,7 +38,7 @@ const SubscriptionCompletePage = () => {
           이제 무제한으로 서비스를 이용해 보세요.
         </p>
 
-        <PrimaryButton className="max-w-[640px]" onClick={() => navigate("/")}>
+        <PrimaryButton className="max-w-[640px]" onClick={() => navigate("/chatbot")}>
           학습 시작하기
         </PrimaryButton>
       </div>
