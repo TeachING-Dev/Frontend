@@ -8,6 +8,8 @@ import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
+import SubscriptionCompletePage from "./pages/SubscriptionCompletePage";
 
 function App() {
   return (
@@ -15,12 +17,14 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/complete" element={<SignupCompletePage />} />
+        <Route path="/subscription/complete" element={<SubscriptionCompletePage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Navigate to="/archive" replace />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/archive/folder" element={<ArchiveFolderPage />} />
           <Route path="/archive/folder/data/:dataId" element={<ArchiveDataPage />} />
+          <Route path="/subscription" element={<SubscriptionPage />} />
         </Route>
 
         <Route element={<MainLayout insetMenu />}>
