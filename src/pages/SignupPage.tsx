@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 import { ChevronLeft } from "lucide-react";
 import PrimaryButton from "../components/common/PrimaryButton";
 
@@ -7,6 +8,30 @@ type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
 
 const REQUIRED_TERMS: TermKey[] = ["age", "service"];
+
+const CheckIcon = ({
+  checked,
+  inverted = false,
+}: {
+  checked: boolean;
+  inverted?: boolean;
+}) => (
+  <span
+    className={`relative inline-flex size-6 shrink-0 items-center justify-center rounded-full ${
+      checked ? (inverted ? "bg-violet-50" : "bg-[#917DEC]") : "bg-zinc-700"
+    }`}
+  >
+    <span
+      className={`h-2 w-3 rotate-[-45deg] border-b-2 border-l-2 ${
+        checked
+          ? inverted
+            ? "border-[#917DEC]"
+            : "border-violet-50"
+          : "border-zinc-500"
+      }`}
+    />
+  </span>
+);
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -35,7 +60,7 @@ const SignupPage = () => {
     navigate("/login");
   };
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (step === "nickname" && isNicknameNextEnabled) {
       setStep("terms");
       return;
@@ -44,7 +69,7 @@ const SignupPage = () => {
     if (step === "terms" && isTermsNextEnabled) {
       navigate("/signup/complete");
     }
-  };
+  }, [isNicknameNextEnabled, isTermsNextEnabled, navigate, step]);
 
   useEffect(() => {
     const handleEnterKey = (event: KeyboardEvent) => {
@@ -67,7 +92,7 @@ const SignupPage = () => {
 
     window.addEventListener("keydown", handleEnterKey);
     return () => window.removeEventListener("keydown", handleEnterKey);
-  }, [isNextEnabled, step, isNicknameNextEnabled, isTermsNextEnabled]);
+  }, [handleNext, isNextEnabled]);
 
   const toggleTerm = (key: TermKey) => {
     setTerms((prevTerms) => ({
@@ -85,30 +110,6 @@ const SignupPage = () => {
       event: nextChecked,
     });
   };
-
-  const CheckIcon = ({
-    checked,
-    inverted = false,
-  }: {
-    checked: boolean;
-    inverted?: boolean;
-  }) => (
-    <span
-      className={`relative inline-flex size-6 shrink-0 items-center justify-center rounded-full ${
-        checked ? (inverted ? "bg-violet-50" : "bg-[#917DEC]") : "bg-zinc-700"
-      }`}
-    >
-      <span
-        className={`h-2 w-3 rotate-[-45deg] border-b-2 border-l-2 ${
-          checked
-            ? inverted
-              ? "border-[#917DEC]"
-              : "border-violet-50"
-            : "border-zinc-500"
-        }`}
-      />
-    </span>
-  );
 
   return (
     <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
