@@ -13,6 +13,7 @@ import ChatbotPage from "./pages/ChatbotPage";
 import LoginPage from "./pages/LoginPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
+import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
 import TeachingMapPage from "./pages/TeachingMapPage";
 
 function App() {
@@ -54,6 +55,12 @@ function App() {
           <Route
             path="/teaching-map"
             element={<TeachingMapPage />}
+          />
+
+          {/* 티칭맵 생성 */}
+          <Route
+            path="/teaching-map/create"
+            element={<TeachingMapCreatePage />}
           />
         </Route>
 

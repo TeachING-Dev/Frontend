@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 function TeachingMapHeader() {
+  const navigate = useNavigate();
+
+  const handleCreateClick = () => {
+    navigate("/teaching-map/create");
+  };
+
   return (
     <section className="mb-10 flex items-start justify-between">
       <div className="flex flex-col gap-1">
@@ -12,11 +20,18 @@ function TeachingMapHeader() {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#917DEC] px-2 py-1 text-white">
+        <button
+          type="button"
+          onClick={handleCreateClick}
+          className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#917DEC] px-2 py-1 text-white"
+        >
           새 티칭맵
         </button>
 
-        <button className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#2B2C35] px-2 py-1 text-[#8D8E94]">
+        <button
+          type="button"
+          className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#2B2C35] px-2 py-1 text-[#8D8E94]"
+        >
           임시저장
         </button>
       </div>
