@@ -1,6 +1,13 @@
-﻿import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+﻿import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 
+import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
+
+import HomePage from "./pages/HomePage";
 import ArchivePage from "./pages/ArchivePage";
 import ChatbotPage from "./pages/ChatbotPage";
 import LoginPage from "./pages/LoginPage";
@@ -13,22 +20,64 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup/complete" element={<SignupCompletePage />} />
+        {/* 인증 페이지 */}
+        <Route
+          path="/login"
+          element={<LoginPage />}
+        />
 
+        <Route
+          path="/signup/complete"
+          element={<SignupCompletePage />}
+        />
+
+        {/* 홈 전용 레이아웃 */}
+        <Route element={<HomeLayout />}>
+          <Route
+            path="/"
+            element={<HomePage />}
+          />
+        </Route>
+
+        {/* 기본 레이아웃 페이지 */}
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Navigate to="/archive" replace />} />
-          <Route path="/archive" element={<ArchivePage />} />
-          <Route path="/archive/folder" element={<ArchiveFolderPage />} />
-          <Route path="/archive/folder/data/:dataId" element={<ArchiveDataPage />} />
+          {/* 보관함 */}
+          <Route
+            path="/archive"
+            element={<ArchivePage />}
+          />
+
+          {/* 보관함 폴더 상세 */}
+          <Route
+            path="/archive/folder"
+            element={<ArchiveFolderPage />}
+          />
+
+          {/* 보관함 자료 상세 */}
+          <Route
+            path="/archive/folder/data/:dataId"
+            element={<ArchiveDataPage />}
+          />
         </Route>
 
+        {/* 챗봇 페이지 */}
         <Route element={<MainLayout insetMenu />}>
-          <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route
+            path="/chatbot"
+            element={<ChatbotPage />}
+          />
         </Route>
 
-        <Route element={<MainLayout showRightIcons={false} />}>
-          <Route path="/signup" element={<SignupPage />} />
+        {/* 회원가입 페이지 */}
+        <Route
+          element={
+            <MainLayout showRightIcons={false} />
+          }
+        >
+          <Route
+            path="/signup"
+            element={<SignupPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
