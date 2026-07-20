@@ -22,35 +22,68 @@ const FREE_TEACHING_MAP_LIMIT = 5;
 // TODO: 사용자 티칭맵 목록 API 연결 후 실제 개수로 교체
 const CURRENT_TEACHING_MAP_COUNT = 0;
 
+const DEFAULT_TEACHING_MAP_TYPE: TeachingMapType =
+  "shortcut";
+
 const TeachingMapCreatePage = () => {
   const navigate = useNavigate();
 
   const latestFolder =
     ARCHIVE_FOLDERS.length > 0
-      ? ARCHIVE_FOLDERS[ARCHIVE_FOLDERS.length - 1]
+      ? ARCHIVE_FOLDERS[
+          ARCHIVE_FOLDERS.length - 1
+        ]
       : null;
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const defaultFolderId =
+    latestFolder?.id ?? null;
 
-  const [selectedFolderId, setSelectedFolderId] = useState<
-    number | null
-  >(latestFolder?.id ?? null);
-
-  const [selectedType, setSelectedType] =
-    useState<TeachingMapType>("shortcut");
-
-  const [isLoadingModalOpen, setIsLoadingModalOpen] =
-    useState(false);
-
-  const [isLimitModalOpen, setIsLimitModalOpen] =
-    useState(false);
-
-  const [isToastOpen, setIsToastOpen] =
-    useState(false);
-
-  const [toastMessage, setToastMessage] =
+  const [title, setTitle] =
     useState("");
+
+  const [description, setDescription] =
+    useState("");
+
+  const [
+    selectedFolderId,
+    setSelectedFolderId,
+  ] = useState<number | null>(
+    defaultFolderId,
+  );
+
+  const [
+    selectedType,
+    setSelectedType,
+  ] = useState<TeachingMapType>(
+    DEFAULT_TEACHING_MAP_TYPE,
+  );
+
+  const [
+    isLoadingModalOpen,
+    setIsLoadingModalOpen,
+  ] = useState(false);
+
+  const [
+    isLimitModalOpen,
+    setIsLimitModalOpen,
+  ] = useState(false);
+
+  const [
+    isToastOpen,
+    setIsToastOpen,
+  ] = useState(false);
+
+  const [
+    toastMessage,
+    setToastMessage,
+  ] = useState("");
+
+  const canTemporarySave =
+    title.trim().length > 0 ||
+    description.trim().length > 0 ||
+    selectedFolderId !== defaultFolderId ||
+    selectedType !==
+      DEFAULT_TEACHING_MAP_TYPE;
 
   const isFormCompleted = useMemo(() => {
     return (
@@ -68,27 +101,32 @@ const TeachingMapCreatePage = () => {
 
   const selectedFolder = useMemo(() => {
     return ARCHIVE_FOLDERS.find(
-      (folder) => folder.id === selectedFolderId,
+      (folder) =>
+        folder.id === selectedFolderId,
     );
   }, [selectedFolderId]);
 
-  const showFailureToast = (message: string) => {
+  const showFailureToast = (
+    message: string,
+  ) => {
     setToastMessage(message);
     setIsToastOpen(true);
   };
 
   const handleTemporarySave = () => {
-    if (!isFormCompleted) {
+    if (!canTemporarySave) {
       return;
     }
 
     const temporaryTeachingMap = {
       id: Date.now(),
       title: title.trim(),
-      description: description.trim(),
+      description:
+        description.trim(),
       folderId: selectedFolderId,
       type: selectedType,
-      savedAt: new Date().toISOString(),
+      savedAt:
+        new Date().toISOString(),
     };
 
     console.log(
@@ -112,26 +150,35 @@ const TeachingMapCreatePage = () => {
       return;
     }
 
-    if (!selectedFolder || selectedFolder.count < 3) {
+    if (
+      !selectedFolder ||
+      selectedFolder.count < 3
+    ) {
       showFailureToast(
         "티칭맵을 생성하려면 최소 3개 이상의 자료가 필요해요.",
       );
+
       return;
     }
 
     setIsLoadingModalOpen(true);
 
-    const newTeachingMapId = Date.now();
+    const newTeachingMapId =
+      Date.now();
 
     const newTeachingMap = {
       id: newTeachingMapId,
       title: title.trim(),
-      description: description.trim(),
+      description:
+        description.trim(),
       folderId: selectedFolderId,
       type: selectedType,
     };
 
-    console.log("생성할 티칭맵:", newTeachingMap);
+    console.log(
+      "생성할 티칭맵:",
+      newTeachingMap,
+    );
 
     // TODO: 티칭맵 생성 API 연결
     //
@@ -156,8 +203,6 @@ const TeachingMapCreatePage = () => {
 
   const handleSubscribe = () => {
     setIsLimitModalOpen(false);
-
-    // TODO: 구독 페이지 경로가 정해지면 수정
     navigate("/subscription");
   };
 
@@ -171,7 +216,9 @@ const TeachingMapCreatePage = () => {
       <div className="relative z-10 mx-auto w-[1120px] py-[52px]">
         <div className="w-[810px]">
           <TeachingMapCreateHeader
-            teachingMapType={selectedType}
+            teachingMapType={
+              selectedType
+            }
           />
 
           <div className="mt-[56px] flex flex-col gap-10">
@@ -187,21 +234,36 @@ const TeachingMapCreatePage = () => {
 
             <TeachingMapFolderSelect
               folders={ARCHIVE_FOLDERS}
-              selectedFolderId={selectedFolderId}
-              onSelect={setSelectedFolderId}
+              selectedFolderId={
+                selectedFolderId
+              }
+              onSelect={
+                setSelectedFolderId
+              }
             />
 
             <TeachingMapTypeSelect
-              selectedType={selectedType}
-              onChange={setSelectedType}
+              selectedType={
+                selectedType
+              }
+              onChange={
+                setSelectedType
+              }
             />
           </div>
         </div>
 
         <div className="mt-10 w-full">
           <TeachingMapCreateButton
-            disabled={!isFormCompleted}
-            onSave={handleTemporarySave}
+            isSaveDisabled={
+              !canTemporarySave
+            }
+            isCreateDisabled={
+              !isFormCompleted
+            }
+            onSave={
+              handleTemporarySave
+            }
             onCreate={handleCreate}
           />
         </div>
@@ -209,13 +271,19 @@ const TeachingMapCreatePage = () => {
 
       <TeachingMapLoadingModal
         isOpen={isLoadingModalOpen}
-        onClose={handleLoadingModalClose}
+        onClose={
+          handleLoadingModalClose
+        }
       />
 
       <FolderLimitModal
         isOpen={isLimitModalOpen}
-        onClose={handleLimitModalClose}
-        onSubscribe={handleSubscribe}
+        onClose={
+          handleLimitModalClose
+        }
+        onSubscribe={
+          handleSubscribe
+        }
       />
 
       <TeachingMapCreateToast
@@ -223,7 +291,9 @@ const TeachingMapCreatePage = () => {
         title="티칭맵 생성에 실패했습니다."
         message={toastMessage}
         duration={3000}
-        onClose={() => setIsToastOpen(false)}
+        onClose={() =>
+          setIsToastOpen(false)
+        }
       />
     </main>
   );
