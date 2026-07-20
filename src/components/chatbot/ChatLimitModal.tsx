@@ -4,6 +4,7 @@
   description: string;
   size?: "small" | "large";
   onClose: () => void;
+  onSubscribe: () => void;
 };
 
 const ChatLimitModal = ({
@@ -12,6 +13,7 @@ const ChatLimitModal = ({
   description,
   size = "large",
   onClose,
+  onSubscribe,
 }: ChatLimitModalProps) => {
   if (!isOpen) {
     return null;
@@ -47,6 +49,7 @@ const ChatLimitModal = ({
           </button>
           <button
             type="button"
+            onClick={onSubscribe}
             className={`rounded-[5px] bg-[#917DEC] font-['SUIT_Variable'] font-semibold text-violet-50 hover:opacity-90 ${buttonClass}`}
           >
             구독하러 가기

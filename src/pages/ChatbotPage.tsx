@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowUp } from "lucide-react";
 import ChatBubble from "../components/chatbot/ChatBubble";
 import ChatLimitModal from "../components/chatbot/ChatLimitModal";
@@ -35,6 +36,7 @@ const createMockAnswer = (question: string) =>
   `관련 자료를 찾았습니다.\n'${question}'에 대한 내용을 내 자료에서 확인해보니, 사용자의 목적과 이전 맥락을 반영해 답변을 조정하는 방식과 관련이 있습니다. 핵심은 AI가 모든 정보를 자동으로 사용하는 것이 아니라, 사용자가 허용한 맥락만 선택적으로 반영한다는 점입니다.`;
 
 const ChatbotPage = () => {
+  const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -122,6 +124,10 @@ const ChatbotPage = () => {
         setIsCopyToastVisible(false);
       }, 2200);
     }
+  };
+
+  const handleSubscribeClick = () => {
+    navigate("/subscription");
   };
 
   return (
@@ -224,12 +230,14 @@ const ChatbotPage = () => {
         description={limitDescription}
         size="small"
         onClose={() => setIsQuestionLimitModalOpen(false)}
+        onSubscribe={handleSubscribeClick}
       />
       <ChatLimitModal
         isOpen={isRoomLimitModalOpen}
         title="무료 요금제는 대화방을 10개까지 만들 수 있어요."
         description={limitDescription}
         onClose={() => setIsRoomLimitModalOpen(false)}
+        onSubscribe={handleSubscribeClick}
       />
     </section>
   );
