@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
+import PrimaryButton from "../components/common/PrimaryButton";
 
 type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
@@ -280,18 +281,9 @@ const SignupPage = () => {
           )}
 
           <div className="flex w-full justify-center">
-            <button
-              type="button"
-              disabled={!isNextEnabled}
-              onClick={handleNext}
-              className={`inline-flex h-14 w-[640px] items-center justify-center gap-2.5 rounded-[5px] px-12 py-5 font-['SUIT_Variable'] text-xl font-semibold leading-8 ${
-                isNextEnabled
-                  ? "bg-[#917DEC] text-violet-50"
-                  : "bg-neutral-800 text-zinc-500"
-              }`}
-            >
+            <PrimaryButton className="w-[640px]" disabled={!isNextEnabled} onClick={handleNext}>
               다음
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </div>
@@ -300,6 +292,10 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+
+
+
+
 
 
 

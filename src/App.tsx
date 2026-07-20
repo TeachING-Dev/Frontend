@@ -1,4 +1,4 @@
-import {
+﻿import {
   BrowserRouter,
   Navigate,
   Route,
@@ -6,12 +6,13 @@ import {
 } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
+import ArchiveDataPage from "./pages/ArchiveDataPage";
+import ArchiveFolderPage from "./pages/ArchiveFolderPage";
 import ArchivePage from "./pages/ArchivePage";
+import ChatbotPage from "./pages/ChatbotPage";
 import LoginPage from "./pages/LoginPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
-import ArchiveFolderPage from "./pages/ArchiveFolderPage";
-import ArchiveDataPage from "./pages/ArchiveDataPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
 
 function App() {
@@ -19,7 +20,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup/complete" element={<SignupCompletePage />} />
+        <Route
+          path="/signup/complete"
+          element={<SignupCompletePage />}
+        />
 
         <Route element={<MainLayout />}>
           {/* 기본 주소 → /archive로 이동 */}
@@ -53,8 +57,18 @@ function App() {
           />
         </Route>
 
+        <Route element={<MainLayout insetMenu />}>
+          <Route
+            path="/chatbot"
+            element={<ChatbotPage />}
+          />
+        </Route>
+
         <Route element={<MainLayout showRightIcons={false} />}>
-          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/signup"
+            element={<SignupPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
