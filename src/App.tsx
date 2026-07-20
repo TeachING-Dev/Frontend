@@ -12,6 +12,7 @@ import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
+import TeachingMapPage from "./pages/TeachingMapPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/complete" element={<SignupCompletePage />} />
+
         <Route element={<MainLayout />}>
           {/* 기본 주소 → /archive로 이동 */}
           <Route
@@ -43,7 +45,14 @@ function App() {
             path="/archive/folder/data/:dataId"
             element={<ArchiveDataPage />}
           />
+
+          {/* 티칭맵 */}
+          <Route
+            path="/teaching-map"
+            element={<TeachingMapPage />}
+          />
         </Route>
+
         <Route element={<MainLayout showRightIcons={false} />}>
           <Route path="/signup" element={<SignupPage />} />
         </Route>
