@@ -9,7 +9,7 @@ const TeachingMapEmpty = () => {
           className="h-[195px] w-[195px] object-contain"
         />
 
-        <p className="mt-[18px] whitespace-nowrap text-center font-['42dot_Sans'] text-[28px] font-semibold leading-[42px] tracking-[-0.84px] text-[#D9CDFF]">
+        <p className="mt-[18px] whitespace-nowrap text-center font-['SUIT'] text-[28px] font-bold leading-[42px] tracking-[-0.84px] text-[#D9CDFF]">
           나만의 과외 노트를 만들어보세요!
         </p>
       </div>

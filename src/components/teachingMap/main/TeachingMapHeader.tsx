@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
 
-function TeachingMapHeader() {
+const TeachingMapHeader = () => {
   const navigate = useNavigate();
 
   const handleCreateClick = () => {
     navigate("/teaching-map/create");
+  };
+
+  const handleTemporarySaveClick = () => {
+    // TODO: 임시저장 목록 페이지 경로 연결
+    console.log("임시저장 버튼 클릭");
   };
 
   return (
@@ -19,24 +24,39 @@ function TeachingMapHeader() {
         </p>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={handleCreateClick}
-          className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#917DEC] px-2 py-1 text-white"
+          className="flex h-10 w-[147px] items-center justify-center gap-1 rounded-[5px] bg-[#917DEC] px-2 py-1 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#F5F2FF] transition hover:bg-[#8068E2]"
         >
-          새 티칭맵
+          <img
+            src="/add.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-6 w-6 shrink-0 object-contain"
+          />
+
+          <span>새 티칭맵</span>
         </button>
 
         <button
           type="button"
-          className="flex h-10 w-[147px] items-center justify-center rounded-[5px] bg-[#2B2C35] px-2 py-1 text-[#8D8E94]"
+          onClick={handleTemporarySaveClick}
+          className="flex h-10 w-[147px] items-center justify-center gap-1 rounded-[5px] bg-[#2B2C35] px-2 py-1 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#8D8E94] transition hover:bg-[#35363F]"
         >
-          임시저장
+          <img
+            src="/bookmark.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-6 w-6 shrink-0 object-contain"
+          />
+
+          <span>임시저장</span>
         </button>
       </div>
     </section>
   );
-}
+};
 
 export default TeachingMapHeader;

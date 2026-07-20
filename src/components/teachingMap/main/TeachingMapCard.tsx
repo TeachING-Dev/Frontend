@@ -1,7 +1,12 @@
 import type { KeyboardEvent } from "react";
 
-export type TeachingMapType = "shortcut" | "deepDive";
-export type TeachingMapStatus = "inProgress" | "completed";
+export type TeachingMapType =
+  | "shortcut"
+  | "deepDive";
+
+export type TeachingMapStatus =
+  | "inProgress"
+  | "completed";
 
 export interface TeachingMapCardData {
   id: number;
@@ -19,8 +24,12 @@ interface TeachingMapCardProps {
   teachingMap: TeachingMapCardData;
   isDeleteMode?: boolean;
   isSelected?: boolean;
-  onClick?: (teachingMapId: number) => void;
-  onSelect?: (teachingMapId: number) => void;
+  onClick?: (
+    teachingMapId: number,
+  ) => void;
+  onSelect?: (
+    teachingMapId: number,
+  ) => void;
 }
 
 interface ProgressBarProps {
@@ -36,19 +45,31 @@ const ProgressBar = ({
 }: ProgressBarProps) => {
   const progressPercentage =
     totalStep > 0
-      ? Math.min(Math.max((currentStep / totalStep) * 100, 0), 100)
+      ? Math.min(
+          Math.max(
+            (currentStep / totalStep) * 100,
+            0,
+          ),
+          100,
+        )
       : 0;
 
-  const progressWidth = isCompleted ? 100 : progressPercentage;
+  const progressWidth = isCompleted
+    ? 100
+    : progressPercentage;
 
   return (
     <div
-      className="h-[10px] min-w-0 flex-1 overflow-hidden rounded-[100px] bg-[#42444C]"
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={totalStep}
-      aria-valuenow={isCompleted ? totalStep : currentStep}
+      aria-valuenow={
+        isCompleted
+          ? totalStep
+          : currentStep
+      }
       aria-label="티칭맵 학습 진행률"
+      className="h-[10px] min-w-0 flex-1 overflow-hidden rounded-[100px] bg-[#42444C]"
     >
       <div
         className={[
@@ -83,8 +104,13 @@ const TeachingMapCard = ({
     thumbnailSrc,
   } = teachingMap;
 
-  const isCompleted = status === "completed";
-  const typeLabel = type === "shortcut" ? "Short-cut" : "Deep-dive";
+  const isCompleted =
+    status === "completed";
+
+  const typeLabel =
+    type === "shortcut"
+      ? "Short-cut"
+      : "Deep-dive";
 
   const handleCardClick = () => {
     if (isDeleteMode) {
@@ -95,8 +121,13 @@ const TeachingMapCard = ({
     onClick?.(id);
   };
 
-  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key !== "Enter" && event.key !== " ") {
+  const handleCardKeyDown = (
+    event: KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      event.key !== "Enter" &&
+      event.key !== " "
+    ) {
       return;
     }
 
@@ -109,7 +140,11 @@ const TeachingMapCard = ({
       role="button"
       tabIndex={0}
       aria-label={`${title} 티칭맵`}
-      aria-pressed={isDeleteMode ? isSelected : undefined}
+      aria-pressed={
+        isDeleteMode
+          ? isSelected
+          : undefined
+      }
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
@@ -139,7 +174,7 @@ const TeachingMapCard = ({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-['SUIT'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
+          <h2 className="truncate font-['SUIT_Variable'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
             {title}
           </h2>
 
@@ -164,12 +199,22 @@ const TeachingMapCard = ({
 
         <div className="flex min-w-[90px] shrink-0 justify-end font-['SUIT'] text-[16px] font-normal leading-6 tracking-[-0.48px]">
           {isCompleted ? (
-            <span className="text-[#917DEC]">Success !</span>
+            <span className="text-[#917DEC]">
+              Success !
+            </span>
           ) : (
             <>
-              <span className="text-[#917DEC]">{currentStep}</span>
-              <span className="mx-2 text-[#717379]">/</span>
-              <span className="text-[#717379]">{totalStep}단계</span>
+              <span className="text-[#917DEC]">
+                {currentStep}
+              </span>
+
+              <span className="mx-2 text-[#717379]">
+                /
+              </span>
+
+              <span className="text-[#717379]">
+                {totalStep}단계
+              </span>
             </>
           )}
         </div>
