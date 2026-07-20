@@ -1,15 +1,15 @@
 ﻿import {
   BrowserRouter,
-  Navigate,
   Route,
   Routes,
 } from "react-router-dom";
-
+import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
 import ArchivePage from "./pages/ArchivePage";
 import ChatbotPage from "./pages/ChatbotPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
@@ -19,32 +19,40 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        {/* 인증 페이지 */}
+        <Route
+          path="/login"
+          element={<LoginPage />}
+        />
+
         <Route
           path="/signup/complete"
           element={<SignupCompletePage />}
         />
 
-        <Route element={<MainLayout />}>
-          {/* 기본 주소 → /archive로 이동 */}
+        {/* 홈 전용 레이아웃 */}
+        <Route element={<HomeLayout />}>
           <Route
             path="/"
-            element={<Navigate to="/archive" replace />}
+            element={<HomePage />}
           />
+        </Route>
 
+        {/* 기본 레이아웃 페이지 */}
+        <Route element={<MainLayout />}>
           {/* 보관함 */}
           <Route
             path="/archive"
             element={<ArchivePage />}
           />
 
-          {/* 폴더 상세 */}
+          {/* 보관함 폴더 상세 */}
           <Route
             path="/archive/folder"
             element={<ArchiveFolderPage />}
           />
 
-          {/* 자료 상세 */}
+          {/* 보관함 자료 상세 */}
           <Route
             path="/archive/folder/data/:dataId"
             element={<ArchiveDataPage />}
@@ -57,6 +65,7 @@ function App() {
           />
         </Route>
 
+        {/* 챗봇 페이지 */}
         <Route element={<MainLayout insetMenu />}>
           <Route
             path="/chatbot"
@@ -64,7 +73,12 @@ function App() {
           />
         </Route>
 
-        <Route element={<MainLayout showRightIcons={false} />}>
+        {/* 회원가입 페이지 */}
+        <Route
+          element={
+            <MainLayout showRightIcons={false} />
+          }
+        >
           <Route
             path="/signup"
             element={<SignupPage />}
