@@ -5,20 +5,21 @@ import {
   useState,
 } from "react";
 
-import type { TeachingMapCardData } from "../components/teachingMap/TeachingMapCard";
-import TeachingMapDeleteModal from "../components/teachingMap/TeachingMapDeleteModal";
-import TeachingMapDeleteToolbar from "../components/teachingMap/TeachingMapDeleteToolbar";
-import TeachingMapEmpty from "../components/teachingMap/TeachingMapEmpty";
+import Toast from "../components/common/Toast";
+
+import type { TeachingMapCardData } from "../components/teachingMap/main/TeachingMapCard";
+import TeachingMapDeleteModal from "../components/teachingMap/main/TeachingMapDeleteModal";
+import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
+import TeachingMapEmpty from "../components/teachingMap/main/TeachingMapEmpty";
 import TeachingMapFilter, {
   type TeachingMapFilterType,
-} from "../components/teachingMap/TeachingMapFilter";
-import TeachingMapHeader from "../components/teachingMap/TeachingMapHeader";
-import TeachingMapList from "../components/teachingMap/TeachingMapList";
-import TeachingMapTab from "../components/teachingMap/TeachingMapTab";
-import TeachingMapToast from "../components/teachingMap/TeachingMapToast";
+} from "../components/teachingMap/main/TeachingMapFilter";
+import TeachingMapHeader from "../components/teachingMap/main/TeachingMapHeader";
+import TeachingMapList from "../components/teachingMap/main/TeachingMapList";
+import TeachingMapTab from "../components/teachingMap/main/TeachingMapTab";
 import TeachingMapToolbar, {
   type TeachingMapSortType,
-} from "../components/teachingMap/TeachingMapToolbar";
+} from "../components/teachingMap/main/TeachingMapToolbar";
 
 type LearningStatus = "inProgress" | "completed";
 
@@ -183,6 +184,16 @@ const TeachingMapPage = () => {
     setIsDeleteModalOpen(false);
   };
 
+  const closeToast = () => {
+    setIsToastOpen(false);
+    setDeletedTeachingMaps([]);
+
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = null;
+    }
+  };
+
   const handleDeleteConfirm = () => {
     const teachingMapsToDelete = teachingMaps.filter((teachingMap) =>
       selectedTeachingMapIds.includes(teachingMap.id),
@@ -231,13 +242,7 @@ const TeachingMapPage = () => {
       return [...previousTeachingMaps, ...mapsToRestore];
     });
 
-    setDeletedTeachingMaps([]);
-    setIsToastOpen(false);
-
-    if (toastTimerRef.current !== null) {
-      window.clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = null;
-    }
+    closeToast();
   };
 
   const isEmpty = visibleTeachingMaps.length === 0;
@@ -307,11 +312,13 @@ const TeachingMapPage = () => {
         onDeleteConfirm={handleDeleteConfirm}
       />
 
-      <TeachingMapToast
-        isOpen={isToastOpen}
-        message="티칭맵이 휴지통으로 이동되었습니다"
-        onUndo={handleDeleteUndo}
-      />
+      {isToastOpen && (
+        <Toast
+          message="티칭맵이 휴지통으로 이동되었습니다"
+          actionText="실행취소"
+          onAction={handleDeleteUndo}
+        />
+      )}
     </main>
   );
 };
