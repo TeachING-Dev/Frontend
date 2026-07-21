@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+
 import Header from "../components/common/Header";
+import Sidebar from "../components/common/Sidebar";
 
 type HomeLayoutProps = {
   showRightIcons?: boolean;
@@ -10,9 +13,29 @@ const HomeLayout = ({
   showRightIcons = true,
   insetMenu = false,
 }: HomeLayoutProps) => {
+  const [isSidebarOpen, setIsSidebarOpen] =
+    useState(false);
+
+  const handleOpenSidebar = () => {
+    setIsSidebarOpen(true);
+  };
+
+  const handleCloseSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
     <div className="min-h-screen overflow-hidden bg-[#090713]">
-      <Header showRightIcons={showRightIcons} insetMenu={insetMenu} />
+      <Header
+        showRightIcons={showRightIcons}
+        insetMenu={insetMenu}
+        onMenuClick={handleOpenSidebar}
+      />
+
+      <Sidebar
+        open={isSidebarOpen}
+        onClose={handleCloseSidebar}
+      />
 
       <main className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)]">
         {/* 홈 전용 배경 Ellipse */}

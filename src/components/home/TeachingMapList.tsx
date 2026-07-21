@@ -9,7 +9,7 @@ export type TeachingMap = {
 };
 
 const dummyTeachingMaps: TeachingMap[] = [
-  /*{
+  {
     id: 1,
     title: "로드맵 제목",
     description:
@@ -29,7 +29,7 @@ const dummyTeachingMaps: TeachingMap[] = [
     description:
       "로드맵에 대한 상세설명을 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명을 몇자까지 처음에 보이나요?",
     thumbnailSrc: "/Frame2147239594.png",
-  },*/
+  },
 ];
 
 const TeachingMapList = () => {
