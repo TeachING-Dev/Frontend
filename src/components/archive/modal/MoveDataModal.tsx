@@ -119,7 +119,7 @@ const MoveDataModal = ({
 
             <span
               aria-hidden="true"
-              className={`h-0 w-0 shrink-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-[#66666D] transition-transform ${
+              className={`h-0 w-0 shrink-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-[#66666D] ${
                 isDropdownOpen ? "rotate-180" : ""
               }`}
             />

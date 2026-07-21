@@ -9,7 +9,7 @@ export type RecentKnowledge = {
 };
 
 const dummyRecentKnowledge: RecentKnowledge[] = [
-  /*{
+  {
     id: 1,
     title: "학습의 과학: 효과적인 공부 방법",
     savedAt: "3시간 전",
@@ -38,7 +38,7 @@ const dummyRecentKnowledge: RecentKnowledge[] = [
     title: "학습의 과학: 효과적인 공부 방법",
     savedAt: "3시간 전",
     iconSrc: "/youtube-app-icon.png",
-  },*/
+  },
 ];
 
 const RecentKnowledgeList = () => {

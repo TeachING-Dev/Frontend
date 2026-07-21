@@ -4,8 +4,11 @@ import {
   Routes,
 } from "react-router-dom";
 
+import AnalysisLayout from "./layouts/AnalysisLayout";
 import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
+
+import AnalysisCompletePage from "./pages/AnalysisCompletePage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
 import ArchivePage from "./pages/ArchivePage";
@@ -44,6 +47,14 @@ function App() {
           <Route
             path="/"
             element={<HomePage />}
+          />
+        </Route>
+
+        {/* 분석 페이지 전용 레이아웃 */}
+        <Route element={<AnalysisLayout />}>
+          <Route
+            path="/analysis/complete"
+            element={<AnalysisCompletePage />}
           />
         </Route>
 
