@@ -13,6 +13,7 @@ type ProgressBarProps = {
   className?: string;
   trackClassName?: string;
   indicatorClassName?: string;
+  onProgressChange?: (progress: number) => void;
   onComplete?: () => void;
 };
 
@@ -29,6 +30,7 @@ const ProgressBar = ({
   className = "",
   trackClassName = "",
   indicatorClassName = "",
+  onProgressChange,
   onComplete,
 }: ProgressBarProps) => {
   const [progress, setProgress] = useState(
@@ -46,8 +48,11 @@ const ProgressBar = ({
       return;
     }
 
-    setProgress(clampProgress(value));
-  }, [value]);
+    const nextProgress = clampProgress(value);
+
+    setProgress(nextProgress);
+    onProgressChange?.(nextProgress);
+  }, [value, onProgressChange]);
 
   useEffect(() => {
     if (
@@ -60,6 +65,7 @@ const ProgressBar = ({
     }
 
     setProgress(0);
+    onProgressChange?.(0);
 
     const startedAt = performance.now();
     let animationFrameId = 0;
@@ -71,6 +77,7 @@ const ProgressBar = ({
       );
 
       setProgress(nextProgress);
+      onProgressChange?.(nextProgress);
 
       if (nextProgress < 100) {
         animationFrameId =
@@ -92,6 +99,7 @@ const ProgressBar = ({
     duration,
     isActive,
     value,
+    onProgressChange,
   ]);
 
   const displayedProgress =
