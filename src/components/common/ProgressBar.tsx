@@ -33,16 +33,22 @@ const ProgressBar = ({
   onProgressChange,
   onComplete,
 }: ProgressBarProps) => {
-  const [progress, setProgress] = useState(
-    clampProgress(value ?? 0),
-  );
+  const [progress, setProgress] = useState(0);
 
+  const onProgressChangeRef =
+    useRef(onProgressChange);
   const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onProgressChangeRef.current =
+      onProgressChange;
+  }, [onProgressChange]);
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
+  // value가 직접 전달되는 controlled 방식
   useEffect(() => {
     if (value === undefined) {
       return;
@@ -50,10 +56,12 @@ const ProgressBar = ({
 
     const nextProgress = clampProgress(value);
 
-    setProgress(nextProgress);
-    onProgressChange?.(nextProgress);
-  }, [value, onProgressChange]);
+    onProgressChangeRef.current?.(
+      nextProgress,
+    );
+  }, [value]);
 
+  // 자동으로 진행되는 uncontrolled 방식
   useEffect(() => {
     if (
       !autoPlay ||
@@ -64,42 +72,63 @@ const ProgressBar = ({
       return;
     }
 
-    setProgress(0);
-    onProgressChange?.(0);
-
-    const startedAt = performance.now();
     let animationFrameId = 0;
+    let startedAt = 0;
 
-    const updateProgress = (currentTime: number) => {
-      const elapsedTime = currentTime - startedAt;
+    const updateProgress = (
+      currentTime: number,
+    ) => {
+      const elapsedTime =
+        currentTime - startedAt;
+
       const nextProgress = clampProgress(
         (elapsedTime / duration) * 100,
       );
 
       setProgress(nextProgress);
-      onProgressChange?.(nextProgress);
+      onProgressChangeRef.current?.(
+        nextProgress,
+      );
 
       if (nextProgress < 100) {
         animationFrameId =
-          window.requestAnimationFrame(updateProgress);
+          window.requestAnimationFrame(
+            updateProgress,
+          );
+
         return;
       }
 
       onCompleteRef.current?.();
     };
 
+    // effect 내부에서 바로 setState하지 않고
+    // 다음 애니메이션 프레임에서 초기화
     animationFrameId =
-      window.requestAnimationFrame(updateProgress);
+      window.requestAnimationFrame(
+        (currentTime) => {
+          startedAt = currentTime;
+
+          setProgress(0);
+          onProgressChangeRef.current?.(0);
+
+          animationFrameId =
+            window.requestAnimationFrame(
+              updateProgress,
+            );
+        },
+      );
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
+      window.cancelAnimationFrame(
+        animationFrameId,
+      );
     };
   }, [
     autoPlay,
     duration,
     isActive,
     value,
-    onProgressChange,
   ]);
 
   const displayedProgress =
@@ -113,7 +142,9 @@ const ProgressBar = ({
       aria-label={ariaLabel}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(displayedProgress)}
+      aria-valuenow={Math.round(
+        displayedProgress,
+      )}
       className={`w-full ${className}`}
     >
       <div
