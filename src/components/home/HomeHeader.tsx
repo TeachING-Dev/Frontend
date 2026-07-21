@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
@@ -11,6 +12,8 @@ type AnalysisFailType =
   | "complexLink";
 
 const HomeHeader = () => {
+  const navigate = useNavigate();
+
   const [url, setUrl] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] =
@@ -61,9 +64,19 @@ const HomeHeader = () => {
     }
 
     setShowToast(false);
-
-    // 테스트용: URL 형식이 올바르면 AI 분석 모달 표시
     setIsAnalysisModalOpen(true);
+  };
+
+  const handleAnalysisComplete = () => {
+    const trimmedUrl = url.trim();
+
+    setIsAnalysisModalOpen(false);
+
+    navigate("/analysis/complete", {
+      state: {
+        originalUrl: trimmedUrl,
+      },
+    });
   };
 
   useEffect(() => {
@@ -77,7 +90,6 @@ const HomeHeader = () => {
   return (
     <>
       <section className="flex flex-col items-center text-center">
-        {/* 상단 별 로고 */}
         <img
           src="/home-logo.png"
           alt=""
@@ -85,13 +97,11 @@ const HomeHeader = () => {
           className="mb-5 h-[210px] w-[450px]"
         />
 
-        {/* 서비스 설명 */}
         <p className="mt-[80px] text-center text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#C1AEFF]">
           TeachING은 링크 속 내용을 분석하여 쉬운 학습 콘텐츠로
           정리해드려요.
         </p>
 
-        {/* 검색창 */}
         <form
           onSubmit={handleSubmit}
           className="relative mt-8 w-full"
@@ -129,12 +139,7 @@ const HomeHeader = () => {
           onClose={() =>
             setIsAnalysisModalOpen(false)
           }
-          onComplete={() => {
-            setIsAnalysisModalOpen(false);
-
-            // 테스트용: 분석 완료 후 로그인 필요 모달 표시
-            setAnalysisFailType("loginRequired");
-          }}
+          onComplete={handleAnalysisComplete}
           duration={5000}
         />
       )}
