@@ -1,0 +1,35 @@
+interface TeachingMapAnalysisDropdownProps {
+  title: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+const TeachingMapAnalysisDropdown = ({
+  title,
+  isOpen,
+  onToggle,
+}: TeachingMapAnalysisDropdownProps) => {
+  return (
+    <button
+      type="button"
+      aria-expanded={isOpen}
+      onClick={onToggle}
+      className={[
+        "flex h-[50px] w-full items-center rounded-[5px] bg-[#13151F] p-[10px]",
+        isOpen ? "border border-[#917DEC]" : "border border-transparent",
+      ].join(" ")}
+    >
+      <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-left text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#F5F2FF]">
+        {title}
+      </span>
+
+      <img
+        src={isOpen ? "/rollup.svg" : "/dropdowndown.svg"}
+        alt=""
+        className="ml-[10px] h-[24px] w-[24px] shrink-0 object-contain"
+      />
+    </button>
+  );
+};
+
+export default TeachingMapAnalysisDropdown;
