@@ -23,6 +23,7 @@ import TeachingMapContentPage from "./pages/TeachingMapContentPage";
 import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
 import TeachingMapDetailPage from "./pages/TeachingMapDetailPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
+import TrashPage from "./pages/TrashPage";
 
 function App() {
   return (
@@ -102,6 +103,12 @@ function App() {
           <Route
             path="/teaching-map/:teachingMapId/content"
             element={<TeachingMapContentPage />}
+          />
+
+          {/* 휴지통 */}
+          <Route
+            path="/trash"
+            element={<TrashPage />}
           />
 
           {/* 구독 */}
