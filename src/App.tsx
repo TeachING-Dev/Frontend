@@ -17,6 +17,7 @@ import SignupPage from "./pages/SignupPage";
 import SubscriptionCompletePage from "./pages/SubscriptionCompletePage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
+import TeachingMapDetailPage from "./pages/TeachingMapDetailPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
 
 function App() {
@@ -77,6 +78,12 @@ function App() {
           <Route
             path="/teaching-map/create"
             element={<TeachingMapCreatePage />}
+          />
+
+          {/* 티칭맵 상세 */}
+          <Route
+            path="/teaching-map/:teachingMapId"
+            element={<TeachingMapDetailPage />}
           />
 
           {/* 구독 */}
