@@ -56,15 +56,18 @@ const Sidebar = ({
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* 어두운 배경 */}
-      <div className="absolute inset-0 bg-black/80" />
+      <button
+        type="button"
+        aria-label="사이드바 닫기"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default bg-black/80"
+      />
 
-      {/* Sidebar */}
       <aside className="relative z-10 flex h-screen w-[330px] flex-col bg-[#090713] px-[20px] py-[30px] shadow-[12px_0_40px_-10px_rgba(145,125,236,0.45)] after:absolute after:right-0 after:top-0 after:h-full after:w-px after:bg-[#917DEC]/30">
-        {/* 상단 */}
         <div className="flex items-center justify-between px-[10px]">
           <NavLink
             to="/"
+            onClick={onClose}
             className="flex items-center"
           >
             <img
@@ -82,29 +85,32 @@ const Sidebar = ({
           >
             <img
               src="/icon_닫기.png"
-              alt="닫기"
+              alt=""
               className="h-[40px] w-[40px]"
             />
           </button>
         </div>
 
-        {/* 메뉴 */}
         <nav className="mt-[60px] flex flex-col gap-[4px]">
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) =>
-                `flex h-[56px] items-center gap-[20px] rounded-[6px] px-[10px] transition ${
+              onClick={onClose}
+              className={({
+                isActive,
+              }) =>
+                [
+                  "flex h-[56px] items-center gap-[20px] rounded-[6px] px-[10px] transition",
                   isActive
                     ? "bg-[#2B2C35]"
-                    : "hover:bg-white/5"
-                }`
+                    : "hover:bg-white/5",
+                ].join(" ")
               }
             >
               <img
                 src={item.icon}
-                alt={item.label}
+                alt=""
                 className="h-[36px] w-[36px] object-contain"
               />
 
@@ -115,16 +121,16 @@ const Sidebar = ({
           ))}
         </nav>
 
-        {/* 하단 */}
         <div className="mt-auto flex flex-col gap-[10px]">
           <NavLink
             to="/mypage"
+            onClick={onClose}
             className="flex h-[60px] items-center rounded-[5px] border-2 border-[#917DEC] bg-[#0B0A18] px-[20px] transition hover:bg-[#141225]"
           >
             <div className="flex items-center gap-[10px]">
               <img
                 src="/icon_마이페이지.png"
-                alt="마이페이지"
+                alt=""
                 className="h-[40px] w-[40px] object-contain"
               />
 
@@ -142,7 +148,7 @@ const Sidebar = ({
             <div className="flex items-center gap-[10px]">
               <img
                 src="/icon_로그아웃.png"
-                alt="로그아웃"
+                alt=""
                 className="h-[40px] w-[40px] object-contain"
               />
 

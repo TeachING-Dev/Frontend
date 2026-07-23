@@ -8,8 +8,7 @@ const TeachingMapHeader = () => {
   };
 
   const handleTemporarySaveClick = () => {
-    // TODO: 임시저장 목록 페이지 경로 연결
-    console.log("임시저장 버튼 클릭");
+    navigate("/teaching-map/drafts");
   };
 
   return (

@@ -1,20 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import TeachingMapEditForm from "./TeachingMapEditForm";
 
 interface TeachingMapDetailHeaderProps {
   title: string;
   description: string;
   mode: string;
+  onSave: (
+    title: string,
+    description: string,
+  ) => void;
 }
 
 const TeachingMapDetailHeader = ({
   title,
   description,
   mode,
+  onSave,
 }: TeachingMapDetailHeaderProps) => {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
+
+  const [isEditing, setIsEditing] =
+    useState(false);
 
   const handleBack = () => {
     navigate("/teaching-map");
@@ -24,7 +32,15 @@ const TeachingMapDetailHeader = ({
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = (
+    editedTitle: string,
+    editedDescription: string,
+  ) => {
+    onSave(
+      editedTitle,
+      editedDescription,
+    );
+
     setIsEditing(false);
   };
 
@@ -54,7 +70,9 @@ const TeachingMapDetailHeader = ({
           />
         </svg>
 
-        <span>보관함으로 돌아가기</span>
+        <span>
+          티칭맵 목록으로 이동
+        </span>
       </button>
 
       <TeachingMapEditForm

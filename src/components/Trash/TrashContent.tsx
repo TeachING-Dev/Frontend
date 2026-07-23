@@ -5,11 +5,14 @@ import {
   useState,
 } from "react";
 
+import Pagination from "../common/Pagination";
+
 import TrashCategoryTabs from "./TrashCategoryTabs";
 import TrashDataList from "./TrashDataList";
 import TrashEmpty from "./TrashEmpty";
 import TrashFolderList from "./TrashFolderList";
 import TrashHeader from "./TrashHeader";
+import TrashRestoreToolbar from "./TrashRestoreToolbar";
 import TrashSortDropdown from "./TrashSortDropdown";
 import TrashTeachingMapList from "./TrashTeachingMapList";
 
@@ -21,12 +24,18 @@ import type {
   TrashTeachingMapItem,
 } from "./trashTypes";
 
+const FOLDERS_PER_PAGE = 9;
+const TEACHING_MAPS_PER_PAGE = 10;
+const RECENT_DELETED_AT = new Date(
+  Date.now() - 10 * 60 * 60 * 1000,
+).toISOString();
+
 const initialFolders: TrashFolderItem[] = [
   {
     id: 1,
     name: "폴더명",
     itemCount: 0,
-    deletedAt: "2026-01-01",
+    deletedAt: RECENT_DELETED_AT,
   },
   {
     id: 2,
@@ -64,7 +73,7 @@ const initialDataList: TrashDataItem[] = [
   {
     id: 1,
     tag: "Node.js",
-    deletedAt: "2026-05-10",
+    deletedAt: RECENT_DELETED_AT,
     title:
       "Node.js의 이벤트 루프(Event Loop) 완벽 이해하기",
     description:
@@ -82,43 +91,43 @@ const initialDataList: TrashDataItem[] = [
   },
 ];
 
-const initialTeachingMaps: TrashTeachingMapItem[] =
-  [
-    {
-      id: 1,
-      title: "로드맵 제목",
-      description:
-        "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
-      currentStep: 4,
-      totalStep: 8,
-      thumbnails: [
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-      ],
-      deletedAt: "2026-07-20",
-    },
-    {
-      id: 2,
-      title: "백엔드 개발자 티칭맵",
-      description:
-        "Node.js와 데이터베이스를 중심으로 구성된 백엔드 학습 티칭맵입니다.",
-      currentStep: 4,
-      totalStep: 8,
-      thumbnails: [
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-        "/youtube-app-icon.png",
-      ],
-      deletedAt: "2026-06-21",
-    },
-  ];
+const initialTeachingMaps: TrashTeachingMapItem[] = [
+  {
+    id: 1,
+    title: "로드맵 제목",
+    description:
+      "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
+    currentStep: 4,
+    totalStep: 8,
+    thumbnails: [
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+    ],
+    deletedAt: RECENT_DELETED_AT,
+  },
+  {
+    id: 2,
+    title: "백엔드 개발자 티칭맵",
+    description:
+      "Node.js와 데이터베이스를 중심으로 구성된 백엔드 학습 티칭맵입니다.",
+    currentStep: 4,
+    totalStep: 8,
+    thumbnails: [
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+      "/youtube-app-icon.png",
+    ],
+    deletedAt: "2026-07-24",
+  },
+];
 
-const getDeletedTime = (deletedAt: string) =>
-  new Date(deletedAt).getTime();
+const getDeletedTime = (
+  deletedAt: string,
+) => new Date(deletedAt).getTime();
 
 const TrashContent = () => {
   const [
@@ -128,6 +137,26 @@ const TrashContent = () => {
 
   const [sortType, setSortType] =
     useState<TrashSortType>("latest");
+
+  const [
+    currentFolderPage,
+    setCurrentFolderPage,
+  ] = useState(1);
+
+  const [
+    currentTeachingMapPage,
+    setCurrentTeachingMapPage,
+  ] = useState(1);
+
+  const [
+    isRestoreMode,
+    setIsRestoreMode,
+  ] = useState(false);
+
+  const [
+    selectedItemIds,
+    setSelectedItemIds,
+  ] = useState<number[]>([]);
 
   const [folders, setFolders] =
     useState<TrashFolderItem[]>(
@@ -139,20 +168,27 @@ const TrashContent = () => {
       initialDataList,
     );
 
-  const [teachingMaps, setTeachingMaps] =
+  const [
+    teachingMaps,
+    setTeachingMaps,
+  ] =
     useState<TrashTeachingMapItem[]>(
       initialTeachingMaps,
     );
 
-  const [toastMessage, setToastMessage] =
-    useState("");
+  const [
+    toastMessage,
+    setToastMessage,
+  ] = useState("");
 
   const toastTimerRef =
     useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (toastTimerRef.current !== null) {
+      if (
+        toastTimerRef.current !== null
+      ) {
         window.clearTimeout(
           toastTimerRef.current,
         );
@@ -160,64 +196,168 @@ const TrashContent = () => {
     };
   }, []);
 
-  const sortedFolders = useMemo(() => {
-    return [...folders].sort(
-      (firstFolder, secondFolder) => {
-        const firstTime = getDeletedTime(
-          firstFolder.deletedAt,
-        );
+  const sortedFolders = useMemo(
+    () =>
+      [...folders].sort(
+        (firstFolder, secondFolder) => {
+          const firstTime =
+            getDeletedTime(
+              firstFolder.deletedAt,
+            );
 
-        const secondTime = getDeletedTime(
-          secondFolder.deletedAt,
-        );
+          const secondTime =
+            getDeletedTime(
+              secondFolder.deletedAt,
+            );
 
-        return sortType === "latest"
-          ? secondTime - firstTime
-          : firstTime - secondTime;
-      },
+          return sortType === "latest"
+            ? secondTime - firstTime
+            : firstTime - secondTime;
+        },
+      ),
+    [folders, sortType],
+  );
+
+  const sortedDataList = useMemo(
+    () =>
+      [...dataList].sort(
+        (firstData, secondData) => {
+          const firstTime =
+            getDeletedTime(
+              firstData.deletedAt,
+            );
+
+          const secondTime =
+            getDeletedTime(
+              secondData.deletedAt,
+            );
+
+          return sortType === "latest"
+            ? secondTime - firstTime
+            : firstTime - secondTime;
+        },
+      ),
+    [dataList, sortType],
+  );
+
+  const sortedTeachingMaps =
+    useMemo(
+      () =>
+        [...teachingMaps].sort(
+          (firstMap, secondMap) => {
+            const firstTime =
+              getDeletedTime(
+                firstMap.deletedAt,
+              );
+
+            const secondTime =
+              getDeletedTime(
+                secondMap.deletedAt,
+              );
+
+            return sortType ===
+              "latest"
+              ? secondTime - firstTime
+              : firstTime - secondTime;
+          },
+        ),
+      [teachingMaps, sortType],
     );
-  }, [folders, sortType]);
 
-  const sortedDataList = useMemo(() => {
-    return [...dataList].sort(
-      (firstData, secondData) => {
-        const firstTime = getDeletedTime(
-          firstData.deletedAt,
-        );
+  const totalFolderPages = Math.max(
+    1,
+    Math.ceil(
+      sortedFolders.length /
+        FOLDERS_PER_PAGE,
+    ),
+  );
 
-        const secondTime = getDeletedTime(
-          secondData.deletedAt,
-        );
-
-        return sortType === "latest"
-          ? secondTime - firstTime
-          : firstTime - secondTime;
-      },
+  const totalTeachingMapPages =
+    Math.max(
+      1,
+      Math.ceil(
+        sortedTeachingMaps.length /
+          TEACHING_MAPS_PER_PAGE,
+      ),
     );
-  }, [dataList, sortType]);
 
-  const sortedTeachingMaps = useMemo(() => {
-    return [...teachingMaps].sort(
-      (firstMap, secondMap) => {
-        const firstTime = getDeletedTime(
-          firstMap.deletedAt,
-        );
+  const activeFolderPage = Math.min(
+    currentFolderPage,
+    totalFolderPages,
+  );
 
-        const secondTime = getDeletedTime(
-          secondMap.deletedAt,
-        );
-
-        return sortType === "latest"
-          ? secondTime - firstTime
-          : firstTime - secondTime;
-      },
+  const activeTeachingMapPage =
+    Math.min(
+      currentTeachingMapPage,
+      totalTeachingMapPages,
     );
-  }, [teachingMaps, sortType]);
 
-  const showToast = (message: string) => {
+  const visibleFolders = useMemo(() => {
+    const startIndex =
+      (activeFolderPage - 1) *
+      FOLDERS_PER_PAGE;
+
+    return sortedFolders.slice(
+      startIndex,
+      startIndex + FOLDERS_PER_PAGE,
+    );
+  }, [
+    sortedFolders,
+    activeFolderPage,
+  ]);
+
+  const visibleTeachingMaps =
+    useMemo(() => {
+      const startIndex =
+        (activeTeachingMapPage - 1) *
+        TEACHING_MAPS_PER_PAGE;
+
+      return sortedTeachingMaps.slice(
+        startIndex,
+        startIndex +
+          TEACHING_MAPS_PER_PAGE,
+      );
+    }, [
+      sortedTeachingMaps,
+      activeTeachingMapPage,
+    ]);
+
+  const visibleItemIds = useMemo(() => {
+    if (
+      selectedCategory === "folder"
+    ) {
+      return visibleFolders.map(
+        (folder) => folder.id,
+      );
+    }
+
+    if (
+      selectedCategory === "data"
+    ) {
+      return sortedDataList.map(
+        (data) => data.id,
+      );
+    }
+
+    return visibleTeachingMaps.map(
+      (teachingMap) =>
+        teachingMap.id,
+    );
+  }, [
+    selectedCategory,
+    visibleFolders,
+    sortedDataList,
+    visibleTeachingMaps,
+  ]);
+
+  const showToast = (
+    message: string,
+  ) => {
     setToastMessage(message);
 
-    if (toastTimerRef.current !== null) {
+    if (
+      toastTimerRef.current !== null
+    ) {
       window.clearTimeout(
         toastTimerRef.current,
       );
@@ -230,63 +370,185 @@ const TrashContent = () => {
       }, 3000);
   };
 
-  const handleFolderRestore = (
-    folderId: number,
+  const handleCategoryChange = (
+    category: TrashCategory,
   ) => {
-    const restoredFolder = folders.find(
-      (folder) => folder.id === folderId,
-    );
+    setSelectedCategory(category);
+    setIsRestoreMode(false);
+    setSelectedItemIds([]);
 
-    if (!restoredFolder) {
-      return;
+    if (category === "folder") {
+      setCurrentFolderPage(1);
     }
 
-    setFolders((previousFolders) =>
-      previousFolders.filter(
-        (folder) => folder.id !== folderId,
-      ),
-    );
+    if (
+      category === "teachingMap"
+    ) {
+      setCurrentTeachingMapPage(1);
+    }
+  };
 
-    showToast(
-      "해당 폴더가 복구되었습니다.",
+  const handleSortChange = (
+    newSortType: TrashSortType,
+  ) => {
+    setSortType(newSortType);
+    setCurrentFolderPage(1);
+    setCurrentTeachingMapPage(1);
+    setSelectedItemIds([]);
+  };
+
+  const handlePageChange = (
+    page: number,
+  ) => {
+    if (
+      selectedCategory === "folder"
+    ) {
+      setCurrentFolderPage(page);
+    }
+
+    if (
+      selectedCategory ===
+      "teachingMap"
+    ) {
+      setCurrentTeachingMapPage(page);
+    }
+
+    setSelectedItemIds([]);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleRestoreModeStart =
+    () => {
+      setIsRestoreMode(true);
+      setSelectedItemIds([]);
+    };
+
+  const handleRestoreModeCancel =
+    () => {
+      setIsRestoreMode(false);
+      setSelectedItemIds([]);
+    };
+
+  const handleItemSelect = (
+    itemId: number,
+  ) => {
+    setSelectedItemIds(
+      (previousIds) =>
+        previousIds.includes(itemId)
+          ? previousIds.filter(
+              (id) => id !== itemId,
+            )
+          : [
+              ...previousIds,
+              itemId,
+            ],
     );
   };
+
+  const handleToggleSelection =
+    () => {
+      if (
+        selectedItemIds.length > 0
+      ) {
+        setSelectedItemIds([]);
+        return;
+      }
+
+      setSelectedItemIds(
+        visibleItemIds,
+      );
+    };
+
+  const handleSelectedRestore =
+    () => {
+      if (
+        selectedItemIds.length === 0
+      ) {
+        return;
+      }
+
+      if (
+        selectedCategory === "folder"
+      ) {
+        setFolders(
+          (previousFolders) =>
+            previousFolders.filter(
+              (folder) =>
+                !selectedItemIds.includes(
+                  folder.id,
+                ),
+            ),
+        );
+
+        showToast(
+          "선택한 폴더가 복구되었습니다.",
+        );
+      }
+
+      if (
+        selectedCategory === "data"
+      ) {
+        setDataList(
+          (previousDataList) =>
+            previousDataList.filter(
+              (data) =>
+                !selectedItemIds.includes(
+                  data.id,
+                ),
+            ),
+        );
+
+        showToast(
+          "선택한 자료가 복구되었습니다.",
+        );
+      }
+
+      if (
+        selectedCategory ===
+        "teachingMap"
+      ) {
+        setTeachingMaps(
+          (previousTeachingMaps) =>
+            previousTeachingMaps.filter(
+              (teachingMap) =>
+                !selectedItemIds.includes(
+                  teachingMap.id,
+                ),
+            ),
+        );
+
+        showToast(
+          "선택한 티칭맵이 복구되었습니다.",
+        );
+      }
+
+      setIsRestoreMode(false);
+      setSelectedItemIds([]);
+    };
 
   const handleDataRestore = (
     dataId: number,
   ) => {
-    const restoredData = dataList.find(
-      (data) => data.id === dataId,
-    );
-
-    if (!restoredData) {
-      return;
-    }
-
-    setDataList((previousDataList) =>
-      previousDataList.filter(
-        (data) => data.id !== dataId,
-      ),
+    setDataList(
+      (previousDataList) =>
+        previousDataList.filter(
+          (data) =>
+            data.id !== dataId,
+        ),
     );
 
     showToast(
-      `해당 자료가 @@폴더로 복구되었습니다.`,
+      "해당 자료가 복구되었습니다.",
     );
   };
 
   const handleTeachingMapRestore = (
     teachingMapId: number,
   ) => {
-    const restoredTeachingMap =
-      teachingMaps.find(
-        (teachingMap) =>
-          teachingMap.id === teachingMapId,
-      );
-
-    if (!restoredTeachingMap) {
-      return;
-    }
-
     setTeachingMaps(
       (previousTeachingMaps) =>
         previousTeachingMaps.filter(
@@ -306,34 +568,82 @@ const TrashContent = () => {
       ? sortedFolders.length === 0
       : selectedCategory === "data"
         ? sortedDataList.length === 0
-        : sortedTeachingMaps.length === 0;
+        : sortedTeachingMaps.length ===
+          0;
+
+  const showPagination =
+    !isEmpty &&
+    !isRestoreMode &&
+    (selectedCategory === "folder"
+      ? sortedFolders.length > 1
+      : selectedCategory ===
+          "teachingMap"
+        ? sortedTeachingMaps.length >
+          1
+        : false);
+
+  const paginationCurrentPage =
+    selectedCategory === "folder"
+      ? activeFolderPage
+      : activeTeachingMapPage;
+
+  const paginationTotalPages =
+    selectedCategory === "folder"
+      ? totalFolderPages
+      : totalTeachingMapPages;
 
   const renderContent = () => {
     if (isEmpty) {
       return <TrashEmpty />;
     }
 
-    if (selectedCategory === "folder") {
+    if (
+      selectedCategory === "folder"
+    ) {
       return (
         <TrashFolderList
-          folders={sortedFolders}
-          onRestore={handleFolderRestore}
+          folders={visibleFolders}
+          isRestoreMode={
+            isRestoreMode
+          }
+          selectedItemIds={
+            selectedItemIds
+          }
+          onSelect={handleItemSelect}
         />
       );
     }
 
-    if (selectedCategory === "data") {
+    if (
+      selectedCategory === "data"
+    ) {
       return (
         <TrashDataList
           dataList={sortedDataList}
-          onRestore={handleDataRestore}
+          isRestoreMode={
+            isRestoreMode
+          }
+          selectedItemIds={
+            selectedItemIds
+          }
+          onSelect={handleItemSelect}
+          onRestore={
+            handleDataRestore
+          }
         />
       );
     }
 
     return (
       <TrashTeachingMapList
-        teachingMaps={sortedTeachingMaps}
+        teachingMaps={
+          visibleTeachingMaps
+        }
+        isRestoreMode={isRestoreMode}
+        selectedItemIds={
+          selectedItemIds
+        }
+        onSelect={handleItemSelect}
         onRestore={
           handleTeachingMapRestore
         }
@@ -357,23 +667,85 @@ const TrashContent = () => {
               selectedCategory
             }
             onCategoryChange={
-              setSelectedCategory
+              handleCategoryChange
             }
           />
 
-          <TrashSortDropdown
-            sortType={sortType}
-            onSortChange={setSortType}
-          />
+          {!isRestoreMode && (
+            <div className="flex items-center gap-[10px]">
+              <TrashSortDropdown
+                sortType={sortType}
+                onSortChange={
+                  handleSortChange
+                }
+              />
+
+              {!isEmpty && (
+                <button
+                  type="button"
+                  onClick={
+                    handleRestoreModeStart
+                  }
+                  className="flex h-10 w-[147px] items-center justify-center gap-2 rounded-[5px] px-2 py-1 font-suit text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] hover:bg-white/5"
+                >
+                  <img
+                    src="/flip-left.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-6 w-6 shrink-0"
+                  />
+
+                  복구하기
+                </button>
+              )}
+            </div>
+          )}
         </div>
+
+        {isRestoreMode && (
+          <div className="mt-10">
+            <TrashRestoreToolbar
+              selectedCount={
+                selectedItemIds.length
+              }
+              onToggleSelection={
+                handleToggleSelection
+              }
+              onRestore={
+                handleSelectedRestore
+              }
+              onCancel={
+                handleRestoreModeCancel
+              }
+            />
+          </div>
+        )}
 
         <section
           className={
-            isEmpty ? "mt-[180px]" : "mt-10"
+            isEmpty
+              ? "mt-[180px]"
+              : isRestoreMode
+                ? "mt-5 min-h-[540px]"
+                : "mt-10 min-h-[540px]"
           }
         >
           {renderContent()}
         </section>
+
+        {showPagination && (
+          <Pagination
+            currentPage={
+              paginationCurrentPage
+            }
+            totalPages={
+              paginationTotalPages
+            }
+            onPageChange={
+              handlePageChange
+            }
+          />
+        )}
       </div>
 
       {toastMessage && (

@@ -1,4 +1,8 @@
-import { Check, Globe, Sparkles } from "lucide-react";
+import {
+  Check,
+  Globe,
+  Sparkles,
+} from "lucide-react";
 
 type ArchiveDataItemProps = {
   tag: string;
@@ -77,7 +81,7 @@ const ArchiveDataItem = ({
           : "cursor-pointer"
       } ${
         isSelected
-          ? "border-[#917DEC] shadow-[0_0_30px_rgba(134,111,241,0.3)]"
+          ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[#3A3946]"
       }`}
     >

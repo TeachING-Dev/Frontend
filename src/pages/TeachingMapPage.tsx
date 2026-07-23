@@ -4,7 +4,9 @@ import {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 
+import Pagination from "../components/common/Pagination";
 import Toast from "../components/common/Toast";
 
 import type { TeachingMapCardData } from "../components/teachingMap/main/TeachingMapCard";
@@ -21,7 +23,11 @@ import TeachingMapToolbar, {
   type TeachingMapSortType,
 } from "../components/teachingMap/main/TeachingMapToolbar";
 
-type LearningStatus = "inProgress" | "completed";
+type LearningStatus =
+  | "inProgress"
+  | "completed";
+
+const TEACHING_MAPS_PER_PAGE = 10;
 
 const INITIAL_TEACHING_MAPS: TeachingMapCardData[] = [
   {
@@ -63,103 +69,235 @@ const INITIAL_TEACHING_MAPS: TeachingMapCardData[] = [
 ];
 
 const TeachingMapPage = () => {
-  const [learningStatus, setLearningStatus] =
-    useState<LearningStatus>("inProgress");
+  const navigate = useNavigate();
 
-  const [selectedFilter, setSelectedFilter] =
-    useState<TeachingMapFilterType>("all");
+  const [
+    learningStatus,
+    setLearningStatus,
+  ] = useState<LearningStatus>(
+    "inProgress",
+  );
+
+  const [
+    selectedFilter,
+    setSelectedFilter,
+  ] =
+    useState<TeachingMapFilterType>(
+      "all",
+    );
 
   const [sortType, setSortType] =
-    useState<TeachingMapSortType>("latest");
+    useState<TeachingMapSortType>(
+      "latest",
+    );
 
-  const [teachingMaps, setTeachingMaps] =
-    useState<TeachingMapCardData[]>(INITIAL_TEACHING_MAPS);
+  const [currentPage, setCurrentPage] =
+    useState(1);
 
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [
+    teachingMaps,
+    setTeachingMaps,
+  ] = useState<TeachingMapCardData[]>(
+    INITIAL_TEACHING_MAPS,
+  );
 
-  const [selectedTeachingMapIds, setSelectedTeachingMapIds] = useState<
-    number[]
-  >([]);
+  const [
+    isDeleteMode,
+    setIsDeleteMode,
+  ] = useState(false);
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [
+    selectedTeachingMapIds,
+    setSelectedTeachingMapIds,
+  ] = useState<number[]>([]);
 
-  const [isToastOpen, setIsToastOpen] = useState(false);
+  const [
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+  ] = useState(false);
 
-  const [deletedTeachingMaps, setDeletedTeachingMaps] = useState<
-    TeachingMapCardData[]
-  >([]);
+  const [
+    isToastOpen,
+    setIsToastOpen,
+  ] = useState(false);
 
-  const toastTimerRef = useRef<number | null>(null);
+  const [
+    deletedTeachingMaps,
+    setDeletedTeachingMaps,
+  ] = useState<TeachingMapCardData[]>(
+    [],
+  );
+
+  const toastTimerRef =
+    useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (toastTimerRef.current !== null) {
-        window.clearTimeout(toastTimerRef.current);
+      if (
+        toastTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          toastTimerRef.current,
+        );
       }
     };
   }, []);
 
-  const visibleTeachingMaps = useMemo(() => {
-    const filteredTeachingMaps = teachingMaps.filter((teachingMap) => {
-      const hasSameStatus = teachingMap.status === learningStatus;
+  const filteredTeachingMaps =
+    useMemo(() => {
+      const filteredMaps =
+        teachingMaps.filter(
+          (teachingMap) => {
+            const hasSameStatus =
+              teachingMap.status ===
+              learningStatus;
 
-      const hasSameType =
-        selectedFilter === "all" ||
-        teachingMap.type === selectedFilter;
+            const hasSameType =
+              selectedFilter === "all" ||
+              teachingMap.type ===
+                selectedFilter;
 
-      return hasSameStatus && hasSameType;
-    });
+            return (
+              hasSameStatus &&
+              hasSameType
+            );
+          },
+        );
 
-    return [...filteredTeachingMaps].sort((firstMap, secondMap) => {
-      const firstCreatedTime = firstMap.createdAt
-        ? new Date(firstMap.createdAt).getTime()
-        : firstMap.id;
+      return [...filteredMaps].sort(
+        (firstMap, secondMap) => {
+          const firstCreatedTime =
+            firstMap.createdAt
+              ? new Date(
+                  firstMap.createdAt,
+                ).getTime()
+              : firstMap.id;
 
-      const secondCreatedTime = secondMap.createdAt
-        ? new Date(secondMap.createdAt).getTime()
-        : secondMap.id;
+          const secondCreatedTime =
+            secondMap.createdAt
+              ? new Date(
+                  secondMap.createdAt,
+                ).getTime()
+              : secondMap.id;
 
-      if (sortType === "latest") {
-        return secondCreatedTime - firstCreatedTime;
-      }
+          if (
+            sortType === "latest"
+          ) {
+            return (
+              secondCreatedTime -
+              firstCreatedTime
+            );
+          }
 
-      return firstCreatedTime - secondCreatedTime;
-    });
-  }, [
-    teachingMaps,
-    learningStatus,
-    selectedFilter,
-    sortType,
-  ]);
+          return (
+            firstCreatedTime -
+            secondCreatedTime
+          );
+        },
+      );
+    }, [
+      teachingMaps,
+      learningStatus,
+      selectedFilter,
+      sortType,
+    ]);
 
-  const handleLearningStatusChange = (status: LearningStatus) => {
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      filteredTeachingMaps.length /
+        TEACHING_MAPS_PER_PAGE,
+    ),
+  );
+
+  const activePage = Math.min(
+    currentPage,
+    totalPages,
+  );
+
+  const visibleTeachingMaps =
+    useMemo(() => {
+      const startIndex =
+        (activePage - 1) *
+        TEACHING_MAPS_PER_PAGE;
+
+      return filteredTeachingMaps.slice(
+        startIndex,
+        startIndex +
+          TEACHING_MAPS_PER_PAGE,
+      );
+    }, [
+      filteredTeachingMaps,
+      activePage,
+    ]);
+
+  const handleLearningStatusChange = (
+    status: LearningStatus,
+  ) => {
     setLearningStatus(status);
     setSelectedFilter("all");
+    setCurrentPage(1);
     setIsDeleteMode(false);
     setSelectedTeachingMapIds([]);
   };
 
-  const handleFilterChange = (filter: TeachingMapFilterType) => {
+  const handleFilterChange = (
+    filter: TeachingMapFilterType,
+  ) => {
     setSelectedFilter(filter);
+    setCurrentPage(1);
   };
 
-  const handleTeachingMapClick = (teachingMapId: number) => {
-    console.log("선택된 티칭맵 ID:", teachingMapId);
+  const handleSortChange = (
+    newSortType: TeachingMapSortType,
+  ) => {
+    setSortType(newSortType);
+    setCurrentPage(1);
   };
 
-  const handleTeachingMapSelect = (teachingMapId: number) => {
-    setSelectedTeachingMapIds((previousIds) => {
-      const isAlreadySelected =
-        previousIds.includes(teachingMapId);
+  const handlePageChange = (
+    page: number,
+  ) => {
+    setCurrentPage(page);
 
-      if (isAlreadySelected) {
-        return previousIds.filter(
-          (selectedId) => selectedId !== teachingMapId,
-        );
-      }
-
-      return [...previousIds, teachingMapId];
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
+  };
+
+  const handleTeachingMapClick = (
+    teachingMapId: number,
+  ) => {
+    navigate(
+      `/teaching-map/${teachingMapId}`,
+    );
+  };
+
+  const handleTeachingMapSelect = (
+    teachingMapId: number,
+  ) => {
+    setSelectedTeachingMapIds(
+      (previousIds) => {
+        const isAlreadySelected =
+          previousIds.includes(
+            teachingMapId,
+          );
+
+        if (isAlreadySelected) {
+          return previousIds.filter(
+            (selectedId) =>
+              selectedId !==
+              teachingMapId,
+          );
+        }
+
+        return [
+          ...previousIds,
+          teachingMapId,
+        ];
+      },
+    );
   };
 
   const handleDeleteModeStart = () => {
@@ -172,13 +310,17 @@ const TeachingMapPage = () => {
     setSelectedTeachingMapIds([]);
   };
 
-  const handleDeleteButtonClick = () => {
-    if (selectedTeachingMapIds.length === 0) {
-      return;
-    }
+  const handleDeleteButtonClick =
+    () => {
+      if (
+        selectedTeachingMapIds.length ===
+        0
+      ) {
+        return;
+      }
 
-    setIsDeleteModalOpen(true);
-  };
+      setIsDeleteModalOpen(true);
+    };
 
   const handleDeleteModalClose = () => {
     setIsDeleteModalOpen(false);
@@ -188,24 +330,38 @@ const TeachingMapPage = () => {
     setIsToastOpen(false);
     setDeletedTeachingMaps([]);
 
-    if (toastTimerRef.current !== null) {
-      window.clearTimeout(toastTimerRef.current);
+    if (
+      toastTimerRef.current !== null
+    ) {
+      window.clearTimeout(
+        toastTimerRef.current,
+      );
+
       toastTimerRef.current = null;
     }
   };
 
   const handleDeleteConfirm = () => {
-    const teachingMapsToDelete = teachingMaps.filter((teachingMap) =>
-      selectedTeachingMapIds.includes(teachingMap.id),
+    const teachingMapsToDelete =
+      teachingMaps.filter(
+        (teachingMap) =>
+          selectedTeachingMapIds.includes(
+            teachingMap.id,
+          ),
+      );
+
+    setDeletedTeachingMaps(
+      teachingMapsToDelete,
     );
 
-    setDeletedTeachingMaps(teachingMapsToDelete);
-
-    setTeachingMaps((previousTeachingMaps) =>
-      previousTeachingMaps.filter(
-        (teachingMap) =>
-          !selectedTeachingMapIds.includes(teachingMap.id),
-      ),
+    setTeachingMaps(
+      (previousTeachingMaps) =>
+        previousTeachingMaps.filter(
+          (teachingMap) =>
+            !selectedTeachingMapIds.includes(
+              teachingMap.id,
+            ),
+        ),
     );
 
     setIsDeleteModalOpen(false);
@@ -213,39 +369,59 @@ const TeachingMapPage = () => {
     setSelectedTeachingMapIds([]);
     setIsToastOpen(true);
 
-    if (toastTimerRef.current !== null) {
-      window.clearTimeout(toastTimerRef.current);
+    if (
+      toastTimerRef.current !== null
+    ) {
+      window.clearTimeout(
+        toastTimerRef.current,
+      );
     }
 
-    toastTimerRef.current = window.setTimeout(() => {
-      setIsToastOpen(false);
-      setDeletedTeachingMaps([]);
-      toastTimerRef.current = null;
-    }, 5000);
+    toastTimerRef.current =
+      window.setTimeout(() => {
+        setIsToastOpen(false);
+        setDeletedTeachingMaps([]);
+        toastTimerRef.current = null;
+      }, 5000);
   };
 
   const handleDeleteUndo = () => {
-    if (deletedTeachingMaps.length === 0) {
+    if (
+      deletedTeachingMaps.length === 0
+    ) {
       return;
     }
 
-    setTeachingMaps((previousTeachingMaps) => {
-      const existingTeachingMapIds = new Set(
-        previousTeachingMaps.map((teachingMap) => teachingMap.id),
-      );
+    setTeachingMaps(
+      (previousTeachingMaps) => {
+        const existingTeachingMapIds =
+          new Set(
+            previousTeachingMaps.map(
+              (teachingMap) =>
+                teachingMap.id,
+            ),
+          );
 
-      const mapsToRestore = deletedTeachingMaps.filter(
-        (teachingMap) =>
-          !existingTeachingMapIds.has(teachingMap.id),
-      );
+        const mapsToRestore =
+          deletedTeachingMaps.filter(
+            (teachingMap) =>
+              !existingTeachingMapIds.has(
+                teachingMap.id,
+              ),
+          );
 
-      return [...previousTeachingMaps, ...mapsToRestore];
-    });
+        return [
+          ...previousTeachingMaps,
+          ...mapsToRestore,
+        ];
+      },
+    );
 
     closeToast();
   };
 
-  const isEmpty = visibleTeachingMaps.length === 0;
+  const isEmpty =
+    filteredTeachingMaps.length === 0;
 
   return (
     <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[#0B0A18]">
@@ -262,8 +438,12 @@ const TeachingMapPage = () => {
         <TeachingMapHeader />
 
         <TeachingMapTab
-          learningStatus={learningStatus}
-          onLearningStatusChange={handleLearningStatusChange}
+          learningStatus={
+            learningStatus
+          }
+          onLearningStatusChange={
+            handleLearningStatusChange
+          }
         />
 
         {isEmpty && !isDeleteMode ? (
@@ -273,43 +453,79 @@ const TeachingMapPage = () => {
             <div className="mt-[55px]">
               {isDeleteMode ? (
                 <TeachingMapDeleteToolbar
-                  selectedCount={selectedTeachingMapIds.length}
-                  onDeleteClick={handleDeleteButtonClick}
-                  onCancelClick={handleDeleteModeCancel}
+                  selectedCount={
+                    selectedTeachingMapIds.length
+                  }
+                  onDeleteClick={
+                    handleDeleteButtonClick
+                  }
+                  onCancelClick={
+                    handleDeleteModeCancel
+                  }
                 />
               ) : (
                 <div className="flex w-full items-center justify-between">
                   <TeachingMapFilter
-                    selectedFilter={selectedFilter}
-                    onFilterChange={handleFilterChange}
+                    selectedFilter={
+                      selectedFilter
+                    }
+                    onFilterChange={
+                      handleFilterChange
+                    }
                   />
 
                   <TeachingMapToolbar
                     sortType={sortType}
-                    onSortChange={setSortType}
-                    onDeleteModeStart={handleDeleteModeStart}
+                    onSortChange={
+                      handleSortChange
+                    }
+                    onDeleteModeStart={
+                      handleDeleteModeStart
+                    }
                   />
                 </div>
               )}
             </div>
 
-            <div className="mt-5">
+            <div className="mt-5 min-h-[540px]">
               <TeachingMapList
-                teachingMaps={visibleTeachingMaps}
-                isDeleteMode={isDeleteMode}
-                selectedTeachingMapIds={selectedTeachingMapIds}
-                onTeachingMapClick={handleTeachingMapClick}
-                onTeachingMapSelect={handleTeachingMapSelect}
+                teachingMaps={
+                  visibleTeachingMaps
+                }
+                isDeleteMode={
+                  isDeleteMode
+                }
+                selectedTeachingMapIds={
+                  selectedTeachingMapIds
+                }
+                onTeachingMapClick={
+                  handleTeachingMapClick
+                }
+                onTeachingMapSelect={
+                  handleTeachingMapSelect
+                }
               />
             </div>
+
+            <Pagination
+              currentPage={activePage}
+              totalPages={totalPages}
+              onPageChange={
+                handlePageChange
+              }
+            />
           </>
         )}
       </div>
 
       <TeachingMapDeleteModal
         isOpen={isDeleteModalOpen}
-        onClose={handleDeleteModalClose}
-        onDeleteConfirm={handleDeleteConfirm}
+        onClose={
+          handleDeleteModalClose
+        }
+        onDeleteConfirm={
+          handleDeleteConfirm
+        }
       />
 
       {isToastOpen && (

@@ -1,11 +1,14 @@
 import type { TeachingMapStep } from "../../../pages/TeachingMapDetailPage";
-import TeachingMapStepHeader from "./TeachingMapStepHeader";
+
 import TeachingMapStepContent from "./TeachingMapStepContent";
+import TeachingMapStepHeader from "./TeachingMapStepHeader";
 
 interface TeachingMapStepItemProps {
   step: TeachingMapStep;
   isLast: boolean;
-  onToggleCompletion: (stepId: number) => void;
+  onToggleCompletion: (
+    stepId: number,
+  ) => void;
 }
 
 const TeachingMapStepItem = ({
@@ -18,7 +21,9 @@ const TeachingMapStepItem = ({
       className={[
         "relative flex h-[167px] items-start gap-[25px]",
         "transition-opacity duration-200",
-        step.isCompleted ? "opacity-100" : "opacity-50",
+        step.isCompleted
+          ? "opacity-100"
+          : "opacity-50",
       ].join(" ")}
     >
       <div className="relative flex w-[36px] shrink-0 flex-col items-center">
@@ -46,13 +51,20 @@ const TeachingMapStepItem = ({
       </div>
 
       <div className="h-[167px] w-[939px] overflow-hidden rounded-[10px] border border-[#C1AEFF] shadow-[0_0_50px_0_rgba(145,125,236,0.5)]">
-        <TeachingMapStepHeader tip={step.tip} />
+        <TeachingMapStepHeader
+          tip={step.tip}
+          contentId={step.id}
+        />
 
         <TeachingMapStepContent
           stepId={step.id}
           title={step.title}
-          isCompleted={step.isCompleted}
-          onToggleCompletion={onToggleCompletion}
+          isCompleted={
+            step.isCompleted
+          }
+          onToggleCompletion={
+            onToggleCompletion
+          }
         />
       </div>
     </article>
