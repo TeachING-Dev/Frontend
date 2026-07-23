@@ -17,7 +17,7 @@ type ArchiveFolderHeaderProps = {
   onMoveToTrash?: () => void;
 };
 
-type SortOption = "최신순" | "최근수정순";
+type SortOption = "최신순" | "이름순" | "오래된순";
 
 const ArchiveFolderHeader = ({
   folderName,
@@ -97,14 +97,14 @@ const ArchiveFolderHeader = ({
       <button
         type="button"
         onClick={onBack}
-        className="group mb-1 flex items-center gap-1 rounded px-1 py-1 transition hover:bg-white/10"
+        className="group mb-1 flex items-center gap-2 rounded px-1 py-1 transition hover:bg-white/10"
       >
-        <img
-          src="/vector-01.svg"
-          alt=""
+        <span
           aria-hidden="true"
-          className="h-[24px] w-[24px] transition duration-200 group-hover:brightness-0 group-hover:invert"
-        />
+          className="text-[20px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 group-hover:text-white"
+        >
+          &lt;
+        </span>
 
         <span className="text-[16px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white">
           보관함으로 돌아가기
@@ -194,7 +194,7 @@ const ArchiveFolderHeader = ({
               onClick={() =>
                 setIsSortOpen((prev) => !prev)
               }
-              className="flex h-[40px] w-[160px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold text-white"
+              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
             >
               <span>{sortOption}</span>
 
@@ -220,11 +220,21 @@ const ArchiveFolderHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("최근수정순")
+                    handleSortSelect("이름순")
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
-                  최근수정순
+                  이름순
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSortSelect("오래된순")
+                  }
+                  className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
+                >
+                  오래된순
                 </button>
               </div>
             )}

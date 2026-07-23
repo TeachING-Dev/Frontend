@@ -91,10 +91,10 @@ const HomeHeader = () => {
     <>
       <section className="flex flex-col items-center text-center">
         <img
-          src="/home-logo.png"
+          src="/준비중.jpg"
           alt=""
           aria-hidden="true"
-          className="mb-5 h-[210px] w-[450px]"
+          className="mb-5 h-[400px]"
         />
 
         <p className="mt-[80px] text-center text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#C1AEFF]">
@@ -109,11 +109,9 @@ const HomeHeader = () => {
           <input
             type="text"
             value={url}
-            onChange={(event) =>
-              setUrl(event.target.value)
-            }
+            onChange={(event) => setUrl(event.target.value)}
             placeholder="저장할 url을 붙여넣어주세요."
-            className="h-[82px] w-full rounded-[12px] border border-[#917DEC] bg-[#11111B] px-8 pr-24 text-[18px] font-semibold text-white placeholder:text-[#4D4F59] outline-none shadow-[0_0_100px_rgba(145,125,236,0.35)]"
+            className="h-[70px] w-full rounded-[10px] border border-[#917DEC] bg-[#11111B] px-8 pr-24 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-white outline-none shadow-[0_0_100px_rgba(145,125,236,0.35)] placeholder:text-[20px] placeholder:font-semibold placeholder:leading-[140%] placeholder:tracking-[-0.6px] placeholder:text-[#42444C]"
           />
 
           <button

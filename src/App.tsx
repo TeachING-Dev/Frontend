@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
-import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
 import NotificationLayout from "./layouts/NotificationLayout";
 
@@ -48,7 +47,7 @@ function App() {
         />
 
         {/* 홈 전용 레이아웃 */}
-        <Route element={<HomeLayout />}>
+        <Route element={<MainLayout />}>
           <Route
             path="/"
             element={<HomePage />}
