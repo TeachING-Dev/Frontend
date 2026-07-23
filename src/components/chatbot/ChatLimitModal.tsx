@@ -2,7 +2,6 @@
   isOpen: boolean;
   title: string;
   description: string;
-  size?: "small" | "large";
   onClose: () => void;
   onSubscribe: () => void;
 };
@@ -11,7 +10,6 @@ const ChatLimitModal = ({
   isOpen,
   title,
   description,
-  size = "large",
   onClose,
   onSubscribe,
 }: ChatLimitModalProps) => {
@@ -19,38 +17,47 @@ const ChatLimitModal = ({
     return null;
   }
 
-  const isSmall = size === "small";
-  const modalWidthClass = isSmall ? "w-[348px] px-4 pb-4 pt-7" : "w-[448px] px-5 pb-5 pt-8";
-  const titleClass = isSmall ? "text-base leading-6" : "text-xl leading-8";
-  const descriptionClass = isSmall ? "text-xs leading-4" : "text-sm leading-5";
-  const imageClass = isSmall ? "mt-6 h-[106px] w-[108px]" : "mt-7 h-[126px] w-[128px]";
-  const buttonWrapperClass = isSmall ? "mt-6 grid w-full grid-cols-2 gap-2" : "mt-7 grid w-full grid-cols-2 gap-3";
-  const buttonClass = isSmall ? "h-9 text-sm leading-5" : "h-11 text-base leading-6";
+  const formattedDescription = description.replace(
+    /요금제를\s*업그레이드\s*하고\s*/,
+    "요금제를 업그레이드하고\n",
+  );
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#05040B]/75 backdrop-brightness-50">
-      <div
-        className={`flex flex-col items-center rounded-[5px] bg-[#090713] shadow-[0_0_50px_rgba(145,125,236,0.75)] ${modalWidthClass}`}
-      >
-        <h2 className={`font-['SUIT_Variable'] font-semibold text-white ${titleClass}`}>{title}</h2>
-        <p className={`mt-1 font-['SUIT_Variable'] font-medium text-zinc-500 ${descriptionClass}`}>
-          {description}
+      <div className="flex h-[303px] w-[360px] flex-col items-center rounded-[10px] bg-[#090713] px-5 pb-5 pt-[30px] shadow-[0_0_50px_rgba(145,125,236,0.45)]">
+        {/* 제목 */}
+        <h2 className="text-center font-['SUIT_Variable'] text-[16px] font-semibold leading-[150%] tracking-[-0.6px] text-white">
+          {title}
+        </h2>
+
+        {/* 설명 */}
+        <p className="mt-1 whitespace-pre-line text-center font-['SUIT_Variable'] text-[12px] font-medium leading-[18px] tracking-[-0.42px] text-[#777680]">
+          {formattedDescription}
         </p>
 
-        <img src="/TempCharacter.svg" alt="" className={imageClass} />
+        {/* 캐릭터 */}
+        <div className="-mx-5 mt-[14px] flex w-[360px] justify-center">
+          <img
+            src="/TempCharacter.svg"
+            alt=""
+            className="h-[120px] w-[128px] object-contain"
+          />
+        </div>
 
-        <div className={buttonWrapperClass}>
+        {/* 버튼 */}
+        <div className="-mx-2 mt-[15px] grid w-[calc(100%+16px)] grid-cols-2 gap-[8px]">
           <button
             type="button"
             onClick={onClose}
-            className={`rounded-[5px] bg-neutral-600 font-['SUIT_Variable'] font-semibold text-violet-50 hover:bg-neutral-500 ${buttonClass}`}
+            className="flex h-10 items-center justify-center rounded-[5px] bg-[#515159] font-['SUIT_Variable'] text-[12px] font-semibold leading- text-[#F4F1FF] transition-colors hover:bg-[#62626B]"
           >
             돌아가기
           </button>
+
           <button
             type="button"
             onClick={onSubscribe}
-            className={`rounded-[5px] bg-[#917DEC] font-['SUIT_Variable'] font-semibold text-violet-50 hover:opacity-90 ${buttonClass}`}
+            className="flex h-10 items-center justify-center rounded-[5px] bg-[#917DEC] font-['SUIT_Variable'] text-[12px] font-semibold leading-5 text-[#F4F1FF] transition-opacity hover:opacity-90"
           >
             구독하러 가기
           </button>
@@ -61,4 +68,3 @@ const ChatLimitModal = ({
 };
 
 export default ChatLimitModal;
-

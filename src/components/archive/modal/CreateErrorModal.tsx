@@ -51,16 +51,17 @@ const FolderLimitModal = ({
         <div className="shrink-0 text-center">
           <h2
             id="folder-limit-title"
-            className="text-center font-['42dot_Sans'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#FAFAFA]"
+            className="text-center font-['42dot_Sans'] text-[16px] font-semibold leading-[150%] tracking-[-0.72px] text-[#FAFAFA]"
           >
             무료 요금제는 폴더를 6개까지 만들 수 있어요.
           </h2>
 
           <p
             id="folder-limit-description"
-            className="mt-2 text-[16px] font-medium text-[#666572]"
+            className="mt-2 text-[12px] font-medium text-[#666572]"
           >
-            요금제를 업그레이드하고 무제한으로 폴더를 관리해 보세요!
+            요금제를 업그레이드하고 {"\n"}
+            무제한으로 폴더를 관리해 보세요!
           </p>
         </div>
 

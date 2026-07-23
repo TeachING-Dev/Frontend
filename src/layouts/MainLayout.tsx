@@ -7,14 +7,15 @@ import Sidebar from "../components/common/Sidebar";
 type MainLayoutProps = {
   showRightIcons?: boolean;
   insetMenu?: boolean;
+  showMenuIcon?: boolean;
 };
 
 const MainLayout = ({
   showRightIcons = true,
   insetMenu = false,
+  showMenuIcon = true,
 }: MainLayoutProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] =
-    useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleOpenSidebar = () => {
     setIsSidebarOpen(true);
@@ -29,6 +30,7 @@ const MainLayout = ({
       <Header
         showRightIcons={showRightIcons}
         insetMenu={insetMenu}
+        showMenuIcon={showMenuIcon}
         onMenuClick={handleOpenSidebar}
       />
 
