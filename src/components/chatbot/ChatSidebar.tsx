@@ -17,8 +17,11 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick }: Chat
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            aria-label="챗봇 사이드바 열기"
-            onClick={onOpen}
+            aria-label={"\ucc57\ubd07 \uc0ac\uc774\ub4dc\ubc14 \uc5f4\uae30"}
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpen();
+            }}
             className="flex size-8 shrink-0 items-center justify-center hover:opacity-80"
           >
             <img
@@ -28,11 +31,11 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick }: Chat
             />
           </button>
           {isOpen ? (
-             <button
-    type="button"
-    onClick={onClose}
-    className="flex size-5 items-center justify-center hover:opacity-80"
-  >
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex size-5 items-center justify-center hover:opacity-80"
+            >
               <img src="/layout-right.svg" alt="" className="size-8" />
             </button>
           ) : null}
@@ -42,14 +45,14 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick }: Chat
           <nav className="mt-8 flex flex-col items-start gap-3">
             <button
               type="button"
-              aria-label="무료 문제 제한 안내 열기"
+              aria-label={"\ubb34\ub8cc \ubb38\uc81c \uc81c\ud55c \uc548\ub0b4 \uc5f4\uae30"}
               onClick={onCreateRoomClick}
               className="flex h-9 items-center justify-start gap-2.5 hover:opacity-80"
             >
               <img src="/NewFileDesign.svg" alt="" className="h-9 w-8 object-contain" />
               <span className="whitespace-nowrap font-['SUIT'] text-18px font-normal leading-[150%] tracking-[-0.72px] text-[#917DEC]">
-  새 폴더
-</span>
+                {"\uc0c8 \ud3f4\ub354"}
+              </span>
             </button>
             {files.map((fileName, index) => (
               <button
