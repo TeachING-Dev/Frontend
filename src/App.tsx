@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
+﻿import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import HomeLayout from "./layouts/HomeLayout";
@@ -31,117 +27,40 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 인증 페이지 */}
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup/complete" element={<SignupCompletePage />} />
+        <Route path="/subscription/complete" element={<SubscriptionCompletePage />} />
 
-        <Route
-          path="/signup/complete"
-          element={<SignupCompletePage />}
-        />
-
-        <Route
-          path="/subscription/complete"
-          element={<SubscriptionCompletePage />}
-        />
-
-        {/* 홈 전용 레이아웃 */}
         <Route element={<HomeLayout />}>
-          <Route
-            path="/"
-            element={<HomePage />}
-          />
+          <Route path="/" element={<HomePage />} />
         </Route>
 
-        {/* 분석 페이지 전용 레이아웃 */}
         <Route element={<AnalysisLayout />}>
-          <Route
-            path="/analysis/complete"
-            element={<AnalysisCompletePage />}
-          />
+          <Route path="/analysis/complete" element={<AnalysisCompletePage />} />
         </Route>
 
-        {/* 알림 페이지 전용 레이아웃 */}
         <Route element={<NotificationLayout />}>
-          <Route
-            path="/notifications"
-            element={<NotificationPage />}
-          />
+          <Route path="/notifications" element={<NotificationPage />} />
         </Route>
 
-        {/* 기본 레이아웃 페이지 */}
         <Route element={<MainLayout />}>
-          {/* 보관함 */}
-          <Route
-            path="/archive"
-            element={<ArchivePage />}
-          />
-
-          {/* 보관함 폴더 상세 */}
-          <Route
-            path="/archive/folder"
-            element={<ArchiveFolderPage />}
-          />
-
-          {/* 보관함 자료 상세 */}
-          <Route
-            path="/archive/folder/data/:dataId"
-            element={<ArchiveDataPage />}
-          />
-
-          {/* 티칭맵 */}
-          <Route
-            path="/teaching-map"
-            element={<TeachingMapPage />}
-          />
-
-          {/* 티칭맵 생성 */}
-          <Route
-            path="/teaching-map/create"
-            element={<TeachingMapCreatePage />}
-          />
-
-          {/* 티칭맵 상세 */}
-          <Route
-            path="/teaching-map/:teachingMapId"
-            element={<TeachingMapDetailPage />}
-          />
-
-          {/* 티칭맵 내용 상세 */}
-          <Route
-            path="/teaching-map/:teachingMapId/content"
-            element={<TeachingMapContentPage />}
-          />
-
-          {/* 휴지통 */}
-          <Route
-            path="/trash"
-            element={<TrashPage />}
-          />
-
-          {/* 구독 */}
-          <Route
-            path="/subscription"
-            element={<SubscriptionPage />}
-          />
+          <Route path="/archive" element={<ArchivePage />} />
+          <Route path="/archive/folder" element={<ArchiveFolderPage />} />
+          <Route path="/archive/folder/data/:dataId" element={<ArchiveDataPage />} />
+          <Route path="/teaching-map" element={<TeachingMapPage />} />
+          <Route path="/teaching-map/create" element={<TeachingMapCreatePage />} />
+          <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
+          <Route path="/teaching-map/:teachingMapId/content" element={<TeachingMapContentPage />} />
+          <Route path="/trash" element={<TrashPage />} />
+          <Route path="/subscription" element={<SubscriptionPage />} />
         </Route>
 
-        {/* 챗봇 페이지 */}
         <Route element={<MainLayout insetMenu />}>
-          <Route
-            path="/chatbot"
-            element={<ChatbotPage />}
-          />
+          <Route path="/chatbot" element={<ChatbotPage />} />
         </Route>
 
-        {/* 회원가입 페이지 */}
-        <Route element={<MainLayout showRightIcons={false} />}>
-          <Route
-            path="/signup"
-            element={<SignupPage />}
-          />
+        <Route element={<MainLayout showRightIcons={false} showMenuIcon={false} />}>
+          <Route path="/signup" element={<SignupPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

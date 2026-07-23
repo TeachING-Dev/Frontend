@@ -7,37 +7,52 @@ const SignupCompletePage = () => {
   const navigate = useNavigate();
 
   return (
-    <AuthPageLayout contentClassName="pt-[11vh]">
-      <AuthBrandLogo gapClassName="gap-8" />
+    <AuthPageLayout contentClassName="relative min-h-screen">
+      <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75]">
+        {/* TeachING 로고 */}
+        <div className="absolute left-1/2 top-[120px] -translate-x-1/2">
+          <AuthBrandLogo />
+        </div>
 
-      <div className="mt-[7vh] flex flex-col items-center gap-[5vh]">
-        <div className="relative h-[min(28vh,288px)] w-[min(28vh,288px)] min-h-[190px] min-w-[190px] overflow-visible">
+        {/* 메인 이모티콘 + 우측 상단 별 */}
+        <div className="absolute left-1/2 top-[368px] h-[260px] w-[260px] -translate-x-1/2 overflow-visible">
           <img
             src="/Star17.svg"
             alt=""
             className="absolute -right-[8%] -top-[9%] z-10 h-[22%] w-auto drop-shadow-[0_0_8px_rgba(145,125,236,0.9)]"
           />
+
           <img
             src="/Star1.png"
             alt=""
-            className="absolute left-[5.15%] top-[2.67%] h-[93.53%] w-[91.51%] drop-shadow-[0_0_20.6px_rgba(145,125,236,1)]"
+            className="absolute left-[5.15%] top-[6%] h-[93.53%] w-[91.51%] drop-shadow-[0_0_20.6px_rgba(145,125,236,1)]"
           />
-          <div className="absolute left-[39.48%] top-[39.83%] h-[15.28%] w-[8.33%] rounded-xl bg-violet-300" />
-          <div className="absolute left-[56.02%] top-[39.83%] h-[15.28%] w-[8.33%] rounded-xl bg-violet-300" />
-          <div className="absolute left-[48.69%] top-[51.25%] size-[6.94%] rounded-full bg-violet-300" />
-          <div className="absolute left-[61.69%] top-[41.76%] h-[4.17%] w-[1.39%] rounded-full border-[2.77px] border-indigo-50" />
-          <div className="absolute left-[45.27%] top-[41.68%] h-[4.17%] w-[1.39%] rounded-full border-[2.77px] border-indigo-50" />
-        </div>
-      </div>
 
-      <div className="mb-[7vh] mt-auto flex w-full flex-col items-center gap-6">
-        <p className="w-96 text-center font-['SUIT_Variable'] text-xl font-semibold leading-8 text-white">
+          <img
+            src="/SignupCompleteFace.svg"
+            alt=""
+            className="absolute left-[37.5%] top-[43.83%] h-[18.06%] w-[30%]"
+          />
+        </div>
+
+        {/* 아이콘 아래 112.97px */}
+        <p className="absolute bottom-[260px] left-1/2 w-[640px] -translate-x-1/2 text-center font-['SUIT'] text-[20px] font-normal leading-[150%] tracking-[-0.6px] text-white">
           가입이 완료되었어요!
           <br />
           이제 나만의 학습을 시작해보세요.
         </p>
 
-        <PrimaryButton className="max-w-[640px]" onClick={() => navigate("/")}>학습 시작하기</PrimaryButton>
+        {/* 텍스트 아래 24px */}
+        <div className="absolute bottom-[176px] left-1/2 w-[640px] -translate-x-1/2">
+          <PrimaryButton
+            onClick={() => navigate("/")}
+            className="!flex !h-[60px] !w-full !max-w-none items-center justify-center rounded-[5px] px-[50px] py-[20px]"
+          >
+            <span className="font-['SUIT'] text-[20px] font-normal leading-[150%] tracking-[-0.6px]">
+              학습 시작하기
+            </span>
+          </PrimaryButton>
+        </div>
       </div>
     </AuthPageLayout>
   );
