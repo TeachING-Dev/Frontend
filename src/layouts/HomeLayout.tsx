@@ -46,10 +46,10 @@ const HomeLayout = ({
       <main className="relative z-10 min-h-[calc(100vh-64px)] overflow-hidden">
         {/* 홈 전용 배경 Ellipse */}
         <img
-          src="/ellipse.svg"
+          src="/home-logo3.png"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[162px] z-0 w-[1300px] max-w-none -translate-x-1/2"
+          className="pointer-events-none absolute left-1/2 top-[81px] z-0 w-[1440px] max-w-none -translate-x-1/2"
         />
 
         {/* 홈 페이지 콘텐츠 */}

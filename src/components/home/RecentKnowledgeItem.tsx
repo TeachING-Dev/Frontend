@@ -23,7 +23,7 @@ const RecentKnowledgeItem = ({
       <img
         src={iconSrc}
         alt=""
-        className="mr-[10px] h-[36px] w-[36px] shrink-0"
+        className="mr-[10px] h-[36px] w-[36px] shrink-0 rounded-full"
       />
 
       {/* 제목 */}

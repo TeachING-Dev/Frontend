@@ -12,7 +12,7 @@ const ArchiveDataAnalysis = ({
   analysis,
 }: ArchiveDataAnalysisProps) => {
   return (
-    <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#2B2C35]">
+    <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
       {/* 상단 제목 영역 */}
       <div className="flex h-[60px] items-center px-[20px]">
         <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
@@ -21,7 +21,7 @@ const ArchiveDataAnalysis = ({
       </div>
 
       {/* 상세 분석 내용 */}
-      <div className="rounded-t-[10px] bg-[#11121A] px-[30px] py-[20px]">
+      <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[20px]">
         <div className="flex flex-col gap-[30px]">
           {analysis.map((item) => (
             <article key={item.id}>

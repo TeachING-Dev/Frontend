@@ -18,6 +18,14 @@ const folders = [
     id: 3,
     name: "React",
   },
+  {
+    id: 4,
+    name: "Next.js",
+  },
+  {
+    id: 5,
+    name: "TypeScript",
+  },
 ];
 
 const AnalysisCompletePage = () => {
