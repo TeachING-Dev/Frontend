@@ -7,6 +7,7 @@ import {
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
+import NotificationLayout from "./layouts/NotificationLayout";
 
 import AnalysisCompletePage from "./pages/AnalysisCompletePage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
@@ -15,6 +16,7 @@ import ArchivePage from "./pages/ArchivePage";
 import ChatbotPage from "./pages/ChatbotPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import NotificationPage from "./pages/NotificationPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
 import SubscriptionCompletePage from "./pages/SubscriptionCompletePage";
@@ -58,6 +60,14 @@ function App() {
           <Route
             path="/analysis/complete"
             element={<AnalysisCompletePage />}
+          />
+        </Route>
+
+        {/* 알림 페이지 전용 레이아웃 */}
+        <Route element={<NotificationLayout />}>
+          <Route
+            path="/notifications"
+            element={<NotificationPage />}
           />
         </Route>
 
