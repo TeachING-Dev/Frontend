@@ -1,0 +1,44 @@
+import { useNavigate } from "react-router-dom";
+
+import MyPageMenuItem from "./MyPageMenuItem";
+
+const MyPageMenuList = () => {
+  const navigate = useNavigate();
+
+  const menuItems = [
+    {
+      label: "회원정보 수정",
+      path: "/mypage/edit",
+    },
+    {
+      label: "알림 설정",
+      path: "/mypage/notification",
+    },
+    {
+      label: "티칭맵 설정",
+      path: "/mypage/teaching-style",
+    },
+    {
+      label: "1:1 문의하기",
+      path: "/mypage/inquiry",
+    },
+    {
+      label: "구독하기",
+      path: "/subscription",
+    },
+  ];
+
+  return (
+    <div className="flex w-[736px] flex-col gap-[10px]">
+      {menuItems.map((menuItem) => (
+        <MyPageMenuItem
+          key={menuItem.label}
+          label={menuItem.label}
+          onClick={() => navigate(menuItem.path)}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default MyPageMenuList;
