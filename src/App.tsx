@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import HomeLayout from "./layouts/HomeLayout";
@@ -20,8 +16,8 @@ import MyPage from "./pages/myPage/MyPage";
 import MyPageAuthRequiredPage from "./pages/myPage/MyPageAuthRequiredPage";
 import MyPageEditPage from "./pages/myPage/MyPageEditPage";
 import MyPageInquiryPage from "./pages/myPage/MyPageInquiryPage";
-import MyPageTeachingStylePage from "./pages/myPage/MyPageTeachingStylePage";
 import MyPageNotificationPage from "./pages/myPage/MyPageNotificationPage";
+import MyPageTeachingStylePage from "./pages/myPage/MyPageTeachingStylePage";
 import MyPageWithdrawalCompletePage from "./pages/myPage/MyPageWithdrawalCompletePage";
 import MyPageWithdrawalConfirmPage from "./pages/myPage/MyPageWithdrawalConfirmPage";
 import MyPageWithdrawalReasonPage from "./pages/myPage/MyPageWithdrawalReasonPage";
@@ -40,17 +36,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 인증 페이지 */}
+        {/* 로그인 */}
         <Route
           path="/login"
           element={<LoginPage />}
         />
 
+        {/* 회원가입 완료 */}
         <Route
           path="/signup/complete"
           element={<SignupCompletePage />}
         />
 
+        {/* 구독 완료 */}
         <Route
           path="/subscription/complete"
           element={<SubscriptionCompletePage />}
@@ -58,29 +56,32 @@ function App() {
 
         {/* 홈 전용 레이아웃 */}
         <Route element={<HomeLayout />}>
+          {/* 홈 */}
           <Route
             path="/"
             element={<HomePage />}
           />
         </Route>
 
-        {/* 분석 페이지 전용 레이아웃 */}
+        {/* 분석 전용 레이아웃 */}
         <Route element={<AnalysisLayout />}>
+          {/* 분석 완료 */}
           <Route
             path="/analysis/complete"
             element={<AnalysisCompletePage />}
           />
         </Route>
 
-        {/* 알림 페이지 전용 레이아웃 */}
+        {/* 알림 전용 레이아웃 */}
         <Route element={<NotificationLayout />}>
+          {/* 알림 */}
           <Route
             path="/notifications"
             element={<NotificationPage />}
           />
         </Route>
 
-        {/* 기본 레이아웃 페이지 */}
+        {/* 기본 레이아웃 */}
         <Route element={<MainLayout />}>
           {/* 보관함 */}
           <Route
@@ -191,16 +192,25 @@ function App() {
           />
         </Route>
 
-        {/* 챗봇 페이지 */}
+        {/* 챗봇 전용 레이아웃 */}
         <Route element={<MainLayout insetMenu />}>
+          {/* 챗봇 */}
           <Route
             path="/chatbot"
             element={<ChatbotPage />}
           />
         </Route>
 
-        {/* 회원가입 페이지 */}
-        <Route element={<MainLayout showRightIcons={false} />}>
+        {/* 회원가입 전용 레이아웃 */}
+        <Route
+          element={
+            <MainLayout
+              showRightIcons={false}
+              showMenuIcon={false}
+            />
+          }
+        >
+          {/* 회원가입 */}
           <Route
             path="/signup"
             element={<SignupPage />}
