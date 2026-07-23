@@ -1,4 +1,4 @@
-import { Globe, Tag } from "lucide-react";
+import { Globe } from "lucide-react";
 
 type ArchiveDataHeaderProps = {
   date: string;
@@ -56,11 +56,11 @@ const ArchiveDataHeader = ({
 
       {/* 태그 제목 */}
       <div className="mb-[12px] flex items-center gap-[11px]">
-        <Tag
-          size={20}
-          fill="#917DEC"
-          strokeWidth={0}
-          className="-rotate-[5deg]"
+        <img
+          src="/tag.png"
+          alt=""
+          aria-hidden="true"
+          className="h-[20px] w-[20px] object-contain"
         />
 
         <span className="font-['Pretendard'] text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
