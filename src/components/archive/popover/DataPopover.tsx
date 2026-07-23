@@ -1,5 +1,4 @@
 import * as Popover from "@radix-ui/react-popover";
-import { FolderInput, Trash2 } from "lucide-react";
 
 type DataPopoverProps = {
   trigger: React.ReactNode;
@@ -28,10 +27,11 @@ const DataPopover = ({
             onClick={onMoveFolder}
             className="flex h-[44px] w-full items-center gap-3 rounded-[4px] px-3 text-left text-[16px] text-[#D8CCFF] transition hover:bg-[#24242E]"
           >
-            <FolderInput
-              size={20}
-              strokeWidth={2.3}
-              className="shrink-0"
+            <img
+              src="/icon_폴더이동.png"
+              alt=""
+              aria-hidden="true"
+              className="h-[24px] w-[24px] shrink-0 object-contain"
             />
 
             <span>폴더 이동하기</span>
@@ -42,10 +42,11 @@ const DataPopover = ({
             onClick={onMoveToTrash}
             className="flex h-[44px] w-full items-center gap-3 rounded-[4px] px-3 text-left text-[16px] text-[#D8CCFF] transition hover:bg-[#24242E]"
           >
-            <Trash2
-              size={20}
-              strokeWidth={2.3}
-              className="shrink-0"
+            <img
+              src="/trash.png"
+              alt=""
+              aria-hidden="true"
+              className="h-[24px] w-[24px] shrink-0 object-contain"
             />
 
             <span>휴지통으로 이동하기</span>

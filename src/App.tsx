@@ -5,10 +5,9 @@ import {
 } from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
-import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
+import HomeLayout from "./layouts/HomeLayout";
 import NotificationLayout from "./layouts/NotificationLayout";
-
 import AnalysisCompletePage from "./pages/AnalysisCompletePage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
