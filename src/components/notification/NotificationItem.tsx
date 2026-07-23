@@ -4,7 +4,7 @@ type NotificationType = "short-cut" | "deep-dive";
 
 type NotificationItemProps = {
   type: NotificationType;
-  title: string;
+  message: string;
   createdAt: string;
   isRead?: boolean;
   onClick?: () => void;
@@ -14,13 +14,13 @@ const notificationTypeLabel: Record<
   NotificationType,
   string
 > = {
-  "short-cut": "Short-cut",
-  "deep-dive": "Deep-dive",
+  "short-cut": "Short-Cut",
+  "deep-dive": "Deep-Dive",
 };
 
 const NotificationItem = ({
   type,
-  title,
+  message,
   createdAt,
   isRead = false,
   onClick,
@@ -59,11 +59,11 @@ const NotificationItem = ({
 
         {/* 중간: 제목 */}
         <p className="mt-[10px] truncate text-[14px] font-medium leading-[150%] tracking-[-0.42px] text-[#F5F2FF]">
-          {title}
+          {message}
         </p>
 
         {/* 하단: 시간 */}
-        <span className="mt-[-8px] block w-full text-right font-[Poppins] text-[10px] font-light italic leading-[150%] tracking-[-0.25px] text-[#717379]">
+        <span className="mt-[-8px] block w-full text-right font-[Poppins] text-[10px] font-light leading-[150%] tracking-[-0.25px] text-[#717379]">
           {createdAt}
         </span>
       </div>

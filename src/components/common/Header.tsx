@@ -1,42 +1,44 @@
-﻿import NotificationPopover from "../notification/NotificationPopover";
+﻿import { useNavigate } from "react-router-dom";
+
+import NotificationPopover from "../notification/NotificationPopover";
 import type { Notification } from "../notification/NotificationList";
 
 const dummyNotifications: Notification[] = [
-  /*{
+  {
     id: 1,
     type: "short-cut",
-    title: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
+    message: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
     createdAt: "10시간 전",
     isRead: false,
   },
   {
     id: 2,
     type: "short-cut",
-    title: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
+    message: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
     createdAt: "10시간 전",
     isRead: false,
   },
   {
     id: 3,
     type: "deep-dive",
-    title: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
+    message: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
     createdAt: "10시간 전",
     isRead: true,
   },
   {
     id: 4,
     type: "deep-dive",
-    title: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
+    message: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
     createdAt: "10시간 전",
     isRead: true,
   },
   {
     id: 5,
     type: "deep-dive",
-    title: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
+    message: "잠시 멈췄던 티칭맵 제목 60자 제한입...",
     createdAt: "10시간 전",
     isRead: true,
-  },*/
+  },
 ];
 
 type HeaderProps = {
@@ -50,6 +52,8 @@ const Header = ({
   insetMenu = false,
   onMenuClick,
 }: HeaderProps) => {
+  const navigate = useNavigate();
+
   const handleNotificationClick = (
     notificationId: number,
   ) => {
@@ -57,7 +61,7 @@ const Header = ({
   };
 
   const handleViewAll = () => {
-    console.log("알림 전체보기");
+    navigate("/notifications");
   };
 
   return (

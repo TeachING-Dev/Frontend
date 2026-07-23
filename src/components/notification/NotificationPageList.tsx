@@ -1,5 +1,5 @@
 import EmptyNotification from "./EmptyNotification";
-import NotificationItem from "./NotificationItem";
+import NotificationPageItem from "./NotificationPageItem";
 
 export type NotificationType =
   | "short-cut"
@@ -10,39 +10,36 @@ export type Notification = {
   type: NotificationType;
   message: string;
   createdAt: string;
-  isRead: boolean;
+  isRead?: boolean;
 };
 
-type NotificationListProps = {
+type NotificationPageListProps = {
   notifications: Notification[];
   onItemClick?: (id: number) => void;
 };
 
-const NotificationList = ({
+const NotificationPageList = ({
   notifications,
   onItemClick,
-}: NotificationListProps) => {
-  // 알림이 없을 때
+}: NotificationPageListProps) => {
   if (notifications.length === 0) {
     return <EmptyNotification />;
   }
 
   return (
-    <div className="flex flex-col gap-[6px]">
+    <div className="flex flex-col">
       {notifications.map((notification) => (
-        <NotificationItem
+        <NotificationPageItem
           key={notification.id}
           type={notification.type}
           message={notification.message}
           createdAt={notification.createdAt}
           isRead={notification.isRead}
-          onClick={() =>
-            onItemClick?.(notification.id)
-          }
+          onClick={() => onItemClick?.(notification.id)}
         />
       ))}
     </div>
   );
 };
 
-export default NotificationList;
+export default NotificationPageList;
