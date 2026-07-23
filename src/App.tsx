@@ -16,6 +16,15 @@ import ArchivePage from "./pages/ArchivePage";
 import ChatbotPage from "./pages/ChatbotPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import MyPage from "./pages/myPage/MyPage";
+import MyPageAuthRequiredPage from "./pages/myPage/MyPageAuthRequiredPage";
+import MyPageEditPage from "./pages/myPage/MyPageEditPage";
+import MyPageInquiryPage from "./pages/myPage/MyPageInquiryPage";
+import MyPageTeachingStylePage from "./pages/myPage/MyPageTeachingStylePage";
+import MyPageNotificationPage from "./pages/myPage/MyPageNotificationPage";
+import MyPageWithdrawalCompletePage from "./pages/myPage/MyPageWithdrawalCompletePage";
+import MyPageWithdrawalConfirmPage from "./pages/myPage/MyPageWithdrawalConfirmPage";
+import MyPageWithdrawalReasonPage from "./pages/myPage/MyPageWithdrawalReasonPage";
 import NotificationPage from "./pages/NotificationPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
@@ -103,16 +112,16 @@ function App() {
             element={<TeachingMapCreatePage />}
           />
 
-          {/* 티칭맵 상세 */}
-          <Route
-            path="/teaching-map/:teachingMapId"
-            element={<TeachingMapDetailPage />}
-          />
-
           {/* 티칭맵 내용 상세 */}
           <Route
             path="/teaching-map/:teachingMapId/content"
             element={<TeachingMapContentPage />}
+          />
+
+          {/* 티칭맵 상세 */}
+          <Route
+            path="/teaching-map/:teachingMapId"
+            element={<TeachingMapDetailPage />}
           />
 
           {/* 휴지통 */}
@@ -125,6 +134,60 @@ function App() {
           <Route
             path="/subscription"
             element={<SubscriptionPage />}
+          />
+
+          {/* 마이페이지 */}
+          <Route
+            path="/mypage"
+            element={<MyPage />}
+          />
+
+          {/* 비로그인 마이페이지 */}
+          <Route
+            path="/mypage/auth-required"
+            element={<MyPageAuthRequiredPage />}
+          />
+
+          {/* 회원 정보 수정 */}
+          <Route
+            path="/mypage/edit"
+            element={<MyPageEditPage />}
+          />
+
+          {/* 알림 설정 */}
+          <Route
+            path="/mypage/notification"
+            element={<MyPageNotificationPage />}
+          />
+
+          {/* 티칭맵 설정 */}
+          <Route
+            path="/mypage/teaching-style"
+            element={<MyPageTeachingStylePage />}
+          />
+
+          {/* 1:1 문의 */}
+          <Route
+            path="/mypage/inquiry"
+            element={<MyPageInquiryPage />}
+          />
+
+          {/* 탈퇴 사유 */}
+          <Route
+            path="/mypage/withdrawal-reason"
+            element={<MyPageWithdrawalReasonPage />}
+          />
+
+          {/* 탈퇴 확인 */}
+          <Route
+            path="/mypage/withdrawal-confirm"
+            element={<MyPageWithdrawalConfirmPage />}
+          />
+
+          {/* 탈퇴 완료 */}
+          <Route
+            path="/mypage/withdrawal-complete"
+            element={<MyPageWithdrawalCompletePage />}
           />
         </Route>
 
