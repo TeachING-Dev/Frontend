@@ -1,10 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import TrashRestoredMenu from "./TrashRestoredMenu";
 import type { TrashTeachingMapItem } from "./trashTypes";
+import formatDeletedAt from "../../utils/formatDeletedAt";
 
 interface TrashTeachingMapCardProps {
   teachingMap: TrashTeachingMapItem;
+  isRestoreMode: boolean;
+  isSelected: boolean;
+  onSelect: (
+    teachingMapId: number,
+  ) => void;
   onRestore: (
     teachingMapId: number,
   ) => void;
@@ -12,6 +22,9 @@ interface TrashTeachingMapCardProps {
 
 const TrashTeachingMapCard = ({
   teachingMap,
+  isRestoreMode,
+  isSelected,
+  onSelect,
   onRestore,
 }: TrashTeachingMapCardProps) => {
   const [isMenuOpen, setIsMenuOpen] =
@@ -61,6 +74,27 @@ const TrashTeachingMapCard = ({
     teachingMap.thumbnails.length -
     visibleThumbnails.length;
 
+  const handleCardClick = () => {
+    if (isRestoreMode) {
+      onSelect(teachingMap.id);
+    }
+  };
+
+  const handleCardKeyDown = (
+    event: React.KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      !isRestoreMode ||
+      (event.key !== "Enter" &&
+        event.key !== " ")
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    onSelect(teachingMap.id);
+  };
+
   const handleRestore = () => {
     onRestore(teachingMap.id);
     setIsMenuOpen(false);
@@ -71,7 +105,33 @@ const TrashTeachingMapCard = ({
       ref={cardRef}
       className="relative"
     >
-      <article className="relative rounded-[10px] bg-[#13151F] p-5 transition-shadow hover:shadow-[0_0_30px_rgba(145,125,236,0.25)]">
+      <article
+        role={
+          isRestoreMode
+            ? "button"
+            : undefined
+        }
+        tabIndex={
+          isRestoreMode ? 0 : undefined
+        }
+        aria-pressed={
+          isRestoreMode
+            ? isSelected
+            : undefined
+        }
+        onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
+        className={[
+          "relative rounded-[10px] border bg-[#13151F] p-5",
+          "transition-[border-color,box-shadow]",
+          isRestoreMode
+            ? "cursor-pointer"
+            : "",
+          isSelected
+            ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
+            : "border-transparent",
+        ].join(" ")}
+      >
         <div className="flex items-center gap-5 pr-[60px]">
           <div className="flex h-[56px] min-w-[112px] items-center rounded-[10px] bg-[#1F212A] px-3">
             {visibleThumbnails.map(
@@ -82,13 +142,16 @@ const TrashTeachingMapCard = ({
                   alt=""
                   className={[
                     "h-9 w-9 rounded-full border-2 border-white object-cover",
-                    index === 0 ? "" : "-ml-3",
+                    index === 0
+                      ? ""
+                      : "-ml-3",
                   ].join(" ")}
                 />
               ),
             )}
 
-            {remainingThumbnailCount > 0 && (
+            {remainingThumbnailCount >
+              0 && (
               <span className="-ml-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#2B2C35] text-[13px] text-white">
                 +{remainingThumbnailCount}
               </span>
@@ -96,9 +159,17 @@ const TrashTeachingMapCard = ({
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="truncate font-suit text-[24px] font-semibold leading-[36px] tracking-[-0.72px] text-[#F5F2FF]">
-              {teachingMap.title}
-            </h2>
+            <div className="flex min-w-0 items-center gap-[10px]">
+              <h2 className="truncate font-suit text-[24px] font-semibold leading-[36px] tracking-[-0.72px] text-[#F5F2FF]">
+                {teachingMap.title}
+              </h2>
+
+              <span className="shrink-0 [font-family:Montserrat,sans-serif] text-[16px] font-normal italic leading-6 tracking-[-0.4px] text-[#F5F2FF]">
+                {formatDeletedAt(
+                  teachingMap.deletedAt,
+                )}
+              </span>
+            </div>
 
             <p className="truncate font-suit text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#42444C]">
               {teachingMap.description}
@@ -106,23 +177,27 @@ const TrashTeachingMapCard = ({
           </div>
         </div>
 
-        <button
-          type="button"
-          aria-label={`${teachingMap.title} 메뉴 열기`}
-          onClick={() =>
-            setIsMenuOpen(
-              (previous) => !previous,
-            )
-          }
-          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center"
-        >
-          <img
-            src="/hambugi.svg"
-            alt=""
-            aria-hidden="true"
-            className="h-9 w-9"
-          />
-        </button>
+        {!isRestoreMode && (
+          <button
+            type="button"
+            aria-label={`${teachingMap.title} 메뉴 열기`}
+            onClick={(event) => {
+              event.stopPropagation();
+
+              setIsMenuOpen(
+                (previous) => !previous,
+              );
+            }}
+            className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center"
+          >
+            <img
+              src="/hambugi.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-9 w-9"
+            />
+          </button>
+        )}
 
         <div className="mt-5 flex items-center gap-8">
           <div className="h-[10px] flex-1 overflow-hidden rounded-full bg-[#4B4D56]">
@@ -136,6 +211,7 @@ const TrashTeachingMapCard = ({
 
           <span className="shrink-0 font-suit text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#917DEC]">
             {teachingMap.currentStep}
+
             <span className="text-[#717379]">
               {" "}
               / {teachingMap.totalStep}단계
@@ -144,7 +220,7 @@ const TrashTeachingMapCard = ({
         </div>
       </article>
 
-      {isMenuOpen && (
+      {isMenuOpen && !isRestoreMode && (
         <div className="absolute right-5 top-[76px] z-30">
           <TrashRestoredMenu
             onRestore={handleRestore}

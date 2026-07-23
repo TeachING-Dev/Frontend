@@ -1,11 +1,13 @@
 interface TeachingMapDeleteToolbarProps {
   selectedCount: number;
+  actionLabel?: string;
   onDeleteClick: () => void;
   onCancelClick: () => void;
 }
 
 const TeachingMapDeleteToolbar = ({
   selectedCount,
+  actionLabel = "삭제하기",
   onDeleteClick,
   onCancelClick,
 }: TeachingMapDeleteToolbarProps) => {
@@ -78,7 +80,7 @@ const TeachingMapDeleteToolbar = ({
                 : "text-white",
             ].join(" ")}
           >
-            삭제하기
+            {actionLabel}
           </span>
         </button>
 

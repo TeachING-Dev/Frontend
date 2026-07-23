@@ -14,63 +14,109 @@ const NICKNAME_MIN_LENGTH = 2;
 const NICKNAME_MAX_LENGTH = 10;
 
 const MyPageEditPage = () => {
-  const imageInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef =
+    useRef<HTMLInputElement>(null);
 
-  const [nickname, setNickname] = useState(DEFAULT_NICKNAME);
-  const [birthDate, setBirthDate] = useState("");
-  const [profileImageUrl, setProfileImageUrl] = useState("");
-  const [nicknameError, setNicknameError] = useState("");
+  const [nickname, setNickname] =
+    useState(DEFAULT_NICKNAME);
 
-  const validateNickname = (value: string) => {
-    const trimmedValue = value.trim();
+  const [birthDate, setBirthDate] =
+    useState("");
 
-    if (trimmedValue.length < NICKNAME_MIN_LENGTH) {
+  const [
+    profileImageUrl,
+    setProfileImageUrl,
+  ] = useState("");
+
+  const [
+    nicknameError,
+    setNicknameError,
+  ] = useState("");
+
+  const validateNickname = (
+    value: string,
+  ) => {
+    const trimmedValue =
+      value.trim();
+
+    if (
+      trimmedValue.length <
+      NICKNAME_MIN_LENGTH
+    ) {
       return "닉네임은 2자 이상 입력해주세요.";
     }
 
-    if (trimmedValue.length > NICKNAME_MAX_LENGTH) {
+    if (
+      trimmedValue.length >
+      NICKNAME_MAX_LENGTH
+    ) {
       return "닉네임은 10자 이하로 입력해주세요.";
     }
 
-    const nicknamePattern = /^[가-힣a-zA-Z0-9]+$/;
+    const nicknamePattern =
+      /^[가-힣a-zA-Z0-9]+$/;
 
-    if (!nicknamePattern.test(trimmedValue)) {
+    if (
+      !nicknamePattern.test(
+        trimmedValue,
+      )
+    ) {
       return "한글, 영문, 숫자만 사용할 수 있어요.";
     }
 
     return "";
   };
 
-  const handleNicknameChange = (value: string) => {
+  const handleNicknameChange = (
+    value: string,
+  ) => {
     setNickname(value);
 
     if (nicknameError) {
-      setNicknameError(validateNickname(value));
+      setNicknameError(
+        validateNickname(value),
+      );
     }
   };
 
-  const handleImageButtonClick = () => {
-    imageInputRef.current?.click();
-  };
+  const handleImageButtonClick =
+    () => {
+      imageInputRef.current?.click();
+    };
 
   const handleProfileImageChange = (
     event: ChangeEvent<HTMLInputElement>,
   ) => {
-    const imageFile = event.target.files?.[0];
+    const imageFile =
+      event.target.files?.[0];
 
     if (!imageFile) {
       return;
     }
 
-    const newImageUrl = URL.createObjectURL(imageFile);
+    const newImageUrl =
+      URL.createObjectURL(imageFile);
+
     setProfileImageUrl(newImageUrl);
   };
 
-  const handleSubmit = () => {
-    const errorMessage = validateNickname(nickname);
+  const isSubmitDisabled =
+    Boolean(
+      validateNickname(nickname),
+    )
 
-    if (errorMessage) {
-      setNicknameError(errorMessage);
+  const handleSubmit = () => {
+    const errorMessage =
+      validateNickname(nickname);
+
+    if (
+      errorMessage ||
+      !birthDate
+    ) {
+      setNicknameError(
+        errorMessage,
+      );
+
       return;
     }
 
@@ -89,24 +135,37 @@ const MyPageEditPage = () => {
 
       <section className="mt-[50px] flex flex-col items-center">
         <ProfileImageEditor
-          nickname={nickname || DEFAULT_NICKNAME}
-          imageUrl={profileImageUrl}
-          onImageClick={handleImageButtonClick}
+          nickname={
+            nickname ||
+            DEFAULT_NICKNAME
+          }
+          imageUrl={
+            profileImageUrl
+          }
+          onImageClick={
+            handleImageButtonClick
+          }
         />
 
         <input
           ref={imageInputRef}
           type="file"
           accept="image/*"
-          onChange={handleProfileImageChange}
+          onChange={
+            handleProfileImageChange
+          }
           className="hidden"
         />
 
         <div className="mt-[30px] flex flex-col gap-[34px]">
           <NicknameField
             value={nickname}
-            errorMessage={nicknameError}
-            onChange={handleNicknameChange}
+            errorMessage={
+              nicknameError
+            }
+            onChange={
+              handleNicknameChange
+            }
           />
 
           <BirthDateField
@@ -117,8 +176,17 @@ const MyPageEditPage = () => {
 
         <button
           type="button"
+          disabled={
+            isSubmitDisabled
+          }
           onClick={handleSubmit}
-          className="mt-[40px] flex h-[60px] w-[736px] items-center justify-center rounded-[10px] bg-[#917DEC] px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-white"
+          className={[
+            "mt-[40px] flex h-[60px] w-[736px] items-center justify-center rounded-[10px]",
+            "px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px]",
+            isSubmitDisabled
+              ? "cursor-not-allowed bg-[#2B2C35] text-[#717379]"
+              : "bg-[#917DEC] text-white hover:opacity-90",
+          ].join(" ")}
         >
           수정하기
         </button>

@@ -14,7 +14,7 @@ const warningDescriptions = [
 const TeachingMapAnalysisPanel = () => {
   return (
     <aside className="flex h-full w-[535px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]">
-      <div className="flex min-h-full flex-col px-[24px] pb-[40px] pt-[20px]">
+      <div className="flex min-h-full flex-col px-[24px] pb-[32px] pt-[20px]">
         <div className="flex items-center justify-between">
           <h2 className="text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#F5F2FF]">
             타카의 분석
@@ -27,7 +27,9 @@ const TeachingMapAnalysisPanel = () => {
           <TeachingMapAnalysisSection
             label="핵심:"
             title="Node.js는 직접 다 처리하지 않고, 이벤트 루프를 통해 순서대로 관리해요."
-            descriptions={coreDescriptions}
+            descriptions={
+              coreDescriptions
+            }
             defaultOpen
           />
         </div>
@@ -36,7 +38,9 @@ const TeachingMapAnalysisPanel = () => {
           <TeachingMapAnalysisSection
             label="주의할 점:"
             title="Blocking과 Non-blocking의 차이를 헷갈리지 않기"
-            descriptions={warningDescriptions}
+            descriptions={
+              warningDescriptions
+            }
           />
 
           <TeachingMapAnalysisSection
@@ -48,7 +52,13 @@ const TeachingMapAnalysisPanel = () => {
           />
         </div>
 
-        <div className="flex flex-1" />
+        <div className="flex min-h-[40px] flex-1" />
+
+        <img
+          src="/teachingTIKI.png"
+          alt="티칭맵 안내 캐릭터"
+          className="mr-[24px] h-[200px] w-[200px] shrink-0 self-end object-contain"
+        />
       </div>
     </aside>
   );

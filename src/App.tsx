@@ -1,4 +1,8 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import MainLayout from "./layouts/MainLayout";
@@ -29,6 +33,7 @@ import TeachingMapContentPage from "./pages/TeachingMapContentPage";
 import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
 import TeachingMapDetailPage from "./pages/TeachingMapDetailPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
+import TemporaryTeachingMapPage from "./pages/TemporaryTeachingMapPage";
 import TrashPage from "./pages/TrashPage";
 
 function App() {
@@ -50,12 +55,13 @@ function App() {
         {/* 구독 완료 */}
         <Route
           path="/subscription/complete"
-          element={<SubscriptionCompletePage />}
+          element={
+            <SubscriptionCompletePage />
+          }
         />
 
         {/* 홈 전용 레이아웃 */}
         <Route element={<HomeLayout />}>
-          {/* 홈 */}
           <Route
             path="/"
             element={<HomePage />}
@@ -64,16 +70,18 @@ function App() {
 
         {/* 분석 전용 레이아웃 */}
         <Route element={<AnalysisLayout />}>
-          {/* 분석 완료 */}
           <Route
             path="/analysis/complete"
-            element={<AnalysisCompletePage />}
+            element={
+              <AnalysisCompletePage />
+            }
           />
         </Route>
 
         {/* 알림 전용 레이아웃 */}
-        <Route element={<NotificationLayout />}>
-          {/* 알림 */}
+        <Route
+          element={<NotificationLayout />}
+        >
           <Route
             path="/notifications"
             element={<NotificationPage />}
@@ -100,7 +108,7 @@ function App() {
             element={<ArchiveDataPage />}
           />
 
-          {/* 티칭맵 */}
+          {/* 티칭맵 목록 */}
           <Route
             path="/teaching-map"
             element={<TeachingMapPage />}
@@ -109,19 +117,41 @@ function App() {
           {/* 티칭맵 생성 */}
           <Route
             path="/teaching-map/create"
-            element={<TeachingMapCreatePage />}
+            element={
+              <TeachingMapCreatePage />
+            }
           />
 
-          {/* 티칭맵 내용 상세 */}
+          {/* 임시 티칭맵 보관함 */}
           <Route
-            path="/teaching-map/:teachingMapId/content"
-            element={<TeachingMapContentPage />}
+            path="/teaching-map/drafts"
+            element={
+              <TemporaryTeachingMapPage />
+            }
+          />
+
+          {/* 임시 티칭맵 수정 */}
+          <Route
+            path="/teaching-map/drafts/:draftId/edit"
+            element={
+              <TeachingMapCreatePage />
+            }
+          />
+
+          {/* 티칭맵 콘텐츠 상세 */}
+          <Route
+            path="/teaching-map/:teachingMapId/:contentId"
+            element={
+              <TeachingMapContentPage />
+            }
           />
 
           {/* 티칭맵 상세 */}
           <Route
             path="/teaching-map/:teachingMapId"
-            element={<TeachingMapDetailPage />}
+            element={
+              <TeachingMapDetailPage />
+            }
           />
 
           {/* 휴지통 */}
@@ -145,7 +175,9 @@ function App() {
           {/* 비로그인 마이페이지 */}
           <Route
             path="/mypage/auth-required"
-            element={<MyPageAuthRequiredPage />}
+            element={
+              <MyPageAuthRequiredPage />
+            }
           />
 
           {/* 회원 정보 수정 */}
@@ -157,43 +189,56 @@ function App() {
           {/* 알림 설정 */}
           <Route
             path="/mypage/notification"
-            element={<MyPageNotificationPage />}
+            element={
+              <MyPageNotificationPage />
+            }
           />
 
           {/* 티칭맵 설정 */}
           <Route
             path="/mypage/teaching-style"
-            element={<MyPageTeachingStylePage />}
+            element={
+              <MyPageTeachingStylePage />
+            }
           />
 
           {/* 1:1 문의 */}
           <Route
             path="/mypage/inquiry"
-            element={<MyPageInquiryPage />}
+            element={
+              <MyPageInquiryPage />
+            }
           />
 
           {/* 탈퇴 사유 */}
           <Route
             path="/mypage/withdrawal-reason"
-            element={<MyPageWithdrawalReasonPage />}
+            element={
+              <MyPageWithdrawalReasonPage />
+            }
           />
 
           {/* 탈퇴 확인 */}
           <Route
             path="/mypage/withdrawal-confirm"
-            element={<MyPageWithdrawalConfirmPage />}
+            element={
+              <MyPageWithdrawalConfirmPage />
+            }
           />
 
           {/* 탈퇴 완료 */}
           <Route
             path="/mypage/withdrawal-complete"
-            element={<MyPageWithdrawalCompletePage />}
+            element={
+              <MyPageWithdrawalCompletePage />
+            }
           />
         </Route>
 
         {/* 챗봇 전용 레이아웃 */}
-        <Route element={<MainLayout insetMenu />}>
-          {/* 챗봇 */}
+        <Route
+          element={<MainLayout insetMenu />}
+        >
           <Route
             path="/chatbot"
             element={<ChatbotPage />}
@@ -209,7 +254,6 @@ function App() {
             />
           }
         >
-          {/* 회원가입 */}
           <Route
             path="/signup"
             element={<SignupPage />}

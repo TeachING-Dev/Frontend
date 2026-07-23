@@ -2,20 +2,28 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import FolderLimitModal from "../components/teachingMap/create/FolderLimitModal";
 import TeachingMapCreateButton from "../components/teachingMap/create/TeachingMapCreateButton";
+
 import TeachingMapCreateHeader, {
   type TeachingMapType,
 } from "../components/teachingMap/create/TeachingMapCreateHeader";
+
 import TeachingMapCreateToast from "../components/teachingMap/create/TeachingMapCreateToast";
 import TeachingMapDescriptionInput from "../components/teachingMap/create/TeachingMapDescriptionInput";
 import TeachingMapFolderSelect from "../components/teachingMap/create/TeachingMapFolderSelect";
 import TeachingMapLoadingModal from "../components/teachingMap/create/TeachingMapLoadingModal";
 import TeachingMapTitleInput from "../components/teachingMap/create/TeachingMapTitleInput";
 import TeachingMapTypeSelect from "../components/teachingMap/create/TeachingMapTypeSelect";
+
 import { ARCHIVE_FOLDERS } from "../constants/archiveFolders";
+import { TEMPORARY_TEACHING_MAPS } from "../constants/temporaryTeachingMaps";
 
 const FREE_TEACHING_MAP_LIMIT = 5;
 
@@ -28,6 +36,22 @@ const DEFAULT_TEACHING_MAP_TYPE: TeachingMapType =
 const TeachingMapCreatePage = () => {
   const navigate = useNavigate();
 
+  const { draftId } = useParams<{
+    draftId?: string;
+  }>();
+
+  const temporaryTeachingMap =
+    TEMPORARY_TEACHING_MAPS.find(
+      (teachingMap) =>
+        teachingMap.id ===
+        Number(draftId),
+    );
+
+  // URL에 draftId가 있으면 데이터 조회 여부와 상관없이
+  // 임시보관함에서 진입한 수정 모드로 처리
+  const isTemporaryEditMode =
+    draftId !== undefined;
+
   const latestFolder =
     ARCHIVE_FOLDERS.length > 0
       ? ARCHIVE_FOLDERS[
@@ -36,13 +60,23 @@ const TeachingMapCreatePage = () => {
       : null;
 
   const defaultFolderId =
-    latestFolder?.id ?? null;
+    temporaryTeachingMap?.folderId ??
+    latestFolder?.id ??
+    null;
 
   const [title, setTitle] =
-    useState("");
+    useState(
+      temporaryTeachingMap?.title ??
+        "",
+    );
 
-  const [description, setDescription] =
-    useState("");
+  const [
+    description,
+    setDescription,
+  ] = useState(
+    temporaryTeachingMap?.description ??
+      "",
+  );
 
   const [
     selectedFolderId,
@@ -55,7 +89,8 @@ const TeachingMapCreatePage = () => {
     selectedType,
     setSelectedType,
   ] = useState<TeachingMapType>(
-    DEFAULT_TEACHING_MAP_TYPE,
+    temporaryTeachingMap?.type ??
+      DEFAULT_TEACHING_MAP_TYPE,
   );
 
   const [
@@ -81,30 +116,36 @@ const TeachingMapCreatePage = () => {
   const canTemporarySave =
     title.trim().length > 0 ||
     description.trim().length > 0 ||
-    selectedFolderId !== defaultFolderId ||
+    selectedFolderId !==
+      defaultFolderId ||
     selectedType !==
       DEFAULT_TEACHING_MAP_TYPE;
 
-  const isFormCompleted = useMemo(() => {
-    return (
-      title.trim().length > 0 &&
-      description.trim().length > 0 &&
-      selectedFolderId !== null &&
-      selectedType !== null
-    );
-  }, [
-    title,
-    description,
-    selectedFolderId,
-    selectedType,
-  ]);
+  const isFormCompleted =
+    useMemo(() => {
+      return (
+        title.trim().length > 0 &&
+        description.trim().length >
+          0 &&
+        selectedFolderId !==
+          null &&
+        selectedType !== null
+      );
+    }, [
+      title,
+      description,
+      selectedFolderId,
+      selectedType,
+    ]);
 
-  const selectedFolder = useMemo(() => {
-    return ARCHIVE_FOLDERS.find(
-      (folder) =>
-        folder.id === selectedFolderId,
-    );
-  }, [selectedFolderId]);
+  const selectedFolder =
+    useMemo(() => {
+      return ARCHIVE_FOLDERS.find(
+        (folder) =>
+          folder.id ===
+          selectedFolderId,
+      );
+    }, [selectedFolderId]);
 
   const showFailureToast = (
     message: string,
@@ -113,29 +154,41 @@ const TeachingMapCreatePage = () => {
     setIsToastOpen(true);
   };
 
-  const handleTemporarySave = () => {
-    if (!canTemporarySave) {
-      return;
-    }
+  const handleTemporarySave =
+    () => {
+      if (!canTemporarySave) {
+        return;
+      }
 
-    const temporaryTeachingMap = {
-      id: Date.now(),
-      title: title.trim(),
-      description:
-        description.trim(),
-      folderId: selectedFolderId,
-      type: selectedType,
-      savedAt:
-        new Date().toISOString(),
+      const temporaryTeachingMapData =
+        {
+          id:
+            temporaryTeachingMap?.id ??
+            Date.now(),
+
+          title: title.trim(),
+
+          description:
+            description.trim(),
+
+          folderId:
+            selectedFolderId,
+
+          type: selectedType,
+
+          savedAt:
+            new Date().toISOString(),
+        };
+
+      console.log(
+        isTemporaryEditMode
+          ? "수정할 임시 티칭맵:"
+          : "임시 저장할 티칭맵:",
+        temporaryTeachingMapData,
+      );
+
+      // TODO: 티칭맵 임시 저장 및 수정 API 연결
     };
-
-    console.log(
-      "임시 저장할 티칭맵:",
-      temporaryTeachingMap,
-    );
-
-    // TODO: 티칭맵 임시 저장 API 연결
-  };
 
   const handleCreate = () => {
     if (!isFormCompleted) {
@@ -193,13 +246,17 @@ const TeachingMapCreatePage = () => {
     // );
   };
 
-  const handleLoadingModalClose = () => {
-    setIsLoadingModalOpen(false);
-  };
+  const handleLoadingModalClose =
+    () => {
+      setIsLoadingModalOpen(
+        false,
+      );
+    };
 
-  const handleLimitModalClose = () => {
-    setIsLimitModalOpen(false);
-  };
+  const handleLimitModalClose =
+    () => {
+      setIsLimitModalOpen(false);
+    };
 
   const handleSubscribe = () => {
     setIsLimitModalOpen(false);
@@ -219,6 +276,16 @@ const TeachingMapCreatePage = () => {
             teachingMapType={
               selectedType
             }
+            backPath={
+              isTemporaryEditMode
+                ? "/teaching-map/drafts"
+                : "/teaching-map"
+            }
+            backLabel={
+              isTemporaryEditMode
+                ? "임시보관함으로 이동"
+                : "티칭맵 목록으로 이동"
+            }
           />
 
           <div className="mt-[56px] flex flex-col gap-10">
@@ -229,11 +296,15 @@ const TeachingMapCreatePage = () => {
 
             <TeachingMapDescriptionInput
               value={description}
-              onChange={setDescription}
+              onChange={
+                setDescription
+              }
             />
 
             <TeachingMapFolderSelect
-              folders={ARCHIVE_FOLDERS}
+              folders={
+                ARCHIVE_FOLDERS
+              }
               selectedFolderId={
                 selectedFolderId
               }
@@ -270,7 +341,9 @@ const TeachingMapCreatePage = () => {
       </div>
 
       <TeachingMapLoadingModal
-        isOpen={isLoadingModalOpen}
+        isOpen={
+          isLoadingModalOpen
+        }
         onClose={
           handleLoadingModalClose
         }
