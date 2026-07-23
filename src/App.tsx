@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+﻿import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
@@ -52,7 +52,7 @@ function App() {
         </Route>
 
         {/* 회원가입 페이지 */}
-        <Route element={<MainLayout showRightIcons={false} showMenuIcon={false} />}>
+        <Route element={<MainLayout showRightIcons={false} />}>
           <Route path="/signup" element={<SignupPage />} />
         </Route>
       </Routes>
