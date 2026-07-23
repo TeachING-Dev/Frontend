@@ -6,8 +6,8 @@ import {
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import MainLayout from "./layouts/MainLayout";
+import HomeLayout from "./layouts/HomeLayout";
 import NotificationLayout from "./layouts/NotificationLayout";
-
 import AnalysisCompletePage from "./pages/AnalysisCompletePage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
 import ArchiveFolderPage from "./pages/ArchiveFolderPage";
@@ -47,7 +47,7 @@ function App() {
         />
 
         {/* 홈 전용 레이아웃 */}
-        <Route element={<MainLayout />}>
+        <Route element={<HomeLayout />}>
           <Route
             path="/"
             element={<HomePage />}

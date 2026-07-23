@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
 
 type ArchiveDataSummaryProps = {
   summary: string;
@@ -36,11 +35,11 @@ const ArchiveDataSummary = ({
       {/* 제목 */}
       <div className="mb-[30px] flex items-center justify-between">
         <div className="flex items-center gap-[8px]">
-          <Sparkles
-            size={24}
-            fill="#FAFAFA"
-            strokeWidth={1.5}
-            className="text-[#FAFAFA]"
+          <img
+            src="/AI.png"
+            alt="AI 요약"
+            aria-hidden="true"
+            className="h-[24px] w-[24px] object-contain"
           />
 
           <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D0D0D2]">
@@ -67,7 +66,7 @@ const ArchiveDataSummary = ({
       </div>
 
       {/* 기존 요약 */}
-      <div className="border-l-[3px] border-[#917DEC] pl-[30px]">
+      <div className="border-l-[2px] border-[#D9CDFF] pl-[30px]">
         <p className="font-['ABeeZee'] text-[20px] leading-[180%] tracking-[-0.4px] text-[#D9CDFF]">
           {summary}
         </p>
@@ -75,13 +74,13 @@ const ArchiveDataSummary = ({
 
       {/* 편집 창 */}
       {isEditing && (
-        <div className="mt-[30px] rounded-[8px] bg-[#24232D] px-[20px] py-[10px]">
+        <div className="mt-[30px] rounded-[8px] bg-[#1F212A] px-[20px] py-[10px]">
           <div className="mb-[20px] flex items-center justify-between">
-            <span className="rounded-[4px] bg-[#31323C] px-[10px] py-[5px] font-['ABeeZee'] text-[18px] italic font-normal leading-[150%] tracking-[-0.54px] text-[#717379]">
+            <span className="rounded-[4px] bg-[#31323C] px-[10px] py-[5px] font-['ABeeZee'] text-[18px] font-normal leading-[150%] tracking-[-0.54px] text-[#717379]">
               직접 수정
             </span>
 
-            <div className="flex items-center rounded-full border border-[#917DEC] px-[6px] gap-[6px]">
+            <div className="flex items-center rounded-full border border-[#917DEC] bg-[#13151F] px-[6px] gap-[4px]">
               <button
                 type="button"
                 onClick={handleReset}
