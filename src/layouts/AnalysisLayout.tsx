@@ -40,7 +40,7 @@ const AnalysisLayout = ({
         src="/Star3.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none fixed bottom-[90px] left-[60px] z-[1] w-[240px]"
+        className="pointer-events-none fixed bottom-[10px] left-[60px] z-[1] w-[240px]"
       />
 
       {/* 실제 페이지 내용 */}

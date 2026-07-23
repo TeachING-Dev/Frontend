@@ -1,10 +1,14 @@
 import { useState } from "react";
 
-export type TeachingMapSortType = "latest" | "oldest";
+export type TeachingMapSortType =
+  | "latest"
+  | "oldest";
 
 interface TeachingMapToolbarProps {
   sortType: TeachingMapSortType;
-  onSortChange: (sortType: TeachingMapSortType) => void;
+  onSortChange: (
+    sortType: TeachingMapSortType,
+  ) => void;
   onDeleteModeStart: () => void;
 }
 
@@ -13,15 +17,23 @@ const TeachingMapToolbar = ({
   onSortChange,
   onDeleteModeStart,
 }: TeachingMapToolbarProps) => {
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [isSortMenuOpen, setIsSortMenuOpen] =
+    useState(false);
 
-  const sortLabel = sortType === "latest" ? "최신순" : "오래된순";
+  const sortLabel =
+    sortType === "latest"
+      ? "최신순"
+      : "오래된순";
 
   const handleSortButtonClick = () => {
-    setIsSortMenuOpen((previousState) => !previousState);
+    setIsSortMenuOpen(
+      (previousState) => !previousState,
+    );
   };
 
-  const handleSortOptionClick = (selectedSortType: TeachingMapSortType) => {
+  const handleSortOptionClick = (
+    selectedSortType: TeachingMapSortType,
+  ) => {
     onSortChange(selectedSortType);
     setIsSortMenuOpen(false);
   };
@@ -34,7 +46,7 @@ const TeachingMapToolbar = ({
           aria-haspopup="listbox"
           aria-expanded={isSortMenuOpen}
           onClick={handleSortButtonClick}
-          className="flex h-[30px] items-center gap-[2px] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
+          className="flex h-[30px] items-center gap-[2px] font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
         >
           <span>{sortLabel}</span>
 
@@ -42,9 +54,13 @@ const TeachingMapToolbar = ({
             src="/dropdown.svg"
             alt=""
             aria-hidden="true"
-            className={`h-[14px] w-5 transition-transform duration-150 ${
-              isSortMenuOpen ? "rotate-180" : ""
-            }`}
+            className={[
+              "h-[14px] w-5",
+              "transition-transform duration-150",
+              isSortMenuOpen
+                ? "rotate-180"
+                : "",
+            ].join(" ")}
           />
         </button>
 
@@ -58,13 +74,21 @@ const TeachingMapToolbar = ({
               <button
                 type="button"
                 role="option"
-                aria-selected={sortType === "latest"}
-                onClick={() => handleSortOptionClick("latest")}
-                className={`flex h-10 w-full items-center px-4 text-left text-[16px] font-medium ${
+                aria-selected={
+                  sortType === "latest"
+                }
+                onClick={() =>
+                  handleSortOptionClick(
+                    "latest",
+                  )
+                }
+                className={[
+                  "flex h-10 w-full items-center px-4",
+                  "text-left font-['SUIT'] text-[16px] font-medium",
                   sortType === "latest"
                     ? "bg-[#2B2C35] text-[#D9CDFF]"
-                    : "text-[#8D8E94] hover:bg-[#24252E]"
-                }`}
+                    : "text-[#8D8E94] hover:bg-[#24252E]",
+                ].join(" ")}
               >
                 최신순
               </button>
@@ -74,13 +98,21 @@ const TeachingMapToolbar = ({
               <button
                 type="button"
                 role="option"
-                aria-selected={sortType === "oldest"}
-                onClick={() => handleSortOptionClick("oldest")}
-                className={`flex h-10 w-full items-center px-4 text-left text-[16px] font-medium ${
+                aria-selected={
+                  sortType === "oldest"
+                }
+                onClick={() =>
+                  handleSortOptionClick(
+                    "oldest",
+                  )
+                }
+                className={[
+                  "flex h-10 w-full items-center px-4",
+                  "text-left font-['SUIT'] text-[16px] font-medium",
                   sortType === "oldest"
                     ? "bg-[#2B2C35] text-[#D9CDFF]"
-                    : "text-[#8D8E94] hover:bg-[#24252E]"
-                }`}
+                    : "text-[#8D8E94] hover:bg-[#24252E]",
+                ].join(" ")}
               >
                 오래된순
               </button>
@@ -92,7 +124,7 @@ const TeachingMapToolbar = ({
       <button
         type="button"
         onClick={onDeleteModeStart}
-        className="flex h-[30px] items-center gap-[3px] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
+        className="flex h-[30px] items-center gap-[3px] font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
       >
         <img
           src="/Trashcan.svg"
@@ -101,7 +133,7 @@ const TeachingMapToolbar = ({
           className="h-[22px] w-[22px]"
         />
 
-        <span>삭제</span>
+        <span>휴지통으로 이동</span>
       </button>
     </div>
   );

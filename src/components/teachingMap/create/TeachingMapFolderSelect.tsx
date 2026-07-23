@@ -24,37 +24,55 @@ const TeachingMapFolderSelect = ({
   selectedFolderId,
   onSelect,
 }: TeachingMapFolderSelectProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const selectRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] =
+    useState(false);
+
+  const selectRef =
+    useRef<HTMLDivElement>(null);
 
   const selectedFolder = folders.find(
-    (folder) => folder.id === selectedFolderId,
+    (folder) =>
+      folder.id === selectedFolderId,
   );
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleOutsideClick = (
+      event: MouseEvent,
+    ) => {
       if (
         selectRef.current &&
-        !selectRef.current.contains(event.target as Node)
+        !selectRef.current.contains(
+          event.target as Node,
+        )
       ) {
         setIsOpen(false);
       }
     };
 
-    const handleEscapeKey = (event: KeyboardEvent) => {
+    const handleEscapeKey = (
+      event: KeyboardEvent,
+    ) => {
       if (event.key === "Escape") {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("keydown", handleEscapeKey);
+    document.addEventListener(
+      "mousedown",
+      handleOutsideClick,
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleEscapeKey,
+    );
 
     return () => {
       document.removeEventListener(
         "mousedown",
         handleOutsideClick,
       );
+
       document.removeEventListener(
         "keydown",
         handleEscapeKey,
@@ -62,14 +80,16 @@ const TeachingMapFolderSelect = ({
     };
   }, []);
 
-  const handleFolderSelect = (folderId: number) => {
+  const handleFolderSelect = (
+    folderId: number,
+  ) => {
     onSelect(folderId);
     setIsOpen(false);
   };
 
   return (
     <section>
-      <h2 className="font-['SUIT_Variable'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]">
+      <h2 className="font-['SUIT'] text-[28px] font-bold leading-[42px] tracking-[-0.84px] text-[#E8E8E8]">
         폴더
       </h2>
 
@@ -81,8 +101,12 @@ const TeachingMapFolderSelect = ({
           type="button"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
-          onClick={() => setIsOpen((previous) => !previous)}
-          className="flex h-[64px] w-full items-center rounded-[3px] bg-[#F0EDF9] px-5 text-left outline-none focus:ring-2 focus:ring-[#917DEC]"
+          onClick={() =>
+            setIsOpen(
+              (previous) => !previous,
+            )
+          }
+          className="flex h-[64px] w-full items-center rounded-[4px] bg-[#F5F2FF] px-5 text-left outline-none"
         >
           <Folder
             size={22}
@@ -91,17 +115,22 @@ const TeachingMapFolderSelect = ({
             aria-hidden="true"
           />
 
-          <span className="ml-2 flex-1 truncate font-['SUIT_Variable'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#46465E]">
-            {selectedFolder?.name ?? "폴더를 선택해주세요."}
+          <span className="ml-2 flex-1 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#46465E]">
+            {selectedFolder?.name ??
+              "폴더를 선택해주세요."}
           </span>
 
           <ChevronDown
             size={24}
             strokeWidth={2.5}
             aria-hidden="true"
-            className={`shrink-0 text-[#46465E] transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={[
+              "shrink-0 text-[#46465E]",
+              "transition-transform duration-150",
+              isOpen
+                ? "rotate-180"
+                : "",
+            ].join(" ")}
           />
         </button>
 
@@ -112,29 +141,36 @@ const TeachingMapFolderSelect = ({
             className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[10px] border border-[#917DEC] bg-[#13151F] shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
           >
             {folders.length === 0 ? (
-              <div className="flex h-12 items-center px-5 font-['SUIT_Variable'] text-[16px] font-medium text-[#8D8E94]">
+              <div className="flex h-12 items-center px-5 font-['SUIT'] text-[16px] font-medium text-[#8D8E94]">
                 생성된 폴더가 없습니다.
               </div>
             ) : (
               <div className="max-h-[192px] overflow-y-auto">
                 {folders.map((folder) => {
                   const isSelected =
-                    folder.id === selectedFolderId;
+                    folder.id ===
+                    selectedFolderId;
 
                   return (
                     <button
                       key={folder.id}
                       type="button"
                       role="option"
-                      aria-selected={isSelected}
-                      onClick={() =>
-                        handleFolderSelect(folder.id)
+                      aria-selected={
+                        isSelected
                       }
-                      className={`flex h-12 w-full items-center px-5 text-left transition ${
+                      onClick={() =>
+                        handleFolderSelect(
+                          folder.id,
+                        )
+                      }
+                      className={[
+                        "flex h-12 w-full items-center px-5 text-left",
+                        "transition-colors",
                         isSelected
                           ? "bg-[#917DEC]/20"
-                          : "hover:bg-white/5"
-                      }`}
+                          : "hover:bg-white/5",
+                      ].join(" ")}
                     >
                       <Folder
                         size={20}
@@ -143,7 +179,7 @@ const TeachingMapFolderSelect = ({
                         aria-hidden="true"
                       />
 
-                      <span className="ml-2 truncate font-['SUIT_Variable'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#E8E8E8]">
+                      <span className="ml-2 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#E8E8E8]">
                         {folder.name}
                       </span>
                     </button>

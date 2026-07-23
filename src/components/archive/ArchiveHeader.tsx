@@ -1,16 +1,12 @@
 import { useState } from "react";
-import {
-  Search,
-  Grid3X3,
-  List,
-} from "lucide-react";
+import { Search } from "lucide-react";
 
 type ArchiveHeaderProps = {
   viewMode: "list" | "grid";
   onViewModeChange: (mode: "list" | "grid") => void;
 };
 
-type SortOption = "최신순" | "최근수정순";
+type SortOption = "최신순" | "이름순" | "오래된순";
 
 const ArchiveHeader = ({
   viewMode,
@@ -44,7 +40,10 @@ const ArchiveHeader = ({
             className="flex-1 bg-transparent text-[24px] font-semibold text-[#5D5D5D] outline-none placeholder:text-gray-500"
           />
 
-          <Search size={24} className="text-[#8B6DFF]" />
+          <Search
+            size={24}
+            className="text-[#8B6DFF]"
+          />
         </div>
 
         {/* 오른쪽 버튼들 */}
@@ -53,13 +52,15 @@ const ArchiveHeader = ({
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsSortOpen((prev) => !prev)}
-              className="flex h-[40px] w-[160px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold text-white"
+              onClick={() =>
+                setIsSortOpen((prev) => !prev)
+              }
+              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
             >
               <span>{sortOption}</span>
 
               <span
-                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white transition-transform ${
+                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white ${
                   isSortOpen ? "rotate-180" : ""
                 }`}
               />
@@ -69,7 +70,9 @@ const ArchiveHeader = ({
               <div className="absolute top-[46px] z-10 w-[160px] overflow-hidden rounded bg-[#24232D] shadow-lg">
                 <button
                   type="button"
-                  onClick={() => handleSortSelect("최신순")}
+                  onClick={() =>
+                    handleSortSelect("최신순")
+                  }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
                   최신순
@@ -78,11 +81,21 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("최근수정순")
+                    handleSortSelect("이름순")
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
-                  최근수정순
+                  이름순
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSortSelect("오래된순")
+                  }
+                  className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
+                >
+                  오래된순
                 </button>
               </div>
             )}
@@ -92,26 +105,38 @@ const ArchiveHeader = ({
           <div className="flex items-center gap-[10px] p-1">
             <button
               type="button"
-              onClick={() => onViewModeChange("grid")}
+              onClick={() =>
+                onViewModeChange("grid")
+              }
               className={`rounded p-1 transition-colors ${
                 viewMode === "grid"
                   ? "bg-[#3A3847] text-[#A88CFF]"
                   : "text-white hover:bg-[#3A3847]"
               }`}
             >
-              <Grid3X3 size={28} strokeWidth={2.5} />
+              <img
+                src="/grid.png"
+                alt="그리드 보기"
+                className="h-9 w-9"
+              />
             </button>
 
             <button
               type="button"
-              onClick={() => onViewModeChange("list")}
+              onClick={() =>
+                onViewModeChange("list")
+              }
               className={`rounded p-1 transition-colors ${
                 viewMode === "list"
                   ? "bg-[#3A3847] text-[#A88CFF]"
                   : "text-white hover:bg-[#3A3847]"
               }`}
             >
-              <List size={28} strokeWidth={2.5} />
+              <img
+                src="/list.png"
+                alt="리스트 보기"
+                className="h-9 w-9"
+              />
             </button>
           </div>
         </div>

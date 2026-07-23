@@ -7,15 +7,28 @@ type ChatBubbleProps = {
 };
 
 const ChatBubble = ({ align, children, className = "" }: ChatBubbleProps) => {
-  const justifyClass = align === "right" ? "justify-end pl-[48%] pr-1" : "justify-start pl-0 pr-[43%]";
+  const justifyClass =
+    align === "right"
+      ? "justify-end pl-[48%] pr-1"
+      : "justify-start pl-0 pr-[43%]";
 
   return (
     <div className={`flex w-full ${justifyClass}`}>
-      <div
-        className={`rounded-[5px] bg-zinc-900 px-4 py-3 font-['SUIT_Variable'] text-sm font-normal leading-5 text-white ${className}`}
-      >
-        {children}
-      </div>
+      {align === "left" ? (
+        <div className="rounded-[10px] bg-gradient-to-r from-[#FFFFFF]/20 to-[#4E4E4E]/30 p-[1px]">
+          <div
+            className={`rounded-[9px] bg-[#13151F] px-4 py-3 font-['SUIT'] text-sm font-normal leading-5 text-white ${className}`}
+          >
+            {children}
+          </div>
+        </div>
+      ) : (
+        <div
+          className={`rounded-[10px] bg-[#13151F] px-4 py-3 font-['SUIT'] text-sm font-normal leading-5 text-white ${className}`}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 };

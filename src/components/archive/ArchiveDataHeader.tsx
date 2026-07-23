@@ -35,7 +35,7 @@ const ArchiveDataHeader = ({
             <img
               src="/youtube-app-icon.png"
               alt="YouTube"
-              className="h-[55px] w-[55px] object-contain"
+              className="h-[32px] w-[32px] object-contain rounded-full"
             />
           </div>
 

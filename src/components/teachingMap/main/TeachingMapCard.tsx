@@ -150,7 +150,7 @@ const TeachingMapCard = ({
       className={[
         "flex w-full cursor-pointer flex-col gap-[10px]",
         "rounded-[10px] border bg-[#13151F] p-5 outline-none",
-        "transition-[border-color,box-shadow,background-color,transform]",
+        "transition-[border-color,box-shadow,background-color]",
         "focus-visible:ring-2 focus-visible:ring-[#917DEC]",
         isDeleteMode && isSelected
           ? [
@@ -159,22 +159,22 @@ const TeachingMapCard = ({
             ].join(" ")
           : "border-transparent",
         !isDeleteMode
-          ? "hover:-translate-y-[1px] hover:bg-[#171822]"
+          ? "hover:bg-[#171822]"
           : "",
       ].join(" ")}
     >
       <div className="flex min-w-0 items-start gap-[10px]">
-        <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[10px] bg-[#1D1E28]">
+        <div className="flex h-[60px] w-[98px] shrink-0 flex-col items-start justify-center gap-[10px] rounded-[10px] bg-[#1F212A] p-[10px]">
           <img
             src={thumbnailSrc}
             alt=""
             aria-hidden="true"
-            className="h-9 w-9 object-contain"
+            className="h-[40px] w-[78px] object-contain"
           />
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-['SUIT_Variable'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
+          <h2 className="truncate font-['SUIT'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
             {title}
           </h2>
 
@@ -199,7 +199,7 @@ const TeachingMapCard = ({
 
         <div className="flex min-w-[90px] shrink-0 justify-end font-['SUIT'] text-[16px] font-normal leading-6 tracking-[-0.48px]">
           {isCompleted ? (
-            <span className="text-[#917DEC]">
+            <span className="flex h-[30px] w-[62px] flex-col justify-center text-[#917DEC]">
               Success !
             </span>
           ) : (

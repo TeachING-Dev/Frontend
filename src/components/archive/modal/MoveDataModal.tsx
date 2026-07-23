@@ -151,7 +151,7 @@ const MoveDataModal = ({
                       className="h-[18px] w-[18px] shrink-0 object-contain"
                     />
 
-                    <span className="truncate font-['ABeeZee'] text-[18px] italic text-[#66666D]">
+                    <span className="font-['ABeeZee'] text-[18px] italic text-[#66666D]">
                       {folder.name}
                     </span>
                   </button>

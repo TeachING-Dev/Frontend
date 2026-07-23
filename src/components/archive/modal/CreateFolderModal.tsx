@@ -115,8 +115,7 @@ const CreateFolderModal = ({
           type="button"
           onClick={handleCreate}
           disabled={!isValid}
-          className="mt-auto h-[36px] w-full shrink-0 rounded-[9px] bg-[#9F82FF] text-[16px] font-medium text-white transition hover:bg-[#866FF1] disabled:cursor-not-allowed disabled:opacity-40"
-        >
+          className="mt-auto h-[40px] w-full shrink-0 rounded-[5px] bg-[#917DEC] text-[16px] font-medium text-white transition hover:bg-[#866FF1] disabled:cursor-not-allowed disabled:bg-[#42444C] disabled:hover:bg-[#42444C]"        >
           생성
         </button>
       </div>
