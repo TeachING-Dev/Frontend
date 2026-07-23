@@ -4,12 +4,13 @@ import Header from "../components/common/Header";
 type MainLayoutProps = {
   showRightIcons?: boolean;
   insetMenu?: boolean;
+  showMenuIcon?: boolean;
 };
 
-const MainLayout = ({ showRightIcons = true, insetMenu = false }: MainLayoutProps) => {
+const MainLayout = ({ showRightIcons = true, insetMenu = false, showMenuIcon = true }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-[#090713]">
-      <Header showRightIcons={showRightIcons} insetMenu={insetMenu} />
+      <Header showRightIcons={showRightIcons} insetMenu={insetMenu} showMenuIcon={showMenuIcon} />
 
       <main className="min-h-[calc(100vh-64px)] bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)]">
         <Outlet />

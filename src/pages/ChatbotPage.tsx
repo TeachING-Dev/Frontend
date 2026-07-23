@@ -49,13 +49,6 @@ const ChatbotPage = () => {
   const hasConversation = messages.length > 0;
 
   useEffect(() => {
-    const toggleNav = () => setIsNavOpen((prevIsOpen) => !prevIsOpen);
-
-    window.addEventListener("toggle-chatbot-nav", toggleNav);
-    return () => window.removeEventListener("toggle-chatbot-nav", toggleNav);
-  }, []);
-
-  useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
 
     if (!chatScrollElement) {
@@ -137,6 +130,7 @@ const ChatbotPage = () => {
       <ChatSidebar
         isOpen={isNavOpen}
         files={mockFiles}
+        onOpen={() => setIsNavOpen(true)}
         onClose={() => setIsNavOpen(false)}
         onCreateRoomClick={() => setIsRoomLimitModalOpen(true)}
       />
@@ -177,17 +171,19 @@ const ChatbotPage = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center pb-24">
-            <img
-              src="/StudyTiki.png"
-              alt="열공 티키"
-              className="mb-4 h-[144px] w-[240px] object-contain"
-            />
+          <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
+            <div className="flex h-[220px] w-[360px] shrink-0 items-center justify-center pb-[14px] ">
+              <img
+                src="/ChatbotEmpty.png"
+                alt="열공 티키"
+                className="h-full w-full object-cover"
+              />
+            </div>
 
-            <h1 className="font-['SUIT_Variable'] text-base font-semibold leading-6 text-white">
+            <h1 className="text-center font-['SUIT'] text-[18px] font-normal leading-[180%] tracking-normal text-white">
               내 자료에서 답을 찾아드립니다.
             </h1>
-            <p className="mt-2 text-center font-['SUIT_Variable'] text-xs font-semibold leading-5 text-zinc-700">
+            <p className="mt-2 text-center font-['SUIT'] text-[12px] font-normal leading-4 text-[#717379]">
               정확한 키워드를 몰라도 괜찮아요 !
               <br />
               대략적인 상황이나 기억나는 단서만 입력하면, 관련 자료를 찾아 답변해 드립니다.
@@ -203,15 +199,32 @@ const ChatbotPage = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="absolute bottom-6 left-20 right-20 flex justify-center"
+          className="fixed bottom-6 left-1/2 flex w-full -translate-x-1/2 justify-center"
         >
-          <label className="flex h-12 w-full max-w-[976px] items-center justify-between rounded-[5px] bg-[#0B0A18] py-2.5 pl-5 pr-3 shadow-[0_0_42px_rgba(145,125,236,0.7)] outline outline-1 outline-offset-[-1px] outline-[#917DEC]">
+          <label
+  className="
+    flex
+    h-12
+    w-full
+    max-w-[976px]
+    items-center
+    justify-between
+    rounded-[10px]
+    border-[2px]
+    border-[#917DEC]
+    bg-[#13151F]
+    py-2.5
+    pl-5
+    pr-3
+    shadow-[0_0_60px_0_rgba(145,125,236,0.7)]
+  "
+>
             <input
               type="text"
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="궁금한 점을 물어보세요"
-              className="flex-1 bg-transparent font-['SUIT_Variable'] text-sm font-semibold leading-5 text-violet-50 outline-none placeholder:text-zinc-700"
+              className="flex-1 bg-transparent font-['SUIT'] text-sm font-normal leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
             />
             <button
               type="submit"
@@ -228,7 +241,6 @@ const ChatbotPage = () => {
         isOpen={isQuestionLimitModalOpen}
         title="무료 요금제는 하루에 5개까지 질문할 수 있어요."
         description={limitDescription}
-        size="small"
         onClose={() => setIsQuestionLimitModalOpen(false)}
         onSubscribe={handleSubscribeClick}
       />

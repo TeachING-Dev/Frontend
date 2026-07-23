@@ -1,21 +1,26 @@
 ﻿type HeaderProps = {
   showRightIcons?: boolean;
   insetMenu?: boolean;
+  showMenuIcon?: boolean;
 };
 
-const Header = ({ showRightIcons = true, insetMenu = false }: HeaderProps) => {
+const Header = ({ showRightIcons = true, insetMenu = false, showMenuIcon = true }: HeaderProps) => {
   return (
     <header className="relative flex h-16 items-center justify-between bg-[#090713] px-8 shadow-[0_0_80px_rgba(145,125,236,0.1)]">
-      <button
-        type="button"
-        aria-label="메뉴"
-        onClick={() => window.dispatchEvent(new Event("toggle-chatbot-nav"))}
-        className={`flex size-10 items-center justify-center overflow-hidden hover:opacity-80 ${
-          insetMenu ? "ml-16" : ""
-        }`}
-      >
-        <img src="/MenuDefault.svg" alt="" className="size-6" />
-      </button>
+      {showMenuIcon ? (
+        <button
+          type="button"
+          aria-label="메뉴"
+          onClick={() => window.dispatchEvent(new Event("toggle-chatbot-nav"))}
+          className={`flex size-10 items-center justify-center overflow-hidden hover:opacity-80 ${
+            insetMenu ? "ml-16" : ""
+          }`}
+        >
+          <img src="/MenuDefault.svg" alt="" className="size-6" />
+        </button>
+      ) : (
+        <div className="size-10" aria-hidden="true" />
+      )}
 
       <div className="absolute left-1/2 -translate-x-1/2">
         <img src="/Logo.png" alt="TeachING Logo" className="h-9 w-auto" />

@@ -52,7 +52,7 @@ function App() {
         </Route>
 
         {/* 회원가입 페이지 */}
-        <Route element={<MainLayout showRightIcons={false} />}>
+        <Route element={<MainLayout showRightIcons={false} showMenuIcon={false} />}>
           <Route path="/signup" element={<SignupPage />} />
         </Route>
       </Routes>
