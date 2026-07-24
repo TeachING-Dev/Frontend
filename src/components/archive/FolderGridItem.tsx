@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import FolderPopover from "./popover/FolderPopover";
 
@@ -22,14 +22,17 @@ const FolderGridItem = ({
   const navigate = useNavigate();
 
   const handleFolderClick = () => {
-    navigate("/archive/folder");
+    navigate(`/archive/folder/${id}`);
   };
 
   const handleKeyDown = (
-    e: KeyboardEvent<HTMLDivElement>,
+    event: KeyboardEvent<HTMLDivElement>,
   ) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+      event.preventDefault();
       handleFolderClick();
     }
   };
@@ -40,9 +43,9 @@ const FolderGridItem = ({
       tabIndex={0}
       onClick={handleFolderClick}
       onKeyDown={handleKeyDown}
-      className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] py-[56px] transition hover:border-[#8B6DFF]"
+      className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] py-[26px] transition hover:border-[#8B6DFF]"
     >
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col justify-between">
         {/* 첫 번째 줄 */}
         <div className="flex items-center justify-between">
           <h3 className="truncate text-[24px] font-semibold leading-none text-white">
@@ -53,11 +56,16 @@ const FolderGridItem = ({
             trigger={
               <button
                 type="button"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(event) =>
+                  event.stopPropagation()
+                }
                 className="flex h-8 w-8 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
-                aria-label="폴더 메뉴"
+                aria-label={`${name} 폴더 메뉴`}
               >
-                <EllipsisVertical size={20} strokeWidth={4} />
+                <EllipsisVertical
+                  size={20}
+                  strokeWidth={4}
+                />
               </button>
             }
             onMoveToTrash={() => {
@@ -68,7 +76,10 @@ const FolderGridItem = ({
 
         {/* 두 번째 줄 */}
         <div className="flex items-center gap-4 text-[16px] text-[#FAFAFA]">
-          <span>{String(count).padStart(2, "0")}개 항목</span>
+          <span>
+            {String(count).padStart(2, "0")}개 항목
+          </span>
+
           <span>{date}</span>
         </div>
       </div>
