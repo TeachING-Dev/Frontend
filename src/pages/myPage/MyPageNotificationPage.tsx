@@ -1,11 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  getMyProfile,
+  updateNotifications,
+} from "../../api/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import NotificationToggle from "../../components/myPage/NotificationToggle";
 
 const MyPageNotificationPage = () => {
   const [isTeachingMapNotificationEnabled, setIsTeachingMapNotificationEnabled] =
     useState(true);
+
+  useEffect(() => {
+    const loadNotificationSetting = async () => {
+      try {
+        const profile = await getMyProfile();
+        setIsTeachingMapNotificationEnabled(
+          profile.notificationEnabled,
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadNotificationSetting();
+  }, []);
+
+  const handleNotificationChange = async (
+    enabled: boolean,
+  ) => {
+    const previousValue =
+      isTeachingMapNotificationEnabled;
+
+    setIsTeachingMapNotificationEnabled(enabled);
+
+    try {
+      await updateNotifications(enabled);
+    } catch (error) {
+      setIsTeachingMapNotificationEnabled(
+        previousValue,
+      );
+      console.error(error);
+    }
+  };
 
   return (
     <main className="min-h-full px-[160px] pb-[120px] pt-[40px]">
@@ -18,7 +55,7 @@ const MyPageNotificationPage = () => {
 
         <NotificationToggle
           checked={isTeachingMapNotificationEnabled}
-          onChange={setIsTeachingMapNotificationEnabled}
+          onChange={handleNotificationChange}
         />
       </section>
     </main>
