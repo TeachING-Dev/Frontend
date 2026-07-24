@@ -4,7 +4,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { withdrawMe } from "../../api/users";
+import { withdrawMe } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
 

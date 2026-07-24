@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getMyProfile } from "../../api/users";
+import { getMyProfile } from "../../apis/users";
 import MyPageMenuList from "../../components/myPage/MyPageMenuList";
 import MyPageProfile from "../../components/myPage/MyPageProfile";
 

@@ -4,7 +4,7 @@ import {
   getMyProfile,
   type TeacherPersona,
   updateTeacherPersona,
-} from "../../api/users";
+} from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import TeachingStyleSelector, {
   type TeachingStyle,

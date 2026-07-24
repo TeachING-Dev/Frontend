@@ -10,7 +10,7 @@ import {
   checkNickname,
   getMyProfile,
   updateMyProfile,
-} from "../../api/users";
+} from "../../apis/users";
 import BirthDateField from "../../components/myPage/BirthDateField";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import NicknameField from "../../components/myPage/NicknameField";

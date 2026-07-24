@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   getMyProfile,
   updateNotifications,
-} from "../../api/users";
+} from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import NotificationToggle from "../../components/myPage/NotificationToggle";
 

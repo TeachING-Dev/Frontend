@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   getInquiryContact,
   type InquiryContact,
-} from "../../api/users";
+} from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 
 const MyPageInquiryPage = () => {
