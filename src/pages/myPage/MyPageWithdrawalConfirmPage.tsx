@@ -1,20 +1,54 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
+import { withdrawMe } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
 
 const MyPageWithdrawalConfirmPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if (!isConfirmed) {
       return;
     }
 
-    navigate("/mypage/withdrawal-complete");
+    const withdrawal = location.state as
+      | {
+          reason?: string;
+          reasonDetail?: string;
+        }
+      | null;
+
+    if (!withdrawal?.reason) {
+      navigate("/mypage/withdrawal-reason");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await withdrawMe({
+        reason: withdrawal.reason,
+        reasonDetail:
+          withdrawal.reasonDetail ?? "",
+        isConfirmed,
+      });
+      navigate("/mypage/withdrawal-complete", {
+        replace: true,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,12 +74,12 @@ const MyPageWithdrawalConfirmPage = () => {
 
       <button
         type="button"
-        disabled={!isConfirmed}
+        disabled={!isConfirmed || isSubmitting}
         onClick={handleNextClick}
         className={[
           "mx-auto mt-[590px] flex h-[60px] w-[640px] items-center justify-center rounded-[5px] px-[50px] py-[20px]",
           "text-[20px] font-medium leading-[150%] tracking-[-0.6px]",
-          isConfirmed
+          isConfirmed && !isSubmitting
             ? "bg-[#917DEC] text-[#FAFAFA]"
             : "cursor-default bg-[#1F212A] text-[#717379]",
         ].join(" ")}

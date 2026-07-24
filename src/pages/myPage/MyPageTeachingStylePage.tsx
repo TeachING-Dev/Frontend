@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  getMyProfile,
+  type TeacherPersona,
+  updateTeacherPersona,
+} from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import TeachingStyleSelector, {
   type TeachingStyle,
@@ -9,14 +14,53 @@ const MyPageTeachingStylePage = () => {
   const [selectedStyle, setSelectedStyle] =
     useState<TeachingStyle>("friendly");
 
-  const handleTeachingStyleChange = (
+  useEffect(() => {
+    const loadTeacherPersona = async () => {
+      try {
+        const profile = await getMyProfile();
+        const personaToStyle: Record<
+          TeacherPersona,
+          TeachingStyle
+        > = {
+          FRIENDLY: "friendly",
+          STRICT: "strict",
+          CHEERING: "supportive",
+        };
+
+        setSelectedStyle(
+          personaToStyle[profile.teacherPersona],
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadTeacherPersona();
+  }, []);
+
+  const handleTeachingStyleChange = async (
     teachingStyle: TeachingStyle,
   ) => {
+    const previousStyle = selectedStyle;
+    const styleToPersona: Record<
+      TeachingStyle,
+      TeacherPersona
+    > = {
+      friendly: "FRIENDLY",
+      strict: "STRICT",
+      supportive: "CHEERING",
+    };
+
     setSelectedStyle(teachingStyle);
 
-    console.log({
-      teachingStyle,
-    });
+    try {
+      await updateTeacherPersona(
+        styleToPersona[teachingStyle],
+      );
+    } catch (error) {
+      setSelectedStyle(previousStyle);
+      console.error(error);
+    }
   };
 
   return (

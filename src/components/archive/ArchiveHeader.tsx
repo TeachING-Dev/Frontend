@@ -1,23 +1,31 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 
+import type { FolderSort } from "../../apis/folder";
+
 type ArchiveHeaderProps = {
   viewMode: "list" | "grid";
   onViewModeChange: (mode: "list" | "grid") => void;
+  sort: FolderSort;
+  onSortChange: (sort: FolderSort) => void;
 };
 
-type SortOption = "최신순" | "이름순" | "오래된순";
+const sortLabel: Record<FolderSort, string> = {
+  recent: "최신순",
+  name: "이름순",
+  oldest: "오래된순",
+};
 
 const ArchiveHeader = ({
   viewMode,
   onViewModeChange,
+  sort,
+  onSortChange,
 }: ArchiveHeaderProps) => {
-  const [sortOption, setSortOption] =
-    useState<SortOption>("최신순");
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const handleSortSelect = (option: SortOption) => {
-    setSortOption(option);
+  const handleSortSelect = (option: FolderSort) => {
+    onSortChange(option);
     setIsSortOpen(false);
   };
 
@@ -57,10 +65,10 @@ const ArchiveHeader = ({
               }
               className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
             >
-              <span>{sortOption}</span>
+              <span>{sortLabel[sort]}</span>
 
               <span
-                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white ${
+                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white transition-transform ${
                   isSortOpen ? "rotate-180" : ""
                 }`}
               />
@@ -71,7 +79,7 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("최신순")
+                    handleSortSelect("recent")
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -81,7 +89,7 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("이름순")
+                    handleSortSelect("name")
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -91,7 +99,7 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("오래된순")
+                    handleSortSelect("oldest")
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >

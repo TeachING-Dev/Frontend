@@ -34,7 +34,14 @@ const MyPageWithdrawalReasonPage = () => {
       return;
     }
 
-    navigate("/mypage/withdrawal-confirm");
+    navigate("/mypage/withdrawal-confirm", {
+      state: {
+        reason: selectedReason,
+        reasonDetail: isOtherReasonSelected
+          ? otherReason.trim()
+          : "",
+      },
+    });
   };
 
   return (

@@ -1,10 +1,31 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { getMyProfile } from "../../apis/users";
 import MyPageMenuList from "../../components/myPage/MyPageMenuList";
 import MyPageProfile from "../../components/myPage/MyPageProfile";
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
+  const [profileImageUrl, setProfileImageUrl] =
+    useState("");
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getMyProfile();
+        setNickname(profile.nickname);
+        setProfileImageUrl(
+          profile.profileImageUrl,
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadProfile();
+  }, []);
 
   const handleLogout = () => {
     navigate("/login");
@@ -21,7 +42,10 @@ const MyPage = () => {
       </h1>
 
       <section className="mt-[50px] flex flex-col items-center">
-        <MyPageProfile nickname="타카" />
+        <MyPageProfile
+          nickname={nickname}
+          imageUrl={profileImageUrl}
+        />
 
         <div className="mt-[40px]">
           <MyPageMenuList />
