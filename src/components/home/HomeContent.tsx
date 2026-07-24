@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import RecentKnowledgeList from "./RecentKnowledgeList";
 import TeachingMapList from "./TeachingMapList";
@@ -9,6 +10,7 @@ type HomeTab = "knowledge" | "teachingMap";
 const HomeContent = () => {
   const [selectedTab, setSelectedTab] =
     useState<HomeTab>("knowledge");
+  const navigate = useNavigate();
 
   const tabButtonClass =
     "flex h-[40px] items-center gap-[10px] rounded-[5px] border px-[10px] py-[5px] transition-colors";
@@ -61,6 +63,7 @@ const HomeContent = () => {
 
         <button
           type="button"
+          onClick={() => navigate("/teaching-map")}
           className="flex items-center gap-1 font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#917DEC] transition-colors hover:text-[#A995FF]"
         >
           전체보기

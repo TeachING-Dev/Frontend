@@ -7,18 +7,25 @@ import {
 
 interface TeachingMapDeleteModalProps {
   isOpen: boolean;
+  confirmLabel?: string;
   onClose: () => void;
   onDeleteConfirm: () => void;
 }
 
 const TeachingMapDeleteModal = ({
   isOpen,
+  confirmLabel = "삭제하기",
   onClose,
   onDeleteConfirm,
 }: TeachingMapDeleteModalProps) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const cancelButtonRef = useRef<HTMLButtonElement>(null);
-  const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
+  const modalRef =
+    useRef<HTMLDivElement>(null);
+
+  const cancelButtonRef =
+    useRef<HTMLButtonElement>(null);
+
+  const previouslyFocusedElementRef =
+    useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -26,26 +33,41 @@ const TeachingMapDeleteModal = ({
     }
 
     previouslyFocusedElementRef.current =
-      document.activeElement instanceof HTMLElement
+      document.activeElement instanceof
+      HTMLElement
         ? document.activeElement
         : null;
 
-    const previousOverflow = document.body.style.overflow;
+    const previousOverflow =
+      document.body.style.overflow;
 
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow =
+      "hidden";
+
     cancelButtonRef.current?.focus();
 
-    const handleWindowKeyDown = (event: globalThis.KeyboardEvent) => {
+    const handleWindowKeyDown = (
+      event: globalThis.KeyboardEvent,
+    ) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
 
-    window.addEventListener("keydown", handleWindowKeyDown);
+    window.addEventListener(
+      "keydown",
+      handleWindowKeyDown,
+    );
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleWindowKeyDown);
+      document.body.style.overflow =
+        previousOverflow;
+
+      window.removeEventListener(
+        "keydown",
+        handleWindowKeyDown,
+      );
+
       previouslyFocusedElementRef.current?.focus();
     };
   }, [isOpen, onClose]);
@@ -54,8 +76,13 @@ const TeachingMapDeleteModal = ({
     return null;
   }
 
-  const handleOverlayMouseDown = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
+  const handleOverlayMouseDown = (
+    event: MouseEvent<HTMLDivElement>,
+  ) => {
+    if (
+      event.target ===
+      event.currentTarget
+    ) {
       onClose();
     }
   };
@@ -72,19 +99,35 @@ const TeachingMapDeleteModal = ({
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
 
-    if (!focusableElements || focusableElements.length === 0) {
+    if (
+      !focusableElements ||
+      focusableElements.length === 0
+    ) {
       return;
     }
 
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+    const firstElement =
+      focusableElements[0];
 
-    if (event.shiftKey && document.activeElement === firstElement) {
+    const lastElement =
+      focusableElements[
+        focusableElements.length - 1
+      ];
+
+    if (
+      event.shiftKey &&
+      document.activeElement ===
+        firstElement
+    ) {
       event.preventDefault();
       lastElement.focus();
     }
 
-    if (!event.shiftKey && document.activeElement === lastElement) {
+    if (
+      !event.shiftKey &&
+      document.activeElement ===
+        lastElement
+    ) {
       event.preventDefault();
       firstElement.focus();
     }
@@ -93,7 +136,9 @@ const TeachingMapDeleteModal = ({
   return (
     <div
       role="presentation"
-      onMouseDown={handleOverlayMouseDown}
+      onMouseDown={
+        handleOverlayMouseDown
+      }
       className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(11,10,24,0.9)]"
     >
       <div
@@ -102,7 +147,9 @@ const TeachingMapDeleteModal = ({
         aria-modal="true"
         aria-labelledby="teaching-map-delete-modal-title"
         aria-describedby="teaching-map-delete-modal-description"
-        onKeyDown={handleModalKeyDown}
+        onKeyDown={
+          handleModalKeyDown
+        }
         className={[
           "flex w-[449px] flex-col items-start gap-[10px]",
           "rounded-[10px] bg-[#0B0A18] px-5 pb-5 pt-[30px]",
@@ -121,7 +168,8 @@ const TeachingMapDeleteModal = ({
             id="teaching-map-delete-modal-description"
             className="w-full text-center font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#717379]"
           >
-            삭제한 티칭맵은 휴지통에서 30일간 보관됩니다.
+            삭제한 티칭맵은 휴지통에서
+            30일간 보관됩니다.
           </p>
         </div>
 
@@ -152,7 +200,9 @@ const TeachingMapDeleteModal = ({
 
           <button
             type="button"
-            onClick={onDeleteConfirm}
+            onClick={
+              onDeleteConfirm
+            }
             className={[
               "flex h-11 flex-1 items-center justify-center",
               "rounded-[5px] bg-[#917DEC] p-[10px]",
@@ -161,7 +211,7 @@ const TeachingMapDeleteModal = ({
               "transition-colors hover:bg-[#856FE5]",
             ].join(" ")}
           >
-            삭제하기
+            {confirmLabel}
           </button>
         </div>
       </div>

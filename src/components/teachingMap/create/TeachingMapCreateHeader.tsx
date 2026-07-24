@@ -7,6 +7,8 @@ export type TeachingMapType =
 
 type TeachingMapCreateHeaderProps = {
   teachingMapType: TeachingMapType;
+  backPath?: string;
+  backLabel?: string;
 };
 
 const TYPE_LABELS: Record<
@@ -19,11 +21,13 @@ const TYPE_LABELS: Record<
 
 const TeachingMapCreateHeader = ({
   teachingMapType,
+  backPath = "/teaching-map",
+  backLabel = "티칭맵 목록으로 이동",
 }: TeachingMapCreateHeaderProps) => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate("/teaching-map");
+    navigate(backPath);
   };
 
   return (
@@ -39,9 +43,7 @@ const TeachingMapCreateHeader = ({
           aria-hidden="true"
         />
 
-        <span>
-          티칭맵 목록으로 이동
-        </span>
+        <span>{backLabel}</span>
       </button>
 
       <div className="mt-2 flex items-center gap-3">
@@ -50,7 +52,11 @@ const TeachingMapCreateHeader = ({
         </h1>
 
         <span className="flex h-[42px] items-center justify-center rounded-[5px] border border-[#917DEC] px-5 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#917DEC]">
-          {TYPE_LABELS[teachingMapType]}
+          {
+            TYPE_LABELS[
+              teachingMapType
+            ]
+          }
         </span>
       </div>
     </header>
