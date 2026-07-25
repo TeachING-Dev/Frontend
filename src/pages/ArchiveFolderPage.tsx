@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useCallback, useEffect, useState,}  from "react";
+import { useNavigate, useParams, } from "react-router-dom";
+import { getFolder, updateFolderName, type Folder, } from "../apis/folder";
 import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
-import ArchiveDataList, {
-  type ArchiveData,
-} from "../components/archive/ArchiveDataList";
+import ArchiveDataList, { type ArchiveData, } from "../components/archive/ArchiveDataList";
 import EmptyArchiveData from "../components/archive/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import Toast from "../components/common/Toast";
@@ -34,7 +32,8 @@ const dummyData: ArchiveData[] = [
     id: 3,
     tag: "TypeScript",
     date: "2026-05-05",
-    title: "TypeScript를 사용하는 이유와 실전 활용법",
+    title:
+      "TypeScript를 사용하는 이유와 실전 활용법",
     description:
       "JavaScript와 비교하며 타입 시스템의 장점, 인터페이스, 제네릭 등 실제 프로젝트에서 자주 사용하는 기능들을 소개합니다.",
   },
@@ -71,8 +70,18 @@ const folderOptions = [
 const ArchiveFolderPage = () => {
   const navigate = useNavigate();
 
-  const [folderName, setFolderName] =
-    useState("Backend");
+  const { folderId } = useParams<{
+    folderId: string;
+  }>();
+
+  const [folder, setFolder] =
+    useState<Folder | null>(null);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
   const [selectMode, setSelectMode] =
     useState<SelectMode>(null);
@@ -80,19 +89,86 @@ const ArchiveFolderPage = () => {
   const [isMoveModalOpen, setIsMoveModalOpen] =
     useState(false);
 
-  const [selectedItemIds, setSelectedItemIds] = useState<
-    number[]
-  >([]);
+  const [selectedItemIds, setSelectedItemIds] =
+    useState<number[]>([]);
 
-  const [toastMessage, setToastMessage] = useState<
-    string | null
-  >(null);
+  const [toastMessage, setToastMessage] =
+    useState<string | null>(null);
 
   const isSelectMode = selectMode !== null;
 
   const isAllSelected =
     dummyData.length > 0 &&
     selectedItemIds.length === dummyData.length;
+
+  /**
+   * 폴더 상세 데이터를 반환하는 역할만 담당한다.
+   * 여기서는 상태를 직접 변경하지 않는다.
+   */
+  const fetchFolder = useCallback(async () => {
+    if (!folderId) {
+      throw new Error(
+        "폴더 정보를 확인할 수 없어요.",
+      );
+    }
+
+    const parsedFolderId = Number(folderId);
+
+    if (
+      !Number.isInteger(parsedFolderId) ||
+      parsedFolderId <= 0
+    ) {
+      throw new Error(
+        "올바르지 않은 폴더 ID예요.",
+      );
+    }
+
+    return getFolder(parsedFolderId);
+  }, [folderId]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    void Promise.resolve()
+      .then(() => {
+        if (isCancelled) return null;
+
+        setIsLoading(true);
+        setErrorMessage("");
+
+        return fetchFolder();
+      })
+      .then((folderDetail) => {
+        if (isCancelled || !folderDetail) return;
+
+        setFolder(folderDetail);
+      })
+      .catch((error: unknown) => {
+        if (isCancelled) return;
+
+        console.error(
+          "폴더 상세 조회 실패:",
+          error,
+        );
+
+        setFolder(null);
+
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "폴더 정보를 불러오지 못했어요.",
+        );
+      })
+      .finally(() => {
+        if (isCancelled) return;
+
+        setIsLoading(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [fetchFolder]);
 
   useEffect(() => {
     if (!toastMessage) return;
@@ -106,15 +182,55 @@ const ArchiveFolderPage = () => {
     };
   }, [toastMessage]);
 
-  const handleEditFolderName = (
-    newFolderName: string,
-  ) => {
-    setFolderName(newFolderName);
+const handleEditFolderName = async (
+  newFolderName: string,
+) => {
+  if (!folder) return;
 
-    console.log("수정된 폴더명:", newFolderName);
+  const trimmedFolderName =
+    newFolderName.trim();
 
-    // TODO: 폴더명 수정 API 연결
-  };
+  const folderNamePattern =
+    /^[가-힣a-zA-Z]{1,10}$/;
+
+  if (
+    !folderNamePattern.test(
+      trimmedFolderName,
+    )
+  ) {
+    setToastMessage(
+      "폴더명은 한글,영문 10자 이내로 입력해주세요.",
+    );
+    return;
+  }
+
+  try {
+    const updatedFolder =
+      await updateFolderName(
+        folder.folderId,
+        trimmedFolderName,
+      );
+
+    setFolder((prev) =>
+      prev
+        ? {
+            ...prev,
+            folderName:
+              updatedFolder.folderName,
+          }
+        : prev,
+    );
+  } catch (error) {
+    console.error(
+      "폴더명 수정 실패:",
+      error,
+    );
+
+    setToastMessage(
+      "폴더 수정에 실패했어요.",
+    );
+  }
+};
 
   const handleOpenMoveMode = () => {
     setSelectMode("move");
@@ -134,7 +250,9 @@ const ArchiveFolderPage = () => {
   const handleToggleItem = (id: number) => {
     setSelectedItemIds((prev) =>
       prev.includes(id)
-        ? prev.filter((itemId) => itemId !== id)
+        ? prev.filter(
+            (itemId) => itemId !== id,
+          )
         : [...prev, id],
     );
   };
@@ -160,12 +278,18 @@ const ArchiveFolderPage = () => {
     setIsMoveModalOpen(false);
   };
 
-  const handleMoveData = (folderId: number) => {
+  const handleMoveData = (
+    targetFolderId: number,
+  ) => {
     console.log(
       "이동할 자료 ID:",
       selectedItemIds,
     );
-    console.log("이동할 폴더 ID:", folderId);
+
+    console.log(
+      "이동할 폴더 ID:",
+      targetFolderId,
+    );
 
     // TODO: 자료 이동 API 연결
 
@@ -207,9 +331,10 @@ const ArchiveFolderPage = () => {
     }
   };
 
-  // 일반 모드에서 자료 카드를 클릭했을 때 상세 페이지로 이동
   const handleOpenDataPage = (id: number) => {
-    navigate(`/archive/folder/data/${id}`);
+    navigate(
+      `/archive/folder/data/${id}`,
+    );
   };
 
   const handleUndoToast = () => {
@@ -219,73 +344,107 @@ const ArchiveFolderPage = () => {
     setToastMessage(null);
   };
 
+  if (isLoading) {
+    return (
+      <main className="py-10">
+        <div className="mx-auto flex min-h-[540px] w-[1120px] items-center justify-center text-[#D0D0D2]">
+          폴더 정보를 불러오는 중이에요.
+        </div>
+      </main>
+    );
+  }
+
+  if (errorMessage || !folder) {
+    return (
+      <main className="py-10">
+        <div className="mx-auto flex min-h-[540px] w-[1120px] items-center justify-center text-[#D0D0D2]">
+          {errorMessage ||
+            "폴더 정보를 찾을 수 없어요."}
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
       <main className="py-10">
         <div className="mx-auto w-[1120px]">
           <ArchiveFolderHeader
-            folderName={folderName}
-            savedItemCount={dummyData.length}
+            folderName={folder.folderName}
+            savedItemCount={folder.materialCount}
             onBack={() => navigate("/archive")}
-            onEditFolderName={handleEditFolderName}
-            onMoveFolder={handleOpenMoveMode}
-            onMoveToTrash={handleOpenTrashMode}
+            onEditFolderName={
+              handleEditFolderName
+            }
+            onMoveFolder={
+              handleOpenMoveMode
+            }
+            onMoveToTrash={
+              handleOpenTrashMode
+            }
           />
 
-          {isSelectMode && dummyData.length > 0 && (
-            <div className="mb-5 flex items-center justify-between">
-              {/* 전체 선택 버튼 */}
-              <button
-                type="button"
-                onClick={handleToggleAll}
-                className="flex items-center gap-[17px]"
-              >
-                <span
-                  className={`flex h-7 w-7 items-center justify-center rounded border transition ${
-                    isAllSelected
-                      ? "border-[#917DEC] bg-[#917DEC]"
-                      : "border-[#777482] bg-[#24232D]"
-                  }`}
-                >
-                  {isAllSelected && (
-                    <span className="text-[18px] leading-none text-white">
-                      ✓
-                    </span>
-                  )}
-                </span>
-
-                <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
-                  {selectedItemIds.length}개 선택됨
-                </span>
-              </button>
-
-              {/* 실행 및 취소 버튼 */}
-              <div className="flex items-center gap-2">
+          {isSelectMode &&
+            dummyData.length > 0 && (
+              <div className="mb-5 flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={handleSelectAction}
-                  disabled={selectedItemIds.length === 0}
-                  className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
-                    selectedItemIds.length > 0
-                      ? "bg-[#917DEC] hover:bg-[#8068E2]"
-                      : "cursor-not-allowed bg-[#42444C]"
-                  }`}
+                  onClick={handleToggleAll}
+                  className="flex items-center gap-[17px]"
                 >
-                  {selectMode === "trash"
-                    ? "휴지통으로 이동"
-                    : "이동하기"}
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded border transition ${
+                      isAllSelected
+                        ? "border-[#917DEC] bg-[#917DEC]"
+                        : "border-[#777482] bg-[#24232D]"
+                    }`}
+                  >
+                    {isAllSelected && (
+                      <span className="text-[18px] leading-none text-white">
+                        ✓
+                      </span>
+                    )}
+                  </span>
+
+                  <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
+                    {selectedItemIds.length}개
+                    선택됨
+                  </span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={handleCancelSelectMode}
-                  className="flex h-[40px] w-[147px] items-center justify-center rounded bg-[#42444C] font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition hover:bg-[#50505A]"
-                >
-                  취소
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={
+                      handleSelectAction
+                    }
+                    disabled={
+                      selectedItemIds.length ===
+                      0
+                    }
+                    className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
+                      selectedItemIds.length > 0
+                        ? "bg-[#917DEC] hover:bg-[#8068E2]"
+                        : "cursor-not-allowed bg-[#42444C]"
+                    }`}
+                  >
+                    {selectMode === "trash"
+                      ? "휴지통으로 이동"
+                      : "이동하기"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={
+                      handleCancelSelectMode
+                    }
+                    className="flex h-[40px] w-[147px] items-center justify-center rounded bg-[#42444C] font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition hover:bg-[#50505A]"
+                  >
+                    취소
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           <div className="mt-4">
             {dummyData.length === 0 ? (
@@ -294,9 +453,15 @@ const ArchiveFolderPage = () => {
               <ArchiveDataList
                 data={dummyData}
                 isMoveMode={isSelectMode}
-                selectedItemIds={selectedItemIds}
-                onToggleItem={handleToggleItem}
-                onItemClick={handleOpenDataPage}
+                selectedItemIds={
+                  selectedItemIds
+                }
+                onToggleItem={
+                  handleToggleItem
+                }
+                onItemClick={
+                  handleOpenDataPage
+                }
               />
             )}
           </div>
@@ -305,8 +470,10 @@ const ArchiveFolderPage = () => {
 
       {isMoveModalOpen && (
         <MoveDataModal
-          currentFolderId={1}
-          currentFolderName={folderName}
+          currentFolderId={folder.folderId}
+          currentFolderName={
+            folder.folderName
+          }
           folders={folderOptions}
           onClose={handleCloseMoveModal}
           onMove={handleMoveData}
