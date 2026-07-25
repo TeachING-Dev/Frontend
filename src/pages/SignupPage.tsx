@@ -115,7 +115,7 @@ const SignupPage = () => {
     <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
-       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75]">
+       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75] max-md:w-[640px] max-md:scale-[0.5]">
         <div className="mb-10 flex items-center gap-2.5">
           <button
             type="button"
@@ -157,7 +157,7 @@ const SignupPage = () => {
                 </label>
 
                 {isNicknameTaken ? (
-                  <div className="flex w-[1115px] items-start gap-2.5">
+                  <div className="flex w-[1115px] items-start gap-2.5 max-md:w-[640px]">
                     <div className="flex h-12 items-start px-0.5 py-[3px]">
                       <img src="/SignupNoticeIcon.svg" alt="" className="size-5" />
                     </div>
@@ -166,13 +166,13 @@ const SignupPage = () => {
                     </p>
                   </div>
                 ) : isNicknameNextEnabled ? (
-                  <div className="inline-flex w-[1115px] items-start justify-start gap-2.5">
+                  <div className="inline-flex w-[1115px] items-start justify-start gap-2.5 max-md:w-[640px]">
                     <p className="w-80 justify-center font-['SUIT_Variable'] text-base font-normal leading-6 text-[#917DEC]">
                       사용 가능한 아이디입니다.
                     </p>
                   </div>
                 ) : (
-                  <div className="flex w-[1115px] items-start gap-2.5">
+                  <div className="flex w-[1115px] items-start gap-2.5 max-md:w-[640px]">
                     <div className="flex h-12 items-start px-0.5 py-[3px]">
                       <img src="/SignupNoticeIcon.svg" alt="" className="size-5" />
                     </div>
