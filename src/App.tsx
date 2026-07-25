@@ -5,8 +5,8 @@ import {
 } from "react-router-dom";
 
 import AnalysisLayout from "./layouts/AnalysisLayout";
-import MainLayout from "./layouts/MainLayout";
 import HomeLayout from "./layouts/HomeLayout";
+import MainLayout from "./layouts/MainLayout";
 import NotificationLayout from "./layouts/NotificationLayout";
 import AnalysisCompletePage from "./pages/AnalysisCompletePage";
 import ArchiveDataPage from "./pages/ArchiveDataPage";
@@ -98,7 +98,7 @@ function App() {
 
           {/* 보관함 폴더 상세 */}
           <Route
-            path="/archive/folder"
+            path="/archive/folder/:folderId"
             element={<ArchiveFolderPage />}
           />
 
