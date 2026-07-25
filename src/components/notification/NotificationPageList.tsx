@@ -1,21 +1,13 @@
+import type { Notification } from "../../apis/notification";
+
 import EmptyNotification from "./EmptyNotification";
 import NotificationPageItem from "./NotificationPageItem";
 
-export type NotificationType =
-  | "short-cut"
-  | "deep-dive";
-
-export type Notification = {
-  id: number;
-  type: NotificationType;
-  message: string;
-  createdAt: string;
-  isRead?: boolean;
-};
-
 type NotificationPageListProps = {
   notifications: Notification[];
-  onItemClick?: (id: number) => void;
+  onItemClick?: (
+    notificationId: number,
+  ) => void;
 };
 
 const NotificationPageList = ({
@@ -30,12 +22,16 @@ const NotificationPageList = ({
     <div className="flex flex-col">
       {notifications.map((notification) => (
         <NotificationPageItem
-          key={notification.id}
-          type={notification.type}
+          key={notification.notificationId}
+          title={notification.title}
           message={notification.message}
           createdAt={notification.createdAt}
           isRead={notification.isRead}
-          onClick={() => onItemClick?.(notification.id)}
+          onClick={() =>
+            onItemClick?.(
+              notification.notificationId,
+            )
+          }
         />
       ))}
     </div>

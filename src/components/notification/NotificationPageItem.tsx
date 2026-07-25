@@ -1,25 +1,15 @@
 import { ChevronRight } from "lucide-react";
 
-type NotificationType = "short-cut" | "deep-dive";
-
 type NotificationPageItemProps = {
-  type: NotificationType;
+  title: string;
   message: string;
   createdAt: string;
   isRead?: boolean;
   onClick?: () => void;
 };
 
-const notificationTypeLabel: Record<
-  NotificationType,
-  string
-> = {
-  "short-cut": "Short-Cut",
-  "deep-dive": "Deep-Dive",
-};
-
 const NotificationPageItem = ({
-  type,
+  title,
   message,
   createdAt,
   isRead = false,
@@ -41,10 +31,10 @@ const NotificationPageItem = ({
 
       {/* 오른쪽 알림 정보 */}
       <div className="min-w-0 flex-1">
-        {/* 상단: 타입 + 화살표 */}
+        {/* 상단: 제목 + 화살표 */}
         <div className="flex items-center justify-between">
-          <span className="inline-flex h-[40px] w-[110px] items-center justify-center rounded-[4px] border border-[#917DEC] font-[SUIT] text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#917DEC]">
-            {notificationTypeLabel[type]}
+          <span className="inline-flex h-[40px] min-w-[110px] items-center justify-center rounded-[4px] border border-[#917DEC] px-[12px] font-[SUIT] text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#917DEC]">
+            {title}
           </span>
 
           <button
@@ -78,7 +68,7 @@ const NotificationPageItem = ({
       {!isRead && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 bottom-[-9px] h-[15px] w-[90%] -translate-x-1/2 rounded-full bg-[#917DEC]/80 blur-xl"
+          className="pointer-events-none absolute bottom-[-9px] left-1/2 h-[15px] w-[90%] -translate-x-1/2 rounded-full bg-[#917DEC]/80 blur-xl"
         />
       )}
     </div>

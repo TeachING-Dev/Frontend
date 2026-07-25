@@ -1,49 +1,14 @@
+import {
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
+import {
+  getNotifications,
+  type Notification,
+} from "../../apis/notification";
 import NotificationPopover from "../notification/NotificationPopover";
-
-import type { Notification } from "../notification/NotificationList";
-
-const notificationMessage =
-  "잠시 멈췄던 티칭맵 제목 60자 제한입...";
-
-const dummyNotifications: Notification[] = [
-  {
-    id: 1,
-    type: "short-cut",
-    message: notificationMessage,
-    createdAt: "10시간 전",
-    isRead: false,
-  },
-  {
-    id: 2,
-    type: "short-cut",
-    message: notificationMessage,
-    createdAt: "10시간 전",
-    isRead: false,
-  },
-  {
-    id: 3,
-    type: "deep-dive",
-    message: notificationMessage,
-    createdAt: "10시간 전",
-    isRead: true,
-  },
-  {
-    id: 4,
-    type: "deep-dive",
-    message: notificationMessage,
-    createdAt: "10시간 전",
-    isRead: true,
-  },
-  {
-    id: 5,
-    type: "deep-dive",
-    message: notificationMessage,
-    createdAt: "10시간 전",
-    isRead: true,
-  },
-];
 
 type HeaderProps = {
   showRightIcons?: boolean;
@@ -59,6 +24,26 @@ const Header = ({
   onMenuClick,
 }: HeaderProps) => {
   const navigate = useNavigate();
+
+  const [notifications, setNotifications] =
+    useState<Notification[]>([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await getNotifications(5);
+
+        setNotifications(data);
+      } catch (error) {
+        console.error(
+          "알림 목록 조회 실패:",
+          error,
+        );
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const handleNotificationClick = (
     notificationId: number,
@@ -90,9 +75,7 @@ const Header = ({
           onClick={onMenuClick}
           className={[
             "flex size-10 items-center justify-center overflow-hidden hover:opacity-80",
-            insetMenu
-              ? "ml-16"
-              : "",
+            insetMenu ? "ml-16" : "",
           ].join(" ")}
         >
           <img
@@ -124,15 +107,11 @@ const Header = ({
       {showRightIcons ? (
         <div className="flex w-28 items-center justify-center gap-0">
           <NotificationPopover
-            notifications={
-              dummyNotifications
-            }
+            notifications={notifications}
             onItemClick={
               handleNotificationClick
             }
-            onViewAll={
-              handleViewAll
-            }
+            onViewAll={handleViewAll}
             trigger={
               <button
                 type="button"
@@ -151,9 +130,7 @@ const Header = ({
           <button
             type="button"
             aria-label="마이페이지"
-            onClick={
-              handleMyPageClick
-            }
+            onClick={handleMyPageClick}
             className="flex size-10 items-center justify-center overflow-hidden hover:opacity-80"
           >
             <img
