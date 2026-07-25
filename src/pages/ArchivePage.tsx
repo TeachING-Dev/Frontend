@@ -1,6 +1,11 @@
-﻿import { useEffect, useState } from "react";
+﻿import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import {
+  createFolder,
   getFolders,
   type Folder,
   type FolderSort,
@@ -34,31 +39,48 @@ const ArchivePage = () => {
   const [toastMessage, setToastMessage] =
     useState("");
 
+  const fetchFolders = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage("");
+
+      const folderList = await getFolders(sort);
+
+      setFolders(folderList);
+    } catch (error) {
+      console.error(
+        "폴더 목록 조회 실패:",
+        error,
+      );
+
+      setErrorMessage(
+        "폴더 목록을 불러오지 못했어요.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [sort]);
+
   useEffect(() => {
-    const fetchFolders = async () => {
-      try {
-        setIsLoading(true);
-        setErrorMessage("");
-
-        const folderList = await getFolders(sort);
-
-        setFolders(folderList);
-      } catch (error) {
-        console.error(
-          "폴더 목록 조회 실패:",
-          error,
-        );
-
-        setErrorMessage(
-          "폴더 목록을 불러오지 못했어요.",
-        );
-      } finally {
-        setIsLoading(false);
-      }
+    const initializeFolders = async () => {
+      await fetchFolders();
     };
 
-    fetchFolders();
-  }, [sort]);
+    void initializeFolders();
+  }, [fetchFolders]);
+
+  const handleCreateFolder = async (
+    folderName: string,
+  ) => {
+    await createFolder(folderName);
+
+    // 생성 성공 후 서버에서 최신 폴더 목록 재조회
+    await fetchFolders();
+
+    setToastMessage(
+      "새로운 폴더가 생성되었습니다",
+    );
+  };
 
   const handleMoveToTrash = (
     folderId: number,
@@ -138,6 +160,7 @@ const ArchivePage = () => {
           onClose={() =>
             setIsCreateModalOpen(false)
           }
+          onCreate={handleCreateFolder}
         />
       )}
 
@@ -146,7 +169,6 @@ const ArchivePage = () => {
           message={toastMessage}
           actionText="실행취소"
           onAction={() => {
-            // TODO: 휴지통 이동 실행 취소 API 연결
             setToastMessage("");
           }}
         />

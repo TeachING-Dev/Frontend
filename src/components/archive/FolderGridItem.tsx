@@ -48,7 +48,7 @@ const FolderGridItem = ({
       <div className="flex w-full flex-col justify-between">
         {/* 첫 번째 줄 */}
         <div className="flex items-center justify-between">
-          <h3 className="truncate text-[24px] font-semibold leading-none text-white">
+          <h3 className="truncate text-[24px] font-semibold leading-[140%] text-white">
             {name}
           </h3>
 

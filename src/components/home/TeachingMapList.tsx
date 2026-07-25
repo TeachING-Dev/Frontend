@@ -1,39 +1,19 @@
+import { useNavigate } from "react-router-dom";
+
+import type { ActiveTeachingMap } from "../../apis/home";
 import EmptyHomeContent from "./EmptyHomeContent";
 import TeachingMapItem from "./TeachingMapItem";
 
-export type TeachingMap = {
-  id: number;
-  title: string;
-  description: string;
-  thumbnailSrc: string;
+type TeachingMapListProps = {
+  teachingMaps: ActiveTeachingMap[];
 };
 
-const dummyTeachingMaps: TeachingMap[] = [
-  {
-    id: 1,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명을 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명을 몇자까지 처음에 보이나요?",
-    thumbnailSrc: "/Frame2147239594.png",
-  },
-  {
-    id: 2,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명을 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명을 몇자까지 처음에 보이나요?",
-    thumbnailSrc: "/Frame2147239594.png",
-  },
-  {
-    id: 3,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명을 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명을 몇자까지 처음에 보이나요?",
-    thumbnailSrc: "/Frame2147239594.png",
-  },
-];
+const TeachingMapList = ({
+  teachingMaps,
+}: TeachingMapListProps) => {
+  const navigate = useNavigate();
 
-const TeachingMapList = () => {
-  if (dummyTeachingMaps.length === 0) {
+  if (teachingMaps.length === 0) {
     return (
       <EmptyHomeContent
         message="학습 중인 티칭맵이 없어요."
@@ -44,17 +24,21 @@ const TeachingMapList = () => {
 
   return (
     <div className="flex flex-col gap-[20px]">
-      {dummyTeachingMaps.map((item) => (
+      {teachingMaps.map((teachingMap) => (
         <TeachingMapItem
-          key={item.id}
-          title={item.title}
-          description={item.description}
-          thumbnailSrc={item.thumbnailSrc}
+          key={teachingMap.teachingMapId}
+          title={teachingMap.title}
+          description={teachingMap.description}
+          thumbnailSrc="/Frame2147239594.png"
           onClick={() =>
-            console.log(`${item.title} 클릭`)
+            navigate(
+              `/teaching-map/${teachingMap.teachingMapId}`,
+            )
           }
           onShortcutClick={() =>
-            console.log(`${item.title} 바로가기`)
+            navigate(
+              `/teaching-map/${teachingMap.teachingMapId}`,
+            )
           }
         />
       ))}
