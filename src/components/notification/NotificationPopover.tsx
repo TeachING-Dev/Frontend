@@ -2,9 +2,8 @@ import type { ReactNode } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { ChevronRight } from "lucide-react";
 
-import NotificationList, {
-  type Notification,
-} from "./NotificationList";
+import type { Notification } from "../../apis/notification";
+import NotificationList from "./NotificationList";
 
 type NotificationPopoverProps = {
   trigger: ReactNode;
