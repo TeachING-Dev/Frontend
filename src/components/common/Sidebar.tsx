@@ -41,27 +41,32 @@ const mobileMenuItems = [
   {
     label: "홈",
     path: "/",
-    icon: "/icon_홈.png",
+    icon: "/icon_홈2.svg",
+    activeIcon: "/icon_홈2_active.svg",
   },
   {
     label: "보관함",
     path: "/archive",
-    icon: "/icon_보관함.png",
+    icon: "/icon_보관함2.svg",
+    activeIcon: "/icon_보관함2_active.svg",
   },
   {
     label: "티칭맵",
     path: "/teaching-map",
-    icon: "/icon_티칭맵.png",
+    icon: "/icon_티칭맵2.svg",
+    activeIcon: "/icon_티칭맵2_active.svg",
   },
   {
     label: "타카",
     path: "/chatbot",
-    icon: "/icon_AI챗봇.png",
+    icon: "/icon_AI챗봇.svg",
+    activeIcon: "/icon_AI챗봇.svg",
   },
   {
     label: "마이",
     path: "/mypage",
-    icon: "/icon_마이페이지.png",
+    icon: "/icon_마이.svg",
+    activeIcon: "/icon_마이_active.svg",
   },
 ];
 
@@ -85,7 +90,7 @@ const Sidebar = ({
         aria-label="모바일 주요 메뉴"
         className="
           fixed
-          bottom-[20px]
+          bottom-[30px]
           left-1/2
           z-50
           flex
@@ -123,18 +128,20 @@ const Sidebar = ({
             {({ isActive }) => (
               <>
                 <img
-                  src={item.icon}
-                  alt=""
+                  src={isActive ? item.activeIcon : item.icon}
+                  alt={item.label}
                   aria-hidden="true"
-                  className={[
-                    "h-[24px] w-[24px] object-contain transition",
-                    isActive
-                      ? "opacity-100"
-                      : "opacity-90",
-                  ].join(" ")}
+                  className="h-[24px] w-[24px] object-contain transition"
                 />
 
-                <span className="text-[12px] font-medium leading-[150%] tracking-[-0.36px]">
+                <span
+                  className={[
+                  "transition",
+                  isActive
+                    ? "text-[12px] font-medium leading-[150%] tracking-[-0.42px] text-[#C1AEFF]"
+                    : "text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#F5F2FF]",
+                  ].join(" ")}
+                >
                   {item.label}
                 </span>
               </>
