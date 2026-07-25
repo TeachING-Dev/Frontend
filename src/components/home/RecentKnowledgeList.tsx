@@ -1,48 +1,57 @@
+import { useNavigate } from "react-router-dom";
+
+import type { RecentMaterial } from "../../apis/home";
 import EmptyHomeContent from "./EmptyHomeContent";
 import RecentKnowledgeItem from "./RecentKnowledgeItem";
 
-export type RecentKnowledge = {
-  id: number;
-  title: string;
-  savedAt: string;
-  iconSrc: string;
+type RecentKnowledgeListProps = {
+  materials: RecentMaterial[];
 };
 
-const dummyRecentKnowledge: RecentKnowledge[] = [
-  {
-    id: 1,
-    title: "학습의 과학: 효과적인 공부 방법",
-    savedAt: "3시간 전",
-    iconSrc: "/youtube-app-icon.png",
-  },
-  {
-    id: 2,
-    title: "학습의 과학: 효과적인 공부 방법",
-    savedAt: "3시간 전",
-    iconSrc: "/youtube-app-icon.png",
-  },
-  {
-    id: 3,
-    title: "학습의 과학: 효과적인 공부 방법",
-    savedAt: "3시간 전",
-    iconSrc: "/youtube-app-icon.png",
-  },
-  {
-    id: 4,
-    title: "학습의 과학: 효과적인 공부 방법",
-    savedAt: "3시간 전",
-    iconSrc: "/youtube-app-icon.png",
-  },
-  {
-    id: 5,
-    title: "학습의 과학: 효과적인 공부 방법",
-    savedAt: "3시간 전",
-    iconSrc: "/youtube-app-icon.png",
-  },
-];
+const formatSavedAt = (createdAt: string) => {
+  const createdDate = new Date(createdAt);
+  const now = new Date();
 
-const RecentKnowledgeList = () => {
-  if (dummyRecentKnowledge.length === 0) {
+  const differenceInMilliseconds =
+    now.getTime() - createdDate.getTime();
+
+  const differenceInMinutes = Math.floor(
+    differenceInMilliseconds / (1000 * 60),
+  );
+
+  if (differenceInMinutes < 1) {
+    return "방금 전";
+  }
+
+  if (differenceInMinutes < 60) {
+    return `${differenceInMinutes}분 전`;
+  }
+
+  const differenceInHours = Math.floor(
+    differenceInMinutes / 60,
+  );
+
+  if (differenceInHours < 24) {
+    return `${differenceInHours}시간 전`;
+  }
+
+  const differenceInDays = Math.floor(
+    differenceInHours / 24,
+  );
+
+  if (differenceInDays < 7) {
+    return `${differenceInDays}일 전`;
+  }
+
+  return createdDate.toLocaleDateString("ko-KR");
+};
+
+const RecentKnowledgeList = ({
+  materials,
+}: RecentKnowledgeListProps) => {
+  const navigate = useNavigate();
+
+  if (materials.length === 0) {
     return (
       <EmptyHomeContent
         message="최근에 저장한 지식이 없어요."
@@ -53,14 +62,24 @@ const RecentKnowledgeList = () => {
 
   return (
     <div className="flex flex-col">
-      {dummyRecentKnowledge.map((item) => (
+      {materials.map((material) => (
         <RecentKnowledgeItem
-          key={item.id}
-          title={item.title}
-          savedAt={item.savedAt}
-          iconSrc={item.iconSrc}
+          key={material.materialId}
+          title={
+            material.analysisTitle ||
+            material.title
+          }
+          savedAt={formatSavedAt(
+            material.createdAt,
+          )}
+          iconSrc={
+            material.platformImageUrl ||
+            "/icon_최근에 저장한 지식3.png"
+          }
           onClick={() =>
-            console.log(`${item.title} 클릭`)
+            navigate(
+              `/archive/folder/data/${material.materialId}`,
+            )
           }
         />
       ))}

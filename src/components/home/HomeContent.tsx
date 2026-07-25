@@ -2,12 +2,26 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import type {
+  ActiveTeachingMap,
+  RecentMaterial,
+} from "../../apis/home";
 import RecentKnowledgeList from "./RecentKnowledgeList";
 import TeachingMapList from "./TeachingMapList";
 
 type HomeTab = "knowledge" | "teachingMap";
 
-const HomeContent = () => {
+type HomeContentProps = {
+  recentMaterials: RecentMaterial[];
+  activeTeachingMaps: ActiveTeachingMap[];
+  isLoading?: boolean;
+};
+
+const HomeContent = ({
+  recentMaterials,
+  activeTeachingMaps,
+  isLoading = false,
+}: HomeContentProps) => {
   const [selectedTab, setSelectedTab] =
     useState<HomeTab>("knowledge");
 
@@ -15,6 +29,15 @@ const HomeContent = () => {
 
   const tabButtonClass =
     "flex min-h-[40px] items-center justify-center gap-[8px] rounded-[5px] border px-[10px] py-[5px] text-[14px] transition-colors md:gap-[10px] md:text-[16px]";
+
+  const handleViewAll = () => {
+    if (selectedTab === "knowledge") {
+      navigate("/archive");
+      return;
+    }
+
+    navigate("/teaching-map");
+  };
 
   return (
     <section
@@ -104,7 +127,7 @@ const HomeContent = () => {
         {/* 전체보기 */}
         <button
           type="button"
-          onClick={() => navigate("/teaching-map")}
+          onClick={handleViewAll}
           className="
             ml-auto
             flex
@@ -134,10 +157,20 @@ const HomeContent = () => {
 
       {/* 내용 */}
       <div className="pt-[15px] md:pt-[20px]">
-        {selectedTab === "knowledge" ? (
-          <RecentKnowledgeList />
+        {isLoading ? (
+          <div className="flex min-h-[280px] items-center justify-center">
+            <p className="text-[16px] font-medium text-[#717379]">
+              홈 데이터를 불러오는 중이에요.
+            </p>
+          </div>
+        ) : selectedTab === "knowledge" ? (
+          <RecentKnowledgeList
+            materials={recentMaterials}
+          />
         ) : (
-          <TeachingMapList />
+          <TeachingMapList
+            teachingMaps={activeTeachingMaps}
+          />
         )}
       </div>
     </section>

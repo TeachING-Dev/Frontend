@@ -16,6 +16,16 @@ type FolderListResponse = {
   result: Folder[];
 };
 
+type CreateFolderResponse = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: {
+    folderId: number;
+    folderName: string;
+  };
+};
+
 export const getFolders = async (
   sort: FolderSort = "recent",
 ): Promise<Folder[]> => {
@@ -27,6 +37,23 @@ export const getFolders = async (
       },
     },
   );
+
+  return response.data.result;
+};
+
+export const createFolder = async (
+  folderName: string,
+): Promise<{
+  folderId: number;
+  folderName: string;
+}> => {
+  const response =
+    await api.post<CreateFolderResponse>(
+      "/api/folders",
+      {
+        folderName,
+      },
+    );
 
   return response.data.result;
 };
