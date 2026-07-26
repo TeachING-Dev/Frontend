@@ -14,7 +14,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const BACKEND_URL = "https://teachingg.site";
   const REDIRECT_URI = encodeURIComponent(
-    "http://localhost:5173/oauth/callback",
+    "http://localhost:5173/oauth2/redirect",
   );
 
   useEffect(() => {

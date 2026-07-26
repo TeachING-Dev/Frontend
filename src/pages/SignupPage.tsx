@@ -133,7 +133,7 @@ const SignupPage = () => {
           agreedTermIds,
         });
         saveTokens({ accessToken });
-        navigate("/");
+        navigate("/signup/complete");
       } catch (error) {
         alert(error instanceof Error ? error.message : "회원가입에 실패했습니다.");
       } finally {

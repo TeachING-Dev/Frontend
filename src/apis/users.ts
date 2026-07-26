@@ -1,3 +1,9 @@
+import {
+  getAccessToken,
+  normalizeBearerToken,
+} from "../utils/authToken";
+import api from "./axios";
+
 export type TeacherPersona =
   | "FRIENDLY"
   | "STRICT"
@@ -50,14 +56,25 @@ interface WithdrawalRequest {
 }
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "";
+  import.meta.env.VITE_API_URL ??
+  import.meta.env.VITE_API_BASE_URL ??
+  "";
 
 const request = async <T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> => {
   const headers = new Headers(options.headers);
+  const accessToken = getAccessToken();
+
   headers.set("Accept", "application/json");
+
+  if (accessToken) {
+    headers.set(
+      "Authorization",
+      normalizeBearerToken(accessToken),
+    );
+  }
 
   if (options.body) {
     headers.set(
@@ -89,7 +106,17 @@ const request = async <T>(
 };
 
 export const getMyProfile = () =>
-  request<MyProfile>("/users/me");
+  api
+    .get<ApiResponse<MyProfile>>("/users/me")
+    .then((response) => {
+      const data = response.data;
+
+      if (!data.isSuccess) {
+        throw new Error(data.message);
+      }
+
+      return data.result;
+    });
 
 export const checkNickname = (
   nickname: string,
@@ -114,10 +141,19 @@ export const updateMyProfile = (
 export const withdrawMe = (
   withdrawal: WithdrawalRequest,
 ) =>
-  request<string>("/users/me", {
-    method: "DELETE",
-    body: JSON.stringify(withdrawal),
-  });
+  api
+    .delete<ApiResponse<string>>("/users/me", {
+      data: withdrawal,
+    })
+    .then((response) => {
+      const data = response.data;
+
+      if (!data.isSuccess) {
+        throw new Error(data.message);
+      }
+
+      return data.result;
+    });
 
 export const updateTeacherPersona = (
   persona: TeacherPersona,
