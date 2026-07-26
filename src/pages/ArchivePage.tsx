@@ -1,12 +1,10 @@
 ﻿import {
-  useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
 import {
-  createFolder,
-  getFolders,
   type Folder,
   type FolderSort,
 } from "../apis/folder";
@@ -16,6 +14,7 @@ import ArchiveFolderList from "../components/archive/ArchiveFolderList";
 import ArchivePagination from "../components/archive/ArchivePagination";
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
+import { mockFolders } from "../mocks/folder";
 
 const ArchivePage = () => {
   const [viewMode, setViewMode] =
@@ -25,13 +24,7 @@ const ArchivePage = () => {
     useState<FolderSort>("recent");
 
   const [folders, setFolders] =
-    useState<Folder[]>([]);
-
-  const [isLoading, setIsLoading] =
-    useState(true);
-
-  const [errorMessage, setErrorMessage] =
-    useState("");
+    useState<Folder[]>(mockFolders);
 
   const [isCreateModalOpen, setIsCreateModalOpen] =
     useState(false);
@@ -39,43 +32,71 @@ const ArchivePage = () => {
   const [toastMessage, setToastMessage] =
     useState("");
 
-  const fetchFolders = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage("");
+  const sortedFolders = useMemo(() => {
+    return [...folders].sort((a, b) => {
+      if (sort === "recent") {
+        return (
+          new Date(b.updatedAt).getTime() -
+          new Date(a.updatedAt).getTime()
+        );
+      }
 
-      const folderList = await getFolders(sort);
+      if (sort === "oldest") {
+        return (
+          new Date(a.updatedAt).getTime() -
+          new Date(b.updatedAt).getTime()
+        );
+      }
 
-      setFolders(folderList);
-    } catch (error) {
-      console.error(
-        "폴더 목록 조회 실패:",
-        error,
+      return a.folderName.localeCompare(
+        b.folderName,
+        "ko",
       );
-
-      setErrorMessage(
-        "폴더 목록을 불러오지 못했어요.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sort]);
-
-  useEffect(() => {
-    const initializeFolders = async () => {
-      await fetchFolders();
-    };
-
-    void initializeFolders();
-  }, [fetchFolders]);
+    });
+  }, [folders, sort]);
 
   const handleCreateFolder = async (
     folderName: string,
   ) => {
-    await createFolder(folderName);
+    const trimmedFolderName =
+      folderName.trim();
 
-    // 생성 성공 후 서버에서 최신 폴더 목록 재조회
-    await fetchFolders();
+    if (
+      trimmedFolderName.length < 1 ||
+      trimmedFolderName.length > 10
+    ) {
+      setToastMessage(
+        "폴더명은 1자 이상 10자 이하로 입력해주세요.",
+      );
+      return;
+    }
+
+    const isDuplicate = folders.some(
+      (folder) =>
+        folder.folderName.toLowerCase() ===
+        trimmedFolderName.toLowerCase(),
+    );
+
+    if (isDuplicate) {
+      setToastMessage(
+        "이미 존재하는 폴더명입니다.",
+      );
+      return;
+    }
+
+    const newFolder: Folder = {
+      folderId: Date.now(),
+      folderName: trimmedFolderName,
+      materialCount: 0,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setFolders((prev) => [
+      newFolder,
+      ...prev,
+    ]);
+
+    setIsCreateModalOpen(false);
 
     setToastMessage(
       "새로운 폴더가 생성되었습니다",
@@ -85,12 +106,13 @@ const ArchivePage = () => {
   const handleMoveToTrash = (
     folderId: number,
   ) => {
-    console.log(
-      "휴지통으로 이동할 폴더 ID:",
-      folderId,
+    setFolders((prev) =>
+      prev.filter(
+        (folder) =>
+          folder.folderId !== folderId,
+      ),
     );
 
-    // TODO: 폴더 휴지통 이동 API 연결
     setToastMessage(
       "폴더가 휴지통으로 이동되었습니다",
     );
@@ -120,17 +142,9 @@ const ArchivePage = () => {
           />
 
           <div className="min-h-[540px]">
-            {isLoading ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
-                폴더 목록을 불러오는 중이에요.
-              </div>
-            ) : errorMessage ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
-                {errorMessage}
-              </div>
-            ) : viewMode === "list" ? (
+            {viewMode === "list" ? (
               <ArchiveFolderList
-                folders={folders}
+                folders={sortedFolders}
                 onAddFolder={() =>
                   setIsCreateModalOpen(true)
                 }
@@ -140,7 +154,7 @@ const ArchivePage = () => {
               />
             ) : (
               <ArchiveFolderGrid
-                folders={folders}
+                folders={sortedFolders}
                 onAddFolder={() =>
                   setIsCreateModalOpen(true)
                 }

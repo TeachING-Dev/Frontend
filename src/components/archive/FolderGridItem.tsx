@@ -24,7 +24,6 @@ const FolderGridItem = ({
   const handleFolderClick = () => {
     navigate(`/archive/folder/${id}`);
   };
-
   const handleKeyDown = (
     event: KeyboardEvent<HTMLDivElement>,
   ) => {
