@@ -10,6 +10,7 @@ const MIN_YEAR = 1950;
 interface BirthDateFieldProps {
   value: string;
   onChange: (value: string) => void;
+  onCompletenessChange?: (isCompleteOrEmpty: boolean) => void;
 }
 
 interface DateParts {
@@ -27,7 +28,13 @@ interface BirthDateDropdownProps {
   onChange: (value: number) => void;
 }
 
-const parseBirthDate = (value: string): DateParts => {
+const parseBirthDate = (
+  value: string | null | undefined,
+): DateParts => {
+  if (!value) {
+    return { year: null, month: null, day: null };
+  }
+
   const matchedDate = value.match(
     /^(\d{4})(?:-|년)(\d{1,2})(?:-|월)(\d{1,2})(?:일)?$/,
   );
@@ -157,6 +164,7 @@ const BirthDateDropdown = ({
 const BirthDateField = ({
   value,
   onChange,
+  onCompletenessChange,
 }: BirthDateFieldProps) => {
   const currentYear = new Date().getFullYear();
   const parsedDate = useMemo(() => parseBirthDate(value), [value]);
@@ -206,6 +214,14 @@ const BirthDateField = ({
 
     setDateParts(nextDate);
     const formattedDate = formatBirthDate(nextDate);
+    const hasAnyDatePart = Boolean(
+      nextDate.year || nextDate.month || nextDate.day,
+    );
+
+    onCompletenessChange?.(
+      !hasAnyDatePart || Boolean(formattedDate),
+    );
+
     if (formattedDate) {
       onChange(formattedDate);
     }
