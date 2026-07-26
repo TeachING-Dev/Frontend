@@ -3,9 +3,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { logout } from "../../apis/auth";
-import { clearTokens } from "../../utils/authToken";
-
 type SidebarProps = {
   open: boolean;
   onClose: () => void;
@@ -80,17 +77,10 @@ const Sidebar = ({
 }: SidebarProps) => {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      onLogout?.();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      clearTokens();
-      onClose();
-      navigate("/login", { replace: true });
-    }
+  const handleLogout = () => {
+    onLogout?.();
+    onClose();
+    navigate("/");
   };
 
   return (

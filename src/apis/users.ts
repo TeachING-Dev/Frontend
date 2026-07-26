@@ -33,6 +33,7 @@ export interface InquiryContact {
 
 interface UpdateProfileRequest {
   nickname?: string;
+  birthDate?: string;
   profileImageUrl?: string;
 }
 

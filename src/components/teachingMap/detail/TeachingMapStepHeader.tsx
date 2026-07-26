@@ -6,11 +6,13 @@ import {
 interface TeachingMapStepHeaderProps {
   tip: string;
   contentId: number;
+  isSourceAvailable: boolean;
 }
 
 const TeachingMapStepHeader = ({
   tip,
   contentId,
+  isSourceAvailable,
 }: TeachingMapStepHeaderProps) => {
   const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ const TeachingMapStepHeader = ({
     }>();
 
   const handleOpenContent = () => {
-    if (!teachingMapId) {
+    if (!teachingMapId || !isSourceAvailable) {
       return;
     }
 
@@ -38,7 +40,8 @@ const TeachingMapStepHeader = ({
       <button
         type="button"
         onClick={handleOpenContent}
-        className="flex shrink-0 items-center gap-[4px] text-[16px] font-normal leading-[24px] tracking-[-0.48px] text-[#0B0A18]"
+        disabled={!isSourceAvailable}
+        className="flex shrink-0 items-center gap-[4px] text-[16px] font-normal leading-[24px] tracking-[-0.48px] text-[#0B0A18] disabled:cursor-default disabled:opacity-0"
       >
         <span>자세히 보기</span>
 

@@ -76,12 +76,27 @@ const TemporaryTeachingMapCard = ({
     >
       <div className="flex min-w-0 flex-1 items-center gap-[10px]">
         <div className="flex h-[60px] w-[98px] shrink-0 items-center justify-center rounded-[10px] bg-[#1F212A] p-[10px]">
-          <img
-            src={teachingMap.thumbnailSrc}
-            alt=""
-            aria-hidden="true"
-            className="h-[40px] w-[78px] object-contain"
-          />
+          <div className="relative flex items-center">
+            {(teachingMap.thumbnailSrcs ?? [teachingMap.thumbnailSrc])
+              .slice(0, 3)
+              .map((source, index) => (
+                <img
+                  key={`${source}-${index}`}
+                  src={source}
+                  alt=""
+                  aria-hidden="true"
+                  className={[
+                    "h-9 w-9 rounded-full border-2 border-[#F5F2FF] object-cover",
+                    index === 0 ? "" : "-ml-3",
+                  ].join(" ")}
+                />
+              ))}
+            {teachingMap.extraThumbnailCount > 0 && (
+              <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full border-2 border-[#F5F2FF] bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
+                +{teachingMap.extraThumbnailCount}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1">

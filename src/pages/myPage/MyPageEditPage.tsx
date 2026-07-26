@@ -135,7 +135,7 @@ const MyPageEditPage = () => {
   const isSubmitDisabled =
     Boolean(
       validateNickname(nickname),
-    )
+    ) || !birthDate;
 
   const handleSubmit = async () => {
     const errorMessage =
@@ -171,6 +171,7 @@ const MyPageEditPage = () => {
 
       await updateMyProfile({
         nickname: trimmedNickname,
+        birthDate,
         ...(profileImageUrl &&
         !profileImageUrl.startsWith("blob:")
           ? { profileImageUrl }
@@ -195,7 +196,7 @@ const MyPageEditPage = () => {
       <section className="mt-[50px] flex flex-col items-center">
         <ProfileImageEditor
           nickname={
-            nickname ||
+            originalNickname ||
             DEFAULT_NICKNAME
           }
           imageUrl={
@@ -228,6 +229,7 @@ const MyPageEditPage = () => {
           />
 
           <BirthDateField
+            key={birthDate}
             value={birthDate}
             onChange={setBirthDate}
           />
