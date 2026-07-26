@@ -13,9 +13,12 @@ import {
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const BACKEND_URL = "https://teachingg.site";
+  const backendUrl =
+    import.meta.env.VITE_API_URL;
   const REDIRECT_URI = encodeURIComponent(
-    "http://localhost:5173/oauth/callback",
+    import.meta.env
+      .VITE_OAUTH_REDIRECT_URI ||
+      `${window.location.origin}/oauth/callback`,
   );
 
   useEffect(() => {
@@ -54,14 +57,28 @@ const LoginPage = () => {
   }, [navigate]);
 
   const handleKakaoLogin = () => {
+    if (!backendUrl) {
+      console.error(
+        "VITE_API_URL 환경변수가 설정되지 않았습니다.",
+      );
+      return;
+    }
+
     window.location.href =
-      `${BACKEND_URL}/oauth2/authorization/kakao` +
+      `${backendUrl}/oauth2/authorization/kakao` +
       `?redirect_uri=${REDIRECT_URI}`;
   };
 
   const handleGoogleLogin = () => {
+    if (!backendUrl) {
+      console.error(
+        "VITE_API_URL 환경변수가 설정되지 않았습니다.",
+      );
+      return;
+    }
+
     window.location.href =
-      `${BACKEND_URL}/oauth2/authorization/google` +
+      `${backendUrl}/oauth2/authorization/google` +
       `?redirect_uri=${REDIRECT_URI}`;
   };
 

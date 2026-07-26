@@ -2,12 +2,26 @@
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { ChevronLeft } from "lucide-react";
+
+import {
+  checkNickname,
+  getTerms,
+  signup,
+  type Term,
+} from "../apis/auth";
 import PrimaryButton from "../components/common/PrimaryButton";
+import { saveTokens } from "../utils/authToken";
 
 type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
 
 const REQUIRED_TERMS: TermKey[] = ["age", "service"];
+const TERM_ORDER: TermKey[] = [
+  "age",
+  "service",
+  "marketing",
+  "event",
+];
 
 const CheckIcon = ({
   checked,
@@ -43,9 +57,18 @@ const SignupPage = () => {
     marketing: false,
     event: false,
   });
+  const [termList, setTermList] =
+    useState<Term[]>([]);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+  const [
+    nicknameErrorMessage,
+    setNicknameErrorMessage,
+  ] = useState("");
 
   const normalizedNickname = nickname.trim();
-  const isNicknameTaken = normalizedNickname === "이미사용중";
+  const isNicknameTaken =
+    nicknameErrorMessage.length > 0;
   const isNicknameNextEnabled = normalizedNickname.length > 0 && !isNicknameTaken;
   const isAllTermsChecked = Object.values(terms).every(Boolean);
   const isTermsNextEnabled = REQUIRED_TERMS.every((key) => terms[key]);
@@ -60,16 +83,94 @@ const SignupPage = () => {
     navigate("/login");
   };
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (step === "nickname" && isNicknameNextEnabled) {
-      setStep("terms");
+      try {
+        setIsSubmitting(true);
+        await checkNickname(
+          normalizedNickname,
+        );
+        setNicknameErrorMessage("");
+
+        const nextTerms = await getTerms();
+        setTermList(nextTerms);
+        setTerms({
+          age: false,
+          service: false,
+          marketing: false,
+          event: false,
+        });
+        setStep("terms");
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "회원가입 정보를 확인하지 못했습니다.";
+
+        setNicknameErrorMessage(
+          errorMessage,
+        );
+        alert(errorMessage);
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
 
     if (step === "terms" && isTermsNextEnabled) {
-      navigate("/signup/complete");
+      const agreedTermIds = TERM_ORDER
+        .filter((key) => terms[key])
+        .map(
+          (key) =>
+            termList[
+              TERM_ORDER.indexOf(key)
+            ]?.termId,
+        )
+        .filter(
+          (termId): termId is number =>
+            typeof termId === "number",
+        );
+
+      if (agreedTermIds.length === 0) {
+        alert(
+          "약관 정보를 불러오지 못했습니다.",
+        );
+        return;
+      }
+
+      try {
+        setIsSubmitting(true);
+        const accessToken = await signup({
+          nickname: normalizedNickname,
+          agreedTermIds,
+        });
+
+        saveTokens({ accessToken });
+        navigate("/signup/complete");
+      } catch (error) {
+        alert(
+          error instanceof Error
+            ? error.message
+            : "회원가입에 실패했습니다.",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-  }, [isNicknameNextEnabled, isTermsNextEnabled, navigate, step]);
+  }, [
+    isNicknameNextEnabled,
+    isSubmitting,
+    isTermsNextEnabled,
+    navigate,
+    normalizedNickname,
+    step,
+    termList,
+    terms,
+  ]);
 
   useEffect(() => {
     const handleEnterKey = (event: KeyboardEvent) => {
@@ -144,7 +245,17 @@ const SignupPage = () => {
                     value={nickname}
                     maxLength={10}
                     placeholder="(2~10자 이내의 한글, 영문, 숫자)"
-                    onChange={(event) => setNickname(event.target.value.slice(0, 10))}
+                    onChange={(event) => {
+                      setNickname(
+                        event.target.value.slice(
+                          0,
+                          10,
+                        ),
+                      );
+                      setNicknameErrorMessage(
+                        "",
+                      );
+                    }}
                     className="flex-1 bg-transparent font-['SUIT_Variable'] text-xl font-normal leading-8 text-neutral-50 outline-none placeholder:text-[#42444C]"
                   />
                   <span
@@ -162,7 +273,7 @@ const SignupPage = () => {
                       <img src="/SignupNoticeIcon.svg" alt="" className="size-5" />
                     </div>
                     <p className="w-80 justify-center font-['SUIT_Variable'] text-base font-normal leading-6 text-[#917DEC]">
-                      이미 사용 중인 닉네임입니다.
+                      {nicknameErrorMessage}
                     </p>
                   </div>
                 ) : isNicknameNextEnabled ? (
@@ -283,7 +394,7 @@ const SignupPage = () => {
 </div>
 <div className="absolute bottom-[260px] left-1/2 w-[640px] -translate-x-1/2">
   <PrimaryButton
-    disabled={!isNextEnabled}
+    disabled={!isNextEnabled || isSubmitting}
     onClick={handleNext}
     className="!flex !h-[60px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] bg-[#1F212A] px-[50px] py-[20px] !font-['SUIT'] !text-[20px] !font-normal !leading-[150%] !tracking-[-0.6px]"
   >
@@ -296,11 +407,6 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-
-
-
-
-
 
 
 
