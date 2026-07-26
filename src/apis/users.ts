@@ -1,10 +1,18 @@
-import type { ApiResponse } from "./apiTypes";
 import api from "./axios";
+
+export { logout } from "./auth";
 
 export type TeacherPersona =
   | "FRIENDLY"
   | "STRICT"
   | "CHEERING";
+
+interface ApiResponse<T> {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: T;
+}
 
 export interface UserAccount {
   provider: string;
@@ -49,25 +57,34 @@ export interface WithdrawalRequest {
   isConfirmed: boolean;
 }
 
-export const getMyProfile = async (): Promise<MyProfile> => {
-  const { data } = await api.get<
-    ApiResponse<MyProfile>
-  >("/api/v1/users/me");
+const getResult = <T>(
+  response: { data: ApiResponse<T> },
+) => {
+  if (!response.data.isSuccess) {
+    throw new Error(response.data.message);
+  }
 
-  return data.result;
+  return response.data.result;
 };
 
-export const checkNickname = async (
+export const getMyProfile = async () =>
+  getResult(
+    await api.get<ApiResponse<MyProfile>>(
+      "/api/v1/users/me",
+    ),
+  );
+
+export const checkNickname = (
   nickname: string,
-): Promise<string> => {
-  const { data } = await api.get<
-    ApiResponse<string>
-  >("/api/v1/auth/check-nickname", {
-    params: { nickname },
-  });
-
-  return data.result;
-};
+) =>
+  api
+    .get<ApiResponse<string>>(
+      "/api/v1/auth/check-nickname",
+      {
+        params: { nickname },
+      },
+    )
+    .then(getResult);
 
 export const updateMyProfile = async ({
   nickname,
@@ -84,7 +101,10 @@ export const updateMyProfile = async ({
   }
 
   if (profileImage !== undefined) {
-    formData.append("profileImage", profileImage);
+    formData.append(
+      "profileImage",
+      profileImage,
+    );
   }
 
   const hasBirthDate =
@@ -93,13 +113,25 @@ export const updateMyProfile = async ({
     birthDay !== undefined;
 
   if (hasBirthDate) {
-    formData.append("birthYear", String(birthYear));
-    formData.append("birthMonth", String(birthMonth));
-    formData.append("birthDay", String(birthDay));
+    formData.append(
+      "birthYear",
+      String(birthYear),
+    );
+    formData.append(
+      "birthMonth",
+      String(birthMonth),
+    );
+    formData.append(
+      "birthDay",
+      String(birthDay),
+    );
   }
 
   if (empty !== undefined) {
-    formData.append("empty", String(empty));
+    formData.append(
+      "empty",
+      String(empty),
+    );
   }
 
   const { data } = await api.patch<
@@ -113,46 +145,53 @@ export const updateMyProfile = async ({
   return data.result;
 };
 
-export const withdrawMe = async (
-  request: WithdrawalRequest,
-): Promise<string> => {
-  const { data } = await api.delete<
-    ApiResponse<string>
-  >("/api/v1/users/me", {
-    data: request,
-  });
+export const withdrawMe = (
+  withdrawal: WithdrawalRequest,
+) =>
+  api
+    .delete<ApiResponse<string>>(
+      "/api/v1/users/me",
+      {
+        data: withdrawal,
+      },
+    )
+    .then(getResult);
 
-  return data.result;
-};
-
-export const updateTeacherPersona = async (
+export const updateTeacherPersona = (
   persona: TeacherPersona,
-): Promise<{ teacherPersona: TeacherPersona }> => {
-  const { data } = await api.patch<
-    ApiResponse<{ teacherPersona: TeacherPersona }>
-  >("/api/v1/users/me/teacher-persona", {
-    persona,
-  });
+) =>
+  api
+    .patch<
+      ApiResponse<{
+        teacherPersona: TeacherPersona;
+      }>
+    >(
+      "/api/v1/users/me/teacher-persona",
+      {
+        persona,
+      },
+    )
+    .then(getResult);
 
-  return data.result;
-};
-
-export const updateNotifications = async (
+export const updateNotifications = (
   pushEnabled: boolean,
-): Promise<{ pushEnabled: boolean }> => {
-  const { data } = await api.patch<
-    ApiResponse<{ pushEnabled: boolean }>
-  >("/api/v1/users/me/notifications", {
-    pushEnabled,
-  });
+) =>
+  api
+    .patch<
+      ApiResponse<{
+        pushEnabled: boolean;
+      }>
+    >(
+      "/api/v1/users/me/notifications",
+      {
+        pushEnabled,
+      },
+    )
+    .then(getResult);
 
-  return data.result;
-};
-
-export const getInquiryContact = async (): Promise<InquiryContact> => {
-  const { data } = await api.get<
-    ApiResponse<InquiryContact>
-  >("/api/v1/support/contacts");
-
-  return data.result;
-};
+export const getInquiryContact = () =>
+  api
+    .get<ApiResponse<InquiryContact>>(
+      "/api/v1/support/contacts",
+    )
+    .then(getResult);
