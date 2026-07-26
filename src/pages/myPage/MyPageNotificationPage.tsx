@@ -10,6 +10,8 @@ import NotificationToggle from "../../components/myPage/NotificationToggle";
 const MyPageNotificationPage = () => {
   const [isTeachingMapNotificationEnabled, setIsTeachingMapNotificationEnabled] =
     useState(true);
+  const [isSaving, setIsSaving] =
+    useState(false);
 
   useEffect(() => {
     const loadNotificationSetting = async () => {
@@ -29,18 +31,32 @@ const MyPageNotificationPage = () => {
   const handleNotificationChange = async (
     enabled: boolean,
   ) => {
+    if (isSaving) {
+      return;
+    }
+
     const previousValue =
       isTeachingMapNotificationEnabled;
 
     setIsTeachingMapNotificationEnabled(enabled);
 
     try {
+      setIsSaving(true);
       await updateNotifications(enabled);
+
+      const savedProfile =
+        await getMyProfile();
+
+      setIsTeachingMapNotificationEnabled(
+        savedProfile.notificationEnabled,
+      );
     } catch (error) {
       setIsTeachingMapNotificationEnabled(
         previousValue,
       );
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
