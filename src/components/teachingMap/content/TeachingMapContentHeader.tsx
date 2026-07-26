@@ -13,6 +13,11 @@ const TeachingMapContentHeader = () => {
     }>();
 
   const handleBackToTeachingMap = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
     if (!teachingMapId) {
       navigate("/teaching-map");
       return;

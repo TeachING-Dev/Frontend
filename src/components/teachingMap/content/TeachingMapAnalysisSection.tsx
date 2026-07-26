@@ -1,4 +1,3 @@
-import { useState } from "react";
 import TeachingMapAnalysisCard from "./TeachingMapAnalysisCard";
 import TeachingMapAnalysisDropdown from "./TeachingMapAnalysisDropdown";
 
@@ -7,6 +6,8 @@ interface TeachingMapAnalysisSectionProps {
   title: string;
   descriptions: string[];
   defaultOpen?: boolean;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 const TeachingMapAnalysisSection = ({
@@ -14,8 +15,10 @@ const TeachingMapAnalysisSection = ({
   title,
   descriptions,
   defaultOpen = false,
+  isOpen: controlledIsOpen,
+  onToggle,
 }: TeachingMapAnalysisSectionProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const isOpen = controlledIsOpen ?? defaultOpen;
 
   return (
     <section>
@@ -27,7 +30,7 @@ const TeachingMapAnalysisSection = ({
         <TeachingMapAnalysisDropdown
           title={title}
           isOpen={isOpen}
-          onToggle={() => setIsOpen((previous) => !previous)}
+          onToggle={onToggle ?? (() => undefined)}
         />
       </div>
 

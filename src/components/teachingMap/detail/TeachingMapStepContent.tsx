@@ -5,6 +5,7 @@ interface TeachingMapStepContentProps {
   title: string;
   isCompleted: boolean;
   onToggleCompletion: (stepId: number) => void;
+  isSourceAvailable: boolean;
 }
 
 const TeachingMapStepContent = ({
@@ -12,6 +13,7 @@ const TeachingMapStepContent = ({
   title,
   isCompleted,
   onToggleCompletion,
+  isSourceAvailable,
 }: TeachingMapStepContentProps) => {
   return (
     <div className="flex h-[100px] items-center justify-between gap-[20px] rounded-b-[10px] bg-[#13151F] px-[29px] py-[10px]">
@@ -19,10 +21,10 @@ const TeachingMapStepContent = ({
         {title}
       </p>
 
-      <TeachingMapCompletionCheckbox
+      {isSourceAvailable && <TeachingMapCompletionCheckbox
         isCompleted={isCompleted}
         onToggle={() => onToggleCompletion(stepId)}
-      />
+      />}
     </div>
   );
 };

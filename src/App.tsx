@@ -4,7 +4,6 @@ import {
   Routes,
 } from "react-router-dom";
 
-import RequireAuth from "./components/auth/RequireAuth";
 import AnalysisLayout from "./layouts/AnalysisLayout";
 import HomeLayout from "./layouts/HomeLayout";
 import MainLayout from "./layouts/MainLayout";
@@ -26,7 +25,6 @@ import MyPageWithdrawalCompletePage from "./pages/myPage/MyPageWithdrawalComplet
 import MyPageWithdrawalConfirmPage from "./pages/myPage/MyPageWithdrawalConfirmPage";
 import MyPageWithdrawalReasonPage from "./pages/myPage/MyPageWithdrawalReasonPage";
 import NotificationPage from "./pages/NotificationPage";
-import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
 import SubscriptionCompletePage from "./pages/SubscriptionCompletePage";
@@ -48,23 +46,6 @@ function App() {
           element={<LoginPage />}
         />
 
-        <Route
-          path="/oauth/callback"
-          element={<OAuthCallbackPage />}
-        />
-        <Route
-          path="/oauth2/redirect"
-          element={<OAuthCallbackPage />}
-        />
-        <Route
-          path="/oauth/success"
-          element={<OAuthCallbackPage />}
-        />
-        <Route
-          path="/login/oauth2/code/:provider"
-          element={<OAuthCallbackPage />}
-        />
-
         {/* 회원가입 완료 */}
         <Route
           path="/signup/complete"
@@ -80,13 +61,11 @@ function App() {
         />
 
         {/* 홈 전용 레이아웃 */}
-        <Route element={<RequireAuth />}>
-          <Route element={<HomeLayout />}>
-            <Route
-              path="/"
-              element={<HomePage />}
-            />
-          </Route>
+        <Route element={<HomeLayout />}>
+          <Route
+            path="/"
+            element={<HomePage />}
+          />
         </Route>
 
         {/* 분석 전용 레이아웃 */}

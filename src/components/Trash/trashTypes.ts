@@ -29,6 +29,7 @@ export interface TrashTeachingMapItem {
   description: string;
   currentStep: number;
   totalStep: number;
+  type: "shortcut" | "deepDive";
   thumbnails: string[];
   deletedAt: string;
 }

@@ -8,9 +8,6 @@ interface TrashTeachingMapListProps {
   onSelect: (
     teachingMapId: number,
   ) => void;
-  onRestore: (
-    teachingMapId: number,
-  ) => void;
 }
 
 const TrashTeachingMapList = ({
@@ -18,7 +15,6 @@ const TrashTeachingMapList = ({
   isRestoreMode,
   selectedItemIds,
   onSelect,
-  onRestore,
 }: TrashTeachingMapListProps) => {
   return (
     <div className="flex flex-col gap-10">
@@ -34,7 +30,6 @@ const TrashTeachingMapList = ({
               teachingMap.id,
             )}
             onSelect={onSelect}
-            onRestore={onRestore}
           />
         ),
       )}

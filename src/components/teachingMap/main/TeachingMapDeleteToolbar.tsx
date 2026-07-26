@@ -1,13 +1,17 @@
 interface TeachingMapDeleteToolbarProps {
   selectedCount: number;
+  isAllSelected: boolean;
   actionLabel?: string;
+  onToggleSelectAll: () => void;
   onDeleteClick: () => void;
   onCancelClick: () => void;
 }
 
 const TeachingMapDeleteToolbar = ({
   selectedCount,
+  isAllSelected,
   actionLabel = "삭제하기",
+  onToggleSelectAll,
   onDeleteClick,
   onCancelClick,
 }: TeachingMapDeleteToolbarProps) => {
@@ -20,11 +24,20 @@ const TeachingMapDeleteToolbar = ({
       className="flex w-[1120px] items-center justify-between py-[10px]"
     >
       <div className="flex items-center gap-[10px]">
-        <div
-          aria-hidden="true"
-          className="flex h-9 w-9 items-center justify-center rounded-[5px] bg-[#917DEC]"
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={isAllSelected}
+          aria-label={isAllSelected ? "현재 페이지 전체 선택 해제" : "현재 페이지 전체 선택"}
+          onClick={onToggleSelectAll}
+          className={[
+            "flex h-9 w-9 items-center justify-center rounded-[5px] border transition-colors",
+            isAllSelected
+              ? "border-[#917DEC] bg-[#917DEC]"
+              : "border-[#717379] bg-transparent hover:border-[#917DEC]",
+          ].join(" ")}
         >
-          <svg
+          {isAllSelected && <svg
             width="36"
             height="36"
             viewBox="0 0 36 36"
@@ -45,8 +58,8 @@ const TeachingMapDeleteToolbar = ({
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          </svg>
-        </div>
+          </svg>}
+        </button>
 
         <p
           aria-live="polite"
