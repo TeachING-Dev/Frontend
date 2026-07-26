@@ -1,14 +1,10 @@
+import type { ApiResponse } from "./apiTypes";
+import api from "./axios";
+
 export type TeacherPersona =
   | "FRIENDLY"
   | "STRICT"
   | "CHEERING";
-
-interface ApiResponse<T> {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: T;
-}
 
 export interface UserAccount {
   provider: string;
@@ -31,118 +27,132 @@ export interface InquiryContact {
   email: string;
 }
 
-interface UpdateProfileRequest {
+export interface UpdateProfileRequest {
   nickname?: string;
-  birthDate?: string;
-  profileImageUrl?: string;
+  profileImage?: File;
+  birthYear?: number;
+  birthMonth?: number;
+  birthDay?: number;
+  empty?: boolean;
 }
 
-interface UpdateProfileResult {
+export interface UpdateProfileResult {
   userId: number;
   nickname: string;
   profileImageUrl: string;
   notificationEnabled: boolean;
 }
 
-interface WithdrawalRequest {
+export interface WithdrawalRequest {
   reason: string;
   reasonDetail: string;
   isConfirmed: boolean;
 }
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "";
-
-const request = async <T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> => {
-  const headers = new Headers(options.headers);
-  headers.set("Accept", "application/json");
-
-  if (options.body) {
-    headers.set(
-      "Content-Type",
-      "application/json",
-    );
-  }
-
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1${path}`,
-    {
-      ...options,
-      headers,
-      credentials: "include",
-    },
-  );
-
-  const data =
-    (await response.json()) as ApiResponse<T>;
-
-  if (!response.ok || !data.isSuccess) {
-    throw new Error(
-      data.message ||
-        `요청에 실패했습니다. (${response.status})`,
-    );
-  }
+export const getMyProfile = async (): Promise<MyProfile> => {
+  const { data } = await api.get<
+    ApiResponse<MyProfile>
+  >("/api/v1/users/me");
 
   return data.result;
 };
 
-export const getMyProfile = () =>
-  request<MyProfile>("/users/me");
-
-export const checkNickname = (
+export const checkNickname = async (
   nickname: string,
-) => {
-  const searchParams = new URLSearchParams({
-    nickname,
+): Promise<string> => {
+  const { data } = await api.get<
+    ApiResponse<string>
+  >("/api/v1/auth/check-nickname", {
+    params: { nickname },
   });
 
-  return request<string>(
-    `/auth/check-nickname?${searchParams.toString()}`,
-  );
+  return data.result;
 };
 
-export const updateMyProfile = (
-  profile: UpdateProfileRequest,
-) =>
-  request<UpdateProfileResult>("/users/me", {
-    method: "PATCH",
-    body: JSON.stringify(profile),
+export const updateMyProfile = async ({
+  nickname,
+  profileImage,
+  birthYear,
+  birthMonth,
+  birthDay,
+  empty,
+}: UpdateProfileRequest): Promise<UpdateProfileResult> => {
+  const formData = new FormData();
+
+  if (nickname !== undefined) {
+    formData.append("nickname", nickname);
+  }
+
+  if (profileImage !== undefined) {
+    formData.append("profileImage", profileImage);
+  }
+
+  const hasBirthDate =
+    birthYear !== undefined &&
+    birthMonth !== undefined &&
+    birthDay !== undefined;
+
+  if (hasBirthDate) {
+    formData.append("birthYear", String(birthYear));
+    formData.append("birthMonth", String(birthMonth));
+    formData.append("birthDay", String(birthDay));
+  }
+
+  if (empty !== undefined) {
+    formData.append("empty", String(empty));
+  }
+
+  const { data } = await api.patch<
+    ApiResponse<UpdateProfileResult>
+  >("/api/v1/users/me", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
-export const withdrawMe = (
-  withdrawal: WithdrawalRequest,
-) =>
-  request<string>("/users/me", {
-    method: "DELETE",
-    body: JSON.stringify(withdrawal),
+  return data.result;
+};
+
+export const withdrawMe = async (
+  request: WithdrawalRequest,
+): Promise<string> => {
+  const { data } = await api.delete<
+    ApiResponse<string>
+  >("/api/v1/users/me", {
+    data: request,
   });
 
-export const updateTeacherPersona = (
+  return data.result;
+};
+
+export const updateTeacherPersona = async (
   persona: TeacherPersona,
-) =>
-  request<{ teacherPersona: TeacherPersona }>(
-    "/users/me/teacher-persona",
-    {
-      method: "PATCH",
-      body: JSON.stringify({ persona }),
-    },
-  );
+): Promise<{ teacherPersona: TeacherPersona }> => {
+  const { data } = await api.patch<
+    ApiResponse<{ teacherPersona: TeacherPersona }>
+  >("/api/v1/users/me/teacher-persona", {
+    persona,
+  });
 
-export const updateNotifications = (
+  return data.result;
+};
+
+export const updateNotifications = async (
   pushEnabled: boolean,
-) =>
-  request<{ pushEnabled: boolean }>(
-    "/users/me/notifications",
-    {
-      method: "PATCH",
-      body: JSON.stringify({ pushEnabled }),
-    },
-  );
+): Promise<{ pushEnabled: boolean }> => {
+  const { data } = await api.patch<
+    ApiResponse<{ pushEnabled: boolean }>
+  >("/api/v1/users/me/notifications", {
+    pushEnabled,
+  });
 
-export const getInquiryContact = () =>
-  request<InquiryContact>(
-    "/support/contacts",
-  );
+  return data.result;
+};
+
+export const getInquiryContact = async (): Promise<InquiryContact> => {
+  const { data } = await api.get<
+    ApiResponse<InquiryContact>
+  >("/api/v1/support/contacts");
+
+  return data.result;
+};
