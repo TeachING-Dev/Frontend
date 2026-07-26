@@ -39,6 +39,10 @@ const MyPageEditPage = () => {
     profileImageUrl,
     setProfileImageUrl,
   ] = useState("");
+  const [
+    profileImageFile,
+    setProfileImageFile,
+  ] = useState<File | null>(null);
 
   const [
     nicknameError,
@@ -130,6 +134,7 @@ const MyPageEditPage = () => {
       URL.createObjectURL(imageFile);
 
     setProfileImageUrl(newImageUrl);
+    setProfileImageFile(imageFile);
   };
 
   const isSubmitDisabled =
@@ -171,12 +176,20 @@ const MyPageEditPage = () => {
 
       await updateMyProfile({
         nickname: trimmedNickname,
-        birthDate,
-        ...(profileImageUrl &&
-        !profileImageUrl.startsWith("blob:")
-          ? { profileImageUrl }
+        ...(profileImageFile
+          ? { profileImage: profileImageFile }
           : {}),
+        birthYear: Number(
+          birthDate.slice(0, 4),
+        ),
+        birthMonth: Number(
+          birthDate.slice(5, 7),
+        ),
+        birthDay: Number(
+          birthDate.slice(8, 10),
+        ),
       });
+
       navigate("/mypage");
     } catch (error) {
       setNicknameError(
