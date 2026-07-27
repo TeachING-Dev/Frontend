@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { reissue } from "../apis/auth";
@@ -13,11 +13,13 @@ import {
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const backendUrl =
-    import.meta.env.VITE_API_URL;
-  const REDIRECT_URI = encodeURIComponent(
-    import.meta.env
-      .VITE_OAUTH_REDIRECT_URI ||
+  const backendUrl = import.meta.env.VITE_API_URL?.replace(
+    /\/$/,
+    "",
+  );
+
+  const redirectUri = encodeURIComponent(
+    import.meta.env.VITE_OAUTH_REDIRECT_URI ||
       `${window.location.origin}/oauth/callback`,
   );
 
@@ -34,22 +36,19 @@ const LoginPage = () => {
 
     const restoreAccessToken = async () => {
       try {
-        const reissuedAccessToken =
-          await reissue();
+        const reissuedAccessToken = await reissue();
 
         saveTokens({
           accessToken: reissuedAccessToken,
         });
 
         if (
-          isExistingUserToken(
-            reissuedAccessToken,
-          )
+          isExistingUserToken(reissuedAccessToken)
         ) {
           navigate("/", { replace: true });
         }
       } catch {
-        // 로그인 페이지에서는 재발급 실패 시 그대로 머무릅니다.
+        // 재발급 가능한 쿠키가 없으면 로그인 페이지에 머무릅니다.
       }
     };
 
@@ -66,7 +65,7 @@ const LoginPage = () => {
 
     window.location.href =
       `${backendUrl}/oauth2/authorization/kakao` +
-      `?redirect_uri=${REDIRECT_URI}`;
+      `?redirect_uri=${redirectUri}`;
   };
 
   const handleGoogleLogin = () => {
@@ -79,18 +78,16 @@ const LoginPage = () => {
 
     window.location.href =
       `${backendUrl}/oauth2/authorization/google` +
-      `?redirect_uri=${REDIRECT_URI}`;
+      `?redirect_uri=${redirectUri}`;
   };
 
   return (
     <AuthPageLayout contentClassName="relative min-h-screen">
       <div className="absolute left-1/2 top-0 h-[1019.6px] w-full origin-top -translate-x-1/2 scale-[0.75]">
-        {/* 별 아이콘: 원본 기준 상단 206px */}
         <div className="absolute left-1/2 top-[206px] -translate-x-1/2">
           <AuthBrandLogo />
         </div>
 
-        {/* 안내 문구: 원본 기준 상단 577px */}
         <div className="absolute left-1/2 top-[577px] flex w-[739px] -translate-x-1/2 flex-col items-center">
           <p className="text-center font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#F5F2FF]">
             간편 로그인으로
