@@ -310,6 +310,39 @@ const TeachingMapPage = () => {
     setSelectedTeachingMapIds([]);
   };
 
+  const visibleTeachingMapIds =
+    visibleTeachingMaps.map(
+      (teachingMap) => teachingMap.id,
+    );
+
+  const isCurrentPageAllSelected =
+    visibleTeachingMapIds.length > 0 &&
+    visibleTeachingMapIds.every((id) =>
+      selectedTeachingMapIds.includes(id),
+    );
+
+  const handleToggleSelectAll = () => {
+    setSelectedTeachingMapIds(
+      (previousIds) => {
+        if (isCurrentPageAllSelected) {
+          return previousIds.filter(
+            (id) =>
+              !visibleTeachingMapIds.includes(
+                id,
+              ),
+          );
+        }
+
+        return Array.from(
+          new Set([
+            ...previousIds,
+            ...visibleTeachingMapIds,
+          ]),
+        );
+      },
+    );
+  };
+
   const handleDeleteButtonClick =
     () => {
       if (
@@ -446,15 +479,18 @@ const TeachingMapPage = () => {
           }
         />
 
-        {isEmpty && !isDeleteMode ? (
-          <TeachingMapEmpty />
-        ) : (
-          <>
+        <>
             <div className="mt-[55px]">
               {isDeleteMode ? (
                 <TeachingMapDeleteToolbar
                   selectedCount={
                     selectedTeachingMapIds.length
+                  }
+                  isAllSelected={
+                    isCurrentPageAllSelected
+                  }
+                  onToggleSelectAll={
+                    handleToggleSelectAll
                   }
                   onDeleteClick={
                     handleDeleteButtonClick
@@ -487,8 +523,11 @@ const TeachingMapPage = () => {
               )}
             </div>
 
-            <div className="mt-5 min-h-[540px]">
-              <TeachingMapList
+            <div className="mt-5 flex min-h-[540px] flex-col">
+              {isEmpty && !isDeleteMode ? (
+                <TeachingMapEmpty />
+              ) : (
+                <TeachingMapList
                 teachingMaps={
                   visibleTeachingMaps
                 }
@@ -504,18 +543,22 @@ const TeachingMapPage = () => {
                 onTeachingMapSelect={
                   handleTeachingMapSelect
                 }
-              />
+                />
+              )}
             </div>
 
-            <Pagination
-              currentPage={activePage}
-              totalPages={totalPages}
-              onPageChange={
-                handlePageChange
-              }
-            />
+            {filteredTeachingMaps.length > 1 && (
+              <div className="pb-[77px]">
+                <Pagination
+                  currentPage={activePage}
+                  totalPages={totalPages}
+                  onPageChange={
+                    handlePageChange
+                  }
+                />
+              </div>
+            )}
           </>
-        )}
       </div>
 
       <TeachingMapDeleteModal

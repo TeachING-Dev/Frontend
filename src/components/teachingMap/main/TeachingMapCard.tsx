@@ -1,4 +1,5 @@
 import type { KeyboardEvent } from "react";
+import ProgressBar from "../../common/ProgressBar";
 
 export type TeachingMapType =
   | "shortcut"
@@ -17,6 +18,9 @@ export interface TeachingMapCardData {
   currentStep: number;
   totalStep: number;
   thumbnailSrc: string;
+  thumbnailSrcs?: string[];
+  extraThumbnailCount?: number;
+  deletedAtLabel?: string;
   createdAt?: string;
 }
 
@@ -31,60 +35,6 @@ interface TeachingMapCardProps {
     teachingMapId: number,
   ) => void;
 }
-
-interface ProgressBarProps {
-  currentStep: number;
-  totalStep: number;
-  isCompleted: boolean;
-}
-
-const ProgressBar = ({
-  currentStep,
-  totalStep,
-  isCompleted,
-}: ProgressBarProps) => {
-  const progressPercentage =
-    totalStep > 0
-      ? Math.min(
-          Math.max(
-            (currentStep / totalStep) * 100,
-            0,
-          ),
-          100,
-        )
-      : 0;
-
-  const progressWidth = isCompleted
-    ? 100
-    : progressPercentage;
-
-  return (
-    <div
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={totalStep}
-      aria-valuenow={
-        isCompleted
-          ? totalStep
-          : currentStep
-      }
-      aria-label="티칭맵 학습 진행률"
-      className="h-[10px] min-w-0 flex-1 overflow-hidden rounded-[100px] bg-[#42444C]"
-    >
-      <div
-        className={[
-          "h-full rounded-[100px]",
-          "bg-[linear-gradient(90deg,#917DEC_0%,#C1AEFF_100%)]",
-          "shadow-[0_0_8px_rgba(193,174,255,0.8)]",
-          "transition-[width] duration-300",
-        ].join(" ")}
-        style={{
-          width: `${progressWidth}%`,
-        }}
-      />
-    </div>
-  );
-};
 
 const TeachingMapCard = ({
   teachingMap,
@@ -102,6 +52,9 @@ const TeachingMapCard = ({
     currentStep,
     totalStep,
     thumbnailSrc,
+    thumbnailSrcs,
+    extraThumbnailCount = 0,
+    deletedAtLabel,
   } = teachingMap;
 
   const isCompleted =
@@ -111,6 +64,17 @@ const TeachingMapCard = ({
     type === "shortcut"
       ? "Short-cut"
       : "Deep-dive";
+
+  const progress =
+    isCompleted
+      ? 100
+      : totalStep > 0
+        ? (currentStep / totalStep) *
+          100
+        : 0;
+
+  const visibleThumbnails =
+    thumbnailSrcs?.slice(0, 3);
 
   const handleCardClick = () => {
     if (isDeleteMode) {
@@ -164,19 +128,54 @@ const TeachingMapCard = ({
       ].join(" ")}
     >
       <div className="flex min-w-0 items-start gap-[10px]">
-        <div className="flex h-[60px] w-[98px] shrink-0 flex-col items-start justify-center gap-[10px] rounded-[10px] bg-[#1F212A] p-[10px]">
-          <img
-            src={thumbnailSrc}
-            alt=""
-            aria-hidden="true"
-            className="h-[40px] w-[78px] object-contain"
-          />
+        <div className="flex h-[60px] w-[98px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#1F212A] p-[10px]">
+          {visibleThumbnails &&
+          visibleThumbnails.length > 0 ? (
+            <div className="relative flex items-center">
+              {visibleThumbnails.map(
+                (source, index) => (
+                <img
+                  key={`${source}-${index}`}
+                  src={source}
+                  alt=""
+                  aria-hidden="true"
+                  className={[
+                    "h-9 w-9 rounded-full border-2 border-[#F5F2FF] object-cover",
+                    index === 0
+                      ? ""
+                      : "-ml-3",
+                  ].join(" ")}
+                />
+                ),
+              )}
+              {extraThumbnailCount > 0 && (
+                <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full border-2 border-[#F5F2FF] bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
+                  +{extraThumbnailCount}
+                </span>
+              )}
+            </div>
+          ) : (
+            <img
+              src={thumbnailSrc}
+              alt=""
+              aria-hidden="true"
+              className="h-[40px] w-[78px] object-contain"
+            />
+          )}
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-['SUIT'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
-            {title}
-          </h2>
+          <div className="flex min-w-0 items-center gap-[10px]">
+            <h2 className="truncate font-['SUIT'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
+              {title}
+            </h2>
+
+            {deletedAtLabel && (
+              <span className="shrink-0 font-['Montserrat'] text-[16px] font-normal italic leading-6 tracking-[-0.4px] text-[#F5F2FF]">
+                {deletedAtLabel}
+              </span>
+            )}
+          </div>
 
           <p className="truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#717379]">
             {description}
@@ -192,9 +191,17 @@ const TeachingMapCard = ({
 
       <div className="flex w-full items-center gap-10">
         <ProgressBar
-          currentStep={currentStep}
-          totalStep={totalStep}
-          isCompleted={isCompleted}
+          value={progress}
+          ariaLabel="티칭맵 학습 진행률"
+          ariaValueMax={totalStep}
+          ariaValueNow={
+            isCompleted
+              ? totalStep
+              : currentStep
+          }
+          className="min-w-0 flex-1"
+          trackClassName="!h-[10px] !rounded-[100px]"
+          indicatorClassName="!rounded-[100px] !bg-[linear-gradient(90deg,#917DEC_0%,#C1AEFF_100%)] shadow-[0_0_8px_rgba(193,174,255,0.8)] transition-[width] duration-300"
         />
 
         <div className="flex min-w-[90px] shrink-0 justify-end font-['SUIT'] text-[16px] font-normal leading-6 tracking-[-0.48px]">

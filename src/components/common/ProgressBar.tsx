@@ -13,6 +13,9 @@ type ProgressBarProps = {
   className?: string;
   trackClassName?: string;
   indicatorClassName?: string;
+  ariaValueMin?: number;
+  ariaValueMax?: number;
+  ariaValueNow?: number;
   onProgressChange?: (progress: number) => void;
   onComplete?: () => void;
 };
@@ -30,6 +33,9 @@ const ProgressBar = ({
   className = "",
   trackClassName = "",
   indicatorClassName = "",
+  ariaValueMin = 0,
+  ariaValueMax = 100,
+  ariaValueNow,
   onProgressChange,
   onComplete,
 }: ProgressBarProps) => {
@@ -140,11 +146,12 @@ const ProgressBar = ({
     <div
       role="progressbar"
       aria-label={ariaLabel}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(
-        displayedProgress,
-      )}
+      aria-valuemin={ariaValueMin}
+      aria-valuemax={ariaValueMax}
+      aria-valuenow={
+        ariaValueNow ??
+        Math.round(displayedProgress)
+      }
       className={`w-full ${className}`}
     >
       <div

@@ -1,9 +1,13 @@
 import {
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Pagination from "../components/common/Pagination";
+import Toast from "../components/common/Toast";
 import TemporaryTeachingMapHeader from "../components/teachingMap/drafts/TemporaryTeachingMapHeader";
 import TemporaryTeachingMapList from "../components/teachingMap/drafts/TemporaryTeachingMapList";
 import TeachingMapDeleteModal from "../components/teachingMap/main/TeachingMapDeleteModal";
@@ -18,6 +22,8 @@ import {
   TEMPORARY_TEACHING_MAPS,
   type TemporaryTeachingMapData,
 } from "../constants/temporaryTeachingMaps";
+
+const TEACHING_MAPS_PER_PAGE = 10;
 
 const TemporaryTeachingMapPage = () => {
   const navigate = useNavigate();
@@ -42,6 +48,9 @@ const TemporaryTeachingMapPage = () => {
       "latest",
     );
 
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
   const [
     isDeleteMode,
     setIsDeleteMode,
@@ -57,7 +66,20 @@ const TemporaryTeachingMapPage = () => {
     setIsDeleteModalOpen,
   ] = useState(false);
 
-  const visibleTeachingMaps =
+  const [deletedTeachingMaps, setDeletedTeachingMaps] =
+    useState<TemporaryTeachingMapData[]>([]);
+  const [isToastOpen, setIsToastOpen] = useState(false);
+  const toastTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  const filteredTeachingMaps =
     useMemo(() => {
       const filteredMaps =
         teachingMaps.filter(
@@ -92,12 +114,60 @@ const TemporaryTeachingMapPage = () => {
       teachingMaps,
     ]);
 
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      filteredTeachingMaps.length /
+        TEACHING_MAPS_PER_PAGE,
+    ),
+  );
+
+  const activePage = Math.min(
+    currentPage,
+    totalPages,
+  );
+
+  const visibleTeachingMaps =
+    useMemo(() => {
+      const startIndex =
+        (activePage - 1) *
+        TEACHING_MAPS_PER_PAGE;
+
+      return filteredTeachingMaps.slice(
+        startIndex,
+        startIndex +
+          TEACHING_MAPS_PER_PAGE,
+      );
+    }, [
+      activePage,
+      filteredTeachingMaps,
+    ]);
+
   const handleFilterChange = (
     filter: TeachingMapFilterType,
   ) => {
     setSelectedFilter(filter);
+    setCurrentPage(1);
     setIsDeleteMode(false);
     setSelectedTeachingMapIds([]);
+  };
+
+  const handleSortChange = (
+    nextSortType: TeachingMapSortType,
+  ) => {
+    setSortType(nextSortType);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (
+    page: number,
+  ) => {
+    setCurrentPage(page);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const handleTeachingMapClick = (
@@ -138,6 +208,30 @@ const TemporaryTeachingMapPage = () => {
     setSelectedTeachingMapIds([]);
   };
 
+  const visibleTeachingMapIds =
+    visibleTeachingMaps.map(
+      (teachingMap) => teachingMap.id,
+    );
+  const isCurrentPageAllSelected =
+    visibleTeachingMapIds.length > 0 &&
+    visibleTeachingMapIds.every((id) =>
+      selectedTeachingMapIds.includes(id),
+    );
+
+  const handleToggleSelectAll = () => {
+    setSelectedTeachingMapIds((previousIds) => {
+      if (isCurrentPageAllSelected) {
+        return previousIds.filter(
+          (id) => !visibleTeachingMapIds.includes(id),
+        );
+      }
+
+      return Array.from(
+        new Set([...previousIds, ...visibleTeachingMapIds]),
+      );
+    });
+  };
+
   const handleDeleteButtonClick =
     () => {
       if (
@@ -151,6 +245,12 @@ const TemporaryTeachingMapPage = () => {
     };
 
   const handleDeleteConfirm = () => {
+    const teachingMapsToDelete =
+      teachingMaps.filter((teachingMap) =>
+        selectedTeachingMapIds.includes(teachingMap.id),
+      );
+    setDeletedTeachingMaps(teachingMapsToDelete);
+
     setTeachingMaps(
       (previousTeachingMaps) =>
         previousTeachingMaps.filter(
@@ -164,6 +264,35 @@ const TemporaryTeachingMapPage = () => {
     setIsDeleteModalOpen(false);
     setIsDeleteMode(false);
     setSelectedTeachingMapIds([]);
+    setIsToastOpen(true);
+
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+    toastTimerRef.current = window.setTimeout(() => {
+      setIsToastOpen(false);
+      setDeletedTeachingMaps([]);
+      toastTimerRef.current = null;
+    }, 5000);
+  };
+
+  const handleDeleteUndo = () => {
+    setTeachingMaps((previousTeachingMaps) => [
+      ...previousTeachingMaps,
+      ...deletedTeachingMaps.filter(
+        (deletedMap) =>
+          !previousTeachingMaps.some(
+            (teachingMap) =>
+              teachingMap.id === deletedMap.id,
+          ),
+      ),
+    ]);
+    setIsToastOpen(false);
+    setDeletedTeachingMaps([]);
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = null;
+    }
   };
 
   return (
@@ -181,6 +310,12 @@ const TemporaryTeachingMapPage = () => {
             <TeachingMapDeleteToolbar
               selectedCount={
                 selectedTeachingMapIds.length
+              }
+              isAllSelected={
+                isCurrentPageAllSelected
+              }
+              onToggleSelectAll={
+                handleToggleSelectAll
               }
               actionLabel="휴지통으로 이동"
               onDeleteClick={
@@ -203,7 +338,9 @@ const TemporaryTeachingMapPage = () => {
 
               <TeachingMapToolbar
                 sortType={sortType}
-                onSortChange={setSortType}
+                onSortChange={
+                  handleSortChange
+                }
                 onDeleteModeStart={
                   handleDeleteModeStart
                 }
@@ -234,11 +371,23 @@ const TemporaryTeachingMapPage = () => {
             />
           ) : (
             <div className="flex h-[300px] w-full items-center justify-center text-[20px] font-medium text-[#717379]">
-              임시 저장한 티칭맵이
-              없어요.
+              임시저장한 티칭맵이 없습니다.
             </div>
           )}
         </div>
+
+        {filteredTeachingMaps.length > 1 &&
+          !isDeleteMode && (
+            <div className="pb-[77px]">
+              <Pagination
+                currentPage={activePage}
+                totalPages={totalPages}
+                onPageChange={
+                  handlePageChange
+                }
+              />
+            </div>
+          )}
       </div>
 
       <TeachingMapDeleteModal
@@ -251,6 +400,14 @@ const TemporaryTeachingMapPage = () => {
           handleDeleteConfirm
         }
       />
+
+      {isToastOpen && (
+        <Toast
+          message="티칭맵이 휴지통으로 이동되었습니다"
+          actionText="실행취소"
+          onAction={handleDeleteUndo}
+        />
+      )}
     </main>
   );
 };

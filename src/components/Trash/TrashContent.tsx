@@ -24,7 +24,8 @@ import type {
   TrashTeachingMapItem,
 } from "./trashTypes";
 
-const FOLDERS_PER_PAGE = 9;
+const FOLDERS_PER_PAGE = 10;
+const DATA_PER_PAGE = 10;
 const TEACHING_MAPS_PER_PAGE = 10;
 const RECENT_DELETED_AT = new Date(
   Date.now() - 10 * 60 * 60 * 1000,
@@ -99,6 +100,7 @@ const initialTeachingMaps: TrashTeachingMapItem[] = [
       "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
     currentStep: 4,
     totalStep: 8,
+    type: "deepDive",
     thumbnails: [
       "/youtube-app-icon.png",
       "/youtube-app-icon.png",
@@ -116,6 +118,7 @@ const initialTeachingMaps: TrashTeachingMapItem[] = [
       "Node.js와 데이터베이스를 중심으로 구성된 백엔드 학습 티칭맵입니다.",
     currentStep: 4,
     totalStep: 8,
+    type: "shortcut",
     thumbnails: [
       "/youtube-app-icon.png",
       "/youtube-app-icon.png",
@@ -146,6 +149,11 @@ const TrashContent = () => {
   const [
     currentTeachingMapPage,
     setCurrentTeachingMapPage,
+  ] = useState(1);
+
+  const [
+    currentDataPage,
+    setCurrentDataPage,
   ] = useState(1);
 
   const [
@@ -281,6 +289,14 @@ const TrashContent = () => {
       ),
     );
 
+  const totalDataPages = Math.max(
+    1,
+    Math.ceil(
+      sortedDataList.length /
+        DATA_PER_PAGE,
+    ),
+  );
+
   const activeFolderPage = Math.min(
     currentFolderPage,
     totalFolderPages,
@@ -291,6 +307,11 @@ const TrashContent = () => {
       currentTeachingMapPage,
       totalTeachingMapPages,
     );
+
+  const activeDataPage = Math.min(
+    currentDataPage,
+    totalDataPages,
+  );
 
   const visibleFolders = useMemo(() => {
     const startIndex =
@@ -322,6 +343,20 @@ const TrashContent = () => {
       activeTeachingMapPage,
     ]);
 
+  const visibleDataList = useMemo(() => {
+    const startIndex =
+      (activeDataPage - 1) *
+      DATA_PER_PAGE;
+
+    return sortedDataList.slice(
+      startIndex,
+      startIndex + DATA_PER_PAGE,
+    );
+  }, [
+    activeDataPage,
+    sortedDataList,
+  ]);
+
   const visibleItemIds = useMemo(() => {
     if (
       selectedCategory === "folder"
@@ -334,7 +369,7 @@ const TrashContent = () => {
     if (
       selectedCategory === "data"
     ) {
-      return sortedDataList.map(
+      return visibleDataList.map(
         (data) => data.id,
       );
     }
@@ -346,7 +381,7 @@ const TrashContent = () => {
   }, [
     selectedCategory,
     visibleFolders,
-    sortedDataList,
+    visibleDataList,
     visibleTeachingMaps,
   ]);
 
@@ -381,6 +416,10 @@ const TrashContent = () => {
       setCurrentFolderPage(1);
     }
 
+    if (category === "data") {
+      setCurrentDataPage(1);
+    }
+
     if (
       category === "teachingMap"
     ) {
@@ -393,6 +432,7 @@ const TrashContent = () => {
   ) => {
     setSortType(newSortType);
     setCurrentFolderPage(1);
+    setCurrentDataPage(1);
     setCurrentTeachingMapPage(1);
     setSelectedItemIds([]);
   };
@@ -404,6 +444,12 @@ const TrashContent = () => {
       selectedCategory === "folder"
     ) {
       setCurrentFolderPage(page);
+    }
+
+    if (
+      selectedCategory === "data"
+    ) {
+      setCurrentDataPage(page);
     }
 
     if (
@@ -546,23 +592,6 @@ const TrashContent = () => {
     );
   };
 
-  const handleTeachingMapRestore = (
-    teachingMapId: number,
-  ) => {
-    setTeachingMaps(
-      (previousTeachingMaps) =>
-        previousTeachingMaps.filter(
-          (teachingMap) =>
-            teachingMap.id !==
-            teachingMapId,
-        ),
-    );
-
-    showToast(
-      "해당 티칭맵이 복구되었습니다.",
-    );
-  };
-
   const isEmpty =
     selectedCategory === "folder"
       ? sortedFolders.length === 0
@@ -576,21 +605,24 @@ const TrashContent = () => {
     !isRestoreMode &&
     (selectedCategory === "folder"
       ? sortedFolders.length > 1
-      : selectedCategory ===
-          "teachingMap"
-        ? sortedTeachingMaps.length >
-          1
-        : false);
+      : selectedCategory === "data"
+        ? sortedDataList.length > 1
+        : sortedTeachingMaps.length >
+          1);
 
   const paginationCurrentPage =
     selectedCategory === "folder"
       ? activeFolderPage
-      : activeTeachingMapPage;
+      : selectedCategory === "data"
+        ? activeDataPage
+        : activeTeachingMapPage;
 
   const paginationTotalPages =
     selectedCategory === "folder"
       ? totalFolderPages
-      : totalTeachingMapPages;
+      : selectedCategory === "data"
+        ? totalDataPages
+        : totalTeachingMapPages;
 
   const renderContent = () => {
     if (isEmpty) {
@@ -619,7 +651,7 @@ const TrashContent = () => {
     ) {
       return (
         <TrashDataList
-          dataList={sortedDataList}
+          dataList={visibleDataList}
           isRestoreMode={
             isRestoreMode
           }
@@ -644,9 +676,6 @@ const TrashContent = () => {
           selectedItemIds
         }
         onSelect={handleItemSelect}
-        onRestore={
-          handleTeachingMapRestore
-        }
       />
     );
   };

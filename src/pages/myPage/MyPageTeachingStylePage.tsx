@@ -13,6 +13,8 @@ import TeachingStyleSelector, {
 const MyPageTeachingStylePage = () => {
   const [selectedStyle, setSelectedStyle] =
     useState<TeachingStyle>("friendly");
+  const [isSaving, setIsSaving] =
+    useState(false);
 
   useEffect(() => {
     const loadTeacherPersona = async () => {
@@ -41,7 +43,12 @@ const MyPageTeachingStylePage = () => {
   const handleTeachingStyleChange = async (
     teachingStyle: TeachingStyle,
   ) => {
+    if (isSaving) {
+      return;
+    }
+
     const previousStyle = selectedStyle;
+
     const styleToPersona: Record<
       TeachingStyle,
       TeacherPersona
@@ -54,12 +61,33 @@ const MyPageTeachingStylePage = () => {
     setSelectedStyle(teachingStyle);
 
     try {
+      setIsSaving(true);
       await updateTeacherPersona(
         styleToPersona[teachingStyle],
+      );
+
+      const savedProfile =
+        await getMyProfile();
+
+      const personaToStyle: Record<
+        TeacherPersona,
+        TeachingStyle
+      > = {
+        FRIENDLY: "friendly",
+        STRICT: "strict",
+        CHEERING: "supportive",
+      };
+
+      setSelectedStyle(
+        personaToStyle[
+          savedProfile.teacherPersona
+        ],
       );
     } catch (error) {
       setSelectedStyle(previousStyle);
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 

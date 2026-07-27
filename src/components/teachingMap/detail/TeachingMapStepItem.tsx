@@ -54,6 +54,9 @@ const TeachingMapStepItem = ({
         <TeachingMapStepHeader
           tip={step.tip}
           contentId={step.id}
+          isSourceAvailable={
+            step.isSourceAvailable !== false
+          }
         />
 
         <TeachingMapStepContent
@@ -64,6 +67,9 @@ const TeachingMapStepItem = ({
           }
           onToggleCompletion={
             onToggleCompletion
+          }
+          isSourceAvailable={
+            step.isSourceAvailable !== false
           }
         />
       </div>

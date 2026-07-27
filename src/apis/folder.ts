@@ -1,3 +1,4 @@
+import type { ApiResponse } from "./apiTypes";
 import api from "./axios";
 
 export type FolderSort =
@@ -44,6 +45,11 @@ type UpdateFolderResponse = {
     folderId: number;
     folderName: string;
   };
+};
+
+type FolderTrashResult = {
+  folderId: number;
+  isDeleted: boolean;
 };
 
 export const getFolders = async (
@@ -104,4 +110,24 @@ export const updateFolderName = async (
     );
 
   return response.data.result;
+};
+
+export const moveFolderToTrash = async (
+  folderId: number,
+): Promise<FolderTrashResult> => {
+  const { data } = await api.patch<
+    ApiResponse<FolderTrashResult>
+  >(`/api/folders/${folderId}/trash`);
+
+  return data.result;
+};
+
+export const restoreFolder = async (
+  folderId: number,
+): Promise<FolderTrashResult> => {
+  const { data } = await api.patch<
+    ApiResponse<FolderTrashResult>
+  >(`/api/folders/${folderId}/restore`);
+
+  return data.result;
 };
