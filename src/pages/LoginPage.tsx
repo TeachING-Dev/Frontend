@@ -12,9 +12,14 @@ import {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const BACKEND_URL = "https://teachingg.site";
+  const BACKEND_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://teachingg.site";
+  const OAUTH_REDIRECT_URI =
+    import.meta.env.VITE_OAUTH_REDIRECT_URI ||
+    "http://localhost:5173/oauth2/redirect";
   const REDIRECT_URI = encodeURIComponent(
-    "http://localhost:5173/oauth2/redirect",
+    OAUTH_REDIRECT_URI,
   );
 
   useEffect(() => {
