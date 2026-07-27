@@ -78,7 +78,7 @@ export const checkNickname = (
   nickname: string,
 ) =>
   api
-    .get<ApiResponse<string>>(
+    .get<ApiResponse<null>>(
       "/api/v1/auth/check-nickname",
       {
         params: { nickname },
@@ -134,15 +134,15 @@ export const updateMyProfile = async ({
     );
   }
 
-  const { data } = await api.patch<
-    ApiResponse<UpdateProfileResult>
-  >("/users/me", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return data.result;
+  return getResult(
+    await api.patch<
+      ApiResponse<UpdateProfileResult>
+    >("/users/me", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+  );
 };
 
 export const withdrawMe = (
@@ -192,6 +192,6 @@ export const updateNotifications = (
 export const getInquiryContact = () =>
   api
     .get<ApiResponse<InquiryContact>>(
-      "/api/v1/support/contacts",
+      "/support/contacts",
     )
     .then(getResult);

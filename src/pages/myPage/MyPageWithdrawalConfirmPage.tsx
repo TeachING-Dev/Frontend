@@ -9,6 +9,13 @@ import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
 import { clearTokens } from "../../utils/authToken";
 
+const WITHDRAWAL_REASON_MAP = {
+  rejoin: "REJOIN",
+  unused: "RARELY_USED",
+  accuracy: "LOW_ACCURANCY",
+  other: "ETC",
+} as const;
+
 const MyPageWithdrawalConfirmPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,13 +43,29 @@ const MyPageWithdrawalConfirmPage = () => {
       return;
     }
 
+    const reason =
+      WITHDRAWAL_REASON_MAP[
+        withdrawal.reason as keyof typeof WITHDRAWAL_REASON_MAP
+      ] ?? withdrawal.reason;
+    const reasonDetail =
+      withdrawal.reasonDetail ?? "";
+
+    if (
+      reason === "ETC" &&
+      reasonDetail.trim().length === 0
+    ) {
+      setErrorMessage(
+        "기타 사유를 입력해주세요.",
+      );
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       setErrorMessage("");
       await withdrawMe({
-        reason: withdrawal.reason,
-        reasonDetail:
-          withdrawal.reasonDetail ?? "",
+        reason,
+        reasonDetail,
         isConfirmed,
       });
       clearTokens();

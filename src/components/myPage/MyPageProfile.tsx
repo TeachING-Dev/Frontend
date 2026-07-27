@@ -9,14 +9,23 @@ const MyPageProfile = ({
   nickname,
   imageUrl,
 }: MyPageProfileProps) => {
+  const hasProfileImage =
+    typeof imageUrl === "string" &&
+    imageUrl.trim().length > 0 &&
+    imageUrl !== "null";
+
   return (
     <div className="flex w-[200px] flex-col items-center gap-[15px]">
       <img
-        src={imageUrl || profileFrameImage}
-        alt="프로필"
+        src={hasProfileImage ? imageUrl : profileFrameImage}
+        alt="프로필 이미지"
+        onError={(event) => {
+          event.currentTarget.src = profileFrameImage;
+          event.currentTarget.className = "h-[200px] w-[200px]";
+        }}
         className={[
           "h-[200px] w-[200px]",
-          imageUrl
+          hasProfileImage
             ? "rounded-full object-cover"
             : "",
         ].join(" ")}
