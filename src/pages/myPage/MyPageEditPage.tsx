@@ -34,6 +34,10 @@ const MyPageEditPage = () => {
 
   const [birthDate, setBirthDate] =
     useState("");
+  const [
+    isBirthDateComplete,
+    setIsBirthDateComplete,
+  ] = useState(true);
 
   const [
     profileImageUrl,
@@ -57,7 +61,7 @@ const MyPageEditPage = () => {
         const profile = await getMyProfile();
         setNickname(profile.nickname);
         setOriginalNickname(profile.nickname);
-        setBirthDate(profile.birthDate);
+        setBirthDate(profile.birthDate ?? "");
         setProfileImageUrl(
           profile.profileImageUrl,
         );
@@ -138,18 +142,14 @@ const MyPageEditPage = () => {
   };
 
   const isSubmitDisabled =
-    Boolean(
-      validateNickname(nickname),
-    ) || !birthDate;
+    Boolean(validateNickname(nickname)) ||
+    !isBirthDateComplete;
 
   const handleSubmit = async () => {
     const errorMessage =
       validateNickname(nickname);
 
-    if (
-      errorMessage ||
-      !birthDate
-    ) {
+    if (errorMessage) {
       setNicknameError(
         errorMessage,
       );
@@ -179,15 +179,19 @@ const MyPageEditPage = () => {
         ...(profileImageFile
           ? { profileImage: profileImageFile }
           : {}),
-        birthYear: Number(
-          birthDate.slice(0, 4),
-        ),
-        birthMonth: Number(
-          birthDate.slice(5, 7),
-        ),
-        birthDay: Number(
-          birthDate.slice(8, 10),
-        ),
+        ...(birthDate
+          ? {
+              birthYear: Number(
+                birthDate.slice(0, 4),
+              ),
+              birthMonth: Number(
+                birthDate.slice(5, 7),
+              ),
+              birthDay: Number(
+                birthDate.slice(8, 10),
+              ),
+            }
+          : {}),
       });
 
       navigate("/mypage");
@@ -245,6 +249,9 @@ const MyPageEditPage = () => {
             key={birthDate}
             value={birthDate}
             onChange={setBirthDate}
+            onCompletenessChange={
+              setIsBirthDateComplete
+            }
           />
         </div>
 

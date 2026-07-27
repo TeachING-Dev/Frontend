@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  getMyProfile,
-  logout,
-} from "../../apis/users";
+import { logout } from "../../apis/auth";
+import { getMyProfile } from "../../apis/users";
 import MyPageMenuList from "../../components/myPage/MyPageMenuList";
 import MyPageProfile from "../../components/myPage/MyPageProfile";
+import { clearTokens } from "../../utils/authToken";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -40,11 +39,13 @@ const MyPage = () => {
     try {
       setIsLoggingOut(true);
       await logout();
-      localStorage.removeItem("accessToken");
-      navigate("/login", { replace: true });
     } catch (error) {
       console.error(error);
     } finally {
+      clearTokens();
+      navigate("/login", {
+        replace: true,
+      });
       setIsLoggingOut(false);
     }
   };

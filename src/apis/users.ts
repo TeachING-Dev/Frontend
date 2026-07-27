@@ -22,7 +22,7 @@ export interface MyProfile {
   userId: number;
   email: string;
   nickname: string;
-  birthDate: string;
+  birthDate: string | null;
   profileImageUrl: string;
   notificationEnabled: boolean;
   teacherPersona: TeacherPersona;
@@ -70,7 +70,7 @@ const getResult = <T>(
 export const getMyProfile = async () =>
   getResult(
     await api.get<ApiResponse<MyProfile>>(
-      "/api/v1/users/me",
+      "/users/me",
     ),
   );
 
@@ -136,7 +136,7 @@ export const updateMyProfile = async ({
 
   const { data } = await api.patch<
     ApiResponse<UpdateProfileResult>
-  >("/api/v1/users/me", formData, {
+  >("/users/me", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -150,7 +150,7 @@ export const withdrawMe = (
 ) =>
   api
     .delete<ApiResponse<string>>(
-      "/api/v1/users/me",
+      "/users/me",
       {
         data: withdrawal,
       },
@@ -166,7 +166,7 @@ export const updateTeacherPersona = (
         teacherPersona: TeacherPersona;
       }>
     >(
-      "/api/v1/users/me/teacher-persona",
+      "/users/me/teacher-persona",
       {
         persona,
       },
@@ -182,7 +182,7 @@ export const updateNotifications = (
         pushEnabled: boolean;
       }>
     >(
-      "/api/v1/users/me/notifications",
+      "/users/me/notifications",
       {
         pushEnabled,
       },
