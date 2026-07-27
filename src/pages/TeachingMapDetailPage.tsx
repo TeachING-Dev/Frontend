@@ -2,16 +2,19 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useParams } from "react-router-dom";
 
 import TeachingMapDetailHeader from "../components/teachingMap/detail/TeachingMapDetailHeader";
 import TeachingMapProgressSummary from "../components/teachingMap/detail/TeachingMapProgressSummary";
 import TeachingMapStepList from "../components/teachingMap/detail/TeachingMapStepList";
+import { ARCHIVE_FOLDERS } from "../constants/archiveFolders";
 
 export interface TeachingMapStep {
   id: number;
   tip: string;
   title: string;
   isCompleted: boolean;
+  isSourceAvailable?: boolean;
 }
 
 const initialSteps: TeachingMapStep[] = [
@@ -39,20 +42,81 @@ const initialSteps: TeachingMapStep[] = [
 ];
 
 const TeachingMapDetailPage = () => {
+  const { teachingMapId = "unknown" } =
+    useParams<{ teachingMapId: string }>();
+  const createdTeachingMap = useMemo(() => {
+    const savedTeachingMap = sessionStorage.getItem(
+      `teaching-map:${teachingMapId}`,
+    );
+    if (!savedTeachingMap) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(savedTeachingMap) as {
+        title: string;
+        description: string;
+        type: "shortcut" | "deepDive";
+        folderId: number | null;
+      };
+    } catch {
+      return null;
+    }
+  }, [teachingMapId]);
   const [
     teachingMapTitle,
     setTeachingMapTitle,
-  ] = useState("티칭맵 제목");
+  ] = useState(
+    createdTeachingMap?.title ??
+      "티칭맵 제목",
+  );
 
   const [
     teachingMapDescription,
     setTeachingMapDescription,
-  ] = useState("티칭맵 설명");
+  ] = useState(
+    createdTeachingMap?.description ??
+      "티칭맵 설명",
+  );
 
   const [steps, setSteps] =
-    useState<TeachingMapStep[]>(
-      initialSteps,
-    );
+    useState<TeachingMapStep[]>(() => {
+      const savedSteps = sessionStorage.getItem(
+        `teaching-map-progress:${teachingMapId}`,
+      );
+      if (!savedSteps) {
+        const folderMaterialCount =
+          ARCHIVE_FOLDERS.find(
+            (folder) =>
+              folder.id ===
+              createdTeachingMap?.folderId,
+          )?.count ?? initialSteps.length;
+        const stepCount =
+          createdTeachingMap?.type === "deepDive"
+            ? folderMaterialCount
+            : Math.min(
+                5,
+                Math.max(3, folderMaterialCount),
+              );
+
+        return Array.from(
+          { length: stepCount },
+          (_, index) => ({
+            ...initialSteps[
+              index % initialSteps.length
+            ],
+            id: index + 1,
+            isCompleted: index === 0,
+          }),
+        );
+      }
+
+      try {
+        return JSON.parse(savedSteps) as TeachingMapStep[];
+      } catch {
+        return initialSteps;
+      }
+    });
 
   const completedCount = useMemo(() => {
     return steps.filter(
@@ -81,15 +145,26 @@ const TeachingMapDetailPage = () => {
     stepId: number,
   ) => {
     setSteps((previousSteps) =>
-      previousSteps.map((step) =>
+      {
+        const nextSteps = previousSteps.map((step) =>
         step.id === stepId
           ? {
               ...step,
+              ...(step.isSourceAvailable === false
+                ? { isCompleted: step.isCompleted }
+                : {
               isCompleted:
                 !step.isCompleted,
+                  }),
             }
           : step,
-      ),
+        );
+        sessionStorage.setItem(
+          `teaching-map-progress:${teachingMapId}`,
+          JSON.stringify(nextSteps),
+        );
+        return nextSteps;
+      },
     );
   };
 
@@ -110,7 +185,12 @@ const TeachingMapDetailPage = () => {
           description={
             teachingMapDescription
           }
-          mode="Short-cut"
+          mode={
+            createdTeachingMap?.type ===
+            "deepDive"
+              ? "Deep-dive"
+              : "Short-cut"
+          }
           onSave={
             handleTeachingMapSave
           }

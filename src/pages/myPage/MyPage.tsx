@@ -12,6 +12,8 @@ const MyPage = () => {
   const [nickname, setNickname] = useState("");
   const [profileImageUrl, setProfileImageUrl] =
     useState("");
+  const [isLoggingOut, setIsLoggingOut] =
+    useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -30,13 +32,21 @@ const MyPage = () => {
   }, []);
 
   const handleLogout = async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
     try {
+      setIsLoggingOut(true);
       await logout();
     } catch (error) {
       console.error(error);
     } finally {
       clearTokens();
-      navigate("/login", { replace: true });
+      navigate("/login", {
+        replace: true,
+      });
+      setIsLoggingOut(false);
     }
   };
 
@@ -64,9 +74,12 @@ const MyPage = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex h-[60px] w-[352px] items-center justify-center rounded-[10px] bg-[#1F212A] px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#D0D0D2]"
+            disabled={isLoggingOut}
+            className="flex h-[60px] w-[352px] items-center justify-center rounded-[10px] bg-[#1F212A] px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#D0D0D2] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            로그아웃
+            {isLoggingOut
+              ? "로그아웃 중"
+              : "로그아웃"}
           </button>
 
           <button

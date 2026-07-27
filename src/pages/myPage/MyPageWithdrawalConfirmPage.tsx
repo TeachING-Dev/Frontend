@@ -23,6 +23,8 @@ const MyPageWithdrawalConfirmPage = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isSubmitting, setIsSubmitting] =
     useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
   const handleNextClick = async () => {
     if (!isConfirmed) {
@@ -52,12 +54,15 @@ const MyPageWithdrawalConfirmPage = () => {
       reason === "ETC" &&
       reasonDetail.trim().length === 0
     ) {
-      alert("기타 사유를 입력해주세요.");
+      setErrorMessage(
+        "기타 사유를 입력해주세요.",
+      );
       return;
     }
 
     try {
       setIsSubmitting(true);
+      setErrorMessage("");
       await withdrawMe({
         reason,
         reasonDetail,
@@ -68,7 +73,11 @@ const MyPageWithdrawalConfirmPage = () => {
         replace: true,
       });
     } catch (error) {
-      console.error(error);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -93,6 +102,15 @@ const MyPageWithdrawalConfirmPage = () => {
             onChange={setIsConfirmed}
           />
         </div>
+
+        {errorMessage && (
+          <p
+            role="alert"
+            className="mt-[16px] text-[16px] font-medium leading-[150%] text-[#FF6B6B]"
+          >
+            {errorMessage}
+          </p>
+        )}
       </section>
 
       <button
@@ -107,7 +125,7 @@ const MyPageWithdrawalConfirmPage = () => {
             : "cursor-default bg-[#1F212A] text-[#717379]",
         ].join(" ")}
       >
-        다음
+        {isSubmitting ? "탈퇴 처리 중..." : "다음"}
       </button>
     </main>
   );

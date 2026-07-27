@@ -6,6 +6,7 @@ import {
   clearTokens,
   getStoredAccessToken,
   isExistingUserToken,
+  isTokenExpired,
   saveTokens,
 } from "../../utils/authToken";
 
@@ -18,7 +19,10 @@ type AuthStatus =
 const getInitialAuthStatus = (): AuthStatus => {
   const accessToken = getStoredAccessToken();
 
-  if (!accessToken) {
+  if (
+    !accessToken ||
+    isTokenExpired(accessToken)
+  ) {
     return "checking";
   }
 

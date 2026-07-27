@@ -1,8 +1,4 @@
 import {
-  ChevronDown,
-  Folder,
-} from "lucide-react";
-import {
   useEffect,
   useRef,
   useState,
@@ -108,29 +104,27 @@ const TeachingMapFolderSelect = ({
           }
           className="flex h-[64px] w-full items-center rounded-[4px] bg-[#F5F2FF] px-5 text-left outline-none"
         >
-          <Folder
-            size={22}
-            fill="#917DEC"
-            className="shrink-0 text-[#917DEC]"
+          <img
+            src="/Folder.png"
+            alt=""
             aria-hidden="true"
+            className="h-6 w-6 shrink-0 object-contain"
           />
 
-          <span className="ml-2 flex-1 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#46465E]">
+          <span className="ml-2 flex-1 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#5D5D5D]">
             {selectedFolder?.name ??
               "폴더를 선택해주세요."}
           </span>
 
-          <ChevronDown
-            size={24}
-            strokeWidth={2.5}
-            aria-hidden="true"
-            className={[
-              "shrink-0 text-[#46465E]",
-              "transition-transform duration-150",
+          <img
+            src={
               isOpen
-                ? "rotate-180"
-                : "",
-            ].join(" ")}
+                ? "/rollup.svg"
+                : "/dropdown.svg"
+            }
+            alt=""
+            aria-hidden="true"
+            className="h-6 w-6 shrink-0"
           />
         </button>
 
@@ -138,14 +132,14 @@ const TeachingMapFolderSelect = ({
           <div
             role="listbox"
             aria-label="티칭맵 폴더 선택"
-            className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[10px] border border-[#917DEC] bg-[#13151F] shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
+            className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[5px] bg-[#FAFAFA] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
           >
             {folders.length === 0 ? (
-              <div className="flex h-12 items-center px-5 font-['SUIT'] text-[16px] font-medium text-[#8D8E94]">
+              <div className="flex h-9 items-center px-2 font-['SUIT'] text-[16px] font-medium text-[#8D8E94]">
                 생성된 폴더가 없습니다.
               </div>
             ) : (
-              <div className="max-h-[192px] overflow-y-auto">
+              <div className="max-h-[108px] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {folders.map((folder) => {
                   const isSelected =
                     folder.id ===
@@ -165,21 +159,22 @@ const TeachingMapFolderSelect = ({
                         )
                       }
                       className={[
-                        "flex h-12 w-full items-center px-5 text-left",
-                        "transition-colors",
+                        "flex h-9 w-full items-center gap-2 border-b border-[#D0D0D2] px-2 text-left",
+                        "font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#5D5D5D]",
+                        "transition-colors last:border-b-0",
                         isSelected
-                          ? "bg-[#917DEC]/20"
-                          : "hover:bg-white/5",
+                          ? "bg-[#D2C7FA]"
+                          : "bg-[#FAFAFA] hover:bg-[#EEEAFD]",
                       ].join(" ")}
                     >
-                      <Folder
-                        size={20}
-                        fill="#917DEC"
-                        className="shrink-0 text-[#917DEC]"
+                      <img
+                        src="/Folder.png"
+                        alt=""
                         aria-hidden="true"
+                        className="h-[18px] w-[18px] shrink-0 object-contain"
                       />
 
-                      <span className="ml-2 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#E8E8E8]">
+                      <span className="truncate">
                         {folder.name}
                       </span>
                     </button>

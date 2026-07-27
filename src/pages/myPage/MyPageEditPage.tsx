@@ -34,11 +34,19 @@ const MyPageEditPage = () => {
 
   const [birthDate, setBirthDate] =
     useState("");
+  const [
+    isBirthDateComplete,
+    setIsBirthDateComplete,
+  ] = useState(true);
 
   const [
     profileImageUrl,
     setProfileImageUrl,
   ] = useState("");
+  const [
+    profileImageFile,
+    setProfileImageFile,
+  ] = useState<File | null>(null);
 
   const [
     nicknameError,
@@ -53,7 +61,7 @@ const MyPageEditPage = () => {
         const profile = await getMyProfile();
         setNickname(profile.nickname);
         setOriginalNickname(profile.nickname);
-        setBirthDate(profile.birthDate);
+        setBirthDate(profile.birthDate ?? "");
         setProfileImageUrl(
           profile.profileImageUrl,
         );
@@ -130,21 +138,18 @@ const MyPageEditPage = () => {
       URL.createObjectURL(imageFile);
 
     setProfileImageUrl(newImageUrl);
+    setProfileImageFile(imageFile);
   };
 
   const isSubmitDisabled =
-    Boolean(
-      validateNickname(nickname),
-    )
+    Boolean(validateNickname(nickname)) ||
+    !isBirthDateComplete;
 
   const handleSubmit = async () => {
     const errorMessage =
       validateNickname(nickname);
 
-    if (
-      errorMessage ||
-      !birthDate
-    ) {
+    if (errorMessage) {
       setNicknameError(
         errorMessage,
       );
@@ -171,11 +176,24 @@ const MyPageEditPage = () => {
 
       await updateMyProfile({
         nickname: trimmedNickname,
-        ...(profileImageUrl &&
-        !profileImageUrl.startsWith("blob:")
-          ? { profileImageUrl }
+        ...(profileImageFile
+          ? { profileImage: profileImageFile }
+          : {}),
+        ...(birthDate
+          ? {
+              birthYear: Number(
+                birthDate.slice(0, 4),
+              ),
+              birthMonth: Number(
+                birthDate.slice(5, 7),
+              ),
+              birthDay: Number(
+                birthDate.slice(8, 10),
+              ),
+            }
           : {}),
       });
+
       navigate("/mypage");
     } catch (error) {
       setNicknameError(
@@ -195,7 +213,7 @@ const MyPageEditPage = () => {
       <section className="mt-[50px] flex flex-col items-center">
         <ProfileImageEditor
           nickname={
-            nickname ||
+            originalNickname ||
             DEFAULT_NICKNAME
           }
           imageUrl={
@@ -228,8 +246,12 @@ const MyPageEditPage = () => {
           />
 
           <BirthDateField
+            key={birthDate}
             value={birthDate}
             onChange={setBirthDate}
+            onCompletenessChange={
+              setIsBirthDateComplete
+            }
           />
         </div>
 

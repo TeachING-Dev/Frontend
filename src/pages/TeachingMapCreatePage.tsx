@@ -1,5 +1,7 @@
 import {
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -112,6 +114,19 @@ const TeachingMapCreatePage = () => {
     toastMessage,
     setToastMessage,
   ] = useState("");
+  const [toastTitle, setToastTitle] =
+    useState("티칭맵 생성에 실패했습니다.");
+  const [isTemporarySaveSuccess, setIsTemporarySaveSuccess] =
+    useState(false);
+  const generationTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (generationTimerRef.current !== null) {
+        window.clearTimeout(generationTimerRef.current);
+      }
+    };
+  }, []);
 
   const canTemporarySave =
     title.trim().length > 0 ||
@@ -150,6 +165,8 @@ const TeachingMapCreatePage = () => {
   const showFailureToast = (
     message: string,
   ) => {
+    setToastTitle("티칭맵 생성에 실패했습니다.");
+    setIsTemporarySaveSuccess(false);
     setToastMessage(message);
     setIsToastOpen(true);
   };
@@ -188,6 +205,10 @@ const TeachingMapCreatePage = () => {
       );
 
       // TODO: 티칭맵 임시 저장 및 수정 API 연결
+      setToastTitle("임시저장 되었습니다.");
+      setToastMessage("");
+      setIsTemporarySaveSuccess(true);
+      setIsToastOpen(true);
     };
 
   const handleCreate = () => {
@@ -233,6 +254,17 @@ const TeachingMapCreatePage = () => {
       newTeachingMap,
     );
 
+    generationTimerRef.current =
+      window.setTimeout(() => {
+        sessionStorage.setItem(
+          `teaching-map:${newTeachingMapId}`,
+          JSON.stringify(newTeachingMap),
+        );
+        setIsLoadingModalOpen(false);
+        generationTimerRef.current = null;
+        navigate(`/teaching-map/${newTeachingMapId}`);
+      }, 5000);
+
     // TODO: 티칭맵 생성 API 연결
     //
     // API 성공 시:
@@ -248,6 +280,10 @@ const TeachingMapCreatePage = () => {
 
   const handleLoadingModalClose =
     () => {
+      if (generationTimerRef.current !== null) {
+        window.clearTimeout(generationTimerRef.current);
+        generationTimerRef.current = null;
+      }
       setIsLoadingModalOpen(
         false,
       );
@@ -270,12 +306,9 @@ const TeachingMapCreatePage = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <div className="relative z-10 mx-auto w-[1120px] py-[52px]">
+      <div className="relative z-10 mx-auto w-[1120px] pb-[52px] pt-10">
         <div className="w-[810px]">
           <TeachingMapCreateHeader
-            teachingMapType={
-              selectedType
-            }
             backPath={
               isTemporaryEditMode
                 ? "/teaching-map/drafts"
@@ -288,7 +321,7 @@ const TeachingMapCreatePage = () => {
             }
           />
 
-          <div className="mt-[56px] flex flex-col gap-10">
+          <div className="mt-[30px] flex flex-col gap-10">
             <TeachingMapTitleInput
               value={title}
               onChange={setTitle}
@@ -361,12 +394,17 @@ const TeachingMapCreatePage = () => {
 
       <TeachingMapCreateToast
         isOpen={isToastOpen}
-        title="티칭맵 생성에 실패했습니다."
+        title={toastTitle}
         message={toastMessage}
-        duration={3000}
-        onClose={() =>
-          setIsToastOpen(false)
+        duration={
+          isTemporarySaveSuccess ? 2000 : 3000
         }
+        onClose={() => {
+          setIsToastOpen(false);
+          if (isTemporarySaveSuccess) {
+            navigate("/teaching-map");
+          }
+        }}
       />
     </main>
   );

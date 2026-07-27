@@ -2,8 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { ChevronLeft } from "lucide-react";
-import { checkNickname, getTerms, signup } from "../apis/auth";
-import type { Term } from "../apis/auth";
+
+import {
+  checkNickname,
+  getTerms,
+  signup,
+  type Term,
+} from "../apis/auth";
 import PrimaryButton from "../components/common/PrimaryButton";
 import { saveTokens } from "../utils/authToken";
 
@@ -11,7 +16,12 @@ type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
 
 const REQUIRED_TERMS: TermKey[] = ["age", "service"];
-const TERM_ORDER: TermKey[] = ["age", "service", "marketing", "event"];
+const TERM_ORDER: TermKey[] = [
+  "age",
+  "service",
+  "marketing",
+  "event",
+];
 
 const CheckIcon = ({
   checked,
@@ -47,12 +57,18 @@ const SignupPage = () => {
     marketing: false,
     event: false,
   });
-  const [termList, setTermList] = useState<Term[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [nicknameErrorMessage, setNicknameErrorMessage] = useState("");
+  const [termList, setTermList] =
+    useState<Term[]>([]);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+  const [
+    nicknameErrorMessage,
+    setNicknameErrorMessage,
+  ] = useState("");
 
   const normalizedNickname = nickname.trim();
-  const isNicknameTaken = nicknameErrorMessage.length > 0;
+  const isNicknameTaken =
+    nicknameErrorMessage.length > 0;
   const isNicknameNextEnabled = normalizedNickname.length > 0 && !isNicknameTaken;
   const isAllTermsChecked = Object.values(terms).every(Boolean);
   const isTermsNextEnabled = REQUIRED_TERMS.every((key) => terms[key]);
@@ -75,18 +91,11 @@ const SignupPage = () => {
     if (step === "nickname" && isNicknameNextEnabled) {
       try {
         setIsSubmitting(true);
-        await checkNickname(normalizedNickname);
+        await checkNickname(
+          normalizedNickname,
+        );
         setNicknameErrorMessage("");
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "닉네임 확인에 실패했습니다.";
-        setNicknameErrorMessage(errorMessage);
-        alert(errorMessage);
-        setIsSubmitting(false);
-        return;
-      }
 
-      try {
         const nextTerms = await getTerms();
         setTermList(nextTerms);
         setTerms({
@@ -97,7 +106,15 @@ const SignupPage = () => {
         });
         setStep("terms");
       } catch (error) {
-        alert(error instanceof Error ? error.message : "약관 목록 조회에 실패했습니다.");
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "회원가입 정보를 확인하지 못했습니다.";
+
+        setNicknameErrorMessage(
+          errorMessage,
+        );
+        alert(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -105,24 +122,23 @@ const SignupPage = () => {
     }
 
     if (step === "terms" && isTermsNextEnabled) {
-      const requiredTermIds = termList
-        .filter((term) => term.isRequired)
-        .map((term) => term.termId);
       const agreedTermIds = TERM_ORDER
         .filter((key) => terms[key])
-        .map((key) => termList[TERM_ORDER.indexOf(key)]?.termId)
-        .filter((termId): termId is number => typeof termId === "number");
-      const hasAgreedAllRequiredTerms = requiredTermIds.every((termId) =>
-        agreedTermIds.includes(termId),
-      );
+        .map(
+          (key) =>
+            termList[
+              TERM_ORDER.indexOf(key)
+            ]?.termId,
+        )
+        .filter(
+          (termId): termId is number =>
+            typeof termId === "number",
+        );
 
       if (agreedTermIds.length === 0) {
-        alert("약관 정보를 불러오지 못했습니다.");
-        return;
-      }
-
-      if (!hasAgreedAllRequiredTerms) {
-        alert("필수 약관에 모두 동의해주세요.");
+        alert(
+          "약관 정보를 불러오지 못했습니다.",
+        );
         return;
       }
 
@@ -132,15 +148,29 @@ const SignupPage = () => {
           nickname: normalizedNickname,
           agreedTermIds,
         });
+
         saveTokens({ accessToken });
         navigate("/signup/complete");
       } catch (error) {
-        alert(error instanceof Error ? error.message : "회원가입에 실패했습니다.");
+        alert(
+          error instanceof Error
+            ? error.message
+            : "회원가입에 실패했습니다.",
+        );
       } finally {
         setIsSubmitting(false);
       }
     }
-  }, [isNicknameNextEnabled, isSubmitting, isTermsNextEnabled, navigate, normalizedNickname, step, termList, terms]);
+  }, [
+    isNicknameNextEnabled,
+    isSubmitting,
+    isTermsNextEnabled,
+    navigate,
+    normalizedNickname,
+    step,
+    termList,
+    terms,
+  ]);
 
   useEffect(() => {
     const handleEnterKey = (event: KeyboardEvent) => {
@@ -216,8 +246,15 @@ const SignupPage = () => {
                     maxLength={10}
                     placeholder="(2~10자 이내의 한글, 영문, 숫자)"
                     onChange={(event) => {
-                      setNickname(event.target.value.slice(0, 10));
-                      setNicknameErrorMessage("");
+                      setNickname(
+                        event.target.value.slice(
+                          0,
+                          10,
+                        ),
+                      );
+                      setNicknameErrorMessage(
+                        "",
+                      );
                     }}
                     className="flex-1 bg-transparent font-['SUIT_Variable'] text-xl font-normal leading-8 text-neutral-50 outline-none placeholder:text-[#42444C]"
                   />
@@ -370,11 +407,6 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-
-
-
-
-
 
 
 

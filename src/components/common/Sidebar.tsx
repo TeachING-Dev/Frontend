@@ -89,7 +89,9 @@ const Sidebar = ({
     } finally {
       clearTokens();
       onClose();
-      navigate("/login", { replace: true });
+      navigate("/login", {
+        replace: true,
+      });
     }
   };
 

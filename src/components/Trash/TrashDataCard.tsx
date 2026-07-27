@@ -104,7 +104,7 @@ const TrashDataCard = ({
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
         className={[
-          "overflow-visible rounded-[10px] border bg-[#13151F]",
+          "overflow-hidden rounded-[10px] border bg-[#13151F]",
           "transition-[border-color,box-shadow]",
           isRestoreMode
             ? "cursor-pointer"

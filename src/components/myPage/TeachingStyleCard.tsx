@@ -16,8 +16,7 @@ const TeachingStyleCard = ({
   return (
     <article
       className={[
-        "flex h-[468px] w-[352px] shrink-0 flex-col items-center rounded-[10px] border",
-        "border-[rgba(145,125,236,0)]",
+        "flex h-[468px] w-[352px] shrink-0 flex-col items-center rounded-[10px]",
         "bg-[linear-gradient(180deg,rgba(145,125,236,0)_0%,rgba(145,125,236,0.3)_100%)]",
         selected
           ? "opacity-100 shadow-[0_0_50px_0_rgba(145,125,236,0.5)]"

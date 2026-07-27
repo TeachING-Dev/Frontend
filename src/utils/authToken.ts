@@ -1,28 +1,23 @@
 export const ACCESS_TOKEN_KEY = "accessToken";
-export const REFRESH_TOKEN_KEY = "refreshToken";
 
 export const getAccessToken = () =>
-  localStorage.getItem(ACCESS_TOKEN_KEY) ||
-  import.meta.env.VITE_ACCESS_TOKEN ||
-  "";
-
-export const getStoredAccessToken = () =>
   localStorage.getItem(ACCESS_TOKEN_KEY) || "";
 
-export const getRefreshToken = () =>
-  localStorage.getItem(REFRESH_TOKEN_KEY) || "";
+export const getStoredAccessToken = () =>
+  getAccessToken();
 
 export const hasStoredToken = () =>
-  Boolean(
-    localStorage.getItem(ACCESS_TOKEN_KEY) ||
-      localStorage.getItem(REFRESH_TOKEN_KEY),
-  );
+  Boolean(getAccessToken());
 
 type JwtPayload = {
   role?: string;
   user_role?: string;
   userRole?: string;
   userrole?: string;
+  roles?: string[];
+  authorities?: Array<
+    string | { authority?: string }
+  >;
   exp?: number;
 };
 
@@ -53,37 +48,66 @@ export const getTokenPayload = (token: string): JwtPayload | null => {
 export const getTokenRole = (token: string) => {
   const payload = getTokenPayload(token);
 
-  return (
+  const singleRole =
     payload?.user_role ||
     payload?.userRole ||
     payload?.userrole ||
-    payload?.role ||
-    ""
+    payload?.role;
+
+  if (singleRole) {
+    return singleRole;
+  }
+
+  if (payload?.roles?.length) {
+    return payload.roles[0];
+  }
+
+  const firstAuthority =
+    payload?.authorities?.[0];
+
+  return typeof firstAuthority === "string"
+    ? firstAuthority
+    : firstAuthority?.authority || "";
+};
+
+export const isTokenExpired = (token: string) => {
+  const payload = getTokenPayload(token);
+
+  if (!payload?.exp) {
+    return false;
+  }
+
+  return payload.exp * 1000 <= Date.now();
+};
+
+export const isExistingUserToken = (token: string) => {
+  if (!token || isTokenExpired(token)) {
+    return false;
+  }
+
+  const role = getTokenRole(token).toUpperCase();
+
+  return (
+    role === "ROLE_USER" ||
+    role === "USER"
   );
 };
 
-export const isExistingUserToken = (token: string) =>
-  getTokenRole(token) === "ROLE_USER";
-
 export const saveTokens = ({
   accessToken,
-  refreshToken,
 }: {
   accessToken?: string | null;
-  refreshToken?: string | null;
 }) => {
   if (accessToken) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-  }
-
-  if (refreshToken) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    localStorage.setItem(
+      ACCESS_TOKEN_KEY,
+      accessToken.replace(/^Bearer\s+/i, ""),
+    );
   }
 };
 
 export const clearTokens = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
 export const normalizeBearerToken = (token: string) => {

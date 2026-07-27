@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { reissue } from "../apis/auth";
 import { isExistingUserToken, saveTokens } from "../utils/authToken";
 
 const getParam = (searchParams: URLSearchParams, names: string[]) =>
@@ -24,41 +25,66 @@ const OAuthCallbackPage = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const searchParams = getCallbackParams(location.search, location.hash);
-    const accessToken = getParam(searchParams, [
-      "accessToken",
-      "access_token",
-      "token",
-      "ken",
-    ]);
-    const refreshToken = getParam(searchParams, [
-      "refreshToken",
-      "refresh_token",
-    ]);
-    const isNewUser = searchParams.get("isNewUser");
-    const code = searchParams.get("code");
+    let ignore = false;
 
-    if (!accessToken) {
-      alert(
-        code
-          ? "소셜 로그인 인가 코드는 받았지만 서비스 토큰을 받지 못했습니다."
-          : "로그인 토큰을 확인할 수 없습니다.",
+    const completeOAuthLogin = async () => {
+      const searchParams = getCallbackParams(
+        location.search,
+        location.hash,
       );
-      navigate("/signup", { replace: true });
-      return;
-    }
+      const callbackAccessToken = getParam(
+        searchParams,
+        [
+          "accessToken",
+          "access_token",
+          "token",
+        ],
+      );
+      const isNewUser =
+        searchParams.get("isNewUser");
 
-    saveTokens({ accessToken, refreshToken });
-    const nextPath =
-      isNewUser === null
-        ? isExistingUserToken(accessToken)
-          ? "/"
-          : "/signup"
-        : isNewUser === "true"
-          ? "/signup"
-          : "/";
+      try {
+        const accessToken =
+          callbackAccessToken ||
+          (await reissue());
 
-    navigate(nextPath, { replace: true });
+        if (ignore) {
+          return;
+        }
+
+        saveTokens({ accessToken });
+
+        const nextPath =
+          isNewUser === "true" ||
+          (isNewUser === null &&
+            !isExistingUserToken(
+              accessToken,
+            ))
+            ? "/signup"
+            : "/";
+
+        navigate(nextPath, {
+          replace: true,
+        });
+      } catch {
+        if (ignore) {
+          return;
+        }
+
+        alert(
+          "로그인 인증 정보를 발급받지 못했습니다. 다시 로그인해주세요.",
+        );
+        navigate("/login", {
+          replace: true,
+        });
+      }
+    };
+
+    void completeOAuthLogin();
+
+    return () => {
+      ignore = true;
+    };
   }, [location.hash, location.search, navigate]);
 
   return (

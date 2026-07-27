@@ -6,21 +6,11 @@ export type TeachingMapType =
   | "deepDive";
 
 type TeachingMapCreateHeaderProps = {
-  teachingMapType: TeachingMapType;
   backPath?: string;
   backLabel?: string;
 };
 
-const TYPE_LABELS: Record<
-  TeachingMapType,
-  string
-> = {
-  shortcut: "Short-cut",
-  deepDive: "Deep-dive",
-};
-
 const TeachingMapCreateHeader = ({
-  teachingMapType,
   backPath = "/teaching-map",
   backLabel = "티칭맵 목록으로 이동",
 }: TeachingMapCreateHeaderProps) => {
@@ -45,20 +35,6 @@ const TeachingMapCreateHeader = ({
 
         <span>{backLabel}</span>
       </button>
-
-      <div className="mt-2 flex items-center gap-3">
-        <h1 className="font-['SUIT'] text-[36px] font-bold leading-[54px] tracking-[-1.08px] text-[#E8E8E8]">
-          새 티칭맵 만들기
-        </h1>
-
-        <span className="flex h-[42px] items-center justify-center rounded-[5px] border border-[#917DEC] px-5 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#917DEC]">
-          {
-            TYPE_LABELS[
-              teachingMapType
-            ]
-          }
-        </span>
-      </div>
     </header>
   );
 };
