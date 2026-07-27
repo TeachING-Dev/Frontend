@@ -7,12 +7,13 @@ import {
 import { withdrawMe } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
+import { clearTokens } from "../../utils/authToken";
 
 const WITHDRAWAL_REASON_MAP = {
-  rejoin: "재가입을 원해요",
-  unused: "자주 사용하지 않아요",
-  accuracy: "AI 요약이나 티칭맵의 정확도가 아쉬워요.",
-  other: "기타",
+  rejoin: "REJOIN",
+  unused: "RARELY_USED",
+  accuracy: "LOW_ACCURANCY",
+  other: "ETC",
 } as const;
 
 const MyPageWithdrawalConfirmPage = () => {
@@ -40,22 +41,29 @@ const MyPageWithdrawalConfirmPage = () => {
       return;
     }
 
+    const reason =
+      WITHDRAWAL_REASON_MAP[
+        withdrawal.reason as keyof typeof WITHDRAWAL_REASON_MAP
+      ] ?? withdrawal.reason;
+    const reasonDetail =
+      withdrawal.reasonDetail ?? "";
+
+    if (
+      reason === "ETC" &&
+      reasonDetail.trim().length === 0
+    ) {
+      alert("기타 사유를 입력해주세요.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      const reason =
-        WITHDRAWAL_REASON_MAP[
-          withdrawal.reason as keyof typeof WITHDRAWAL_REASON_MAP
-        ] ?? withdrawal.reason;
-      const requestBody = {
+      await withdrawMe({
         reason,
-        reasonDetail:
-          withdrawal.reasonDetail ?? "",
+        reasonDetail,
         isConfirmed,
-      };
-
-      console.log("[Withdrawal] request body", requestBody);
-
-      await withdrawMe(requestBody);
+      });
+      clearTokens();
       navigate("/mypage/withdrawal-complete", {
         replace: true,
       });
