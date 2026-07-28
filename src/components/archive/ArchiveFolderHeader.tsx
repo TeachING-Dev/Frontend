@@ -2,49 +2,94 @@ import {
   useEffect,
   useRef,
   useState,
+  type FormEvent,
   type KeyboardEvent,
 } from "react";
-import { Ellipsis, Search } from "lucide-react";
+import {
+  Ellipsis,
+  Search,
+} from "lucide-react";
 
 import DataPopover from "./popover/DataPopover";
+
+export type FolderSortOption =
+  | "recent"
+  | "title"
+  | "oldest";
 
 type ArchiveFolderHeaderProps = {
   folderName: string;
   savedItemCount: number;
+
+  searchKeyword: string;
+  sortOption: FolderSortOption;
+
   onBack: () => void;
-  onEditFolderName?: (newFolderName: string) => void;
+  onSearchKeywordChange: (
+    keyword: string,
+  ) => void;
+  onSearch: () => void;
+  onSortChange: (
+    sort: FolderSortOption,
+  ) => void;
+
+  onEditFolderName?: (
+    newFolderName: string,
+  ) => void;
   onMoveFolder?: () => void;
   onMoveToTrash?: () => void;
 };
 
-type SortOption = "최신순" | "이름순" | "오래된순";
+const sortOptionLabel: Record<
+  FolderSortOption,
+  string
+> = {
+  recent: "최신순",
+  title: "이름순",
+  oldest: "오래된순",
+};
 
 const ArchiveFolderHeader = ({
   folderName,
   savedItemCount,
+  searchKeyword,
+  sortOption,
   onBack,
+  onSearchKeywordChange,
+  onSearch,
+  onSortChange,
   onEditFolderName,
   onMoveFolder,
   onMoveToTrash,
 }: ArchiveFolderHeaderProps) => {
-  const [sortOption, setSortOption] =
-    useState<SortOption>("최신순");
-
-  const [isSortOpen, setIsSortOpen] = useState(false);
-
-  // 폴더명 수정 상태
-  const [isEditingFolderName, setIsEditingFolderName] =
+  const [isSortOpen, setIsSortOpen] =
     useState(false);
 
-  const [editedFolderName, setEditedFolderName] =
-    useState(folderName);
+  const [
+    isEditingFolderName,
+    setIsEditingFolderName,
+  ] = useState(false);
+
+  const [
+    editedFolderName,
+    setEditedFolderName,
+  ] = useState(folderName);
 
   const folderNameInputRef =
     useRef<HTMLInputElement>(null);
 
-  const handleSortSelect = (option: SortOption) => {
-    setSortOption(option);
+  const handleSortSelect = (
+    option: FolderSortOption,
+  ) => {
+    onSortChange(option);
     setIsSortOpen(false);
+  };
+
+  const handleSearchSubmit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    onSearch();
   };
 
   const handleStartEdit = () => {
@@ -53,13 +98,17 @@ const ArchiveFolderHeader = ({
   };
 
   const handleSaveFolderName = () => {
-    const trimmedFolderName = editedFolderName.trim();
+    const trimmedFolderName =
+      editedFolderName.trim();
 
     if (!trimmedFolderName) {
       return;
     }
 
-    onEditFolderName?.(trimmedFolderName);
+    onEditFolderName?.(
+      trimmedFolderName,
+    );
+
     setIsEditingFolderName(false);
   };
 
@@ -88,12 +137,13 @@ const ArchiveFolderHeader = ({
   }, [isEditingFolderName]);
 
   const isSaveDisabled =
-    editedFolderName.trim().length === 0 ||
-    editedFolderName.trim() === folderName;
+    editedFolderName.trim().length ===
+      0 ||
+    editedFolderName.trim() ===
+      folderName;
 
   return (
     <section className="mb-[60px]">
-      {/* 보관함으로 돌아가기 */}
       <button
         type="button"
         onClick={onBack}
@@ -111,26 +161,50 @@ const ArchiveFolderHeader = ({
         </span>
       </button>
 
-      {/* 폴더명 */}
       <div className="mb-3 flex min-h-[54px] items-center gap-5">
         {isEditingFolderName ? (
           <>
-            <input
-              ref={folderNameInputRef}
-              type="text"
-              value={editedFolderName}
-              onChange={(event) =>
-                setEditedFolderName(event.target.value)
-              }
-              onKeyDown={handleFolderNameKeyDown}
-              maxLength={10}
-              aria-label="수정할 폴더 이름"
-              className="h-[54px] min-w-0 w-auto max-w-[500px] border-b border-[#917DEC] bg-transparent text-[36px] font-bold text-white outline-none"
-            />
+            <label className="grid shrink-0">
+              <span className="sr-only">
+                수정할 폴더 이름
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="invisible col-start-1 row-start-1 whitespace-pre text-[36px] font-bold"
+              >
+                {editedFolderName ||
+                  " "}
+              </span>
+
+              <input
+                ref={
+                  folderNameInputRef
+                }
+                type="text"
+                size={1}
+                value={
+                  editedFolderName
+                }
+                onChange={(event) =>
+                  setEditedFolderName(
+                    event.target.value,
+                  )
+                }
+                onKeyDown={
+                  handleFolderNameKeyDown
+                }
+                maxLength={10}
+                aria-label="수정할 폴더 이름"
+                className="col-start-1 row-start-1 h-[54px] w-full min-w-0 max-w-[500px] bg-transparent text-[36px] font-bold text-white outline-none"
+              />
+            </label>
 
             <button
               type="button"
-              onClick={handleSaveFolderName}
+              onClick={
+                handleSaveFolderName
+              }
               disabled={isSaveDisabled}
               className="ml-2 flex h-[36px] w-[96px] items-center justify-center rounded-[8px] bg-[#917DEC] text-[16px] font-medium text-white transition hover:bg-[#7E68D8] disabled:cursor-not-allowed disabled:bg-[#42444C] disabled:text-[#A5A5AB]"
             >
@@ -153,7 +227,9 @@ const ArchiveFolderHeader = ({
 
             <button
               type="button"
-              onClick={handleStartEdit}
+              onClick={
+                handleStartEdit
+              }
               aria-label="폴더 이름 수정"
               className="flex h-8 w-8 items-center justify-center rounded transition hover:bg-white/10"
             >
@@ -168,39 +244,67 @@ const ArchiveFolderHeader = ({
         )}
       </div>
 
-      {/* 저장된 자료 개수 */}
       <p className="mb-6 text-[20px] text-[#A1A1A5]">
-        {savedItemCount}개의 저장된 자료
+        {savedItemCount}개의 저장된
+        자료
       </p>
 
       <div className="flex items-center justify-between">
-        {/* 검색창 */}
-        <div className="flex h-[60px] w-[640px] items-center rounded bg-[#F1EEFF] px-5">
+        <form
+          onSubmit={
+            handleSearchSubmit
+          }
+          className="flex h-[60px] w-[640px] items-center rounded bg-[#F1EEFF] px-5"
+        >
           <input
-            type="text"
+            type="search"
+            value={searchKeyword}
+            onChange={(event) =>
+              onSearchKeywordChange(
+                event.target.value,
+              )
+            }
             placeholder="자료 검색"
+            aria-label="자료 검색"
             className="flex-1 bg-transparent text-[24px] font-semibold text-[#5D5D5D] outline-none placeholder:text-gray-500"
           />
 
-          <Search size={24} className="text-[#8B6DFF]" />
-        </div>
+          <button
+            type="submit"
+            aria-label="검색"
+            className="flex h-10 w-10 items-center justify-center rounded transition hover:bg-[#DDD6FF]"
+          >
+            <Search
+              size={24}
+              className="text-[#8B6DFF]"
+            />
+          </button>
+        </form>
 
-        {/* 오른쪽 버튼 */}
         <div className="flex items-center gap-6">
-          {/* 정렬 */}
           <div className="relative">
             <button
               type="button"
               onClick={() =>
-                setIsSortOpen((prev) => !prev)
+                setIsSortOpen(
+                  (prev) => !prev,
+                )
               }
               className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
             >
-              <span>{sortOption}</span>
+              <span>
+                {
+                  sortOptionLabel[
+                    sortOption
+                  ]
+                }
+              </span>
 
               <span
                 className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white transition-transform ${
-                  isSortOpen ? "rotate-180" : ""
+                  isSortOpen
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
@@ -210,7 +314,9 @@ const ArchiveFolderHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("최신순")
+                    handleSortSelect(
+                      "recent",
+                    )
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -220,7 +326,9 @@ const ArchiveFolderHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("이름순")
+                    handleSortSelect(
+                      "title",
+                    )
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -230,7 +338,9 @@ const ArchiveFolderHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("오래된순")
+                    handleSortSelect(
+                      "oldest",
+                    )
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -240,7 +350,6 @@ const ArchiveFolderHeader = ({
             )}
           </div>
 
-          {/* 자료 메뉴 팝오버 */}
           <DataPopover
             trigger={
               <button
@@ -248,11 +357,18 @@ const ArchiveFolderHeader = ({
                 aria-label="자료 메뉴"
                 className="flex h-8 w-8 items-center justify-center rounded text-white transition hover:bg-[#3A3847]"
               >
-                <Ellipsis size={28} strokeWidth={3} />
+                <Ellipsis
+                  size={28}
+                  strokeWidth={3}
+                />
               </button>
             }
-            onMoveFolder={onMoveFolder}
-            onMoveToTrash={onMoveToTrash}
+            onMoveFolder={
+              onMoveFolder
+            }
+            onMoveToTrash={
+              onMoveToTrash
+            }
           />
         </div>
       </div>

@@ -65,6 +65,7 @@ function App() {
           element={<OAuthCallbackPage />}
         />
 
+        <Route element={<RequireAuth />}>
         {/* 회원가입 완료 */}
         <Route
           path="/signup/complete"
@@ -80,13 +81,11 @@ function App() {
         />
 
         {/* 홈 전용 레이아웃 */}
-        <Route element={<RequireAuth />}>
-          <Route element={<HomeLayout />}>
-            <Route
-              path="/"
-              element={<HomePage />}
-            />
-          </Route>
+        <Route element={<HomeLayout />}>
+          <Route
+            path="/"
+            element={<HomePage />}
+          />
         </Route>
 
         {/* 분석 전용 레이아웃 */}
@@ -125,7 +124,7 @@ function App() {
 
           {/* 보관함 자료 상세 */}
           <Route
-            path="/archive/folder/data/:dataId"
+            path="/archive/folder/:folderId/materials/:materialId"
             element={<ArchiveDataPage />}
           />
 
@@ -264,6 +263,7 @@ function App() {
             path="/chatbot"
             element={<ChatbotPage />}
           />
+        </Route>
         </Route>
 
         {/* 회원가입 전용 레이아웃 */}
