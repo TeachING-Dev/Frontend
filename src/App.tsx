@@ -263,6 +263,10 @@ function App() {
             path="/chatbot"
             element={<ChatbotPage />}
           />
+          <Route
+            path="/chatbot/:chatRoomId"
+            element={<ChatbotPage />}
+          />
         </Route>
         </Route>
 

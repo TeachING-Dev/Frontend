@@ -27,7 +27,7 @@ const ArchiveFolderGrid = ({
 }: ArchiveFolderGridProps) => {
   return (
     <section className="grid grid-cols-3 gap-7">
-      {/* 새 폴더 추가 */}
+      {/* 새 채팅 추가 */}
       <AddFolderGrid onClick={onAddFolder} />
 
       {/* 기존 폴더 목록 */}

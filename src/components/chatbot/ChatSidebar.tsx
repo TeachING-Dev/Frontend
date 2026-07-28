@@ -4,9 +4,10 @@ type ChatSidebarProps = {
   onOpen: () => void;
   onClose: () => void;
   onCreateRoomClick: () => void;
+  onFileClick?: (index: number) => void;
 };
 
-const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick }: ChatSidebarProps) => {
+const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFileClick }: ChatSidebarProps) => {
   const navWidthClass = isOpen ? "w-[204px]" : "w-20";
 
   return (
@@ -51,13 +52,14 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick }: Chat
             >
               <img src="/NewFileDesign.svg" alt="" className="h-9 w-8 object-contain" />
               <span className="whitespace-nowrap font-['SUIT'] text-18px font-normal leading-[150%] tracking-[-0.72px] text-[#917DEC]">
-                {"\uc0c8 \ud3f4\ub354"}
+                새 채팅
               </span>
             </button>
             {files.map((fileName, index) => (
               <button
                 type="button"
                 key={`${fileName}-${index}`}
+                onClick={() => onFileClick?.(index)}
                 className="text-left font-['SUIT'] text-sm font-normal leading-5 text-violet-50 hover:text-[#917DEC]"
               >
                 {fileName}
