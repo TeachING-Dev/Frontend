@@ -32,6 +32,7 @@ import type { SourceItem } from "../components/chatbot/SourceList";
 const limitDescription = "요금제를 업그레이드하고 무제한으로 티칭잉을 만들어 보세요!";
 const dailyQuestionLimit = 5;
 const chatRoomLimit = 10;
+const chatRoomListSize = 10;
 const dailyQuestionCountStorageKey =
   "chatbotDailyQuestionCount";
 
@@ -175,7 +176,9 @@ const ChatbotPage = () => {
 
   const loadChatRooms = useCallback(async () => {
     try {
-      const chatRoomList = await getChatRooms();
+      const chatRoomList = await getChatRooms({
+        size: chatRoomListSize,
+      });
       setChatRooms(chatRoomList.chatrooms);
       return chatRoomList.chatrooms;
     } catch (error) {
