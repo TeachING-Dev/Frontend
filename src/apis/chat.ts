@@ -46,6 +46,7 @@ export type ChatRoomHistory = {
 export type ChatRoom = {
   chatroomId: number;
   title: string;
+  createdAt: string;
 };
 
 export type ChatRoomSummary = {
@@ -57,6 +58,11 @@ export type ChatRoomSummary = {
 export type ChatRoomList = {
   chatrooms: ChatRoomSummary[];
   nextCursor: number | null;
+};
+
+export type ChatRoomListParams = {
+  cursor?: number | null;
+  size?: number;
 };
 
 type ChatRoomPageResponse = {
@@ -117,10 +123,17 @@ export const createChatRoom = async () => {
   return data.result;
 };
 
-export const getChatRooms = async () => {
+export const getChatRooms = async (
+  params?: ChatRoomListParams,
+) => {
   const response = await api.get<
     ApiResponse<ChatRoomListResponse>
-  >("/chatrooms");
+  >("/chatrooms", {
+    params: {
+      cursor: params?.cursor ?? undefined,
+      size: params?.size,
+    },
+  });
   const data = response.data;
 
   if (!data.isSuccess) {
