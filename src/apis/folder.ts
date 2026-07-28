@@ -1,6 +1,7 @@
 import type { ApiResponse } from "./apiTypes";
 import api from "./axios";
 
+
 export type FolderSort =
   | "recent"
   | "oldest"
@@ -128,6 +129,66 @@ export const restoreFolder = async (
   const { data } = await api.patch<
     ApiResponse<FolderTrashResult>
   >(`/api/folders/${folderId}/restore`);
+
+  return data.result;
+};
+
+export type FolderMaterialSort =
+  | "recent"
+  | "oldest"
+  | "title";
+
+export type FolderMaterial = {
+  materialId: number;
+  title: string;
+  summary: string;
+  originalUrl: string;
+  tags: string[];
+  statusAi: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FolderMaterialsResult = {
+  folderId: number;
+  folderName: string;
+  content: FolderMaterial[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+};
+
+type GetFolderMaterialsParams = {
+  keyword?: string;
+  sort?: FolderMaterialSort;
+  page?: number;
+  size?: number;
+};
+
+export const getFolderMaterials = async (
+  folderId: number,
+  {
+    keyword,
+    sort = "recent",
+    page = 0,
+    size = 10,
+  }: GetFolderMaterialsParams = {},
+): Promise<FolderMaterialsResult> => {
+  const { data } = await api.get<
+    ApiResponse<FolderMaterialsResult>
+  >(`/api/folders/${folderId}/materials`, {
+    params: {
+      ...(keyword
+        ? {
+            keyword,
+          }
+        : {}),
+      sort,
+      page,
+      size,
+    },
+  });
 
   return data.result;
 };

@@ -1,15 +1,9 @@
-type AnalysisItem = {
-  id: number;
-  title: string;
-  content: string;
-};
-
 type ArchiveDataAnalysisProps = {
-  analysis: AnalysisItem[];
+  fullAnalysis: string;
 };
 
 const ArchiveDataAnalysis = ({
-  analysis,
+  fullAnalysis,
 }: ArchiveDataAnalysisProps) => {
   return (
     <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
@@ -22,19 +16,9 @@ const ArchiveDataAnalysis = ({
 
       {/* 상세 분석 내용 */}
       <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[20px]">
-        <div className="flex flex-col gap-[30px]">
-          {analysis.map((item) => (
-            <article key={item.id}>
-              <h3 className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] text-[#A1A1A5]">
-                {item.id}. {item.title}
-              </h3>
-
-              <p className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] text-[#A1A1A5]">
-                {item.content}
-              </p>
-            </article>
-          ))}
-        </div>
+        <p className="whitespace-pre-line font-['ABeeZee'] text-[20px] font-normal leading-[160%] text-[#A1A1A5]">
+          {fullAnalysis}
+        </p>
       </div>
     </section>
   );
