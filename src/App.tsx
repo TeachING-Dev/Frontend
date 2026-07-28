@@ -264,6 +264,10 @@ function App() {
             path="/chatbot"
             element={<ChatbotPage />}
           />
+          <Route
+            path="/chatbot/:chatRoomId"
+            element={<ChatbotPage />}
+          />
         </Route>
 
         {/* 회원가입 전용 레이아웃 */}
