@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../common/Toast";
@@ -211,8 +211,8 @@ const HomeHeader = () => {
               right-2
               top-1/2
               flex
-              h-10
-              w-10
+              h-6
+              w-6
               -translate-y-1/2
               items-center
               justify-center
@@ -226,9 +226,9 @@ const HomeHeader = () => {
               lg:right-5
             "
           >
-            <ArrowRight
-              size={22}
-              strokeWidth={2.5}
+            <ArrowUp
+              size={18}
+              strokeWidth={2}
               className="text-[#11111B] md:h-6 md:w-6"
             />
           </button>

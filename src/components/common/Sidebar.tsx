@@ -108,6 +108,7 @@ const Sidebar = ({
           flex
           w-[calc(100%-20px)]
           max-w-[430px]
+          h-[60px]
           -translate-x-1/2
           items-center
           justify-around
