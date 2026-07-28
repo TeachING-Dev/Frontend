@@ -1,53 +1,36 @@
-import { useCallback, useEffect, useState,}  from "react";
-import { useNavigate, useParams, } from "react-router-dom";
-import { getFolder, updateFolderName, type Folder, } from "../apis/folder";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+import {
+  getFolder,
+  getFolderMaterials,
+  updateFolderName,
+  type Folder,
+  type FolderMaterialSort,
+} from "../apis/folder";
+import ArchiveDataList, {
+  type ArchiveData,
+} from "../components/archive/ArchiveDataList";
 import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
-import ArchiveDataList, { type ArchiveData, } from "../components/archive/ArchiveDataList";
 import EmptyArchiveData from "../components/archive/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import Toast from "../components/common/Toast";
 
-type SelectMode = "move" | "trash" | null;
+type SelectMode =
+  | "move"
+  | "trash"
+  | null;
 
-const dummyData: ArchiveData[] = [
-  {
-    id: 1,
-    tag: "Node.js",
-    date: "2026-05-10",
-    title:
-      "Node.js의 이벤트 루프(Event Loop) 완벽 이해하기",
-    description:
-      "Node.js의 핵심 아키텍처인 이벤트 루프의 6가지 단계(Phase)와 동작 메커니즘을 시각적 자료와 함께 상세히 정리한 기술 블로그입니다.",
-  },
-  {
-    id: 2,
-    tag: "React",
-    date: "2026-05-08",
-    title:
-      "React의 렌더링(Rendering) 과정과 Virtual DOM",
-    description:
-      "React가 상태(State) 변경 이후 Virtual DOM을 생성하고 실제 DOM을 효율적으로 업데이트하는 과정을 예제와 함께 설명합니다.",
-  },
-  {
-    id: 3,
-    tag: "TypeScript",
-    date: "2026-05-05",
-    title:
-      "TypeScript를 사용하는 이유와 실전 활용법",
-    description:
-      "JavaScript와 비교하며 타입 시스템의 장점, 인터페이스, 제네릭 등 실제 프로젝트에서 자주 사용하는 기능들을 소개합니다.",
-  },
-  {
-    id: 4,
-    tag: "Frontend",
-    date: "2026-05-02",
-    title:
-      "프론트엔드 개발자를 위한 성능 최적화 가이드",
-    description:
-      "이미지 최적화, 코드 스플리팅, Lazy Loading, 메모이제이션 등 사용자 경험을 높이기 위한 다양한 성능 최적화 기법을 정리했습니다.",
-  },
-];
-
+/**
+ * 자료 이동 API 연결 전 임시 데이터
+ */
 const folderOptions = [
   {
     id: 1,
@@ -77,6 +60,29 @@ const ArchiveFolderPage = () => {
   const [folder, setFolder] =
     useState<Folder | null>(null);
 
+  const [materials, setMaterials] =
+    useState<ArchiveData[]>([]);
+
+  /**
+   * 검색창에 현재 입력 중인 값
+   */
+  const [searchInput, setSearchInput] =
+    useState("");
+
+  /**
+   * 실제 API 요청에 사용하는 검색어
+   */
+  const [keyword, setKeyword] =
+    useState("");
+
+  /**
+   * 실제 API 요청에 사용하는 정렬값
+   */
+  const [sort, setSort] =
+    useState<FolderMaterialSort>(
+      "recent",
+    );
+
   const [isLoading, setIsLoading] =
     useState(true);
 
@@ -86,151 +92,271 @@ const ArchiveFolderPage = () => {
   const [selectMode, setSelectMode] =
     useState<SelectMode>(null);
 
-  const [isMoveModalOpen, setIsMoveModalOpen] =
-    useState(false);
+  const [
+    isMoveModalOpen,
+    setIsMoveModalOpen,
+  ] = useState(false);
 
-  const [selectedItemIds, setSelectedItemIds] =
-    useState<number[]>([]);
+  const [
+    selectedItemIds,
+    setSelectedItemIds,
+  ] = useState<number[]>([]);
 
   const [toastMessage, setToastMessage] =
     useState<string | null>(null);
 
-  const isSelectMode = selectMode !== null;
+  const isSelectMode =
+    selectMode !== null;
 
   const isAllSelected =
-    dummyData.length > 0 &&
-    selectedItemIds.length === dummyData.length;
+    materials.length > 0 &&
+    selectedItemIds.length ===
+      materials.length;
 
   /**
-   * 폴더 상세 데이터를 반환하는 역할만 담당한다.
-   * 여기서는 상태를 직접 변경하지 않는다.
+   * URL의 folderId를 숫자로 변환한다.
    */
-  const fetchFolder = useCallback(async () => {
-    if (!folderId) {
-      throw new Error(
-        "폴더 정보를 확인할 수 없어요.",
+  const getParsedFolderId =
+    useCallback(() => {
+      if (!folderId) {
+        throw new Error(
+          "폴더 정보를 확인할 수 없어요.",
+        );
+      }
+
+      const parsedFolderId =
+        Number(folderId);
+
+      if (
+        !Number.isInteger(
+          parsedFolderId,
+        ) ||
+        parsedFolderId <= 0
+      ) {
+        throw new Error(
+          "올바르지 않은 폴더 ID예요.",
+        );
+      }
+
+      return parsedFolderId;
+    }, [folderId]);
+
+  /**
+   * 폴더 상세 정보 조회
+   */
+  const fetchFolder = useCallback(
+    async () => {
+      const parsedFolderId =
+        getParsedFolderId();
+
+      return getFolder(
+        parsedFolderId,
       );
-    }
+    },
+    [getParsedFolderId],
+  );
 
-    const parsedFolderId = Number(folderId);
+  /**
+   * 폴더 내부 자료 목록 조회
+   *
+   * keyword와 sort가 바뀌면
+   * 새로운 조건으로 다시 요청한다.
+   */
+  const fetchFolderMaterials =
+    useCallback(async () => {
+      const parsedFolderId =
+        getParsedFolderId();
 
-    if (
-      !Number.isInteger(parsedFolderId) ||
-      parsedFolderId <= 0
-    ) {
-      throw new Error(
-        "올바르지 않은 폴더 ID예요.",
+      return getFolderMaterials(
+        parsedFolderId,
+        {
+          keyword:
+            keyword || undefined,
+          sort,
+          page: 0,
+          size: 10,
+        },
       );
-    }
+    }, [
+      getParsedFolderId,
+      keyword,
+      sort,
+    ]);
 
-    return getFolder(parsedFolderId);
-  }, [folderId]);
-
+  /**
+   * 폴더 상세 정보와 내부 자료 목록 조회
+   */
   useEffect(() => {
     let isCancelled = false;
 
-    void Promise.resolve()
-      .then(() => {
-        if (isCancelled) return null;
+    const fetchFolderPageData =
+      async () => {
+        try {
+          setIsLoading(true);
+          setErrorMessage("");
 
-        setIsLoading(true);
-        setErrorMessage("");
+          const [
+            folderDetail,
+            materialsResult,
+          ] = await Promise.all([
+            fetchFolder(),
+            fetchFolderMaterials(),
+          ]);
 
-        return fetchFolder();
-      })
-      .then((folderDetail) => {
-        if (isCancelled || !folderDetail) return;
+          if (isCancelled) {
+            return;
+          }
 
-        setFolder(folderDetail);
-      })
-      .catch((error: unknown) => {
-        if (isCancelled) return;
+          setFolder(folderDetail);
 
-        console.error(
-          "폴더 상세 조회 실패:",
-          error,
-        );
+          const convertedMaterials:
+            ArchiveData[] =
+            materialsResult.content.map(
+              (material) => ({
+                id:
+                  material.materialId,
+                tag:
+                  material.tags[0] ??
+                  "기타",
+                date:
+                  material.createdAt.split(
+                    "T",
+                  )[0],
+                title:
+                  material.title,
+                description:
+                  material.summary,
+              }),
+            );
 
-        setFolder(null);
+          setMaterials(
+            convertedMaterials,
+          );
 
-        setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "폴더 정보를 불러오지 못했어요.",
-        );
-      })
-      .finally(() => {
-        if (isCancelled) return;
+          setSelectedItemIds([]);
+          setSelectMode(null);
+        } catch (error) {
+          if (isCancelled) {
+            return;
+          }
 
-        setIsLoading(false);
-      });
+          console.error(
+            "폴더 페이지 조회 실패:",
+            error,
+          );
+
+          setFolder(null);
+          setMaterials([]);
+
+          setErrorMessage(
+            error instanceof Error
+              ? error.message
+              : "폴더 정보를 불러오지 못했어요.",
+          );
+        } finally {
+          // Avoid returning from finally (unsafe). Only update loading state if not cancelled.
+          if (!isCancelled) {
+            setIsLoading(false);
+          }
+        }
+      };
+
+    void fetchFolderPageData();
 
     return () => {
       isCancelled = true;
     };
-  }, [fetchFolder]);
+  }, [
+    fetchFolder,
+    fetchFolderMaterials,
+  ]);
 
   useEffect(() => {
-    if (!toastMessage) return;
+    if (!toastMessage) {
+      return;
+    }
 
-    const timer = window.setTimeout(() => {
-      setToastMessage(null);
-    }, 4000);
+    const timer =
+      window.setTimeout(() => {
+        setToastMessage(null);
+      }, 4000);
 
     return () => {
       window.clearTimeout(timer);
     };
   }, [toastMessage]);
 
-const handleEditFolderName = async (
-  newFolderName: string,
-) => {
-  if (!folder) return;
-
-  const trimmedFolderName =
-    newFolderName.trim();
-
-  const folderNamePattern =
-    /^[가-힣a-zA-Z]{1,10}$/;
-
-  if (
-    !folderNamePattern.test(
-      trimmedFolderName,
-    )
-  ) {
-    setToastMessage(
-      "폴더명은 한글,영문 10자 이내로 입력해주세요.",
+  /**
+   * 검색 버튼 또는 Enter 실행
+   */
+  const handleSearch = () => {
+    setKeyword(
+      searchInput.trim(),
     );
-    return;
-  }
+  };
 
-  try {
-    const updatedFolder =
-      await updateFolderName(
-        folder.folderId,
-        trimmedFolderName,
-      );
+  /**
+   * 정렬 변경
+   */
+  const handleSortChange = (
+    newSort: FolderMaterialSort,
+  ) => {
+    setSort(newSort);
+  };
 
-    setFolder((prev) =>
-      prev
-        ? {
-            ...prev,
-            folderName:
-              updatedFolder.folderName,
-          }
-        : prev,
-    );
-  } catch (error) {
-    console.error(
-      "폴더명 수정 실패:",
-      error,
-    );
+  const handleEditFolderName =
+    async (
+      newFolderName: string,
+    ) => {
+      if (!folder) {
+        return;
+      }
 
-    setToastMessage(
-      "폴더 수정에 실패했어요.",
-    );
-  }
-};
+      const trimmedFolderName =
+        newFolderName.trim();
+
+      const folderNamePattern =
+        /^[가-힣a-zA-Z]{1,10}$/;
+
+      if (
+        !folderNamePattern.test(
+          trimmedFolderName,
+        )
+      ) {
+        setToastMessage(
+          "폴더명은 한글, 영문 10자 이내로 입력해주세요.",
+        );
+
+        return;
+      }
+
+      try {
+        const updatedFolder =
+          await updateFolderName(
+            folder.folderId,
+            trimmedFolderName,
+          );
+
+        setFolder((prev) =>
+          prev
+            ? {
+                ...prev,
+                folderName:
+                  updatedFolder.folderName,
+              }
+            : prev,
+        );
+      } catch (error) {
+        console.error(
+          "폴더명 수정 실패:",
+          error,
+        );
+
+        setToastMessage(
+          "폴더 수정에 실패했어요.",
+        );
+      }
+    };
 
   const handleOpenMoveMode = () => {
     setSelectMode("move");
@@ -242,16 +368,20 @@ const handleEditFolderName = async (
     setSelectedItemIds([]);
   };
 
-  const handleCancelSelectMode = () => {
-    setSelectMode(null);
-    setSelectedItemIds([]);
-  };
+  const handleCancelSelectMode =
+    () => {
+      setSelectMode(null);
+      setSelectedItemIds([]);
+    };
 
-  const handleToggleItem = (id: number) => {
+  const handleToggleItem = (
+    id: number,
+  ) => {
     setSelectedItemIds((prev) =>
       prev.includes(id)
         ? prev.filter(
-            (itemId) => itemId !== id,
+            (itemId) =>
+              itemId !== id,
           )
         : [...prev, id],
     );
@@ -264,19 +394,27 @@ const handleEditFolderName = async (
     }
 
     setSelectedItemIds(
-      dummyData.map((item) => item.id),
+      materials.map(
+        (item) => item.id,
+      ),
     );
   };
 
-  const handleOpenMoveModal = () => {
-    if (selectedItemIds.length === 0) return;
+  const handleOpenMoveModal =
+    () => {
+      if (
+        selectedItemIds.length === 0
+      ) {
+        return;
+      }
 
-    setIsMoveModalOpen(true);
-  };
+      setIsMoveModalOpen(true);
+    };
 
-  const handleCloseMoveModal = () => {
-    setIsMoveModalOpen(false);
-  };
+  const handleCloseMoveModal =
+    () => {
+      setIsMoveModalOpen(false);
+    };
 
   const handleMoveData = (
     targetFolderId: number,
@@ -302,36 +440,44 @@ const handleEditFolderName = async (
     );
   };
 
-  const handleMoveToTrash = () => {
-    if (selectedItemIds.length === 0) return;
+  const handleMoveToTrash =
+    () => {
+      if (
+        selectedItemIds.length === 0
+      ) {
+        return;
+      }
 
-    console.log(
-      "휴지통으로 이동할 자료 ID:",
-      selectedItemIds,
-    );
+      console.log(
+        "휴지통으로 이동할 자료 ID:",
+        selectedItemIds,
+      );
 
-    // TODO: 휴지통 이동 API 연결
+      // TODO: 휴지통 이동 API 연결
 
-    setSelectMode(null);
-    setSelectedItemIds([]);
+      setSelectMode(null);
+      setSelectedItemIds([]);
 
-    setToastMessage(
-      "자료가 휴지통으로 이동되었습니다",
-    );
-  };
+      setToastMessage(
+        "자료가 휴지통으로 이동되었습니다",
+      );
+    };
 
-  const handleSelectAction = () => {
-    if (selectMode === "move") {
-      handleOpenMoveModal();
-      return;
-    }
+  const handleSelectAction =
+    () => {
+      if (selectMode === "move") {
+        handleOpenMoveModal();
+        return;
+      }
 
-    if (selectMode === "trash") {
-      handleMoveToTrash();
-    }
-  };
+      if (selectMode === "trash") {
+        handleMoveToTrash();
+      }
+    };
 
-  const handleOpenDataPage = (id: number) => {
+  const handleOpenDataPage = (
+    id: number,
+  ) => {
     navigate(
       `/archive/folder/data/${id}`,
     );
@@ -348,7 +494,8 @@ const handleEditFolderName = async (
     return (
       <main className="py-10">
         <div className="mx-auto flex min-h-[540px] w-[1120px] items-center justify-center text-[#D0D0D2]">
-          폴더 정보를 불러오는 중이에요.
+          폴더 정보를 불러오는
+          중이에요.
         </div>
       </main>
     );
@@ -370,9 +517,28 @@ const handleEditFolderName = async (
       <main className="py-10">
         <div className="mx-auto w-[1120px]">
           <ArchiveFolderHeader
-            folderName={folder.folderName}
-            savedItemCount={folder.materialCount}
-            onBack={() => navigate("/archive")}
+            folderName={
+              folder.folderName
+            }
+            savedItemCount={
+              folder.materialCount
+            }
+            searchKeyword={
+              searchInput
+            }
+            sortOption={sort}
+            onSearchKeywordChange={
+              setSearchInput
+            }
+            onSearch={
+              handleSearch
+            }
+            onSortChange={
+              handleSortChange
+            }
+            onBack={() =>
+              navigate("/archive")
+            }
             onEditFolderName={
               handleEditFolderName
             }
@@ -385,11 +551,13 @@ const handleEditFolderName = async (
           />
 
           {isSelectMode &&
-            dummyData.length > 0 && (
+            materials.length > 0 && (
               <div className="mb-5 flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={handleToggleAll}
+                  onClick={
+                    handleToggleAll
+                  }
                   className="flex items-center gap-[17px]"
                 >
                   <span
@@ -407,8 +575,10 @@ const handleEditFolderName = async (
                   </span>
 
                   <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
-                    {selectedItemIds.length}개
-                    선택됨
+                    {
+                      selectedItemIds.length
+                    }
+                    개 선택됨
                   </span>
                 </button>
 
@@ -423,12 +593,14 @@ const handleEditFolderName = async (
                       0
                     }
                     className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
-                      selectedItemIds.length > 0
+                      selectedItemIds.length >
+                      0
                         ? "bg-[#917DEC] hover:bg-[#8068E2]"
                         : "cursor-not-allowed bg-[#42444C]"
                     }`}
                   >
-                    {selectMode === "trash"
+                    {selectMode ===
+                    "trash"
                       ? "휴지통으로 이동"
                       : "이동하기"}
                   </button>
@@ -447,12 +619,15 @@ const handleEditFolderName = async (
             )}
 
           <div className="mt-4">
-            {dummyData.length === 0 ? (
+            {materials.length ===
+            0 ? (
               <EmptyArchiveData />
             ) : (
               <ArchiveDataList
-                data={dummyData}
-                isMoveMode={isSelectMode}
+                data={materials}
+                isMoveMode={
+                  isSelectMode
+                }
                 selectedItemIds={
                   selectedItemIds
                 }
@@ -470,12 +645,16 @@ const handleEditFolderName = async (
 
       {isMoveModalOpen && (
         <MoveDataModal
-          currentFolderId={folder.folderId}
+          currentFolderId={
+            folder.folderId
+          }
           currentFolderName={
             folder.folderName
           }
           folders={folderOptions}
-          onClose={handleCloseMoveModal}
+          onClose={
+            handleCloseMoveModal
+          }
           onMove={handleMoveData}
         />
       )}
@@ -484,7 +663,9 @@ const handleEditFolderName = async (
         <Toast
           message={toastMessage}
           actionText="실행취소"
-          onAction={handleUndoToast}
+          onAction={
+            handleUndoToast
+          }
         />
       )}
     </>

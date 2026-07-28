@@ -8,6 +8,9 @@ type ArchiveHeaderProps = {
   onViewModeChange: (mode: "list" | "grid") => void;
   sort: FolderSort;
   onSortChange: (sort: FolderSort) => void;
+  searchKeyword: string;
+  onSearchKeywordChange: (value: string) => void;
+  onSearch: () => void;
 };
 
 const sortLabel: Record<FolderSort, string> = {
@@ -21,12 +24,25 @@ const ArchiveHeader = ({
   onViewModeChange,
   sort,
   onSortChange,
+  searchKeyword,
+  onSearchKeywordChange,
+  onSearch,
 }: ArchiveHeaderProps) => {
-  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] =
+    useState(false);
 
-  const handleSortSelect = (option: FolderSort) => {
+  const handleSortSelect = (
+    option: FolderSort,
+  ) => {
     onSortChange(option);
     setIsSortOpen(false);
+  };
+
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    onSearch();
   };
 
   return (
@@ -41,18 +57,33 @@ const ArchiveHeader = ({
 
       <div className="flex items-center justify-between">
         {/* 검색창 */}
-        <div className="flex h-[60px] w-[640px] items-center rounded bg-[#F1EEFF] px-5">
+        <form
+          onSubmit={handleSubmit}
+          className="flex h-[60px] w-[640px] items-center rounded bg-[#F1EEFF] px-5"
+        >
           <input
             type="text"
+            value={searchKeyword}
+            onChange={(event) =>
+              onSearchKeywordChange(
+                event.target.value,
+              )
+            }
             placeholder="폴더 검색"
             className="flex-1 bg-transparent text-[24px] font-semibold text-[#5D5D5D] outline-none placeholder:text-gray-500"
           />
 
-          <Search
-            size={24}
-            className="text-[#8B6DFF]"
-          />
-        </div>
+          <button
+            type="submit"
+            aria-label="폴더 검색"
+            className="flex h-10 w-10 items-center justify-center"
+          >
+            <Search
+              size={24}
+              className="text-[#8B6DFF]"
+            />
+          </button>
+        </form>
 
         {/* 오른쪽 버튼들 */}
         <div className="flex items-center gap-6">
@@ -61,7 +92,9 @@ const ArchiveHeader = ({
             <button
               type="button"
               onClick={() =>
-                setIsSortOpen((prev) => !prev)
+                setIsSortOpen(
+                  (prev) => !prev,
+                )
               }
               className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
             >
@@ -69,7 +102,9 @@ const ArchiveHeader = ({
 
               <span
                 className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white transition-transform ${
-                  isSortOpen ? "rotate-180" : ""
+                  isSortOpen
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
@@ -79,7 +114,9 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("recent")
+                    handleSortSelect(
+                      "recent",
+                    )
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >
@@ -99,7 +136,9 @@ const ArchiveHeader = ({
                 <button
                   type="button"
                   onClick={() =>
-                    handleSortSelect("oldest")
+                    handleSortSelect(
+                      "oldest",
+                    )
                   }
                   className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
                 >

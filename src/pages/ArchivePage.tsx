@@ -10,10 +10,11 @@ import {
   type Folder,
   type FolderSort,
 } from "../apis/folder";
-import ArchiveHeader from "../components/archive/ArchiveHeader";
 import ArchiveFolderGrid from "../components/archive/ArchiveFolderGrid";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
+import ArchiveHeader from "../components/archive/ArchiveHeader";
 import ArchivePagination from "../components/archive/ArchivePagination";
+import EmptyArchiveSearch from "../components/archive/EmptyFolderSearch";
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
 
@@ -26,6 +27,12 @@ const ArchivePage = () => {
 
   const [folders, setFolders] =
     useState<Folder[]>([]);
+
+  const [searchInput, setSearchInput] =
+    useState("");
+
+  const [keyword, setKeyword] =
+    useState("");
 
   const [isLoading, setIsLoading] =
     useState(true);
@@ -68,6 +75,28 @@ const ArchivePage = () => {
 
     void initializeFolders();
   }, [fetchFolders]);
+
+  const handleSearchKeywordChange = (
+    value: string,
+  ) => {
+    setSearchInput(value);
+
+    // 검색창의 내용을 모두 지우면 전체 폴더 목록 표시
+    if (!value.trim()) {
+      setKeyword("");
+    }
+  };
+
+  const handleSearch = () => {
+    setKeyword(searchInput.trim());
+  };
+
+  const filteredFolders =
+    folders.filter((folder) =>
+      folder.folderName
+        .toLowerCase()
+        .includes(keyword.toLowerCase()),
+    );
 
   const handleCreateFolder = async (
     folderName: string,
@@ -117,6 +146,11 @@ const ArchivePage = () => {
             onViewModeChange={setViewMode}
             sort={sort}
             onSortChange={setSort}
+            searchKeyword={searchInput}
+            onSearchKeywordChange={
+              handleSearchKeywordChange
+            }
+            onSearch={handleSearch}
           />
 
           <div className="min-h-[540px]">
@@ -128,9 +162,12 @@ const ArchivePage = () => {
               <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
                 {errorMessage}
               </div>
+            ) : keyword &&
+              filteredFolders.length === 0 ? (
+              <EmptyArchiveSearch />
             ) : viewMode === "list" ? (
               <ArchiveFolderList
-                folders={folders}
+                folders={filteredFolders}
                 onAddFolder={() =>
                   setIsCreateModalOpen(true)
                 }
@@ -140,7 +177,7 @@ const ArchivePage = () => {
               />
             ) : (
               <ArchiveFolderGrid
-                folders={folders}
+                folders={filteredFolders}
                 onAddFolder={() =>
                   setIsCreateModalOpen(true)
                 }
