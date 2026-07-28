@@ -476,10 +476,14 @@ const ArchiveFolderPage = () => {
     };
 
   const handleOpenDataPage = (
-    id: number,
+    materialId: number,
   ) => {
+    if (!folderId) {
+      return;
+    }
+
     navigate(
-      `/archive/folder/data/${id}`,
+      `/archive/folder/${folderId}/materials/${materialId}`,
     );
   };
 

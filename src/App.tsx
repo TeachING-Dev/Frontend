@@ -124,7 +124,7 @@ function App() {
 
           {/* 보관함 자료 상세 */}
           <Route
-            path="/archive/folder/data/:dataId"
+            path="/archive/folder/:folderId/materials/:materialId"
             element={<ArchiveDataPage />}
           />
 
