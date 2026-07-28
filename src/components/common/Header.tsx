@@ -67,7 +67,7 @@ const Header = ({
   };
 
   return (
-    <header className="relative flex h-16 items-center justify-between bg-[#090713] px-8 shadow-[0_0_80px_rgba(145,125,236,0.1)]">
+    <header className="relative hidden h-16 items-center justify-between bg-[#090713] px-8 shadow-[0_0_80px_rgba(145,125,236,0.1)] lg:flex">
       {showMenuIcon ? (
         <button
           type="button"
