@@ -11,10 +11,18 @@ import {
 import {
   getFolder,
   getFolderMaterials,
+  getFolders,
   updateFolderName,
   type Folder,
   type FolderMaterialSort,
 } from "../apis/folder";
+
+import {
+  moveMaterials,
+  moveMaterialsToTrash,
+  restoreMaterials,
+} from "../apis/material";
+
 import ArchiveDataList, {
   type ArchiveData,
 } from "../components/archive/ArchiveDataList";
@@ -28,27 +36,32 @@ type SelectMode =
   | "trash"
   | null;
 
+type FolderOption = {
+  id: number;
+  name: string;
+};
+
 /**
- * 자료 이동 API 연결 전 임시 데이터
+ * 마지막으로 수행한 자료 작업
+ *
+ * move:
+ * 다른 폴더로 이동
+ *
+ * trash:
+ * 휴지통으로 이동
  */
-const folderOptions = [
-  {
-    id: 1,
-    name: "Backend",
-  },
-  {
-    id: 2,
-    name: "Frontend",
-  },
-  {
-    id: 3,
-    name: "React",
-  },
-  {
-    id: 4,
-    name: "TypeScript",
-  },
-];
+type LastAction =
+  | {
+      type: "move";
+      materialIds: number[];
+      fromFolderId: number;
+      toFolderId: number;
+    }
+  | {
+      type: "trash";
+      materialIds: number[];
+      fromFolderId: number;
+    };
 
 const ArchiveFolderPage = () => {
   const navigate = useNavigate();
@@ -63,21 +76,17 @@ const ArchiveFolderPage = () => {
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
 
-  /**
-   * 검색창에 현재 입력 중인 값
-   */
+  const [
+    folderOptions,
+    setFolderOptions,
+  ] = useState<FolderOption[]>([]);
+
   const [searchInput, setSearchInput] =
     useState("");
 
-  /**
-   * 실제 API 요청에 사용하는 검색어
-   */
   const [keyword, setKeyword] =
     useState("");
 
-  /**
-   * 실제 API 요청에 사용하는 정렬값
-   */
   const [sort, setSort] =
     useState<FolderMaterialSort>(
       "recent",
@@ -105,6 +114,12 @@ const ArchiveFolderPage = () => {
   const [toastMessage, setToastMessage] =
     useState<string | null>(null);
 
+  /**
+   * 실행취소를 위한 마지막 작업
+   */
+  const [lastAction, setLastAction] =
+    useState<LastAction | null>(null);
+
   const isSelectMode =
     selectMode !== null;
 
@@ -114,7 +129,7 @@ const ArchiveFolderPage = () => {
       materials.length;
 
   /**
-   * URL의 folderId를 숫자로 변환한다.
+   * URL folderId 숫자 변환
    */
   const getParsedFolderId =
     useCallback(() => {
@@ -142,7 +157,7 @@ const ArchiveFolderPage = () => {
     }, [folderId]);
 
   /**
-   * 폴더 상세 정보 조회
+   * 폴더 상세 조회
    */
   const fetchFolder = useCallback(
     async () => {
@@ -157,10 +172,7 @@ const ArchiveFolderPage = () => {
   );
 
   /**
-   * 폴더 내부 자료 목록 조회
-   *
-   * keyword와 sort가 바뀌면
-   * 새로운 조건으로 다시 요청한다.
+   * 폴더 자료 목록 조회
    */
   const fetchFolderMaterials =
     useCallback(async () => {
@@ -184,7 +196,51 @@ const ArchiveFolderPage = () => {
     ]);
 
   /**
-   * 폴더 상세 정보와 내부 자료 목록 조회
+   * 화면 데이터 재조회
+   *
+   * 실행취소 후 서버 데이터와
+   * 화면을 다시 맞출 때 사용
+   */
+  const refetchFolderPageData =
+    useCallback(async () => {
+      const [
+        folderDetail,
+        materialsResult,
+      ] = await Promise.all([
+        fetchFolder(),
+        fetchFolderMaterials(),
+      ]);
+
+      const convertedMaterials:
+        ArchiveData[] =
+        materialsResult.content.map(
+          (material) => ({
+            id: material.materialId,
+            tag:
+              material.tags[0] ??
+              "기타",
+            date:
+              material.createdAt.split(
+                "T",
+              )[0],
+            title: material.title,
+            description:
+              material.summary,
+          }),
+        );
+
+      setFolder(folderDetail);
+
+      setMaterials(
+        convertedMaterials,
+      );
+    }, [
+      fetchFolder,
+      fetchFolderMaterials,
+    ]);
+
+  /**
+   * 최초 폴더 데이터 조회
    */
   useEffect(() => {
     let isCancelled = false;
@@ -254,7 +310,6 @@ const ArchiveFolderPage = () => {
               : "폴더 정보를 불러오지 못했어요.",
           );
         } finally {
-          // Avoid returning from finally (unsafe). Only update loading state if not cancelled.
           if (!isCancelled) {
             setIsLoading(false);
           }
@@ -271,6 +326,12 @@ const ArchiveFolderPage = () => {
     fetchFolderMaterials,
   ]);
 
+  /**
+   * 토스트 4초 후 닫기
+   *
+   * 실행취소 가능 시간도
+   * 토스트 표시 시간과 동일하게 4초
+   */
   useEffect(() => {
     if (!toastMessage) {
       return;
@@ -279,6 +340,7 @@ const ArchiveFolderPage = () => {
     const timer =
       window.setTimeout(() => {
         setToastMessage(null);
+        setLastAction(null);
       }, 4000);
 
     return () => {
@@ -287,7 +349,7 @@ const ArchiveFolderPage = () => {
   }, [toastMessage]);
 
   /**
-   * 검색 버튼 또는 Enter 실행
+   * 검색
    */
   const handleSearch = () => {
     setKeyword(
@@ -296,7 +358,7 @@ const ArchiveFolderPage = () => {
   };
 
   /**
-   * 정렬 변경
+   * 정렬
    */
   const handleSortChange = (
     newSort: FolderMaterialSort,
@@ -304,6 +366,9 @@ const ArchiveFolderPage = () => {
     setSort(newSort);
   };
 
+  /**
+   * 폴더명 수정
+   */
   const handleEditFolderName =
     async (
       newFolderName: string,
@@ -323,6 +388,8 @@ const ArchiveFolderPage = () => {
           trimmedFolderName,
         )
       ) {
+        setLastAction(null);
+
         setToastMessage(
           "폴더명은 한글, 영문 10자 이내로 입력해주세요.",
         );
@@ -352,28 +419,42 @@ const ArchiveFolderPage = () => {
           error,
         );
 
+        setLastAction(null);
+
         setToastMessage(
           "폴더 수정에 실패했어요.",
         );
       }
     };
 
+  /**
+   * 자료 이동 모드
+   */
   const handleOpenMoveMode = () => {
     setSelectMode("move");
     setSelectedItemIds([]);
   };
 
+  /**
+   * 휴지통 이동 모드
+   */
   const handleOpenTrashMode = () => {
     setSelectMode("trash");
     setSelectedItemIds([]);
   };
 
+  /**
+   * 선택 모드 취소
+   */
   const handleCancelSelectMode =
     () => {
       setSelectMode(null);
       setSelectedItemIds([]);
     };
 
+  /**
+   * 개별 자료 선택
+   */
   const handleToggleItem = (
     id: number,
   ) => {
@@ -387,6 +468,9 @@ const ArchiveFolderPage = () => {
     );
   };
 
+  /**
+   * 전체 선택
+   */
   const handleToggleAll = () => {
     if (isAllSelected) {
       setSelectedItemIds([]);
@@ -400,81 +484,282 @@ const ArchiveFolderPage = () => {
     );
   };
 
+  /**
+   * 자료 이동 모달 열기
+   */
   const handleOpenMoveModal =
-    () => {
+    async () => {
       if (
         selectedItemIds.length === 0
       ) {
         return;
       }
 
-      setIsMoveModalOpen(true);
+      try {
+        const parsedFolderId =
+          getParsedFolderId();
+
+        const folders =
+          await getFolders("recent");
+
+        const options = folders
+          .filter(
+            (item) =>
+              item.folderId !==
+              parsedFolderId,
+          )
+          .map((item) => ({
+            id: item.folderId,
+            name: item.folderName,
+          }));
+
+        if (options.length === 0) {
+          setLastAction(null);
+
+          setToastMessage(
+            "이동할 수 있는 다른 폴더가 없어요.",
+          );
+
+          return;
+        }
+
+        setFolderOptions(options);
+        setIsMoveModalOpen(true);
+      } catch (error) {
+        console.error(
+          "폴더 목록 조회 실패:",
+          error,
+        );
+
+        setLastAction(null);
+
+        setToastMessage(
+          "폴더 목록을 불러오지 못했어요.",
+        );
+      }
     };
 
+  /**
+   * 이동 모달 닫기
+   */
   const handleCloseMoveModal =
     () => {
       setIsMoveModalOpen(false);
     };
 
-  const handleMoveData = (
+  /**
+   * 다른 폴더로 자료 이동
+   */
+  const handleMoveData = async (
     targetFolderId: number,
   ) => {
-    console.log(
-      "이동할 자료 ID:",
-      selectedItemIds,
-    );
+    if (
+      selectedItemIds.length === 0
+    ) {
+      return;
+    }
 
-    console.log(
-      "이동할 폴더 ID:",
-      targetFolderId,
-    );
+    try {
+      const parsedFolderId =
+        getParsedFolderId();
 
-    // TODO: 자료 이동 API 연결
+      if (
+        parsedFolderId ===
+        targetFolderId
+      ) {
+        setLastAction(null);
 
-    setIsMoveModalOpen(false);
-    setSelectMode(null);
-    setSelectedItemIds([]);
+        setToastMessage(
+          "현재 폴더로는 이동할 수 없어요.",
+        );
 
-    setToastMessage(
-      "자료가 해당 폴더로 이동되었습니다",
-    );
+        return;
+      }
+
+      const movedMaterialIds = [
+        ...selectedItemIds,
+      ];
+
+      await moveMaterials(
+        parsedFolderId,
+        {
+          materialIds:
+            movedMaterialIds,
+          targetFolderId,
+        },
+      );
+
+      /**
+       * 실행취소를 위해
+       * 원래 폴더와 이동한 폴더 저장
+       */
+      setLastAction({
+        type: "move",
+        materialIds:
+          movedMaterialIds,
+        fromFolderId:
+          parsedFolderId,
+        toFolderId:
+          targetFolderId,
+      });
+
+      /**
+       * 화면에서 이동한 자료 제거
+       */
+      setMaterials((prev) =>
+        prev.filter(
+          (material) =>
+            !movedMaterialIds.includes(
+              material.id,
+            ),
+        ),
+      );
+
+      /**
+       * 자료 개수 감소
+       */
+      setFolder((prev) =>
+        prev
+          ? {
+              ...prev,
+              materialCount:
+                Math.max(
+                  0,
+                  prev.materialCount -
+                    movedMaterialIds.length,
+                ),
+            }
+          : prev,
+      );
+
+      setIsMoveModalOpen(false);
+      setSelectMode(null);
+      setSelectedItemIds([]);
+
+      setToastMessage(
+        "자료가 해당 폴더로 이동되었습니다",
+      );
+    } catch (error) {
+      console.error(
+        "자료 이동 실패:",
+        error,
+      );
+
+      setLastAction(null);
+
+      setToastMessage(
+        "자료 이동에 실패했어요.",
+      );
+    }
   };
 
+  /**
+   * 자료 휴지통 이동
+   */
   const handleMoveToTrash =
-    () => {
+    async () => {
       if (
         selectedItemIds.length === 0
       ) {
         return;
       }
 
-      console.log(
-        "휴지통으로 이동할 자료 ID:",
-        selectedItemIds,
-      );
+      try {
+        const parsedFolderId =
+          getParsedFolderId();
 
-      // TODO: 휴지통 이동 API 연결
+        const trashedMaterialIds = [
+          ...selectedItemIds,
+        ];
 
-      setSelectMode(null);
-      setSelectedItemIds([]);
+        await moveMaterialsToTrash(
+          parsedFolderId,
+          {
+            materialIds:
+              trashedMaterialIds,
+          },
+        );
 
-      setToastMessage(
-        "자료가 휴지통으로 이동되었습니다",
-      );
+        /**
+         * 실행취소를 위해
+         * 휴지통으로 이동한 자료와
+         * 원래 폴더 저장
+         */
+        setLastAction({
+          type: "trash",
+          materialIds:
+            trashedMaterialIds,
+          fromFolderId:
+            parsedFolderId,
+        });
+
+        /**
+         * 화면에서 휴지통 이동 자료 제거
+         */
+        setMaterials((prev) =>
+          prev.filter(
+            (material) =>
+              !trashedMaterialIds.includes(
+                material.id,
+              ),
+          ),
+        );
+
+        /**
+         * 현재 폴더 자료 개수 감소
+         */
+        setFolder((prev) =>
+          prev
+            ? {
+                ...prev,
+                materialCount:
+                  Math.max(
+                    0,
+                    prev.materialCount -
+                      trashedMaterialIds.length,
+                  ),
+              }
+            : prev,
+        );
+
+        setSelectMode(null);
+        setSelectedItemIds([]);
+
+        setToastMessage(
+          "자료가 휴지통으로 이동되었습니다",
+        );
+      } catch (error) {
+        console.error(
+          "자료 휴지통 이동 실패:",
+          error,
+        );
+
+        setLastAction(null);
+
+        setToastMessage(
+          "자료를 휴지통으로 이동하지 못했어요.",
+        );
+      }
     };
 
+  /**
+   * 선택 모드 실행
+   */
   const handleSelectAction =
     () => {
       if (selectMode === "move") {
-        handleOpenMoveModal();
+        void handleOpenMoveModal();
         return;
       }
 
       if (selectMode === "trash") {
-        handleMoveToTrash();
+        void handleMoveToTrash();
       }
     };
 
+  /**
+   * 자료 상세 페이지
+   */
   const handleOpenDataPage = (
     materialId: number,
   ) => {
@@ -487,12 +772,105 @@ const ArchiveFolderPage = () => {
     );
   };
 
-  const handleUndoToast = () => {
-    // TODO: 실행 취소 API 연결
-    console.log("이동 실행 취소");
+  /**
+   * 마지막 작업 실행취소
+   */
+  const handleUndoToast =
+    async () => {
+      if (!lastAction) {
+        return;
+      }
 
-    setToastMessage(null);
-  };
+      /**
+       * 비동기 요청 중 state가 변경될 수 있으므로
+       * 현재 작업을 복사해둔다.
+       */
+      const actionToUndo =
+        lastAction;
+
+      try {
+        /**
+         * 일반 폴더 이동 실행취소
+         *
+         * 이동 대상 폴더 -> 원래 폴더
+         */
+        if (
+          actionToUndo.type ===
+          "move"
+        ) {
+          await moveMaterials(
+            actionToUndo.toFolderId,
+            {
+              materialIds:
+                actionToUndo.materialIds,
+              targetFolderId:
+                actionToUndo.fromFolderId,
+            },
+          );
+        }
+
+        /**
+         * 휴지통 이동 실행취소
+         *
+         * restore API를 호출해서
+         * 기존 폴더로 복구
+         */
+        if (
+          actionToUndo.type ===
+          "trash"
+        ) {
+          const restoreResult =
+            await restoreMaterials(
+              actionToUndo.fromFolderId,
+              {
+                materialIds:
+                  actionToUndo.materialIds,
+              },
+            );
+
+          /**
+           * 일부 자료 복구 실패
+           */
+          if (
+            restoreResult.failedIds.length >
+            0
+          ) {
+            console.warn(
+              "복구 실패 자료:",
+              restoreResult.failedIds,
+            );
+          }
+        }
+
+        /**
+         * 서버에서 다시 조회해서
+         * 화면 상태 동기화
+         */
+        await refetchFolderPageData();
+
+        setLastAction(null);
+
+        setToastMessage(
+          actionToUndo.type ===
+            "trash"
+            ? "휴지통 이동이 취소되었습니다"
+            : "자료 이동이 취소되었습니다",
+        );
+      } catch (error) {
+        console.error(
+          "실행 취소 실패:",
+          error,
+        );
+
+        /**
+         * 실패 시 lastAction을 유지해서
+         * 토스트가 떠있는 동안 재시도 가능
+         */
+        setToastMessage(
+          "실행 취소에 실패했어요.",
+        );
+      }
+    };
 
   if (isLoading) {
     return (
@@ -655,20 +1033,34 @@ const ArchiveFolderPage = () => {
           currentFolderName={
             folder.folderName
           }
-          folders={folderOptions}
+          folders={
+            folderOptions
+          }
           onClose={
             handleCloseMoveModal
           }
-          onMove={handleMoveData}
+          onMove={
+            handleMoveData
+          }
         />
       )}
 
       {toastMessage && (
         <Toast
-          message={toastMessage}
-          actionText="실행취소"
+          message={
+            toastMessage
+          }
+          actionText={
+            lastAction
+              ? "실행취소"
+              : undefined
+          }
           onAction={
-            handleUndoToast
+            lastAction
+              ? () => {
+                  void handleUndoToast();
+                }
+              : undefined
           }
         />
       )}
