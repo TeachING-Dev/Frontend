@@ -45,10 +45,11 @@ const HomePage = () => {
         w-full
         max-w-[1120px]
         flex-col
-        gap-[15px]
+        gap-[40px]
         px-[20px]
         pb-[100px]
         pt-[30px]
+        md:gap-[15px]
         md:px-[40px]
         md:pt-[45px]
         lg:px-0

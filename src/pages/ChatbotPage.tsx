@@ -1,7 +1,27 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { ArrowUp } from "lucide-react";
+import {
+  ChatApiError,
+  askChatRoomMessage,
+  createChatRoom,
+  getChatRooms,
+  getChatRoomMessages,
+  type ChatSource,
+  type ChatHistoryMessage,
+  type ChatRoomSummary,
+} from "../apis/chat";
 import ChatBubble from "../components/chatbot/ChatBubble";
 import ChatLimitModal from "../components/chatbot/ChatLimitModal";
 import ChatSidebar from "../components/chatbot/ChatSidebar";
@@ -9,20 +29,12 @@ import SourceList from "../components/chatbot/SourceList";
 import Toast from "../components/common/Toast";
 import type { SourceItem } from "../components/chatbot/SourceList";
 
-const mockFiles = ["파일 이름", "파일 이름", "파일 이름", "파일 이름", "파일 이름"];
-
-const mockSources: SourceItem[] = [
-  {
-    label: "내가 저장한 자료 제목(15행)",
-    location: "내가 저장한 자료 제목 - 15행",
-  },
-  {
-    label: "내가 저장한 자료 제목 (05:20)",
-    location: "내가 저장한 자료 제목 - 05:20",
-  },
-];
-
 const limitDescription = "요금제를 업그레이드하고 무제한으로 티칭잉을 만들어 보세요!";
+const dailyQuestionLimit = 5;
+const chatRoomLimit = 10;
+const chatRoomListSize = 10;
+const dailyQuestionCountStorageKey =
+  "chatbotDailyQuestionCount";
 
 type ChatMessage = {
   id: number;
@@ -32,21 +44,190 @@ type ChatMessage = {
   isLoading?: boolean;
 };
 
-const createMockAnswer = (question: string) =>
-  `관련 자료를 찾았습니다.\n'${question}'에 대한 내용을 내 자료에서 확인해보니, 사용자의 목적과 이전 맥락을 반영해 답변을 조정하는 방식과 관련이 있습니다. 핵심은 AI가 모든 정보를 자동으로 사용하는 것이 아니라, 사용자가 허용한 맥락만 선택적으로 반영한다는 점입니다.`;
+type ChatbotLocationState = {
+  chatRoomId?: number | string;
+} | null;
+
+const getTodayKey = () =>
+  new Date().toLocaleDateString("sv-SE");
+
+const getStoredDailyQuestionCount = () => {
+  const storedValue = localStorage.getItem(
+    dailyQuestionCountStorageKey,
+  );
+
+  if (!storedValue) {
+    return 0;
+  }
+
+  try {
+    const parsedValue = JSON.parse(
+      storedValue,
+    ) as {
+      date?: string;
+      count?: number;
+    };
+
+    if (parsedValue.date !== getTodayKey()) {
+      return 0;
+    }
+
+    return parsedValue.count ?? 0;
+  } catch {
+    return 0;
+  }
+};
+
+const setStoredDailyQuestionCount = (
+  count: number,
+) => {
+  localStorage.setItem(
+    dailyQuestionCountStorageKey,
+    JSON.stringify({
+      date: getTodayKey(),
+      count,
+    }),
+  );
+};
+
+const isQuestionLimitError = (error: unknown) =>
+  error instanceof ChatApiError &&
+  (error.code?.includes("LIMIT") ||
+    error.message.includes("제한") ||
+    error.message.includes("하루") ||
+    error.message.includes("무료") ||
+    error.message.includes("5"));
+
+const isRoomLimitError = (error: unknown) =>
+  error instanceof ChatApiError &&
+  (error.code?.includes("LIMIT") ||
+    error.message.includes("대화방") ||
+    error.message.includes("채팅방") ||
+    error.message.includes("10"));
+
+const getSourceLabel = (
+  source: ChatSource,
+) => {
+  const position = source.position
+    ? ` (${source.position})`
+    : "";
+
+  return `${source.materialTitle}${position}`;
+};
+
+const mapSources = (
+  sources: ChatSource[],
+) =>
+  sources.map((source) => ({
+    label: getSourceLabel(source),
+    location:
+      source.url ||
+      `${source.folderName} - ${source.materialTitle}`,
+  }));
+
+const mapHistoryMessage = (
+  message: ChatHistoryMessage,
+): ChatMessage => ({
+  id: message.messageId,
+  role:
+    message.role === "USER"
+      ? "user"
+      : "assistant",
+  content: message.content,
+  sources:
+    message.sources.length > 0
+      ? mapSources(message.sources)
+      : undefined,
+});
 
 const ChatbotPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatRooms, setChatRooms] = useState<ChatRoomSummary[]>([]);
   const [isRoomLimitModalOpen, setIsRoomLimitModalOpen] = useState(false);
   const [isQuestionLimitModalOpen, setIsQuestionLimitModalOpen] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(
+    getStoredDailyQuestionCount,
+  );
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const contentMarginClass = isNavOpen ? "ml-[204px]" : "ml-20";
   const hasConversation = messages.length > 0;
+  const locationState =
+    location.state as ChatbotLocationState;
+  const chatRoomIdValue =
+    params.chatRoomId ??
+    searchParams.get("chatRoomId") ??
+    locationState?.chatRoomId;
+  const chatRoomId =
+    chatRoomIdValue === undefined ||
+    chatRoomIdValue === null
+      ? null
+      : Number(chatRoomIdValue);
+  const hasValidChatRoomId =
+    chatRoomId !== null &&
+    !Number.isNaN(chatRoomId);
+
+  const loadChatRooms = useCallback(async () => {
+    try {
+      const chatRoomList = await getChatRooms({
+        size: chatRoomListSize,
+      });
+      setChatRooms(chatRoomList.chatrooms);
+      return chatRoomList.chatrooms;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }, []);
+
+  useEffect(() => {
+    const loadInitialChatRooms = async () => {
+      const loadedChatRooms =
+        await loadChatRooms();
+
+      if (
+        !hasValidChatRoomId &&
+        loadedChatRooms.length > 0
+      ) {
+        navigate(
+          `/chatbot/${loadedChatRooms[0].chatroomId}`,
+          { replace: true },
+        );
+      }
+    };
+
+    void loadInitialChatRooms();
+  }, [hasValidChatRoomId, loadChatRooms, navigate]);
+
+  useEffect(() => {
+    if (!hasValidChatRoomId) {
+      return;
+    }
+
+    const loadChatMessages = async () => {
+      try {
+        const chatHistory =
+          await getChatRoomMessages(chatRoomId);
+
+        setMessages(
+          chatHistory.messages.map(
+            mapHistoryMessage,
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadChatMessages();
+  }, [chatRoomId, hasValidChatRoomId]);
 
   useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
@@ -61,7 +242,7 @@ const ChatbotPage = () => {
     });
   }, [messages]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextQuestion = question.trim();
@@ -70,8 +251,20 @@ const ChatbotPage = () => {
       return;
     }
 
-    if (questionCount >= 5) {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (questionCount >= dailyQuestionLimit) {
       setIsQuestionLimitModalOpen(true);
+      return;
+    }
+
+    if (
+      !hasValidChatRoomId &&
+      chatRooms.length >= chatRoomLimit
+    ) {
+      setIsRoomLimitModalOpen(true);
       return;
     }
 
@@ -89,23 +282,135 @@ const ChatbotPage = () => {
     };
 
     setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
-    setQuestionCount((prevCount) => prevCount + 1);
     setQuestion("");
+    setIsSubmitting(true);
+    let createdChatRoomId: number | null = null;
 
-    window.setTimeout(() => {
+    const resolveChatRoomId = async () => {
+      if (hasValidChatRoomId) {
+        return chatRoomId;
+      }
+
+      const createdChatRoom =
+        await createChatRoom();
+      createdChatRoomId =
+        createdChatRoom.chatroomId;
+
+      return createdChatRoom.chatroomId;
+    };
+
+    try {
+      const activeChatRoomId =
+        await resolveChatRoomId();
+      const askResult =
+        await askChatRoomMessage(activeChatRoomId, {
+          content: nextQuestion,
+        });
+
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === userMessage.id
+            ? {
+                ...message,
+                id: askResult.userMessage.messageId,
+                content:
+                  askResult.userMessage.content,
+              }
+            : message.id === loadingMessage.id
+              ? {
+                  id: askResult.aiMessage.messageId,
+                  role: "assistant",
+                  content:
+                    askResult.aiMessage.content,
+                  sources:
+                    askResult.aiMessage.sources
+                      .length > 0
+                      ? mapSources(
+                          askResult.aiMessage
+                            .sources,
+                        )
+                      : undefined,
+                  isLoading: false,
+                }
+              : message,
+        ),
+      );
+
+      if (askResult.remainingCount <= 0) {
+        setQuestionCount(dailyQuestionLimit);
+        setStoredDailyQuestionCount(
+          dailyQuestionLimit,
+        );
+      } else {
+        const nextQuestionCount =
+          dailyQuestionLimit -
+          askResult.remainingCount;
+        setQuestionCount(nextQuestionCount);
+        setStoredDailyQuestionCount(
+          nextQuestionCount,
+        );
+      }
+
+      if (createdChatRoomId !== null) {
+        await loadChatRooms();
+        navigate(
+          `/chatbot/${createdChatRoomId}`,
+          { replace: true },
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (isQuestionLimitError(error)) {
+        setQuestionCount(dailyQuestionLimit);
+        setStoredDailyQuestionCount(
+          dailyQuestionLimit,
+        );
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        setIsQuestionLimitModalOpen(true);
+        return;
+      }
+
+      if (isRoomLimitError(error)) {
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        setIsRoomLimitModalOpen(true);
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "답변을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
           message.id === loadingMessage.id
             ? {
                 ...message,
-                content: createMockAnswer(nextQuestion),
-                sources: mockSources,
+                content:
+                  errorMessage,
                 isLoading: false,
               }
             : message,
         ),
       );
-    }, 700);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const copySourceLocation = async (location: string) => {
@@ -123,16 +428,49 @@ const ChatbotPage = () => {
     navigate("/subscription");
   };
 
+  const handleCreateRoomClick = async () => {
+    if (chatRooms.length >= chatRoomLimit) {
+      setIsRoomLimitModalOpen(true);
+      return;
+    }
+
+    try {
+      const createdChatRoom =
+        await createChatRoom();
+      await loadChatRooms();
+      setMessages([]);
+      navigate(
+        `/chatbot/${createdChatRoom.chatroomId}`,
+      );
+      setIsNavOpen(false);
+    } catch (error) {
+      console.error(error);
+      setIsRoomLimitModalOpen(true);
+    }
+  };
+
+  const handleChatRoomClick = (index: number) => {
+    const selectedRoom = chatRooms[index];
+
+    if (!selectedRoom) {
+      return;
+    }
+
+    navigate(`/chatbot/${selectedRoom.chatroomId}`);
+    setIsNavOpen(false);
+  };
+
   return (
     <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
       <ChatSidebar
         isOpen={isNavOpen}
-        files={mockFiles}
+        files={chatRooms.map((room) => room.title)}
         onOpen={() => setIsNavOpen(true)}
         onClose={() => setIsNavOpen(false)}
-        onCreateRoomClick={() => setIsRoomLimitModalOpen(true)}
+        onCreateRoomClick={() => void handleCreateRoomClick()}
+        onFileClick={handleChatRoomClick}
       />
 
       <main
@@ -229,6 +567,7 @@ const ChatbotPage = () => {
             <button
               type="submit"
               aria-label="질문 보내기"
+              disabled={isSubmitting}
               className="flex size-7 items-center justify-center rounded-full bg-[#917DEC] text-[#090713] transition hover:opacity-85"
             >
               <ArrowUp size={18} strokeWidth={2.6} />
