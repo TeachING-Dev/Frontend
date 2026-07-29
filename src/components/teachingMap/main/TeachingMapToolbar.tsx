@@ -127,7 +127,7 @@ const TeachingMapToolbar = ({
         className="flex h-[30px] items-center gap-[3px] font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
       >
         <img
-          src="/Trashcan.svg"
+          src="/icon/Trashcan.svg"
           alt=""
           aria-hidden="true"
           className="h-[22px] w-[22px]"

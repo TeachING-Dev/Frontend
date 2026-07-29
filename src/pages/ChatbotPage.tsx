@@ -512,7 +512,7 @@ const ChatbotPage = () => {
           <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
             <div className="flex h-[220px] w-[360px] shrink-0 items-center justify-center pb-[14px] ">
               <img
-                src="/ChatbotEmpty.png"
+                src="/character/ChatbotEmpty.png"
                 alt="열공 티키"
                 className="h-full w-full object-cover"
               />

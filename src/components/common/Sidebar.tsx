@@ -16,27 +16,27 @@ const desktopMenuItems = [
   {
     label: "홈",
     path: "/",
-    icon: "/icon_홈.png",
+    icon: "/icon/홈.png",
   },
   {
     label: "보관함",
     path: "/archive",
-    icon: "/icon_보관함.png",
+    icon: "/icon/보관함.png",
   },
   {
     label: "티칭맵",
     path: "/teaching-map",
-    icon: "/icon_티칭맵.png",
+    icon: "/icon/티칭맵.png",
   },
   {
     label: "AI 챗봇",
     path: "/chatbot",
-    icon: "/icon_AI챗봇.png",
+    icon: "/icon/AI챗봇.png",
   },
   {
     label: "휴지통",
     path: "/trash",
-    icon: "/icon_휴지통.png",
+    icon: "/icon/휴지통.png",
   },
 ];
 
@@ -44,32 +44,32 @@ const mobileMenuItems = [
   {
     label: "홈",
     path: "/",
-    icon: "/icon_홈2.svg",
-    activeIcon: "/icon_홈2_active.svg",
+    icon: "/icon/홈2.svg",
+    activeIcon: "/icon/홈2_active.svg",
   },
   {
     label: "보관함",
     path: "/archive",
-    icon: "/icon_보관함2.svg",
-    activeIcon: "/icon_보관함2_active.svg",
+    icon: "/icon/보관함2.svg",
+    activeIcon: "/icon/보관함2_active.svg",
   },
   {
     label: "티칭맵",
     path: "/teaching-map",
-    icon: "/icon_티칭맵2.svg",
-    activeIcon: "/icon_티칭맵2_active.svg",
+    icon: "/icon/티칭맵2.svg",
+    activeIcon: "/icon/티칭맵2_active.svg",
   },
   {
     label: "타카",
     path: "/chatbot",
-    icon: "/icon_AI챗봇.svg",
-    activeIcon: "/icon_AI챗봇.svg",
+    icon: "/icon/AI챗봇.svg",
+    activeIcon: "/icon/AI챗봇.svg",
   },
   {
     label: "마이",
     path: "/mypage",
-    icon: "/icon_마이.svg",
-    activeIcon: "/icon_마이_active.svg",
+    icon: "/icon/마이페이지.svg",
+    activeIcon: "/icon/마이_active.svg",
   },
 ];
 
@@ -200,7 +200,7 @@ const Sidebar = ({
                 className="flex items-center"
               >
                 <img
-                  src="/home-logo2.png"
+                  src="/logo/logo.png"
                   alt="TeachING"
                   className="h-[44px] w-[40px]"
                 />
@@ -213,7 +213,7 @@ const Sidebar = ({
                 className="flex h-[36px] w-[36px] items-center justify-center transition hover:opacity-80"
               >
                 <img
-                  src="/icon_닫기.png"
+                  src="/icon/닫기.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[40px] w-[40px]"
@@ -259,7 +259,7 @@ const Sidebar = ({
               >
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src="/icon_마이페이지.png"
+                    src="/icon/마이페이지.png"
                     alt=""
                     aria-hidden="true"
                     className="h-[40px] w-[40px] object-contain"
@@ -278,7 +278,7 @@ const Sidebar = ({
               >
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src="/icon_로그아웃.png"
+                    src="/icon/로그아웃.png"
                     alt=""
                     aria-hidden="true"
                     className="h-[40px] w-[40px] object-contain"

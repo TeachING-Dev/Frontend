@@ -91,7 +91,7 @@ const ArchiveDataItem = ({
               className="flex h-[40px] w-[164px] items-center justify-center gap-[8px] rounded-[8px] bg-[#917DEC] transition-colors hover:bg-[#7D66E8]"
             >
               <img
-                src="/AI.png"
+                src="/icon/AI.png"
                 alt=""
                 aria-hidden="true"
                 className="h-[22px] w-[22px] shrink-0 object-contain"
@@ -123,7 +123,7 @@ const ArchiveDataItem = ({
       <div className="min-h-0 flex-1 rounded-t-[10px] bg-[#11121A] px-[30px] py-[40px]">
         <div className="mb-[20px] flex items-center gap-[15px]">
           <img
-            src="/youtube-app-icon.png"
+            src="/icon/youtube-app-icon.png"
             alt="YouTube"
             className="h-[36px] w-[36px] shrink-0 rounded-full object-contain"
           />

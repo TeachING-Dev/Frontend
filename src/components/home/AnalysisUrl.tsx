@@ -31,7 +31,7 @@ const AnalysisUrl = ({
           className="ml-[16px] shrink-0 transition-opacity hover:opacity-80"
         >
           <img
-            src="/icon_랑쿠.png"
+            src="/icon/링크.png"
             alt=""
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"

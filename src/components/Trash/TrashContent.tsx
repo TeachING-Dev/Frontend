@@ -406,7 +406,7 @@ const TrashContent = () => {
                   className="flex h-10 w-[147px] items-center justify-center gap-2 rounded-[5px] px-2 py-1 font-suit text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] hover:bg-white/5"
                 >
                   <img
-                    src="/flip-left.svg"
+                    src="/icon/flip-left.svg"
                     alt=""
                     aria-hidden="true"
                     className="h-6 w-6 shrink-0"

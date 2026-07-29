@@ -23,7 +23,7 @@ const NotificationPageItem = ({
     >
       {/* 왼쪽 별 아이콘 */}
       <img
-        src="/home-logo2.png"
+        src="/logo/logo.png"
         alt=""
         aria-hidden="true"
         className="mt-[10px] size-[70px] shrink-0 object-contain"

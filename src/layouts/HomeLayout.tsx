@@ -66,7 +66,7 @@ const HomeLayout = ({
       >
         {/* 홈 전용 배경 이미지 */}
         <img
-          src="/home-logo3.png"
+          src="/logo/logo3.png"
           alt=""
           aria-hidden="true"
           className="

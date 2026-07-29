@@ -26,7 +26,7 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFile
             className="flex size-8 shrink-0 items-center justify-center hover:opacity-80"
           >
             <img
-              src="/Star17.svg"
+              src="/character/Star17.svg"
               alt=""
               className="size-8 object-contain"
             />

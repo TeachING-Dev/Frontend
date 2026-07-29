@@ -17,13 +17,13 @@ const SignupCompletePage = () => {
         {/* 메인 이모티콘 + 우측 상단 별 */}
         <div className="absolute left-1/2 top-[368px] h-[260px] w-[260px] -translate-x-1/2 overflow-visible">
           <img
-            src="/Star17.svg"
+            src="/character/Star17.svg"
             alt=""
             className="absolute -right-[8%] -top-[9%] z-10 h-[22%] w-auto drop-shadow-[0_0_8px_rgba(145,125,236,0.9)]"
           />
 
           <img
-            src="/Star1.png"
+            src="/character/Star1.png"
             alt=""
             className="absolute left-[5.15%] top-[6%] h-[93.53%] w-[91.51%] drop-shadow-[0_0_20.6px_rgba(145,125,236,1)]"
           />

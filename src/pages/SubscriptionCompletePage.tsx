@@ -14,12 +14,12 @@ const SubscriptionCompletePage = () => {
       <div className="mt-[7vh] flex flex-col items-center gap-[5vh]">
         <div className="relative h-[min(28vh,288px)] w-[min(28vh,288px)] min-h-[190px] min-w-[190px] overflow-visible">
           <img
-            src="/Star17.svg"
+            src="/character/Star17.svg"
             alt=""
             className="absolute -right-[8%] -top-[9%] z-10 h-[22%] w-auto drop-shadow-[0_0_8px_rgba(145,125,236,0.9)]"
           />
           <img
-            src="/Star1.png"
+            src="/character/Star1.png"
             alt=""
             className="absolute left-[5.15%] top-[2.67%] h-[93.53%] w-[91.51%] drop-shadow-[0_0_20.6px_rgba(145,125,236,1)]"
           />

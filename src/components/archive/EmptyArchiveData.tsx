@@ -2,7 +2,7 @@ const EmptyArchiveData = () => {
   return (
     <div className="flex flex-col items-center pt-[140px]">
       <img
-        src="/NotFound.png"
+        src="/character/NotFound.png"
         alt="자료 없음"
         className="mb-8 h-[200px] w-[200px]"
       />

@@ -98,7 +98,7 @@ const CreateFolderModal = ({
 
         <div className="mt-6 flex shrink-0 justify-center">
           <img
-            src="/Folder.png"
+            src="/folder/folder1.png"
             alt=""
             aria-hidden="true"
             className="h-[64px] w-[64px]"

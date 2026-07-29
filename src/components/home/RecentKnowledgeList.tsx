@@ -55,7 +55,7 @@ const RecentKnowledgeList = ({
     return (
       <EmptyHomeContent
         message="최근에 저장한 지식이 없어요."
-        iconSrc="/icon_최근에 저장한 지식3.png"
+        iconSrc="/icon/최근에 저장한 지식3.png"
       />
     );
   }
@@ -74,7 +74,7 @@ const RecentKnowledgeList = ({
           )}
           iconSrc={
             material.platformImageUrl ||
-            "/icon_최근에 저장한 지식3.png"
+            "/icon/최근에 저장한 지식3.png"
           }
           onClick={() =>
             navigate(

@@ -84,7 +84,7 @@ const AiAnalysisLoadingModal = ({
           {/* 별이 움직일 수 있는 영역 */}
           <div className="absolute inset-x-[15px] top-0 h-[52px]">
             <img
-              src="/star2.png"
+              src="/character/star2.png"
               alt=""
               aria-hidden="true"
               className="absolute top-0 h-[54px] w-[54px] -translate-x-1/2 object-contain"

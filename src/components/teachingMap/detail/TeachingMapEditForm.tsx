@@ -138,7 +138,7 @@ const TeachingMapEditForm = ({
             className="flex h-[40px] w-[40px] shrink-0 items-center justify-center"
           >
             <img
-              src="/edit-03.png"
+              src="/icon/edit.png"
               alt=""
               className="h-[28px] w-[28px] object-contain"
             />
