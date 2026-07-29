@@ -10,7 +10,10 @@ import {
   type Term,
 } from "../apis/auth";
 import PrimaryButton from "../components/common/PrimaryButton";
-import { saveTokens } from "../utils/authToken";
+import {
+  clearTokens,
+  saveTokens,
+} from "../utils/authToken";
 
 type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
@@ -80,7 +83,11 @@ const SignupPage = () => {
       return;
     }
 
-    navigate("/login");
+    clearTokens();
+    navigate("/login", {
+      replace: true,
+      state: { skipAutoLogin: true },
+    });
   };
 
   const handleNext = useCallback(async () => {
