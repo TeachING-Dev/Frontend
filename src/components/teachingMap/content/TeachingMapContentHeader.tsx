@@ -8,6 +8,28 @@ interface TeachingMapContentHeaderProps {
   createdAt: string;
 }
 
+const formatCreatedDate = (createdAt: string) => {
+  if (!createdAt) {
+    return "";
+  }
+
+  const date = new Date(createdAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const year = date.getFullYear();
+  const month = String(
+    date.getMonth() + 1,
+  ).padStart(2, "0");
+  const day = String(
+    date.getDate(),
+  ).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 const TeachingMapContentHeader = ({
   title,
   createdAt,
@@ -57,12 +79,8 @@ const TeachingMapContentHeader = ({
         </span>
       </button>
 
-      <p className="mt-[8px] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#B8B9BC]">
-        {createdAt
-          ? new Date(createdAt).toLocaleDateString(
-              "ko-KR",
-            )
-          : ""}
+      <p className="mt-[8px] text-[18px] font-normal italic leading-[18px] tracking-[-0.54px] text-[#B8B9BC]">
+        {formatCreatedDate(createdAt)}
       </p>
 
       <h1 className="mt-[8px] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#FAFAFA]">

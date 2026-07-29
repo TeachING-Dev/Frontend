@@ -39,7 +39,7 @@ const TeachingMapToolbar = ({
   };
 
   return (
-    <div className="flex h-[30px] items-center gap-[86px]">
+    <div className="flex h-10 items-center gap-2 px-2 py-1">
       <div className="relative">
         <button
           type="button"

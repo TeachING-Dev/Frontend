@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 import {
   getTeachingMaps,
+  trashTeachingMaps,
   type TeachingMapListItem,
 } from "../apis/teachingMap";
+import { restoreTeachingMaps } from "../apis/trash";
 import Pagination from "../components/common/Pagination";
 import Toast from "../components/common/Toast";
 
@@ -112,6 +114,10 @@ const TeachingMapPage = () => {
     isToastOpen,
     setIsToastOpen,
   ] = useState(false);
+  const [toastMessage, setToastMessage] =
+    useState("");
+  const [isDeleting, setIsDeleting] =
+    useState(false);
 
   const [
     deletedTeachingMaps,
@@ -420,7 +426,17 @@ const TeachingMapPage = () => {
     }
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
+    if (
+      selectedTeachingMapIds.length ===
+        0 ||
+      isDeleting
+    ) {
+      return;
+    }
+
+    setIsDeleting(true);
+
     const teachingMapsToDelete =
       teachingMaps.filter(
         (teachingMap) =>
@@ -429,74 +445,104 @@ const TeachingMapPage = () => {
           ),
       );
 
-    setDeletedTeachingMaps(
-      teachingMapsToDelete,
-    );
+    try {
+      const result =
+        await trashTeachingMaps(
+          selectedTeachingMapIds,
+        );
+      const deletedIds =
+        result.deletedTeachingMapIds;
 
-    setTeachingMaps(
-      (previousTeachingMaps) =>
-        previousTeachingMaps.filter(
+      setDeletedTeachingMaps(
+        teachingMapsToDelete.filter(
           (teachingMap) =>
-            !selectedTeachingMapIds.includes(
+            deletedIds.includes(
               teachingMap.id,
             ),
         ),
-    );
-
-    setIsDeleteModalOpen(false);
-    setIsDeleteMode(false);
-    setSelectedTeachingMapIds([]);
-    setIsToastOpen(true);
-
-    if (
-      toastTimerRef.current !== null
-    ) {
-      window.clearTimeout(
-        toastTimerRef.current,
       );
-    }
 
-    toastTimerRef.current =
-      window.setTimeout(() => {
-        setIsToastOpen(false);
-        setDeletedTeachingMaps([]);
-        toastTimerRef.current = null;
-      }, 5000);
+      setTeachingMaps(
+        (previousTeachingMaps) =>
+          previousTeachingMaps.filter(
+            (teachingMap) =>
+              !deletedIds.includes(
+                teachingMap.id,
+              ),
+          ),
+      );
+
+      setIsDeleteModalOpen(false);
+      setIsDeleteMode(false);
+      setSelectedTeachingMapIds([]);
+      setToastMessage(
+        `${result.deletedCount}개 티칭맵이 휴지통으로 이동되었습니다`,
+      );
+      setIsToastOpen(true);
+
+      if (
+        toastTimerRef.current !== null
+      ) {
+        window.clearTimeout(
+          toastTimerRef.current,
+        );
+      }
+
+      toastTimerRef.current =
+        window.setTimeout(() => {
+          setIsToastOpen(false);
+          setDeletedTeachingMaps([]);
+          toastTimerRef.current = null;
+        }, 5000);
+    } catch (error) {
+      setToastMessage(
+        error instanceof Error
+          ? error.message
+          : "티칭맵을 휴지통으로 이동하지 못했습니다.",
+      );
+      setIsToastOpen(true);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  const handleDeleteUndo = () => {
+  const handleDeleteUndo = async () => {
     if (
       deletedTeachingMaps.length === 0
     ) {
       return;
     }
 
-    setTeachingMaps(
-      (previousTeachingMaps) => {
-        const existingTeachingMapIds =
-          new Set(
-            previousTeachingMaps.map(
-              (teachingMap) =>
-                teachingMap.id,
-            ),
-          );
-
-        const mapsToRestore =
-          deletedTeachingMaps.filter(
+    try {
+      const result =
+        await restoreTeachingMaps(
+          deletedTeachingMaps.map(
             (teachingMap) =>
-              !existingTeachingMapIds.has(
-                teachingMap.id,
-              ),
-          );
+              teachingMap.id,
+          ),
+        );
+      const restoredMaps =
+        deletedTeachingMaps.filter(
+          (teachingMap) =>
+            result.restoredIds.includes(
+              teachingMap.id,
+            ),
+        );
 
-        return [
+      setTeachingMaps(
+        (previousTeachingMaps) => [
           ...previousTeachingMaps,
-          ...mapsToRestore,
-        ];
-      },
-    );
-
-    closeToast();
+          ...restoredMaps,
+        ],
+      );
+      closeToast();
+    } catch (error) {
+      setToastMessage(
+        error instanceof Error
+          ? error.message
+          : "티칭맵 휴지통 이동을 취소하지 못했습니다.",
+      );
+    }
   };
 
   const isEmpty =
@@ -623,9 +669,19 @@ const TeachingMapPage = () => {
 
       {isToastOpen && (
         <Toast
-          message="티칭맵이 휴지통으로 이동되었습니다"
-          actionText="실행취소"
-          onAction={handleDeleteUndo}
+          message={toastMessage}
+          actionText={
+            deletedTeachingMaps.length >
+            0
+              ? "실행취소"
+              : undefined
+          }
+          onAction={
+            deletedTeachingMaps.length >
+            0
+              ? handleDeleteUndo
+              : undefined
+          }
         />
       )}
     </main>
