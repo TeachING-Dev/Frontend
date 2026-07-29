@@ -28,10 +28,9 @@ const HomeContent = ({
   const navigate = useNavigate();
 
   const tabButtonClass =
-    "flex min-h-[40px] items-center justify-center gap-[8px] rounded-[5px] border px-[10px] py-[5px] text-[14px] transition-colors md:gap-[10px] md:text-[16px]";
-
-  const handleViewAll = () => {
-    if (selectedTab === "knowledge") {
+    "flex h-[30px] w-[130px] items-center justify-center gap-[4px] rounded-[5px] border px-[10px] py-[5px] text-[10px] transition-colors md:min-h-[40px] md:h-auto md:w-auto md:gap-[10px] md:text-[16px]";  const handleViewAll = () => {
+    
+      if (selectedTab === "knowledge") {
       navigate("/archive");
       return;
     }
