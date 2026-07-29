@@ -120,6 +120,7 @@ const mapSources = (
 ) =>
   sources.map((source) => ({
     label: getSourceLabel(source),
+    materialId: source.materialId,
     location:
       source.url ||
       `${source.folderName} - ${source.materialTitle}`,
@@ -255,7 +256,13 @@ const ChatbotPage = () => {
       return;
     }
 
-    if (questionCount >= dailyQuestionLimit) {
+    const currentQuestionCount = Math.max(
+      questionCount,
+      getStoredDailyQuestionCount(),
+    );
+
+    if (currentQuestionCount >= dailyQuestionLimit) {
+      setQuestionCount(currentQuestionCount);
       setIsQuestionLimitModalOpen(true);
       return;
     }
@@ -336,20 +343,25 @@ const ChatbotPage = () => {
         ),
       );
 
-      if (askResult.remainingCount <= 0) {
-        setQuestionCount(dailyQuestionLimit);
-        setStoredDailyQuestionCount(
-          dailyQuestionLimit,
-        );
-      } else {
-        const nextQuestionCount =
-          dailyQuestionLimit -
-          askResult.remainingCount;
-        setQuestionCount(nextQuestionCount);
-        setStoredDailyQuestionCount(
-          nextQuestionCount,
-        );
-      }
+      const nextQuestionCount =
+        typeof askResult.remainingCount === "number"
+          ? Math.min(
+              dailyQuestionLimit,
+              Math.max(
+                0,
+                dailyQuestionLimit -
+                  askResult.remainingCount,
+              ),
+            )
+          : Math.min(
+              dailyQuestionLimit,
+              currentQuestionCount + 1,
+            );
+
+      setQuestionCount(nextQuestionCount);
+      setStoredDailyQuestionCount(
+        nextQuestionCount,
+      );
 
       if (createdChatRoomId !== null) {
         await loadChatRooms();
@@ -413,9 +425,20 @@ const ChatbotPage = () => {
     }
   };
 
-  const copySourceLocation = async (location: string) => {
+  const handleSourceClick = async (
+    source: SourceItem,
+  ) => {
+    if (source.materialId) {
+      navigate(
+        `/archive/folder/data/${source.materialId}`,
+      );
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(location);
+      await navigator.clipboard.writeText(
+        source.location,
+      );
     } finally {
       setIsCopyToastVisible(true);
       window.setTimeout(() => {
@@ -499,7 +522,7 @@ const ChatbotPage = () => {
                       <div className="flex w-full justify-start pl-0 pr-[43%]">
                         <SourceList
                           sources={message.sources}
-                          onSourceClick={(location) => void copySourceLocation(location)}
+                          onSourceClick={(source) => void handleSourceClick(source)}
                         />
                       </div>
                     ) : null}

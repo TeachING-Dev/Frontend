@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+import { activateSubscription } from "../utils/subscription";
+
 type Feature = {
   label: string;
   value: string;
@@ -44,6 +46,7 @@ const SubscriptionPage = () => {
   const navigate = useNavigate();
 
   const handlePayment = () => {
+    activateSubscription();
     navigate("/subscription/complete");
   };
 
