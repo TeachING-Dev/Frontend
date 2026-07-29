@@ -5,24 +5,71 @@ import {
   type ActiveTeachingMap,
   type RecentMaterial,
 } from "../apis/home";
+
+import {
+  getMaterials,
+} from "../apis/material";
+
 import HomeContent from "../components/home/HomeContent";
 import HomeHeader from "../components/home/HomeHeader";
 
 const HomePage = () => {
   const [recentMaterials, setRecentMaterials] =
     useState<RecentMaterial[]>([]);
+
   const [activeTeachingMaps, setActiveTeachingMaps] =
     useState<ActiveTeachingMap[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
 
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const data = await getHome();
+        const [
+          materials,
+          homeData,
+        ] = await Promise.all([
+          getMaterials(6),
+          getHome(),
+        ]);
 
-        setRecentMaterials(data.recentMaterials);
+        const mappedMaterials: RecentMaterial[] =
+          materials.map((material) => ({
+            materialId:
+              material.materialId,
+
+            title:
+              material.dataTitle,
+
+            analysisTitle:
+              material.analysisTitle,
+
+            summary:
+              material.summary,
+
+            platformType:
+              material.platformType,
+
+            platformImageUrl:
+              material.platformImageUrl,
+
+            difficulty:
+              material.difficultyScore,
+
+            aiStatus:
+              material.statusAi,
+
+            createdAt:
+              material.createdAt,
+          }));
+
+        setRecentMaterials(
+          mappedMaterials,
+        );
+
         setActiveTeachingMaps(
-          data.activeTeachingMaps,
+          homeData.activeTeachingMaps,
         );
       } catch (error) {
         console.error(
@@ -60,8 +107,12 @@ const HomePage = () => {
       <HomeHeader />
 
       <HomeContent
-        recentMaterials={recentMaterials}
-        activeTeachingMaps={activeTeachingMaps}
+        recentMaterials={
+          recentMaterials
+        }
+        activeTeachingMaps={
+          activeTeachingMaps
+        }
         isLoading={isLoading}
       />
     </main>
