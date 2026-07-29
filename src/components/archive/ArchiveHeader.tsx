@@ -162,7 +162,7 @@ const ArchiveHeader = ({
               }`}
             >
               <img
-                src="/grid.png"
+                src="/icon/grid.png"
                 alt="그리드 보기"
                 className="h-9 w-9"
               />
@@ -180,7 +180,7 @@ const ArchiveHeader = ({
               }`}
             >
               <img
-                src="/list.png"
+                src="/icon/list.png"
                 alt="리스트 보기"
                 className="h-9 w-9"
               />

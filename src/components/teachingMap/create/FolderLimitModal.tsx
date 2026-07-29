@@ -57,7 +57,7 @@ const FolderLimitModal = ({
           </p>
 
           <img
-            src="/SadStar.png"
+            src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
             className="mt-6 h-[190px] w-[190px] object-contain"

@@ -64,7 +64,7 @@ const FolderSelect = ({
       >
         <span className="flex min-w-0 items-center gap-[10px]">
           <img
-            src="/Folder.png"
+            src="/folder/folder1.png"
             alt=""
             aria-hidden="true"
             className="h-[24px] w-[24px] shrink-0 object-contain"
@@ -117,7 +117,7 @@ const FolderSelect = ({
                 className="flex h-[40px] w-full items-center gap-[8px] rounded-[5px] px-[8px] text-left transition hover:bg-white/5"
               >
                 <img
-                  src="/Folder.png"
+                  src="/folder/folder1.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] shrink-0 object-contain opacity-50"
@@ -163,7 +163,7 @@ const FolderSelect = ({
                         }`}
                       >
                         <img
-                          src="/Folder.png"
+                          src="/folder/folder1.png"
                           alt=""
                           aria-hidden="true"
                           className="h-[24px] w-[24px] shrink-0 object-contain"
@@ -191,7 +191,7 @@ const FolderSelect = ({
             className="mt-[20px] flex h-[50px] w-full items-center gap-[8px] rounded-[10px] bg-[#13151F] px-[10px] text-left transition hover:bg-[#1F212A]"
           >
             <img
-              src="/folder-add.png"
+              src="/folder/folder-add.png"
               alt=""
               aria-hidden="true"
               className="h-[28px] w-[28px] shrink-0 object-contain"

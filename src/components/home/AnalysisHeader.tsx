@@ -1,18 +1,31 @@
+import { useState } from "react";
+
 type AnalysisHeaderProps = {
   date: string;
   title: string;
   tags: string[];
-  onAddTag?: () => void;
-  onRemoveTag?: (tag: string) => void;
 };
 
 const AnalysisHeader = ({
   date,
   title,
   tags,
-  onAddTag,
-  onRemoveTag,
 }: AnalysisHeaderProps) => {
+  const [removedTagIndexes, setRemovedTagIndexes] =
+    useState<number[]>([]);
+
+  const handleToggleTag = (index: number) => {
+    setRemovedTagIndexes((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter(
+          (item) => item !== index,
+        );
+      }
+
+      return [...prev, index];
+    });
+  };
+
   return (
     <header className="mb-[46px] min-w-0">
       {/* 날짜 */}
@@ -28,7 +41,7 @@ const AnalysisHeader = ({
       {/* 태그 제목 */}
       <div className="mb-[12px] flex items-center gap-[5px]">
         <img
-          src="/tag.png"
+          src="/icon/tag.png"
           alt=""
           aria-hidden="true"
           className="h-[20px] w-[20px] object-contain"
@@ -39,41 +52,75 @@ const AnalysisHeader = ({
         </span>
       </div>
 
-      {/* 태그 목록 + 추가 버튼 */}
+      {/* 태그 목록 */}
       <div className="flex flex-wrap items-center gap-[12px]">
-        {tags.map((tag) => (
-          <div
-            key={tag}
-            className="flex h-[32px] items-center rounded-full border border-[#917DEC] pl-[12px] pr-[8px]"
-          >
-            <span className="font-['Montserrat'] text-[12px] font-normal leading-[150%] tracking-[-0.36px] text-[#917DEC]">
-              {tag}
-            </span>
+        {tags.map((tag, index) => {
+          const isRemoved =
+            removedTagIndexes.includes(index);
 
-            <button
-              type="button"
-              onClick={() => onRemoveTag?.(tag)}
-              aria-label={`${tag} 태그 삭제`}
-              className="ml-[2px] flex h-[16px] w-[16px] shrink-0 items-center justify-center text-[16px] leading-none text-[#917DEC] transition-opacity hover:opacity-70"
+          return (
+            <div
+              key={`${tag}-${index}`}
+              className={`
+                flex h-[32px] items-center
+                rounded-full
+                pl-[12px] pr-[8px]
+                ${
+                  isRemoved
+                    ? "border border-dashed border-[#4B3F72]"
+                    : "border border-solid border-[#917DEC]"
+                }
+              `}
             >
-              ×
-            </button>
-          </div>
-        ))}
+              <span
+                className={`
+                  font-['Montserrat']
+                  text-[12px]
+                  font-normal
+                  leading-[150%]
+                  tracking-[-0.36px]
+                  ${
+                    isRemoved
+                      ? "text-[#4B3F72]"
+                      : "text-[#917DEC]"
+                  }
+                `}
+              >
+                {tag}
+              </span>
 
-        <button
-          type="button"
-          onClick={onAddTag}
-          aria-label="태그 추가"
-          className="flex h-[32px] w-[32px] shrink-0 items-center justify-center transition hover:bg-white/5"
-        >
-          <img
-            src="/plus.png"
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-contain"
-          />
-        </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleToggleTag(index)
+                }
+                aria-label={
+                  isRemoved
+                    ? `${tag} 태그 삭제 취소`
+                    : `${tag} 태그 삭제`
+                }
+                className={`
+                  ml-[2px]
+                  flex h-[16px] w-[16px]
+                  shrink-0
+                  items-center
+                  justify-center
+                  text-[16px]
+                  leading-none
+                  transition-opacity
+                  hover:opacity-70
+                  ${
+                    isRemoved
+                      ? "text-[#4B3F72]"
+                      : "text-[#917DEC]"
+                  }
+                `}
+              >
+                {isRemoved ? "+" : "×"}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </header>
   );

@@ -28,7 +28,7 @@ const TeachingMapStepItem = ({
     >
       <div className="relative flex w-[36px] shrink-0 flex-col items-center">
         <div className="z-10 flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#917DEC] text-[20px] font-medium leading-[160%] text-[#0B0A18]">
-          {step.id}
+          {step.order}
         </div>
 
         {!isLast && (

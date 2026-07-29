@@ -17,7 +17,7 @@ const TeachingMapList = ({
     return (
       <EmptyHomeContent
         message="학습 중인 티칭맵이 없어요."
-        iconSrc="/icon_티칭맵_퍼플.png"
+        iconSrc="/icon/티칭맵_퍼플.png"
       />
     );
   }
@@ -29,7 +29,7 @@ const TeachingMapList = ({
           key={teachingMap.teachingMapId}
           title={teachingMap.title}
           description={teachingMap.description}
-          thumbnailSrc="/Frame2147239594.png"
+          thumbnailSrc="/icon/Frame2147239594.png"
           onClick={() =>
             navigate(
               `/teaching-map/${teachingMap.teachingMapId}`,

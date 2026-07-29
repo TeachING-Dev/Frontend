@@ -17,7 +17,7 @@ const TrashRestoredMenu = ({
     >
       <span className="flex items-center gap-1">
         <img
-          src="/flip-left.svg"
+          src="/icon/flip-left.svg"
           alt=""
           aria-hidden="true"
           className="h-[18px] w-[18px] shrink-0"

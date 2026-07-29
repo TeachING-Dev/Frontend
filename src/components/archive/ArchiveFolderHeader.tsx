@@ -234,7 +234,7 @@ const ArchiveFolderHeader = ({
               className="flex h-8 w-8 items-center justify-center rounded transition hover:bg-white/10"
             >
               <img
-                src="/edit-03.png"
+                src="/icon/edit.png"
                 alt=""
                 aria-hidden="true"
                 className="h-[36px] w-[36px]"

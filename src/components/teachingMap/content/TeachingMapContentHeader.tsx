@@ -3,7 +3,15 @@ import {
   useParams,
 } from "react-router-dom";
 
-const TeachingMapContentHeader = () => {
+interface TeachingMapContentHeaderProps {
+  title: string;
+  createdAt: string;
+}
+
+const TeachingMapContentHeader = ({
+  title,
+  createdAt,
+}: TeachingMapContentHeaderProps) => {
   const navigate = useNavigate();
 
   const { teachingMapId } =
@@ -50,12 +58,15 @@ const TeachingMapContentHeader = () => {
       </button>
 
       <p className="mt-[8px] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#B8B9BC]">
-        2026-05-10
+        {createdAt
+          ? new Date(createdAt).toLocaleDateString(
+              "ko-KR",
+            )
+          : ""}
       </p>
 
       <h1 className="mt-[8px] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#FAFAFA]">
-        Node.js의 이벤트 루프(Event Loop)
-        완벽 이해하기
+        {title}
       </h1>
     </header>
   );

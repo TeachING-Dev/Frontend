@@ -5,12 +5,14 @@ import type { TeachingMapContentSection } from "../../../pages/TeachingMapConten
 interface TeachingMapAnalysisPanelProps {
   sections: TeachingMapContentSection[];
   openAnalysisIds: number[];
+  originalUrl: string;
   onToggleAnalysis: (sectionId: number) => void;
 }
 
 const TeachingMapAnalysisPanel = ({
   sections,
   openAnalysisIds,
+  originalUrl,
   onToggleAnalysis,
 }: TeachingMapAnalysisPanelProps) => {
   return (
@@ -21,7 +23,9 @@ const TeachingMapAnalysisPanel = ({
             타카의 분석
           </h2>
 
-          <TeachingMapOriginalButton />
+          <TeachingMapOriginalButton
+            originalUrl={originalUrl}
+          />
         </div>
 
         <div className="mt-[51px] flex flex-col gap-[40px]">
@@ -46,7 +50,7 @@ const TeachingMapAnalysisPanel = ({
         <div className="flex min-h-[40px] flex-1" />
 
         <img
-          src="/teachingTIKI.png"
+          src="/character/teachingTIKI.png"
           alt="티칭맵 안내 캐릭터"
           className="mr-[24px] h-[200px] w-[200px] shrink-0 self-end object-contain"
         />

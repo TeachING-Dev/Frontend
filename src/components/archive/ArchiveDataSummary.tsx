@@ -36,7 +36,7 @@ const ArchiveDataSummary = ({
       <div className="mb-[30px] flex items-center justify-between">
         <div className="flex items-center gap-[8px]">
           <img
-            src="/AI.png"
+            src="/icon/AI.png"
             alt="AI 요약"
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"
@@ -53,7 +53,7 @@ const ArchiveDataSummary = ({
           className="group flex h-[40px] w-[120px] items-center gap-[5px] rounded-[5px] bg-[#24232D] px-[12px] transition-colors hover:bg-[#3A3847]"
         >
           <img
-            src="/edit-04.png"
+            src="/icon/edit2.png"
             alt=""
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"
@@ -88,7 +88,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/flip-left.png"
+                  src="/icon/flip-left.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"
@@ -102,7 +102,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/check.png"
+                  src="/icon/check.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"
@@ -116,7 +116,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/cancel.png"
+                  src="/icon/cancel.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"

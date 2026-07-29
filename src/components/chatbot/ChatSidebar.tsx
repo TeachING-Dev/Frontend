@@ -7,7 +7,14 @@ type ChatSidebarProps = {
   onFileClick?: (index: number) => void;
 };
 
-const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFileClick }: ChatSidebarProps) => {
+const ChatSidebar = ({
+  isOpen,
+  files,
+  onOpen,
+  onClose,
+  onCreateRoomClick,
+  onFileClick,
+}: ChatSidebarProps) => {
   const navWidthClass = isOpen ? "w-[204px]" : "w-20";
 
   return (
@@ -18,7 +25,7 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFile
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            aria-label={"\ucc57\ubd07 \uc0ac\uc774\ub4dc\ubc14 \uc5f4\uae30"}
+            aria-label="챗봇 사이드바 열기"
             onClick={(event) => {
               event.stopPropagation();
               onOpen();
@@ -26,7 +33,7 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFile
             className="flex size-8 shrink-0 items-center justify-center hover:opacity-80"
           >
             <img
-              src="/Star17.svg"
+              src="/character/Star17.svg"
               alt=""
               className="size-8 object-contain"
             />
@@ -46,7 +53,7 @@ const ChatSidebar = ({ isOpen, files, onOpen, onClose, onCreateRoomClick, onFile
           <nav className="mt-8 flex flex-col items-start gap-3">
             <button
               type="button"
-              aria-label={"\ubb34\ub8cc \ubb38\uc81c \uc81c\ud55c \uc548\ub0b4 \uc5f4\uae30"}
+              aria-label="새 채팅 만들기"
               onClick={onCreateRoomClick}
               className="flex h-9 items-center justify-start gap-2.5 hover:opacity-80"
             >

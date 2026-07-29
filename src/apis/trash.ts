@@ -96,3 +96,15 @@ export const restoreMaterials = async (
 
   return data.result;
 };
+
+export const restoreFolders = async (
+  folderIds: number[],
+): Promise<RestoreResult> => {
+  const { data } = await api.patch<
+    ApiResponse<RestoreResult>
+  >("/api/v1/trash/folders/restore", {
+    folderIds,
+  });
+
+  return data.result;
+};

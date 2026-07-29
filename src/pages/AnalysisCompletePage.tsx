@@ -1,45 +1,299 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
+import {
+  getFolders,
+} from "../apis/folder";
+import {
+  finalizeMaterial,
+  updateMaterialSummary,
+} from "../apis/material";
 
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
 import AnalysisSummary from "../components/home/AnalysisSummary";
 import AnalysisUrl from "../components/home/AnalysisUrl";
 
-const folders = [
-  {
-    id: 1,
-    name: "Backend",
-  },
-  {
-    id: 2,
-    name: "Frontend",
-  },
-  {
-    id: 3,
-    name: "React",
-  },
-  {
-    id: 4,
-    name: "Next.js",
-  },
-  {
-    id: 5,
-    name: "TypeScript",
-  },
-];
+type FolderOption = {
+  id: number;
+  name: string;
+};
+
+type AnalysisLocationState = {
+  originalUrl?: string;
+  materialId?: number;
+  materialAnalysisId?: number;
+
+  result?: {
+    materialAnalysisId: number;
+    resultType: string;
+    materialId: number;
+    existingMaterialId: number;
+    originalUrl: string;
+    title: string;
+    platformType: string;
+    status: string;
+    chunkCount: number;
+
+    recommendedFolderId:
+      | number
+      | null;
+
+    recommendedFolderName:
+      | string
+      | null;
+
+    tags: {
+      tagId: number;
+      tagName: string;
+    }[];
+  };
+};
 
 const AnalysisCompletePage = () => {
-  const [selectedFolderId, setSelectedFolderId] =
-    useState(1);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const state =
+    location.state as AnalysisLocationState | null;
+
+  const analysisResult =
+    state?.result;
+
+  const materialId =
+    state?.materialId ??
+    analysisResult?.materialId;
+
+  const originalUrl =
+    state?.originalUrl ??
+    analysisResult?.originalUrl ??
+    "";
+
+  /* ==============================
+     폴더
+  ============================== */
+
+  const [folders, setFolders] =
+    useState<FolderOption[]>([]);
+
+  const [
+    selectedFolderId,
+    setSelectedFolderId,
+  ] = useState<number>(
+    analysisResult?.recommendedFolderId ??
+      0,
+  );
+
+  const [
+    isFolderLoading,
+    setIsFolderLoading,
+  ] = useState(true);
+
+  /* ==============================
+     태그
+  ============================== */
+
+  const [selectedTagIds] =
+    useState<number[]>(
+      analysisResult?.tags.map(
+        (tag) => tag.tagId,
+      ) ?? [],
+    );
+
+  /* ==============================
+     요약
+  ============================== */
+
+  const [summary, setSummary] =
+    useState(
+      "AI가 분석한 내용을 요약해드릴게요.",
+    );
+
+  const [isSaving, setIsSaving] =
+    useState(false);
+
+  /* ==============================
+     폴더 목록 조회
+  ============================== */
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        setIsFolderLoading(true);
+
+        const folderData =
+          await getFolders("recent");
+
+        const mappedFolders: FolderOption[] =
+          folderData.map(
+            (folder) => ({
+              id: folder.folderId,
+              name: folder.folderName,
+            }),
+          );
+
+        setFolders(mappedFolders);
+
+        /*
+         * 추천 폴더가 실제 폴더 목록에
+         * 존재하는지 확인
+         */
+        const recommendedFolderId =
+          analysisResult
+            ?.recommendedFolderId;
+
+        const hasRecommendedFolder =
+          recommendedFolderId != null &&
+          mappedFolders.some(
+            (folder) =>
+              folder.id ===
+              recommendedFolderId,
+          );
+
+        /*
+         * 추천 폴더가 있으면 추천 폴더 선택
+         */
+        if (
+          hasRecommendedFolder &&
+          recommendedFolderId != null
+        ) {
+          setSelectedFolderId(
+            recommendedFolderId,
+          );
+
+          return;
+        }
+
+        /*
+         * 추천 폴더가 없으면
+         * 첫 번째 폴더 선택
+         */
+        if (
+          mappedFolders.length > 0
+        ) {
+          setSelectedFolderId(
+            mappedFolders[0].id,
+          );
+        }
+      } catch (error) {
+        console.error(
+          "폴더 목록 조회 실패:",
+          error,
+        );
+      } finally {
+        setIsFolderLoading(false);
+      }
+    };
+
+    fetchFolders();
+  }, [
+    analysisResult
+      ?.recommendedFolderId,
+  ]);
+
+  /* ==============================
+     저장
+  ============================== */
+
+  const handleSave = async () => {
+    if (!materialId) {
+      console.error(
+        "materialId가 없습니다.",
+      );
+
+      return;
+    }
+
+    if (!selectedFolderId) {
+      console.error(
+        "저장할 폴더를 선택해주세요.",
+      );
+
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+
+      /*
+       * 1. 자료 저장 위치 / 태그 확정
+       */
+      const finalizeResult =
+        await finalizeMaterial(
+          materialId,
+          {
+            folderId:
+              selectedFolderId,
+
+            tagIds:
+              selectedTagIds,
+          },
+        );
+
+      console.log(
+        "자료 저장 확정 성공:",
+        finalizeResult,
+      );
+
+      /*
+       * 2. AI 요약 수정
+       */
+      const summaryResult =
+        await updateMaterialSummary(
+          finalizeResult.folderId,
+          finalizeResult.materialId,
+          {
+            shortSummary:
+              summary,
+          },
+        );
+
+      setSummary(
+        summaryResult.shortSummary,
+      );
+
+      console.log(
+        "AI 요약 수정 성공:",
+        summaryResult,
+      );
+
+      /*
+       * 3. 저장 완료 후
+       * 해당 폴더로 이동
+       */
+      navigate(
+        `/archive/folder/${finalizeResult.folderId}`,
+      );
+    } catch (error) {
+      console.error(
+        "자료 저장 실패:",
+        error,
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <main className="relative py-[55px]">
       {/* 좌측 고정 사이드바 */}
-      <AnalysisSidebar
-        folders={folders}
-        selectedFolderId={selectedFolderId}
-        onFolderChange={setSelectedFolderId}
-      />
+      {!isFolderLoading && (
+        <AnalysisSidebar
+          folders={folders}
+          selectedFolderId={
+            selectedFolderId
+          }
+          onFolderChange={
+            setSelectedFolderId
+          }
+        />
+      )}
 
       {/* 가운데 콘텐츠 */}
       <section className="mx-auto w-[1100px]">
@@ -47,27 +301,63 @@ const AnalysisCompletePage = () => {
           <div className="ml-[30px]">
             <AnalysisHeader
               date="2026-05-10"
-              title="Node.js의 이벤트 루프(Event Loop) 완벽 이해하기"
-              tags={[
-                "여기는 10자의 태그",
-                "여기는 10자의 태그",
-                "여기는 10자의 태그",
-                "여기는 10자의 태그",
-              ]}
+              title={
+                analysisResult
+                  ?.title ??
+                "분석된 콘텐츠"
+              }
+              tags={
+                analysisResult
+                  ?.tags.map(
+                    (tag) =>
+                      tag.tagName,
+                  ) ?? []
+              }
             />
           </div>
 
           {/* 본문 */}
           <div className="mt-[20px] flex flex-col gap-[20px]">
-            <AnalysisUrl url="https://example.com" />
+            <AnalysisUrl
+              url={originalUrl}
+            />
 
-            <AnalysisSummary summary="AI가 분석한 내용을 요약해드릴게요." />
+            <AnalysisSummary
+              summary={summary}
+              onSummaryChange={
+                setSummary
+              }
+            />
 
             <button
               type="button"
-              className="h-[54px] w-full rounded-[5px] bg-[#917DEC] text-center text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-white transition-colors hover:bg-[#8269E7]"
+              onClick={handleSave}
+              disabled={
+                isSaving ||
+                isFolderLoading ||
+                !materialId ||
+                !selectedFolderId
+              }
+              className="
+                h-[54px]
+                w-full
+                rounded-[5px]
+                bg-[#917DEC]
+                text-center
+                text-[24px]
+                font-semibold
+                leading-[150%]
+                tracking-[-0.72px]
+                text-white
+                transition-colors
+                hover:bg-[#8269E7]
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+              "
             >
-              저장하기
+              {isSaving
+                ? "저장 중..."
+                : "저장하기"}
             </button>
           </div>
         </div>

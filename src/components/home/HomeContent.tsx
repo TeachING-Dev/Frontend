@@ -88,7 +88,7 @@ const HomeContent = ({
             }`}
           >
             <img
-              src="/icon_최근에 저장한 지식.png"
+              src="/icon/최근에 저장한 지식.png"
               alt=""
               aria-hidden="true"
               className="h-5 w-5 shrink-0"
@@ -111,7 +111,7 @@ const HomeContent = ({
             }`}
           >
             <img
-              src="/Subtract.png"
+              src="/icon/Subtract.png"
               alt=""
               aria-hidden="true"
               className="h-5 w-4 shrink-0"

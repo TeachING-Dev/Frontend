@@ -64,6 +64,58 @@ export interface CreateTeachingMapResult {
   createdAt: string;
 }
 
+export interface TeachingMapDetailStep {
+  stepId: number;
+  order: number;
+  tip: string;
+  stepTitle: string;
+  isFinished: boolean;
+}
+
+export interface TeachingMapDetailResult {
+  teachingMapId: number;
+  folderId: number;
+  title: string;
+  description: string;
+  type: TeachingMapType;
+  currentSteps: number;
+  totalSteps: number;
+  steps: TeachingMapDetailStep[];
+}
+
+export interface TeachingMapHighlight {
+  highlightId: number;
+  text: string;
+  type: string;
+}
+
+export interface AiTeacherFeedback {
+  aiGuideId: number;
+  promptVersion: string;
+  type: string;
+  title: string;
+  content: string;
+}
+
+export interface TeachingMapStepDetail {
+  stepId: number;
+  materialId: number;
+  stepNumber: number;
+  title: string;
+  createdAt: string;
+  tags: string[];
+  originalUrl: string;
+  existingAiAnalysis: {
+    summary: string;
+    highlights: TeachingMapHighlight[];
+  } | null;
+  aiTeacherAnalysis: {
+    guideType: string;
+    teacherProfileImage: string;
+    feedbacks: AiTeacherFeedback[];
+  } | null;
+}
+
 export const getTeachingMaps = async ({
   status = "IN_PROGRESS",
   type = "ALL",
@@ -94,6 +146,42 @@ export const createTeachingMap = async (
   const { data } = await api.post<
     ApiResponse<CreateTeachingMapResult>
   >("/api/v1/teaching-maps", request);
+
+  return data.result;
+};
+
+export const getTeachingMap = async (
+  teachingMapId: number,
+): Promise<TeachingMapDetailResult> => {
+  const { data } = await api.get<
+    ApiResponse<TeachingMapDetailResult>
+  >(`/api/v1/teaching-maps/${teachingMapId}`);
+
+  return data.result;
+};
+
+export const getTeachingMapStep = async (
+  teachingMapId: number,
+  stepId: number,
+): Promise<TeachingMapStepDetail> => {
+  const { data } = await api.get<
+    ApiResponse<TeachingMapStepDetail>
+  >(
+    `/api/v1/teaching-maps/${teachingMapId}/steps/${stepId}`,
+  );
+
+  return data.result;
+};
+
+export const getHighlightTeacherAnalysis = async (
+  materialId: number,
+  highlightId: number,
+): Promise<AiTeacherFeedback> => {
+  const { data } = await api.get<
+    ApiResponse<AiTeacherFeedback>
+  >(
+    `/api/v1/teaching-maps/materials/${materialId}/highlights/${highlightId}/analysis`,
+  );
 
   return data.result;
 };

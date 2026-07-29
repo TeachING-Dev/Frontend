@@ -105,7 +105,7 @@ const TeachingMapFolderSelect = ({
           className="flex h-[64px] w-full items-center rounded-[4px] bg-[#F5F2FF] px-5 text-left outline-none"
         >
           <img
-            src="/Folder.png"
+            src="/folder/folder1.png"
             alt=""
             aria-hidden="true"
             className="h-6 w-6 shrink-0 object-contain"
@@ -168,7 +168,7 @@ const TeachingMapFolderSelect = ({
                       ].join(" ")}
                     >
                       <img
-                        src="/Folder.png"
+                        src="/folder/folder1.png"
                         alt=""
                         aria-hidden="true"
                         className="h-[18px] w-[18px] shrink-0 object-contain"

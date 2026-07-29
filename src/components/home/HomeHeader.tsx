@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { analyzeMaterial } from "../../apis/material";
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
 import AnalysisFailModal from "./modal/AnalysisFailModal";
@@ -15,16 +16,28 @@ const HomeHeader = () => {
   const navigate = useNavigate();
 
   const [url, setUrl] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [isAnalysisModalOpen, setIsAnalysisModalOpen] =
+  const [showToast, setShowToast] =
     useState(false);
-  const [analysisFailType, setAnalysisFailType] =
-    useState<AnalysisFailType | null>(null);
+
+  const [
+    isAnalysisModalOpen,
+    setIsAnalysisModalOpen,
+  ] = useState(false);
+
+  const [
+    analysisFailType,
+    setAnalysisFailType,
+  ] = useState<AnalysisFailType | null>(
+    null,
+  );
+
+  const [isAnalyzing, setIsAnalyzing] =
+    useState(false);
 
   const toastTimerRef =
-    useRef<ReturnType<typeof setTimeout> | null>(
-      null,
-    );
+    useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
 
   const isValidUrl = (value: string) => {
     try {
@@ -43,15 +56,18 @@ const HomeHeader = () => {
     setShowToast(true);
 
     if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
+      clearTimeout(
+        toastTimerRef.current,
+      );
     }
 
-    toastTimerRef.current = setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+    toastTimerRef.current =
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
@@ -63,26 +79,81 @@ const HomeHeader = () => {
       return;
     }
 
+    if (isAnalyzing) {
+      return;
+    }
+
     setShowToast(false);
+    setAnalysisFailType(null);
     setIsAnalysisModalOpen(true);
-  };
+    setIsAnalyzing(true);
 
-  const handleAnalysisComplete = () => {
-    const trimmedUrl = url.trim();
+    try {
+      const result = await analyzeMaterial({
+        url: trimmedUrl,
+        forceAnalyze: false,
+      });
 
-    setIsAnalysisModalOpen(false);
+      console.log(
+        "URL 분석 요청 결과:",
+        result,
+      );
 
-    navigate("/analysis/complete", {
-      state: {
-        originalUrl: trimmedUrl,
-      },
-    });
+      setIsAnalysisModalOpen(false);
+
+      if (
+        result.resultType ===
+        "ALREADY_ANALYZED"
+      ) {
+        navigate("/analysis/complete", {
+          state: {
+            originalUrl:
+              result.originalUrl,
+            materialId:
+              result.existingMaterialId,
+            materialAnalysisId:
+              result.materialAnalysisId,
+            result,
+          },
+        });
+
+        return;
+      }
+
+      navigate("/analysis/complete", {
+        state: {
+          originalUrl:
+            result.originalUrl ||
+            trimmedUrl,
+          materialId:
+            result.materialId,
+          materialAnalysisId:
+            result.materialAnalysisId,
+          result,
+        },
+      });
+    } catch (error) {
+      console.error(
+        "URL 분석 요청 실패:",
+        error,
+      );
+
+      setIsAnalysisModalOpen(false);
+
+      setAnalysisFailType(
+        "analysisFailed",
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   useEffect(() => {
     return () => {
       if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
+        clearTimeout(
+          toastTimerRef.current,
+        );
       }
     };
   }, []);
@@ -102,27 +173,28 @@ const HomeHeader = () => {
       >
         <p
           className="
-          hidden
-          max-w-[680px]
-          break-keep
-          px-2
-          text-center
-          font-semibold
-          text-[#C1AEFF]
-          md:mt-[60px]
-          md:block
-          md:text-[18px]
-          md:leading-[150%]
-          md:tracking-[-0.54px]
-          lg:mt-[80px]
-          lg:text-[20px]
-          lg:leading-[140%]
-          lg:tracking-[-0.6px]
-        "
-      >
-        TeachING은 링크 속 내용을 분석하여 쉬운 학습 콘텐츠로
-        정리해드려요.
-      </p>
+            hidden
+            max-w-[680px]
+            break-keep
+            px-2
+            text-center
+            font-semibold
+            text-[#C1AEFF]
+            md:mt-[60px]
+            md:block
+            md:text-[18px]
+            md:leading-[150%]
+            md:tracking-[-0.54px]
+            lg:mt-[80px]
+            lg:text-[20px]
+            lg:leading-[140%]
+            lg:tracking-[-0.6px]
+          "
+        >
+          TeachING은 링크 속 내용을
+          분석하여 쉬운 학습 콘텐츠로
+          정리해드려요.
+        </p>
 
         <form
           onSubmit={handleSubmit}
@@ -160,9 +232,12 @@ const HomeHeader = () => {
             type="text"
             value={url}
             onChange={(event) =>
-              setUrl(event.target.value)
+              setUrl(
+                event.target.value,
+              )
             }
             placeholder="저장할 url을 붙여넣어주세요."
+            disabled={isAnalyzing}
             className="
               relative
               h-[45px]
@@ -187,6 +262,8 @@ const HomeHeader = () => {
               placeholder:text-[#42444C]
               transition
               focus:shadow-[0_0_70px_rgba(145,125,236,0.45)]
+              disabled:cursor-not-allowed
+              disabled:opacity-60
               md:h-[64px]
               md:px-6
               md:pr-[80px]
@@ -205,7 +282,8 @@ const HomeHeader = () => {
 
           <button
             type="submit"
-            aria-label="URL 검색"
+            aria-label="URL 분석"
+            disabled={isAnalyzing}
             className="
               absolute
               right-2
@@ -220,16 +298,22 @@ const HomeHeader = () => {
               bg-[#917DEC]
               transition
               hover:bg-[#A996FF]
+              disabled:cursor-not-allowed
+              disabled:opacity-60
               md:right-3
               md:h-11
               md:w-11
               lg:right-5
             "
           >
-            <ArrowUp
+            <ArrowRight
               size={18}
               strokeWidth={2}
-              className="text-[#11111B] md:h-6 md:w-6"
+              className="
+                text-[#11111B]
+                md:h-6
+                md:w-6
+              "
             />
           </button>
         </form>
@@ -242,10 +326,10 @@ const HomeHeader = () => {
       {isAnalysisModalOpen && (
         <AiAnalysisModal
           onClose={() =>
-            setIsAnalysisModalOpen(false)
+            setIsAnalysisModalOpen(
+              false,
+            )
           }
-          onComplete={handleAnalysisComplete}
-          duration={5000}
         />
       )}
 
@@ -257,11 +341,14 @@ const HomeHeader = () => {
           }
           onPrimaryAction={() => {
             if (
-              analysisFailType === "loginRequired"
+              analysisFailType ===
+              "loginRequired"
             ) {
               console.log("로그인");
             } else {
-              console.log("다시 시도하기");
+              console.log(
+                "다시 시도하기",
+              );
             }
 
             setAnalysisFailType(null);

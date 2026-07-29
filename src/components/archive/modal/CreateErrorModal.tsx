@@ -68,7 +68,7 @@ const FolderLimitModal = ({
         {/* 캐릭터 이미지 */}
         <div className="mt-[0px] flex flex-1 items-start justify-center">
           <img
-            src="/SadStar.png"
+            src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
             className="h-[160px] w-[160px] object-contain"

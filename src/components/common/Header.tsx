@@ -98,7 +98,7 @@ const Header = ({
         className="absolute left-1/2 -translate-x-1/2 transition hover:opacity-80"
       >
         <img
-          src="/Logo.png"
+          src="/logo/logo2.png"
           alt="TeachING Logo"
           className="h-9 w-auto"
         />
@@ -119,7 +119,7 @@ const Header = ({
                 className="flex size-10 items-center justify-center overflow-hidden hover:opacity-80"
               >
                 <img
-                  src="/Alarm.svg"
+                  src="/icon/Alarm.svg"
                   alt=""
                   className="size-6 object-contain"
                 />

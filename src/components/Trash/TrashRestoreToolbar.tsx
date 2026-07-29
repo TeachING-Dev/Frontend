@@ -65,11 +65,11 @@ const TrashRestoreToolbar = ({
             aria-hidden="true"
             className={[
               "h-6 w-6 shrink-0 bg-current",
-              "[mask-image:url('/flip-left.svg')]",
+              "[mask-image:url('/icon/flip-left.svg')]",
               "[mask-position:center]",
               "[mask-repeat:no-repeat]",
               "[mask-size:contain]",
-              "[-webkit-mask-image:url('/flip-left.svg')]",
+              "[-webkit-mask-image:url('/icon/flip-left.svg')]",
               "[-webkit-mask-position:center]",
               "[-webkit-mask-repeat:no-repeat]",
               "[-webkit-mask-size:contain]",

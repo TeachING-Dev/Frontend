@@ -25,7 +25,7 @@ const NotificationItem = ({
     >
       {/* 왼쪽 아이콘 */}
       <img
-        src="/home-logo2.png"
+        src="/logo/logo.png"
         alt=""
         aria-hidden="true"
         className="mt-[13.5px] size-[40px] shrink-0 object-contain"

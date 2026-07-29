@@ -33,13 +33,13 @@ const ArchiveDataHeader = ({
         <div className="flex min-w-0 items-center gap-[12px]">
           <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
-              src="/youtube-app-icon.png"
+              src="/icon/youtube-app-icon.png"
               alt="YouTube"
               className="h-[32px] w-[32px] object-contain rounded-full"
             />
           </div>
 
-          <h1 className="min-w-0 font-['SUIT_Variable'] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
+          <h1 className="min-w-0 text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
             {title}
           </h1>
         </div>
@@ -57,7 +57,7 @@ const ArchiveDataHeader = ({
       {/* 태그 제목 */}
       <div className="mb-[12px] flex items-center gap-[11px]">
         <img
-          src="/tag.png"
+          src="/icon/tag.png"
           alt=""
           aria-hidden="true"
           className="h-[20px] w-[20px] object-contain"
