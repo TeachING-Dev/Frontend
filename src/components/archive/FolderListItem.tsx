@@ -46,7 +46,7 @@ const FolderListItem = ({
       className="flex h-[88px] w-full cursor-pointer items-center border-b border-[#252131] transition hover:bg-white/5"
     >
       <img
-        src="/Folder.png"
+        src="/folder/folder1.png"
         alt=""
         aria-hidden="true"
         className="h-[64px] w-[64px]"

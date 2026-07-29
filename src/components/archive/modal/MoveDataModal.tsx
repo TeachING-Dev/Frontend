@@ -106,7 +106,7 @@ const MoveDataModal = ({
           >
             <span className="flex min-w-0 items-center gap-2">
               <img
-                src="/Folder.png"
+                src="/folder/folder1.png"
                 alt=""
                 aria-hidden="true"
                 className="h-[18px] w-[18px] shrink-0 object-contain"
@@ -145,7 +145,7 @@ const MoveDataModal = ({
                     }`}
                   >
                     <img
-                      src="/Folder.png"
+                      src="/folder/folder1.png"
                       alt=""
                       aria-hidden="true"
                       className="h-[18px] w-[18px] shrink-0 object-contain"

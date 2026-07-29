@@ -46,7 +46,7 @@ const TeachingMapAnalysisPanel = ({
         <div className="flex min-h-[40px] flex-1" />
 
         <img
-          src="/teachingTIKI.png"
+          src="/character/teachingTIKI.png"
           alt="티칭맵 안내 캐릭터"
           className="mr-[24px] h-[200px] w-[200px] shrink-0 self-end object-contain"
         />

@@ -81,7 +81,7 @@ const AnalysisFailModal = ({
         {/* 이미지 */}
         <div className="mt-[24px] flex justify-center">
           <img
-            src="/SadStar.png"
+            src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
             className="h-[90px] w-[90px]"

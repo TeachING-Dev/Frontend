@@ -28,7 +28,7 @@ const AnalysisHeader = ({
       {/* 태그 제목 */}
       <div className="mb-[12px] flex items-center gap-[5px]">
         <img
-          src="/tag.png"
+          src="/icon/tag.png"
           alt=""
           aria-hidden="true"
           className="h-[20px] w-[20px] object-contain"
@@ -68,7 +68,7 @@ const AnalysisHeader = ({
           className="flex h-[32px] w-[32px] shrink-0 items-center justify-center transition hover:bg-white/5"
         >
           <img
-            src="/plus.png"
+            src="/icon/plus.png"
             alt=""
             aria-hidden="true"
             className="h-full w-full object-contain"

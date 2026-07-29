@@ -79,7 +79,7 @@ const initialDataList: TrashDataItem[] = [
       "Node.js의 이벤트 루프(Event Loop) 완벽 이해하기",
     description:
       "Node.js의 핵심 아키텍처인 이벤트 루프의 6가지 단계와 동작 메커니즘을 시각적 자료와 함께 상세히 정리한 기술 자료입니다. 싱글 스레드 기반인 Node.js가 어떻게 대규모 비동기 요청을 효율적으로 처리하는지 내부 원리를 분석합니다.",
-    thumbnail: "/youtube-app-icon.png",
+    thumbnail: "/icon/youtube-app-icon.png",
   },
   {
     id: 2,
@@ -88,7 +88,7 @@ const initialDataList: TrashDataItem[] = [
     title: "React 렌더링 최적화",
     description:
       "React 컴포넌트의 불필요한 렌더링을 줄이고 사용자 경험을 개선하기 위한 최적화 방법을 정리한 자료입니다.",
-    thumbnail: "/youtube-app-icon.png",
+    thumbnail: "/icon/youtube-app-icon.png",
   },
 ];
 
@@ -102,12 +102,12 @@ const initialTeachingMaps: TrashTeachingMapItem[] = [
     totalStep: 8,
     type: "deepDive",
     thumbnails: [
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
     ],
     deletedAt: RECENT_DELETED_AT,
   },
@@ -120,9 +120,9 @@ const initialTeachingMaps: TrashTeachingMapItem[] = [
     totalStep: 8,
     type: "shortcut",
     thumbnails: [
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
-      "/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
+      "/icon/youtube-app-icon.png",
     ],
     deletedAt: "2026-07-24",
   },
@@ -718,7 +718,7 @@ const TrashContent = () => {
                   className="flex h-10 w-[147px] items-center justify-center gap-2 rounded-[5px] px-2 py-1 font-suit text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] hover:bg-white/5"
                 >
                   <img
-                    src="/flip-left.svg"
+                    src="/icon/flip-left.svg"
                     alt=""
                     aria-hidden="true"
                     className="h-6 w-6 shrink-0"

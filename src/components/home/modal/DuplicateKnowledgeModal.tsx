@@ -69,7 +69,7 @@ const DuplicateKnowledgeModal = ({
         {/* 이미지 */}
         <div className="mt-4 flex justify-center">
           <img
-            src="/SadStar.png"
+            src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
             className="h-[160px] w-[160px]"
