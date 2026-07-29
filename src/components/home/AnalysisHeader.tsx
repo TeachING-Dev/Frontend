@@ -4,14 +4,12 @@ type AnalysisHeaderProps = {
   date: string;
   title: string;
   tags: string[];
-  onAddTag?: () => void;
 };
 
 const AnalysisHeader = ({
   date,
   title,
   tags,
-  onAddTag,
 }: AnalysisHeaderProps) => {
   const [removedTagIndexes, setRemovedTagIndexes] =
     useState<number[]>([]);
@@ -54,7 +52,7 @@ const AnalysisHeader = ({
         </span>
       </div>
 
-      {/* 태그 목록 + 추가 버튼 */}
+      {/* 태그 목록 */}
       <div className="flex flex-wrap items-center gap-[12px]">
         {tags.map((tag, index) => {
           const isRemoved =
@@ -123,20 +121,6 @@ const AnalysisHeader = ({
             </div>
           );
         })}
-
-        <button
-          type="button"
-          onClick={onAddTag}
-          aria-label="태그 추가"
-          className="flex h-[32px] w-[32px] shrink-0 items-center justify-center transition hover:bg-white/5"
-        >
-          <img
-            src="/icon/plus.png"
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-contain"
-          />
-        </button>
       </div>
     </header>
   );
