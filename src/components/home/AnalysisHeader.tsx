@@ -1,9 +1,10 @@
+import { useState } from "react";
+
 type AnalysisHeaderProps = {
   date: string;
   title: string;
   tags: string[];
   onAddTag?: () => void;
-  onRemoveTag?: (tag: string) => void;
 };
 
 const AnalysisHeader = ({
@@ -11,8 +12,22 @@ const AnalysisHeader = ({
   title,
   tags,
   onAddTag,
-  onRemoveTag,
 }: AnalysisHeaderProps) => {
+  const [removedTagIndexes, setRemovedTagIndexes] =
+    useState<number[]>([]);
+
+  const handleToggleTag = (index: number) => {
+    setRemovedTagIndexes((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter(
+          (item) => item !== index,
+        );
+      }
+
+      return [...prev, index];
+    });
+  };
+
   return (
     <header className="mb-[46px] min-w-0">
       {/* 날짜 */}
@@ -41,25 +56,73 @@ const AnalysisHeader = ({
 
       {/* 태그 목록 + 추가 버튼 */}
       <div className="flex flex-wrap items-center gap-[12px]">
-        {tags.map((tag) => (
-          <div
-            key={tag}
-            className="flex h-[32px] items-center rounded-full border border-[#917DEC] pl-[12px] pr-[8px]"
-          >
-            <span className="font-['Montserrat'] text-[12px] font-normal leading-[150%] tracking-[-0.36px] text-[#917DEC]">
-              {tag}
-            </span>
+        {tags.map((tag, index) => {
+          const isRemoved =
+            removedTagIndexes.includes(index);
 
-            <button
-              type="button"
-              onClick={() => onRemoveTag?.(tag)}
-              aria-label={`${tag} 태그 삭제`}
-              className="ml-[2px] flex h-[16px] w-[16px] shrink-0 items-center justify-center text-[16px] leading-none text-[#917DEC] transition-opacity hover:opacity-70"
+          return (
+            <div
+              key={`${tag}-${index}`}
+              className={`
+                flex h-[32px] items-center
+                rounded-full
+                pl-[12px] pr-[8px]
+                ${
+                  isRemoved
+                    ? "border border-dashed border-[#4B3F72]"
+                    : "border border-solid border-[#917DEC]"
+                }
+              `}
             >
-              ×
-            </button>
-          </div>
-        ))}
+              <span
+                className={`
+                  font-['Montserrat']
+                  text-[12px]
+                  font-normal
+                  leading-[150%]
+                  tracking-[-0.36px]
+                  ${
+                    isRemoved
+                      ? "text-[#4B3F72]"
+                      : "text-[#917DEC]"
+                  }
+                `}
+              >
+                {tag}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleToggleTag(index)
+                }
+                aria-label={
+                  isRemoved
+                    ? `${tag} 태그 삭제 취소`
+                    : `${tag} 태그 삭제`
+                }
+                className={`
+                  ml-[2px]
+                  flex h-[16px] w-[16px]
+                  shrink-0
+                  items-center
+                  justify-center
+                  text-[16px]
+                  leading-none
+                  transition-opacity
+                  hover:opacity-70
+                  ${
+                    isRemoved
+                      ? "text-[#4B3F72]"
+                      : "text-[#917DEC]"
+                  }
+                `}
+              >
+                {isRemoved ? "+" : "×"}
+              </button>
+            </div>
+          );
+        })}
 
         <button
           type="button"

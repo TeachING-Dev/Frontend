@@ -39,7 +39,7 @@ const ArchiveDataHeader = ({
             />
           </div>
 
-          <h1 className="min-w-0 font-['SUIT_Variable'] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
+          <h1 className="min-w-0 text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
             {title}
           </h1>
         </div>
