@@ -6,6 +6,10 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 
+import {
+  getTemporaryTeachingMaps,
+  type TeachingMapListItem,
+} from "../apis/teachingMap";
 import Pagination from "../components/common/Pagination";
 import Toast from "../components/common/Toast";
 import TemporaryTeachingMapHeader from "../components/teachingMap/drafts/TemporaryTeachingMapHeader";
@@ -18,12 +22,30 @@ import TeachingMapFilter, {
 import TeachingMapToolbar, {
   type TeachingMapSortType,
 } from "../components/teachingMap/main/TeachingMapToolbar";
-import {
-  TEMPORARY_TEACHING_MAPS,
-  type TemporaryTeachingMapData,
-} from "../constants/temporaryTeachingMaps";
+import type { TemporaryTeachingMapData } from "../constants/temporaryTeachingMaps";
 
 const TEACHING_MAPS_PER_PAGE = 10;
+
+const toTemporaryTeachingMapData = (
+  teachingMap: TeachingMapListItem,
+): TemporaryTeachingMapData => ({
+  id: teachingMap.teachingMapId,
+  title: teachingMap.title,
+  description: teachingMap.description,
+  type:
+    teachingMap.type === "DEEPDIVE"
+      ? "deepDive"
+      : "shortcut",
+  thumbnailSrc:
+    teachingMap.sourcePlatforms?.[0]?.imageUrl ??
+    "/icons.svg",
+  thumbnailSrcs: (teachingMap.sourcePlatforms ?? []).map(
+    (platform) => platform.imageUrl,
+  ),
+  extraThumbnailCount: teachingMap.extraCount,
+  folderId: null,
+  savedAt: teachingMap.createdAt,
+});
 
 const TemporaryTeachingMapPage = () => {
   const navigate = useNavigate();
@@ -33,7 +55,10 @@ const TemporaryTeachingMapPage = () => {
     setTeachingMaps,
   ] = useState<
     TemporaryTeachingMapData[]
-  >(TEMPORARY_TEACHING_MAPS);
+  >([]);
+
+  const [loadError, setLoadError] =
+    useState("");
 
   const [
     selectedFilter,
@@ -78,6 +103,51 @@ const TemporaryTeachingMapPage = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadTemporaryTeachingMaps = async () => {
+      try {
+        setLoadError("");
+
+        const result =
+          await getTemporaryTeachingMaps(
+            selectedFilter === "all"
+              ? "ALL"
+              : selectedFilter === "deepDive"
+                ? "DEEPDIVE"
+                : "SHORTCUT",
+            sortType === "latest"
+              ? "LATEST"
+              : "OLDEST",
+          );
+
+        if (!isCancelled) {
+          setTeachingMaps(
+            result.teachingMaps.map(
+              toTemporaryTeachingMapData,
+            ),
+          );
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setTeachingMaps([]);
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "임시보관함을 불러오지 못했습니다.",
+          );
+        }
+      }
+    };
+
+    void loadTemporaryTeachingMaps();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedFilter, sortType]);
 
   const filteredTeachingMaps =
     useMemo(() => {
@@ -350,7 +420,11 @@ const TemporaryTeachingMapPage = () => {
         </div>
 
         <div className="mt-5">
-          {visibleTeachingMaps.length >
+          {loadError ? (
+            <div className="flex h-[300px] w-full items-center justify-center text-[18px] text-[#F07A7A]">
+              {loadError}
+            </div>
+          ) : visibleTeachingMaps.length >
           0 ? (
             <TemporaryTeachingMapList
               teachingMaps={

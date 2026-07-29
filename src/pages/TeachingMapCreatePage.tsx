@@ -10,6 +10,11 @@ import {
   useParams,
 } from "react-router-dom";
 
+import { getFolders } from "../apis/folder";
+import {
+  createTeachingMap,
+  getTeachingMaps,
+} from "../apis/teachingMap";
 import FolderLimitModal from "../components/teachingMap/create/FolderLimitModal";
 import TeachingMapCreateButton from "../components/teachingMap/create/TeachingMapCreateButton";
 
@@ -24,16 +29,18 @@ import TeachingMapLoadingModal from "../components/teachingMap/create/TeachingMa
 import TeachingMapTitleInput from "../components/teachingMap/create/TeachingMapTitleInput";
 import TeachingMapTypeSelect from "../components/teachingMap/create/TeachingMapTypeSelect";
 
-import { ARCHIVE_FOLDERS } from "../constants/archiveFolders";
 import { TEMPORARY_TEACHING_MAPS } from "../constants/temporaryTeachingMaps";
 
 const FREE_TEACHING_MAP_LIMIT = 5;
 
-// TODO: 사용자 티칭맵 목록 API 연결 후 실제 개수로 교체
-const CURRENT_TEACHING_MAP_COUNT = 0;
-
 const DEFAULT_TEACHING_MAP_TYPE: TeachingMapType =
   "shortcut";
+
+type TeachingMapFolderOption = {
+  id: number;
+  name: string;
+  count: number;
+};
 
 const TeachingMapCreatePage = () => {
   const navigate = useNavigate();
@@ -54,18 +61,6 @@ const TeachingMapCreatePage = () => {
   const isTemporaryEditMode =
     draftId !== undefined;
 
-  const latestFolder =
-    ARCHIVE_FOLDERS.length > 0
-      ? ARCHIVE_FOLDERS[
-          ARCHIVE_FOLDERS.length - 1
-        ]
-      : null;
-
-  const defaultFolderId =
-    temporaryTeachingMap?.folderId ??
-    latestFolder?.id ??
-    null;
-
   const [title, setTitle] =
     useState(
       temporaryTeachingMap?.title ??
@@ -84,8 +79,12 @@ const TeachingMapCreatePage = () => {
     selectedFolderId,
     setSelectedFolderId,
   ] = useState<number | null>(
-    defaultFolderId,
+    temporaryTeachingMap?.folderId ?? null,
   );
+
+  const [folders, setFolders] = useState<
+    TeachingMapFolderOption[]
+  >([]);
 
   const [
     selectedType,
@@ -99,6 +98,11 @@ const TeachingMapCreatePage = () => {
     isLoadingModalOpen,
     setIsLoadingModalOpen,
   ] = useState(false);
+
+  const [
+    currentTeachingMapCount,
+    setCurrentTeachingMapCount,
+  ] = useState(0);
 
   const [
     isLimitModalOpen,
@@ -119,12 +123,111 @@ const TeachingMapCreatePage = () => {
   const [isTemporarySaveSuccess, setIsTemporarySaveSuccess] =
     useState(false);
   const generationTimerRef = useRef<number | null>(null);
+  const defaultFolderId =
+    temporaryTeachingMap?.folderId ??
+    folders[0]?.id ??
+    null;
 
   useEffect(() => {
     return () => {
       if (generationTimerRef.current !== null) {
         window.clearTimeout(generationTimerRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadFolders = async () => {
+      try {
+        const folderList = await getFolders("recent");
+
+        if (isCancelled) {
+          return;
+        }
+
+        const folderOptions = folderList.map(
+          (folder) => ({
+            id: folder.folderId,
+            name: folder.folderName,
+            count: folder.materialCount,
+          }),
+        );
+
+        setFolders(folderOptions);
+        setSelectedFolderId(
+          (currentFolderId) => {
+            if (
+              currentFolderId !== null &&
+              folderOptions.some(
+                (folder) =>
+                  folder.id === currentFolderId,
+              )
+            ) {
+              return currentFolderId;
+            }
+
+            return folderOptions[0]?.id ?? null;
+          },
+        );
+      } catch (error) {
+        if (!isCancelled) {
+          setFolders([]);
+          setSelectedFolderId(null);
+          setToastTitle(
+            "폴더 목록을 불러오지 못했습니다.",
+          );
+          setToastMessage(
+            error instanceof Error
+              ? error.message
+              : "잠시 후 다시 시도해주세요.",
+          );
+          setIsTemporarySaveSuccess(false);
+          setIsToastOpen(true);
+        }
+      }
+    };
+
+    void loadFolders();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadTeachingMapCount = async () => {
+      try {
+        const [inProgress, finished] =
+          await Promise.all([
+            getTeachingMaps({
+              status: "IN_PROGRESS",
+            }),
+            getTeachingMaps({
+              status: "FINISHED",
+            }),
+          ]);
+
+        if (!isCancelled) {
+          setCurrentTeachingMapCount(
+            inProgress.teachingMaps.length +
+              finished.teachingMaps.length,
+          );
+        }
+      } catch {
+        if (!isCancelled) {
+          setCurrentTeachingMapCount(0);
+        }
+      }
+    };
+
+    void loadTeachingMapCount();
+
+    return () => {
+      isCancelled = true;
     };
   }, []);
 
@@ -155,12 +258,12 @@ const TeachingMapCreatePage = () => {
 
   const selectedFolder =
     useMemo(() => {
-      return ARCHIVE_FOLDERS.find(
+      return folders.find(
         (folder) =>
           folder.id ===
           selectedFolderId,
       );
-    }, [selectedFolderId]);
+    }, [folders, selectedFolderId]);
 
   const showFailureToast = (
     message: string,
@@ -211,13 +314,13 @@ const TeachingMapCreatePage = () => {
       setIsToastOpen(true);
     };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!isFormCompleted) {
       return;
     }
 
     if (
-      CURRENT_TEACHING_MAP_COUNT >=
+      currentTeachingMapCount >=
       FREE_TEACHING_MAP_LIMIT
     ) {
       setIsLimitModalOpen(true);
@@ -237,45 +340,30 @@ const TeachingMapCreatePage = () => {
 
     setIsLoadingModalOpen(true);
 
-    const newTeachingMapId =
-      Date.now();
+    try {
+      const createdTeachingMap =
+        await createTeachingMap({
+          title: title.trim(),
+          description: description.trim(),
+          folderId: selectedFolder.id,
+          type:
+            selectedType === "deepDive"
+              ? "DEEPDIVE"
+              : "SHORTCUT",
+        });
 
-    const newTeachingMap = {
-      id: newTeachingMapId,
-      title: title.trim(),
-      description:
-        description.trim(),
-      folderId: selectedFolderId,
-      type: selectedType,
-    };
-
-    console.log(
-      "생성할 티칭맵:",
-      newTeachingMap,
-    );
-
-    generationTimerRef.current =
-      window.setTimeout(() => {
-        sessionStorage.setItem(
-          `teaching-map:${newTeachingMapId}`,
-          JSON.stringify(newTeachingMap),
-        );
-        setIsLoadingModalOpen(false);
-        generationTimerRef.current = null;
-        navigate(`/teaching-map/${newTeachingMapId}`);
-      }, 5000);
-
-    // TODO: 티칭맵 생성 API 연결
-    //
-    // API 성공 시:
-    // setIsLoadingModalOpen(false);
-    // navigate(`/teaching-map/${newTeachingMapId}`);
-    //
-    // API 실패 시:
-    // setIsLoadingModalOpen(false);
-    // showFailureToast(
-    //   "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-    // );
+      setIsLoadingModalOpen(false);
+      navigate(
+        `/teaching-map/${createdTeachingMap.teachingMapId}`,
+      );
+    } catch (error) {
+      setIsLoadingModalOpen(false);
+      showFailureToast(
+        error instanceof Error
+          ? error.message
+          : "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
+    }
   };
 
   const handleLoadingModalClose =
@@ -335,9 +423,7 @@ const TeachingMapCreatePage = () => {
             />
 
             <TeachingMapFolderSelect
-              folders={
-                ARCHIVE_FOLDERS
-              }
+              folders={folders}
               selectedFolderId={
                 selectedFolderId
               }

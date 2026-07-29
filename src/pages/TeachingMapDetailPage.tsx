@@ -1,172 +1,182 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
 import { useParams } from "react-router-dom";
 
+import { getTeachingMap } from "../apis/teachingMap";
 import TeachingMapDetailHeader from "../components/teachingMap/detail/TeachingMapDetailHeader";
 import TeachingMapProgressSummary from "../components/teachingMap/detail/TeachingMapProgressSummary";
 import TeachingMapStepList from "../components/teachingMap/detail/TeachingMapStepList";
-import { ARCHIVE_FOLDERS } from "../constants/archiveFolders";
 
 export interface TeachingMapStep {
   id: number;
+  order: number;
   tip: string;
   title: string;
   isCompleted: boolean;
   isSourceAvailable?: boolean;
 }
 
-const initialSteps: TeachingMapStep[] = [
-  {
-    id: 1,
-    tip: "다 읽지 마세요. 중간의 ‘결론’ 섹션만 보면 됩니다.",
-    title:
-      "Node.js 비동기 I/O 모델과 싱글 스레드의 작동 원리",
-    isCompleted: true,
-  },
-  {
-    id: 2,
-    tip: "다 읽지 마세요. 중간의 ‘결론’ 섹션만 보면 됩니다.",
-    title:
-      "Node.js 비동기 I/O 모델과 싱글 스레드의 작동 원리",
-    isCompleted: false,
-  },
-  {
-    id: 3,
-    tip: "다 읽지 마세요. 중간의 ‘결론’ 섹션만 보면 됩니다.",
-    title:
-      "Node.js 비동기 I/O 모델과 싱글 스레드의 작동 원리",
-    isCompleted: false,
-  },
-];
-
 const TeachingMapDetailPage = () => {
-  const { teachingMapId = "unknown" } =
+  const { teachingMapId } =
     useParams<{ teachingMapId: string }>();
-  const createdTeachingMap = useMemo(() => {
-    const savedTeachingMap = sessionStorage.getItem(
-      `teaching-map:${teachingMapId}`,
-    );
-    if (!savedTeachingMap) {
-      return null;
-    }
+  const parsedTeachingMapId = Number(teachingMapId);
+  const hasValidTeachingMapId =
+    Number.isInteger(parsedTeachingMapId) &&
+    parsedTeachingMapId > 0;
 
-    try {
-      return JSON.parse(savedTeachingMap) as {
-        title: string;
-        description: string;
-        type: "shortcut" | "deepDive";
-        folderId: number | null;
-      };
-    } catch {
-      return null;
-    }
-  }, [teachingMapId]);
   const [
     teachingMapTitle,
     setTeachingMapTitle,
-  ] = useState(
-    createdTeachingMap?.title ??
-      "티칭맵 제목",
-  );
-
+  ] = useState("");
   const [
     teachingMapDescription,
     setTeachingMapDescription,
-  ] = useState(
-    createdTeachingMap?.description ??
-      "티칭맵 설명",
-  );
+  ] = useState("");
+  const [teachingMapType, setTeachingMapType] =
+    useState<"shortcut" | "deepDive">(
+      "shortcut",
+    );
+  const [steps, setSteps] = useState<
+    TeachingMapStep[]
+  >([]);
+  const [isLoading, setIsLoading] =
+    useState(true);
+  const [loadError, setLoadError] =
+    useState("");
 
-  const [steps, setSteps] =
-    useState<TeachingMapStep[]>(() => {
-      const savedSteps = sessionStorage.getItem(
-        `teaching-map-progress:${teachingMapId}`,
-      );
-      if (!savedSteps) {
-        const folderMaterialCount =
-          ARCHIVE_FOLDERS.find(
-            (folder) =>
-              folder.id ===
-              createdTeachingMap?.folderId,
-          )?.count ?? initialSteps.length;
-        const stepCount =
-          createdTeachingMap?.type === "deepDive"
-            ? folderMaterialCount
-            : Math.min(
-                5,
-                Math.max(3, folderMaterialCount),
-              );
+  useEffect(() => {
+    if (!hasValidTeachingMapId) {
+      return;
+    }
 
-        return Array.from(
-          { length: stepCount },
-          (_, index) => ({
-            ...initialSteps[
-              index % initialSteps.length
-            ],
-            id: index + 1,
-            isCompleted: index === 0,
-          }),
-        );
-      }
+    let isCancelled = false;
 
+    const loadTeachingMap = async () => {
       try {
-        return JSON.parse(savedSteps) as TeachingMapStep[];
-      } catch {
-        return initialSteps;
-      }
-    });
+        setLoadError("");
+        const teachingMap =
+          await getTeachingMap(
+            parsedTeachingMapId,
+          );
 
-  const completedCount = useMemo(() => {
-    return steps.filter(
-      (step) => step.isCompleted,
-    ).length;
-  }, [steps]);
+        if (isCancelled) {
+          return;
+        }
+
+        setTeachingMapTitle(
+          teachingMap.title,
+        );
+        setTeachingMapDescription(
+          teachingMap.description,
+        );
+        setTeachingMapType(
+          teachingMap.type === "DEEPDIVE"
+            ? "deepDive"
+            : "shortcut",
+        );
+        setSteps(
+          [...(teachingMap.steps ?? [])]
+            .sort(
+              (firstStep, secondStep) =>
+                firstStep.order -
+                secondStep.order,
+            )
+            .map((step) => ({
+              id: step.stepId,
+              order: step.order,
+              tip: step.tip,
+              title: step.stepTitle,
+              isCompleted: step.isFinished,
+            })),
+        );
+      } catch (error) {
+        if (!isCancelled) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "티칭맵 상세 정보를 불러오지 못했습니다.",
+          );
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadTeachingMap();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    hasValidTeachingMapId,
+    parsedTeachingMapId,
+  ]);
+
+  const completedCount = useMemo(
+    () =>
+      steps.filter(
+        (step) => step.isCompleted,
+      ).length,
+    [steps],
+  );
 
   const handleTeachingMapSave = (
     title: string,
     description: string,
   ) => {
     setTeachingMapTitle(title);
-    setTeachingMapDescription(
-      description,
-    );
+    setTeachingMapDescription(description);
 
-    console.log("수정된 티칭맵:", {
-      title,
-      description,
-    });
-
-    // TODO: 티칭맵 수정 API 연결
+    // 티칭맵 수정 API가 제공되면 서버 저장으로 교체합니다.
   };
 
   const handleToggleCompletion = (
     stepId: number,
   ) => {
     setSteps((previousSteps) =>
-      {
-        const nextSteps = previousSteps.map((step) =>
-        step.id === stepId
+      previousSteps.map((step) =>
+        step.id === stepId &&
+        step.isSourceAvailable !== false
           ? {
               ...step,
-              ...(step.isSourceAvailable === false
-                ? { isCompleted: step.isCompleted }
-                : {
               isCompleted:
                 !step.isCompleted,
-                  }),
             }
           : step,
-        );
-        sessionStorage.setItem(
-          `teaching-map-progress:${teachingMapId}`,
-          JSON.stringify(nextSteps),
-        );
-        return nextSteps;
-      },
+      ),
     );
+
+    // 스텝 완료 상태 변경 API가 제공되면 서버 저장으로 교체합니다.
   };
+
+  if (!hasValidTeachingMapId) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A]">
+        유효하지 않은 티칭맵입니다.
+      </main>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#C1AEFF]">
+        티칭맵을 불러오는 중입니다.
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A]">
+        {loadError}
+      </main>
+    );
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0B0A18]">
@@ -186,7 +196,7 @@ const TeachingMapDetailPage = () => {
             teachingMapDescription
           }
           mode={
-            createdTeachingMap?.type ===
+            teachingMapType ===
             "deepDive"
               ? "Deep-dive"
               : "Short-cut"
