@@ -1,5 +1,8 @@
 ﻿import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import { reissue } from "../apis/auth";
 import AuthBrandLogo from "../components/auth/AuthBrandLogo";
@@ -12,6 +15,10 @@ import {
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = location.state as
+    | { skipAutoLogin?: boolean }
+    | null;
   const BACKEND_URL =
     import.meta.env.VITE_API_URL ||
     "https://teachingg.site";
@@ -23,6 +30,10 @@ const LoginPage = () => {
   );
 
   useEffect(() => {
+    if (locationState?.skipAutoLogin) {
+      return;
+    }
+
     const accessToken = getStoredAccessToken();
 
     if (accessToken && isExistingUserToken(accessToken)) {
@@ -45,7 +56,7 @@ const LoginPage = () => {
     };
 
     void restoreAccessToken();
-  }, [navigate]);
+  }, [locationState?.skipAutoLogin, navigate]);
 
   const handleKakaoLogin = () => {
     window.location.href = `${BACKEND_URL}/oauth2/authorization/kakao?redirect_uri=${REDIRECT_URI}`;
