@@ -10,7 +10,7 @@ export type TrashSortType =
 export interface TrashFolderItem {
   id: number;
   name: string;
-  itemCount: number;
+  itemCount?: number;
   deletedAt: string;
 }
 

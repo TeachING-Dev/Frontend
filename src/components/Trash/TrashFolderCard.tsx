@@ -64,9 +64,11 @@ const TrashFolderCard = ({
         </h2>
 
         <div className="flex items-center gap-3 font-suit text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#F5F2FF]">
-          <span>
-            {folder.itemCount}개 항목
-          </span>
+          {folder.itemCount !== undefined && (
+            <span>
+              {folder.itemCount}개 항목
+            </span>
+          )}
 
           <span className="[font-family:Montserrat,sans-serif] italic tracking-[-0.4px]">
             {formatDeletedAt(

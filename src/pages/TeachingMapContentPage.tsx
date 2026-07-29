@@ -1,3 +1,13 @@
+import {
+  useEffect,
+  useState,
+} from "react";
+import { useParams } from "react-router-dom";
+
+import {
+  getHighlightTeacherAnalysis,
+  getTeachingMapStep,
+} from "../apis/teachingMap";
 import TeachingMapAnalysisPanel from "../components/teachingMap/content/TeachingMapAnalysisPanel";
 import TeachingMapContentHeader from "../components/teachingMap/content/TeachingMapContentHeader";
 import TeachingMapContentLegend from "../components/teachingMap/content/TeachingMapContentLegend";
@@ -6,66 +16,179 @@ import TeachingMapTagList from "../components/teachingMap/content/TeachingMapTag
 
 export interface TeachingMapContentSection {
   id: number;
+  highlightId: number;
+  highlightText: string;
   title: string;
   highlightType: "core" | "warning";
   analysisTitle: string;
   analysisDescriptions: string[];
 }
 
-const tags = [
-  "여기는 10자의 태그",
-  "여기는 10자의 태그",
-  "여기는 10자의 태그",
-  "여기는 10자의 태그"
-];
-
-const sections: TeachingMapContentSection[] = [
-  {
-    id: 1,
-    title: "Node.js 비동기 아키텍처의 핵심 구조",
-    highlightType: "core",
-    analysisTitle: "Node.js는 직접 다 처리하지 않고, 이벤트 루프를 통해 순서대로 관리해요.",
-    analysisDescriptions: [
-      "접근이 가능해질 수 있습니다. 그래서 웹 서비스를 배포할 때는 서비스에 꼭 필요한 포트만 허용하는 습관이 중요해요.",
-    ],
-  },
-  {
-    id: 2,
-    title: "개발자가 가장 자주 실수하는 우선순위",
-    highlightType: "warning",
-    analysisTitle: "Blocking과 Non-blocking의 차이를 헷갈리지 않기",
-    analysisDescriptions: [
-      "Blocking과 Non-blocking은 작업을 기다리는 방식이 다릅니다.",
-    ],
-  },
-  {
-    id: 3,
-    title: "개발자가 가장 자주 실수하는 우선순위",
-    highlightType: "warning",
-    analysisTitle: "Callback Queue와 Microtask Queue의 실행 순서를 혼동하지 않기",
-    analysisDescriptions: [
-      "Promise와 queueMicrotask는 Callback Queue보다 먼저 실행됩니다.",
-    ],
-  },
-];
-
 const TeachingMapContentPage = () => {
-  const [openAnalysisIds, setOpenAnalysisIds] =
-    useState<number[]>([1]);
+  const { teachingMapId, contentId } =
+    useParams<{
+      teachingMapId: string;
+      contentId: string;
+    }>();
 
-  const handleToggleAnalysis = (sectionId: number) => {
-    setOpenAnalysisIds((previousIds) =>
-      previousIds.includes(sectionId)
-        ? previousIds.filter((id) => id !== sectionId)
-        : [...previousIds, sectionId],
+  const [title, setTitle] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [originalUrl, setOriginalUrl] = useState("");
+  const [materialId, setMaterialId] =
+    useState<number | null>(null);
+  const [sections, setSections] = useState<
+    TeachingMapContentSection[]
+  >([]);
+  const [openAnalysisIds, setOpenAnalysisIds] =
+    useState<number[]>([]);
+  const [loadError, setLoadError] = useState("");
+  const mapId = Number(teachingMapId);
+  const stepId = Number(contentId);
+  const hasValidRouteParams =
+    Number.isInteger(mapId) &&
+    Number.isInteger(stepId);
+
+  useEffect(() => {
+    if (!hasValidRouteParams) return;
+
+    let isCancelled = false;
+
+    const loadStep = async () => {
+      try {
+        setLoadError("");
+        const step = await getTeachingMapStep(
+          mapId,
+          stepId,
+        );
+
+        if (isCancelled) {
+          return;
+        }
+
+        setTitle(step.title);
+        setCreatedAt(step.createdAt);
+        setTags(step.tags ?? []);
+        setOriginalUrl(step.originalUrl);
+        setMaterialId(step.materialId);
+
+        const highlights =
+          step.existingAiAnalysis?.highlights ?? [];
+        const feedbacks =
+          step.aiTeacherAnalysis?.feedbacks ?? [];
+
+        setSections(
+          highlights.map((highlight, index) => {
+            const feedback = feedbacks[index];
+
+            return {
+              id: index + 1,
+              highlightId: highlight.highlightId,
+              highlightText: highlight.text,
+              title: step.title,
+              highlightType:
+                highlight.type.toUpperCase() === "CORE"
+                  ? "core"
+                  : "warning",
+              analysisTitle:
+                feedback?.title ??
+                "AI 선생님의 분석을 확인해보세요.",
+              analysisDescriptions: feedback
+                ? [feedback.content]
+                : [],
+            };
+          }),
+        );
+      } catch (error) {
+        if (!isCancelled) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "스텝 상세 정보를 불러오지 못했습니다.",
+          );
+        }
+      }
+    };
+
+    void loadStep();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [mapId, stepId, hasValidRouteParams]);
+
+  const handleToggleAnalysis = async (
+    sectionId: number,
+  ) => {
+    if (openAnalysisIds.includes(sectionId)) {
+      setOpenAnalysisIds((previousIds) =>
+        previousIds.filter((id) => id !== sectionId),
+      );
+      return;
+    }
+
+    const section = sections.find(
+      (item) => item.id === sectionId,
     );
+
+    if (!section || materialId === null) {
+      return;
+    }
+
+    try {
+      const analysis =
+        await getHighlightTeacherAnalysis(
+          materialId,
+          section.highlightId,
+        );
+
+      setSections((previousSections) =>
+        previousSections.map((item) =>
+          item.id === sectionId
+            ? {
+                ...item,
+                analysisTitle: analysis.title,
+                analysisDescriptions: [
+                  analysis.content,
+                ],
+              }
+            : item,
+        ),
+      );
+      setOpenAnalysisIds((previousIds) => [
+        ...previousIds,
+        sectionId,
+      ]);
+    } catch (error) {
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : "AI 선생님 분석을 불러오지 못했습니다.",
+      );
+    }
   };
+
+  if (
+    !hasValidRouteParams ||
+    (loadError && sections.length === 0)
+  ) {
+    return (
+      <main className="flex h-[calc(100vh-80px)] items-center justify-center bg-[#13151F] text-[18px] text-[#F07A7A]">
+        {hasValidRouteParams
+          ? loadError
+          : "유효하지 않은 티칭맵 스텝입니다."}
+      </main>
+    );
+  }
 
   return (
     <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_535px] bg-[#13151F]">
       <section className="min-w-0 overflow-y-auto bg-[#13151F]">
         <div className="w-full pb-[70px] pt-[40px]">
-          <TeachingMapContentHeader />
+          <TeachingMapContentHeader
+            title={title}
+            createdAt={createdAt}
+          />
 
           <div className="mt-[24px]">
             <TeachingMapTagList tags={tags} />
@@ -89,6 +212,7 @@ const TeachingMapContentPage = () => {
       <TeachingMapAnalysisPanel
         sections={sections}
         openAnalysisIds={openAnalysisIds}
+        originalUrl={originalUrl}
         onToggleAnalysis={handleToggleAnalysis}
       />
     </main>
@@ -96,4 +220,3 @@ const TeachingMapContentPage = () => {
 };
 
 export default TeachingMapContentPage;
-import { useState } from "react";

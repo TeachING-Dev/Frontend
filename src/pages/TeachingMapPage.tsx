@@ -6,6 +6,10 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 
+import {
+  getTeachingMaps,
+  type TeachingMapListItem,
+} from "../apis/teachingMap";
 import Pagination from "../components/common/Pagination";
 import Toast from "../components/common/Toast";
 
@@ -29,44 +33,31 @@ type LearningStatus =
 
 const TEACHING_MAPS_PER_PAGE = 10;
 
-const INITIAL_TEACHING_MAPS: TeachingMapCardData[] = [
-  {
-    id: 1,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명입니다.",
-    type: "deepDive",
-    status: "inProgress",
-    currentStep: 4,
-    totalStep: 8,
-    thumbnailSrc: "/icons.svg",
-    createdAt: "2026-07-16T12:00:00",
-  },
-  {
-    id: 2,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명입니다.",
-    type: "shortcut",
-    status: "inProgress",
-    currentStep: 4,
-    totalStep: 8,
-    thumbnailSrc: "/icons.svg",
-    createdAt: "2026-07-15T12:00:00",
-  },
-  {
-    id: 3,
-    title: "로드맵 제목",
-    description:
-      "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명입니다.",
-    type: "shortcut",
-    status: "completed",
-    currentStep: 8,
-    totalStep: 8,
-    thumbnailSrc: "/icons.svg",
-    createdAt: "2026-07-14T12:00:00",
-  },
-];
+const toTeachingMapCardData = (
+  teachingMap: TeachingMapListItem,
+): TeachingMapCardData => ({
+  id: teachingMap.teachingMapId,
+  title: teachingMap.title,
+  description: teachingMap.description,
+  type:
+    teachingMap.type === "DEEPDIVE"
+      ? "deepDive"
+      : "shortcut",
+  status:
+    teachingMap.status === "FINISHED"
+      ? "completed"
+      : "inProgress",
+  currentStep: teachingMap.completedStepCount,
+  totalStep: teachingMap.totalStepCount,
+  thumbnailSrc:
+    teachingMap.sourcePlatforms?.[0]?.imageUrl ??
+    "/icons.svg",
+  thumbnailSrcs: (teachingMap.sourcePlatforms ?? []).map(
+    (platform) => platform.imageUrl,
+  ),
+  extraThumbnailCount: teachingMap.extraCount,
+  createdAt: teachingMap.createdAt,
+});
 
 const TeachingMapPage = () => {
   const navigate = useNavigate();
@@ -97,9 +88,10 @@ const TeachingMapPage = () => {
   const [
     teachingMaps,
     setTeachingMaps,
-  ] = useState<TeachingMapCardData[]>(
-    INITIAL_TEACHING_MAPS,
-  );
+  ] = useState<TeachingMapCardData[]>([]);
+
+  const [loadError, setLoadError] =
+    useState("");
 
   const [
     isDeleteMode,
@@ -142,6 +134,60 @@ const TeachingMapPage = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadTeachingMaps = async () => {
+      try {
+        setLoadError("");
+
+        const result = await getTeachingMaps({
+          status:
+            learningStatus === "completed"
+              ? "FINISHED"
+              : "IN_PROGRESS",
+          type:
+            selectedFilter === "all"
+              ? "ALL"
+              : selectedFilter === "deepDive"
+                ? "DEEPDIVE"
+                : "SHORTCUT",
+          sort:
+            sortType === "latest"
+              ? "LATEST"
+              : "OLDEST",
+        });
+
+        if (!isCancelled) {
+          setTeachingMaps(
+            result.teachingMaps.map(
+              toTeachingMapCardData,
+            ),
+          );
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setTeachingMaps([]);
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "티칭맵 목록을 불러오지 못했습니다.",
+          );
+        }
+      }
+    };
+
+    void loadTeachingMaps();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    learningStatus,
+    selectedFilter,
+    sortType,
+  ]);
 
   const filteredTeachingMaps =
     useMemo(() => {
@@ -524,7 +570,11 @@ const TeachingMapPage = () => {
             </div>
 
             <div className="mt-5 flex min-h-[540px] flex-col">
-              {isEmpty && !isDeleteMode ? (
+              {loadError ? (
+                <div className="flex h-[300px] items-center justify-center text-[18px] text-[#F07A7A]">
+                  {loadError}
+                </div>
+              ) : isEmpty && !isDeleteMode ? (
                 <TeachingMapEmpty />
               ) : (
                 <TeachingMapList
