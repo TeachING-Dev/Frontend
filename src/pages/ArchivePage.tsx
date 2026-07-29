@@ -7,6 +7,8 @@
 import {
   createFolder,
   getFolders,
+  moveFolderToTrash,
+  restoreFolder,
   type Folder,
   type FolderSort,
 } from "../apis/folder";
@@ -46,12 +48,16 @@ const ArchivePage = () => {
   const [toastMessage, setToastMessage] =
     useState("");
 
+  const [trashedFolderId, setTrashedFolderId] =
+    useState<number | null>(null);
+
   const fetchFolders = useCallback(async () => {
     try {
       setIsLoading(true);
       setErrorMessage("");
 
-      const folderList = await getFolders(sort);
+      const folderList =
+        await getFolders(sort);
 
       setFolders(folderList);
     } catch (error) {
@@ -81,7 +87,6 @@ const ArchivePage = () => {
   ) => {
     setSearchInput(value);
 
-    // 검색창의 내용을 모두 지우면 전체 폴더 목록 표시
     if (!value.trim()) {
       setKeyword("");
     }
@@ -103,7 +108,6 @@ const ArchivePage = () => {
   ) => {
     await createFolder(folderName);
 
-    // 생성 성공 후 서버에서 최신 폴더 목록 재조회
     await fetchFolders();
 
     setToastMessage(
@@ -111,18 +115,69 @@ const ArchivePage = () => {
     );
   };
 
-  const handleMoveToTrash = (
+  const handleMoveToTrash = async (
     folderId: number,
   ) => {
-    console.log(
-      "휴지통으로 이동할 폴더 ID:",
-      folderId,
-    );
+    try {
+      const result =
+        await moveFolderToTrash(folderId);
 
-    // TODO: 폴더 휴지통 이동 API 연결
-    setToastMessage(
-      "폴더가 휴지통으로 이동되었습니다",
-    );
+      if (!result.isDeleted) {
+        setToastMessage(
+          "폴더를 휴지통으로 이동하지 못했습니다.",
+        );
+        return;
+      }
+
+      setFolders((prev) =>
+        prev.filter(
+          (folder) =>
+            folder.folderId !== folderId,
+        ),
+      );
+
+      // 실행취소를 위해 마지막으로 삭제한 폴더 ID 저장
+      setTrashedFolderId(folderId);
+
+      setToastMessage(
+        "폴더가 휴지통으로 이동되었습니다",
+      );
+    } catch (error) {
+      console.error(
+        "폴더 휴지통 이동 실패:",
+        error,
+      );
+
+      setToastMessage(
+        "폴더를 휴지통으로 이동하지 못했습니다.",
+      );
+    }
+  };
+
+  const handleUndoTrash = async () => {
+    if (trashedFolderId === null) return;
+
+    try {
+      await restoreFolder(trashedFolderId);
+
+      // 복구 성공 후 서버에서 목록 다시 조회
+      await fetchFolders();
+
+      setTrashedFolderId(null);
+
+      setToastMessage(
+        "폴더가 복구되었습니다.",
+      );
+    } catch (error) {
+      console.error(
+        "폴더 복구 실패:",
+        error,
+      );
+
+      setToastMessage(
+        "폴더를 복구하지 못했습니다.",
+      );
+    }
   };
 
   useEffect(() => {
@@ -204,10 +259,16 @@ const ArchivePage = () => {
       {toastMessage && (
         <Toast
           message={toastMessage}
-          actionText="실행취소"
-          onAction={() => {
-            setToastMessage("");
-          }}
+          actionText={
+            trashedFolderId !== null
+              ? "실행취소"
+              : undefined
+          }
+          onAction={
+            trashedFolderId !== null
+              ? handleUndoTrash
+              : undefined
+          }
         />
       )}
     </>

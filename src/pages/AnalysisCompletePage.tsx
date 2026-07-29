@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import {
+  updateMaterialSummary,
+} from "../apis/material";
+
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
 import AnalysisSummary from "../components/home/AnalysisSummary";
@@ -32,13 +36,55 @@ const AnalysisCompletePage = () => {
   const [selectedFolderId, setSelectedFolderId] =
     useState(1);
 
+  const [summary, setSummary] = useState(
+    "AI가 분석한 내용을 요약해드릴게요.",
+  );
+
+  const [isSaving, setIsSaving] =
+    useState(false);
+
+  // 현재는 예시값
+  // 실제로는 분석 완료 API 응답이나 URL params에서 받아와야 함
+  const materialId = 101;
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+
+      const result =
+        await updateMaterialSummary(
+          selectedFolderId,
+          materialId,
+          {
+            shortSummary: summary,
+          },
+        );
+
+      setSummary(result.shortSummary);
+
+      console.log(
+        "AI 요약 수정 성공:",
+        result,
+      );
+    } catch (error) {
+      console.error(
+        "AI 요약 수정 실패:",
+        error,
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <main className="relative py-[55px]">
       {/* 좌측 고정 사이드바 */}
       <AnalysisSidebar
         folders={folders}
         selectedFolderId={selectedFolderId}
-        onFolderChange={setSelectedFolderId}
+        onFolderChange={
+          setSelectedFolderId
+        }
       />
 
       {/* 가운데 콘텐츠 */}
@@ -61,13 +107,35 @@ const AnalysisCompletePage = () => {
           <div className="mt-[20px] flex flex-col gap-[20px]">
             <AnalysisUrl url="https://example.com" />
 
-            <AnalysisSummary summary="AI가 분석한 내용을 요약해드릴게요." />
+            <AnalysisSummary
+              summary={summary}
+              onSummaryChange={setSummary}
+            />
 
             <button
               type="button"
-              className="h-[54px] w-full rounded-[5px] bg-[#917DEC] text-center text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-white transition-colors hover:bg-[#8269E7]"
+              onClick={handleSave}
+              disabled={isSaving}
+              className="
+                h-[54px]
+                w-full
+                rounded-[5px]
+                bg-[#917DEC]
+                text-center
+                text-[24px]
+                font-semibold
+                leading-[150%]
+                tracking-[-0.72px]
+                text-white
+                transition-colors
+                hover:bg-[#8269E7]
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+              "
             >
-              저장하기
+              {isSaving
+                ? "저장 중..."
+                : "저장하기"}
             </button>
           </div>
         </div>
