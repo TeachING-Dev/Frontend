@@ -50,7 +50,7 @@ const ArchiveDataSummary = ({
         <button
           type="button"
           onClick={handleEdit}
-          className="group flex h-[40px] w-[120px] items-center gap-[5px] rounded-[5px] bg-[#24232D] px-[12px] transition-colors hover:bg-[#3A3847]"
+          className="group flex h-[40px] w-[120px] items-center justify-center gap-[5px] rounded-[5px] bg-[#24232D] px-[12px] transition-colors hover:bg-[#3A3847]"
         >
           <img
             src="/icon/edit2.png"
@@ -59,7 +59,7 @@ const ArchiveDataSummary = ({
             className="h-[24px] w-[24px] object-contain"
           />
 
-          <span className="font-['ABeeZee'] text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#A1A1A5] transition-colors group-hover:text-white">
+          <span className="text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#A1A1A5] transition-colors group-hover:text-white">
             편집하기
           </span>
         </button>
@@ -67,7 +67,7 @@ const ArchiveDataSummary = ({
 
       {/* 기존 요약 */}
       <div className="border-l-[2px] border-[#D9CDFF] pl-[30px]">
-        <p className="font-['ABeeZee'] text-[20px] leading-[180%] tracking-[-0.4px] text-[#D9CDFF]">
+        <p className="text-[20px] font-medium leading-[160%] text-[#D9CDFF]">
           {summary}
         </p>
       </div>
@@ -130,10 +130,9 @@ const ArchiveDataSummary = ({
             onChange={(event) =>
               setEditedSummary(event.target.value)
             }
-            rows={3}
+            rows={1}
             autoFocus
-            className="w-full resize-none bg-transparent font-['ABeeZee'] text-[20px] italic font-normal leading-[160%] text-[#D9CDFF] outline-none"
-          />
+            className="w-full resize-none bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"          />
         </div>
       )}
     </section>

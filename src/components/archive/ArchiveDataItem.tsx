@@ -71,15 +71,14 @@ const ArchiveDataItem = ({
       }
       onClick={handleItemClick}
       onKeyDown={handleItemKeyDown}
-      className={`relative flex h-[335px] w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
+      className={`relative flex max-h-[335px] w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[#3A3946]"
       }`}
     >
       <div className="flex h-[75px] shrink-0 items-center justify-between px-[29px]">
-        <div className="flex items-center gap-8 font-['ABeeZee'] text-[18px] font-normal italic leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">
-          <span>#{tag}</span>
+        <div className="flex items-center gap-8 text-center font-suit text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">          <span>#{tag}</span>
           <span>{date}</span>
         </div>
 
