@@ -1,4 +1,4 @@
-import { useState } from "react";
+import SortDropdown from "../../common/SortDropdown";
 
 export type TeachingMapSortType =
   | "latest"
@@ -17,109 +17,18 @@ const TeachingMapToolbar = ({
   onSortChange,
   onDeleteModeStart,
 }: TeachingMapToolbarProps) => {
-  const [isSortMenuOpen, setIsSortMenuOpen] =
-    useState(false);
-
-  const sortLabel =
-    sortType === "latest"
-      ? "최신순"
-      : "오래된순";
-
-  const handleSortButtonClick = () => {
-    setIsSortMenuOpen(
-      (previousState) => !previousState,
-    );
-  };
-
-  const handleSortOptionClick = (
-    selectedSortType: TeachingMapSortType,
-  ) => {
-    onSortChange(selectedSortType);
-    setIsSortMenuOpen(false);
-  };
-
   return (
     <div className="flex h-10 items-center gap-2 px-2 py-1">
-      <div className="relative">
-        <button
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded={isSortMenuOpen}
-          onClick={handleSortButtonClick}
-          className="flex h-[30px] items-center gap-[2px] font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
-        >
-          <span>{sortLabel}</span>
-
-          <img
-            src="/dropdown.svg"
-            alt=""
-            aria-hidden="true"
-            className={[
-              "h-[14px] w-5",
-              "transition-transform duration-150",
-              isSortMenuOpen
-                ? "rotate-180"
-                : "",
-            ].join(" ")}
-          />
-        </button>
-
-        {isSortMenuOpen && (
-          <ul
-            role="listbox"
-            aria-label="티칭맵 정렬"
-            className="absolute right-0 top-[38px] z-20 w-[120px] overflow-hidden rounded-[5px] bg-[#1A1B25] py-1 shadow-lg"
-          >
-            <li>
-              <button
-                type="button"
-                role="option"
-                aria-selected={
-                  sortType === "latest"
-                }
-                onClick={() =>
-                  handleSortOptionClick(
-                    "latest",
-                  )
-                }
-                className={[
-                  "flex h-10 w-full items-center px-4",
-                  "text-left font-['SUIT'] text-[16px] font-medium",
-                  sortType === "latest"
-                    ? "bg-[#2B2C35] text-[#D9CDFF]"
-                    : "text-[#8D8E94] hover:bg-[#24252E]",
-                ].join(" ")}
-              >
-                최신순
-              </button>
-            </li>
-
-            <li>
-              <button
-                type="button"
-                role="option"
-                aria-selected={
-                  sortType === "oldest"
-                }
-                onClick={() =>
-                  handleSortOptionClick(
-                    "oldest",
-                  )
-                }
-                className={[
-                  "flex h-10 w-full items-center px-4",
-                  "text-left font-['SUIT'] text-[16px] font-medium",
-                  sortType === "oldest"
-                    ? "bg-[#2B2C35] text-[#D9CDFF]"
-                    : "text-[#8D8E94] hover:bg-[#24252E]",
-                ].join(" ")}
-              >
-                오래된순
-              </button>
-            </li>
-          </ul>
-        )}
-      </div>
+      <SortDropdown
+        ariaLabel="티칭맵 정렬"
+        value={sortType}
+        options={[
+          { value: "latest", label: "최신순" },
+          { value: "oldest", label: "오래된순" },
+        ]}
+        onChange={onSortChange}
+        widthClassName="w-[120px]"
+      />
 
       <button
         type="button"

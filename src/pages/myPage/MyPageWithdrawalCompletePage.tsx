@@ -1,7 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 const tikiImage = "/myPage/tiki.svg";
 const logoStarImage = "/myPage/logostar.svg";
 
 const MyPageWithdrawalCompletePage = () => {
+  const navigate = useNavigate();
+
   return (
     <main className="flex min-h-full justify-center px-[160px] pb-[120px]">
       <section className="mt-[300px] flex w-[409px] flex-col items-center">
@@ -24,6 +28,14 @@ const MyPageWithdrawalCompletePage = () => {
           <br />
           다음에 또 만나요!
         </h1>
+
+        <button
+          type="button"
+          onClick={() => navigate("/login", { replace: true })}
+          className="mt-[136px] flex h-[60px] w-[544px] items-center justify-center rounded-[10px] bg-[#917DEC] p-[10px] font-['SUIT'] text-[20px] font-semibold leading-7 tracking-[-0.6px] text-white transition hover:bg-[#806BDB]"
+        >
+          로그인 페이지로 이동
+        </button>
       </section>
     </main>
   );
