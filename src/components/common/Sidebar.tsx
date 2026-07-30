@@ -221,7 +221,7 @@ const Sidebar = ({
               </button>
             </div>
 
-            <nav className="mt-[60px] flex flex-col gap-[4px]">
+            <nav className="px-[10px] pt-[60px] flex flex-col gap-[15px]">
               {desktopMenuItems.map((item) => (
                 <NavLink
                   key={item.path}

@@ -9,15 +9,6 @@ type RecentKnowledgeListProps = {
 };
 
 const formatSavedAt = (createdAt: string) => {
-  /*
-   * 서버에서 UTC 시간을 내려주지만
-   * timezone 정보(Z)가 없는 경우 UTC로 처리
-   *
-   * 예:
-   * 2026-07-29T15:57:15
-   * ↓
-   * 2026-07-29T15:57:15Z
-   */
   const utcCreatedAt =
     createdAt.endsWith("Z")
       ? createdAt
