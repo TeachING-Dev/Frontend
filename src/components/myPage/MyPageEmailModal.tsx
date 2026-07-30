@@ -1,5 +1,6 @@
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
+import Toast from "../common/Toast";
 
 interface MyPageEmailModalProps {
   isOpen: boolean;
@@ -90,6 +91,7 @@ const MyPageEmailModal = ({
           돌아가기
         </button>
       </section>
+      {isCopied && <Toast message="복사되었습니다." />}
     </div>
   );
 };

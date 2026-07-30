@@ -264,7 +264,7 @@ const MyPageEditPage = () => {
           onClick={handleSubmit}
           className={[
             "mt-[40px] flex h-[60px] w-[736px] items-center justify-center rounded-[10px]",
-            "px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px]",
+            "px-[10px] font-['SUIT'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px]",
             isSubmitDisabled ||
             isSubmitting
               ? "cursor-not-allowed bg-[#2B2C35] text-[#717379]"

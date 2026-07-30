@@ -47,18 +47,18 @@ const TrashFolderCard = ({
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
-        "relative h-[150px] w-full overflow-hidden rounded-[10px]",
-        "border bg-[linear-gradient(135deg,#13151F_0%,#171526_48%,#31284E_100%)]",
+        "relative h-[128px] w-full overflow-hidden rounded-[8px]",
+        "border bg-[linear-gradient(180deg,rgba(145,125,236,0)_0%,rgba(145,125,236,0.3)_100%)]",
         "transition-[border-color,box-shadow]",
         isRestoreMode
           ? "cursor-pointer"
           : "",
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
-          : "border-[#3A315E]",
+          : "border-[rgba(145,125,236,0)]",
       ].join(" ")}
     >
-      <div className="flex h-full flex-col justify-end px-[26px] pb-3 pt-[56px]">
+      <div className="flex h-full flex-col justify-center px-[26px] py-3">
         <h2 className="font-suit text-[24px] font-semibold leading-[36px] tracking-[-0.72px] text-[#F5F2FF]">
           {folder.name}
         </h2>
