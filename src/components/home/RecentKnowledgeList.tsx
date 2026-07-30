@@ -8,12 +8,6 @@ type RecentKnowledgeListProps = {
   materials: RecentMaterial[];
 };
 
-const platformIconMap: Record<string, string> = {
-  VELOG: "/icon/velog.png",
-  YOUTUBE: "/icon/youtube-app-icon.png",
-  CAFE: "/icon/cafe.png",
-};
-
 const formatSavedAt = (createdAt: string) => {
   const utcCreatedAt =
     createdAt.endsWith("Z")
@@ -90,14 +84,13 @@ const RecentKnowledgeList = ({
             material.createdAt,
           )}
           iconSrc={
-            platformIconMap[
-              material.platformType
-            ] ||
-            "/icon/최근에 저장한 지식3.png"
+            material.platformImageUrl
+              ? `/icon/${material.platformImageUrl}`
+              : "/icon/최근에 저장한 지식3.png"
           }
           onClick={() =>
             navigate(
-              `/archive/folder/data/${material.materialId}`,
+              `/archive/materials/${material.materialId}`,
             )
           }
         />

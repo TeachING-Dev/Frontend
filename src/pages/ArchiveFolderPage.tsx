@@ -234,6 +234,8 @@ const ArchiveFolderPage = () => {
             title: material.title,
             description:
               material.summary,
+            platformType:
+              material.platformType,
           }),
         );
 
@@ -301,6 +303,8 @@ const ArchiveFolderPage = () => {
                   material.title,
                 description:
                   material.summary,
+                platformType:
+                  material.platformType,
               }),
             );
 
