@@ -143,6 +143,7 @@ export type FolderMaterial = {
   title: string;
   summary: string;
   originalUrl: string;
+  platformType: string;
   tags: string[];
   statusAi: string;
   createdAt: string;

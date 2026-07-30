@@ -5,6 +5,8 @@ type ArchiveDataHeaderProps = {
   title: string;
   tags: string[];
   originalUrl: string;
+  platformType: string;
+  platformImageUrl: string;
   onBack: () => void;
 };
 
@@ -13,6 +15,8 @@ const ArchiveDataHeader = ({
   title,
   tags,
   originalUrl,
+  platformType,
+  platformImageUrl,
   onBack,
 }: ArchiveDataHeaderProps) => {
   const handleOpenOriginal = () => {
@@ -51,10 +55,11 @@ const ArchiveDataHeader = ({
       {/* 제목과 원문 버튼 */}
       <div className="mb-[24px] flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-[15px]">
+          {/* 플랫폼 아이콘 */}
           <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
-              src="/icon/youtube-app-icon.png"
-              alt="YouTube"
+              src={`/icon/${platformImageUrl}`}
+              alt={platformType}
               className="h-[32px] w-[32px] rounded-full object-contain"
             />
           </div>
@@ -69,7 +74,10 @@ const ArchiveDataHeader = ({
           onClick={handleOpenOriginal}
           className="flex h-[40px] shrink-0 items-center justify-center gap-[5px] rounded-[5px] bg-[#24232D] px-[14px] font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#F5F2FF] transition-colors hover:bg-[#3A3847]"
         >
-          <Globe size={24} strokeWidth={2} />
+          <Globe
+            size={24}
+            strokeWidth={2}
+          />
           원문으로 이동
         </button>
       </div>
@@ -93,7 +101,8 @@ const ArchiveDataHeader = ({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"          >
+            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
+          >
             #{tag}
           </span>
         ))}

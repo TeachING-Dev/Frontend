@@ -245,8 +245,7 @@ const ArchiveFolderHeader = ({
       </div>
 
       <p className="mb-6 text-[20px] text-[#A1A1A5]">
-        {savedItemCount}개의 저장된
-        자료
+        {savedItemCount}개의 저장된 자료
       </p>
 
       <div className="flex items-center justify-between">

@@ -76,6 +76,14 @@ const ArchiveFolderPage = () => {
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
 
+  /**
+   * 현재 폴더의 전체 저장 자료 수
+   */
+  const [
+    totalMaterialCount,
+    setTotalMaterialCount,
+  ] = useState(0);
+
   const [
     folderOptions,
     setFolderOptions,
@@ -226,6 +234,8 @@ const ArchiveFolderPage = () => {
             title: material.title,
             description:
               material.summary,
+            platformType:
+              material.platformType,
           }),
         );
 
@@ -234,9 +244,20 @@ const ArchiveFolderPage = () => {
       setMaterials(
         convertedMaterials,
       );
+
+      /**
+       * 검색 중이 아닐 때만
+       * 폴더 전체 자료 수 갱신
+       */
+      if (!keyword) {
+        setTotalMaterialCount(
+          materialsResult.totalElements,
+        );
+      }
     }, [
       fetchFolder,
       fetchFolderMaterials,
+      keyword,
     ]);
 
   /**
@@ -282,12 +303,24 @@ const ArchiveFolderPage = () => {
                   material.title,
                 description:
                   material.summary,
+                platformType:
+                  material.platformType,
               }),
             );
 
           setMaterials(
             convertedMaterials,
           );
+
+          /**
+           * 검색 중이 아닐 때만
+           * 폴더 전체 자료 수 저장
+           */
+          if (!keyword) {
+            setTotalMaterialCount(
+              materialsResult.totalElements,
+            );
+          }
 
           setSelectedItemIds([]);
           setSelectMode(null);
@@ -324,6 +357,7 @@ const ArchiveFolderPage = () => {
   }, [
     fetchFolder,
     fetchFolderMaterials,
+    keyword,
   ]);
 
   /**
@@ -616,20 +650,15 @@ const ArchiveFolderPage = () => {
       );
 
       /**
-       * 자료 개수 감소
+       * 폴더 전체 자료 개수 감소
        */
-      setFolder((prev) =>
-        prev
-          ? {
-              ...prev,
-              materialCount:
-                Math.max(
-                  0,
-                  prev.materialCount -
-                    movedMaterialIds.length,
-                ),
-            }
-          : prev,
+      setTotalMaterialCount(
+        (prev) =>
+          Math.max(
+            0,
+            prev -
+              movedMaterialIds.length,
+          ),
       );
 
       setIsMoveModalOpen(false);
@@ -706,20 +735,15 @@ const ArchiveFolderPage = () => {
         );
 
         /**
-         * 현재 폴더 자료 개수 감소
+         * 현재 폴더 전체 자료 개수 감소
          */
-        setFolder((prev) =>
-          prev
-            ? {
-                ...prev,
-                materialCount:
-                  Math.max(
-                    0,
-                    prev.materialCount -
-                      trashedMaterialIds.length,
-                  ),
-              }
-            : prev,
+        setTotalMaterialCount(
+          (prev) =>
+            Math.max(
+              0,
+              prev -
+                trashedMaterialIds.length,
+            ),
         );
 
         setSelectMode(null);
@@ -788,6 +812,9 @@ const ArchiveFolderPage = () => {
       const actionToUndo =
         lastAction;
 
+      let restoredCount =
+        actionToUndo.materialIds.length;
+
       try {
         /**
          * 일반 폴더 이동 실행취소
@@ -828,6 +855,9 @@ const ArchiveFolderPage = () => {
               },
             );
 
+          restoredCount =
+            restoreResult.restoredIds.length;
+
           /**
            * 일부 자료 복구 실패
            */
@@ -847,6 +877,19 @@ const ArchiveFolderPage = () => {
          * 화면 상태 동기화
          */
         await refetchFolderPageData();
+
+        /**
+         * 검색 중이면 전체 자료 개수는
+         * 재조회 결과로 변경되지 않으므로
+         * 복구된 수만큼 다시 증가
+         */
+        if (keyword) {
+          setTotalMaterialCount(
+            (prev) =>
+              prev +
+              restoredCount,
+          );
+        }
 
         setLastAction(null);
 
@@ -903,7 +946,7 @@ const ArchiveFolderPage = () => {
               folder.folderName
             }
             savedItemCount={
-              folder.materialCount
+              totalMaterialCount
             }
             searchKeyword={
               searchInput
