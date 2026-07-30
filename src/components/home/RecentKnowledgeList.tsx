@@ -8,6 +8,12 @@ type RecentKnowledgeListProps = {
   materials: RecentMaterial[];
 };
 
+const platformIconMap: Record<string, string> = {
+  VELOG: "/icon/velog.png",
+  YOUTUBE: "/icon/youtube-app-icon.png",
+  CAFE: "/icon/cafe.png",
+};
+
 const formatSavedAt = (createdAt: string) => {
   const utcCreatedAt =
     createdAt.endsWith("Z")
@@ -28,12 +34,10 @@ const formatSavedAt = (createdAt: string) => {
       (1000 * 60),
   );
 
-  // 1분 미만
   if (differenceInMinutes < 1) {
     return "방금 전";
   }
 
-  // 1시간 미만
   if (differenceInMinutes < 60) {
     return `${differenceInMinutes}분 전`;
   }
@@ -42,7 +46,6 @@ const formatSavedAt = (createdAt: string) => {
     differenceInMinutes / 60,
   );
 
-  // 24시간 미만
   if (differenceInHours < 24) {
     return `${differenceInHours}시간 전`;
   }
@@ -51,12 +54,10 @@ const formatSavedAt = (createdAt: string) => {
     differenceInHours / 24,
   );
 
-  // 7일 미만
   if (differenceInDays < 7) {
     return `${differenceInDays}일 전`;
   }
 
-  // 7일 이상
   return createdDate.toLocaleDateString(
     "ko-KR",
   );
@@ -89,7 +90,9 @@ const RecentKnowledgeList = ({
             material.createdAt,
           )}
           iconSrc={
-            material.platformImageUrl ||
+            platformIconMap[
+              material.platformType
+            ] ||
             "/icon/최근에 저장한 지식3.png"
           }
           onClick={() =>

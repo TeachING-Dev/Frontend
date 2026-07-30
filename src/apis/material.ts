@@ -1,6 +1,15 @@
 import api from "./axios";
 
 /* ==============================
+   자료 태그 타입
+============================== */
+
+export type MaterialTag = {
+  tagId: number;
+  tagName: string;
+};
+
+/* ==============================
    자료 상세 조회
 ============================== */
 
@@ -10,7 +19,9 @@ export type MaterialDetail = {
   title: string;
   originUrl: string;
   summary: string;
-  tags: string[];
+  platformType: string;
+  platformImageUrl: string;
+  tags: MaterialTag[];
   statusAi: string;
   createdAt: string;
   updatedAt: string;
@@ -38,11 +49,6 @@ export const getMaterialDetail = async (
 /* ==============================
    자료 태그 조회
 ============================== */
-
-export type MaterialTag = {
-  tagId: number;
-  tagName: string;
-};
 
 type MaterialTagsResponse = {
   isSuccess: boolean;
@@ -369,28 +375,6 @@ export const getMaterials = async (
             ? { size }
             : undefined,
       },
-    );
-
-  return response.data.result;
-};
-
-/* ==============================
-   자료 태그 삭제
-============================== */
-
-type DeleteMaterialTagResponse = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: string;
-};
-
-export const deleteMaterialTag = async (
-  materialTagId: number,
-): Promise<string> => {
-  const response =
-    await api.delete<DeleteMaterialTagResponse>(
-      `/materials/tags/${materialTagId}`,
     );
 
   return response.data.result;

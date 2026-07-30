@@ -155,7 +155,7 @@ const HomeContent = ({
       </div>
 
       {/* 내용 */}
-      <div className="md:pt-[5px]">
+      <div className="md:pt-[5px] md:px-[10px]">
         {isLoading ? (
           <div className="flex min-h-[280px] items-center justify-center">
             <p className="text-[16px] font-medium text-[#717379]">
