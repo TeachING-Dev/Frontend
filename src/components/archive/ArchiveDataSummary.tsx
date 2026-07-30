@@ -2,10 +2,14 @@ import { useState } from "react";
 
 type ArchiveDataSummaryProps = {
   summary: string;
+  onUpdateSummary: (
+    summary: string,
+  ) => Promise<void>;
 };
 
 const ArchiveDataSummary = ({
   summary,
+  onUpdateSummary,
 }: ArchiveDataSummaryProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedSummary, setEditedSummary] =
@@ -20,9 +24,16 @@ const ArchiveDataSummary = ({
     setEditedSummary(summary);
   };
 
-  const handleComplete = () => {
-    console.log("수정 완료:", editedSummary);
-    setIsEditing(false);
+  const handleComplete = async () => {
+    try {
+      await onUpdateSummary(editedSummary);
+      setIsEditing(false);
+    } catch (error) {
+      console.error(
+        "요약 수정 실패:",
+        error,
+      );
+    }
   };
 
   const handleCancel = () => {
@@ -80,7 +91,7 @@ const ArchiveDataSummary = ({
               직접 수정
             </span>
 
-            <div className="flex items-center rounded-full border border-[#917DEC] bg-[#13151F] px-[6px] gap-[4px]">
+            <div className="flex items-center gap-[4px] rounded-full border border-[#917DEC] bg-[#13151F] px-[6px]">
               <button
                 type="button"
                 onClick={handleReset}
@@ -128,11 +139,14 @@ const ArchiveDataSummary = ({
           <textarea
             value={editedSummary}
             onChange={(event) =>
-              setEditedSummary(event.target.value)
+              setEditedSummary(
+                event.target.value,
+              )
             }
             rows={1}
             autoFocus
-            className="w-full resize-none bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"          />
+            className="w-full resize-none bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"
+          />
         </div>
       )}
     </section>
