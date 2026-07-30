@@ -5,6 +5,7 @@ type ArchiveDataHeaderProps = {
   title: string;
   tags: string[];
   originalUrl: string;
+  onBack: () => void;
 };
 
 const ArchiveDataHeader = ({
@@ -12,6 +13,7 @@ const ArchiveDataHeader = ({
   title,
   tags,
   originalUrl,
+  onBack,
 }: ArchiveDataHeaderProps) => {
   const handleOpenOriginal = () => {
     window.open(
@@ -23,19 +25,37 @@ const ArchiveDataHeader = ({
 
   return (
     <header className="mb-[58px]">
+      {/* 자료 목록으로 이동 */}
+      <button
+        type="button"
+        onClick={onBack}
+        className="group mb-1 flex items-center gap-2 rounded px-1 py-1 transition hover:bg-white/10"
+      >
+        <span
+          aria-hidden="true"
+          className="text-[20px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 group-hover:text-white"
+        >
+          &lt;
+        </span>
+
+        <span className="text-[16px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white">
+          자료 목록으로 이동
+        </span>
+      </button>
+
       {/* 날짜 */}
-      <p className="mb-[10px] font-['ABeeZee'] text-[18px] italic font-normal leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
-        {date}
+      <p className="mb-[10px] font-['ABeeZee'] text-[18px] font-normal italic leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
+        {date.split("T")[0]}
       </p>
 
       {/* 제목과 원문 버튼 */}
       <div className="mb-[24px] flex items-center justify-between">
-        <div className="flex min-w-0 items-center gap-[12px]">
+        <div className="flex min-w-0 items-center gap-[15px]">
           <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
               src="/icon/youtube-app-icon.png"
               alt="YouTube"
-              className="h-[32px] w-[32px] object-contain rounded-full"
+              className="h-[32px] w-[32px] rounded-full object-contain"
             />
           </div>
 
@@ -73,8 +93,7 @@ const ArchiveDataHeader = ({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] font-['ABeeZee'] text-[12px] italic leading-none text-[#B7A4FF]"
-          >
+            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"          >
             #{tag}
           </span>
         ))}

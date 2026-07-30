@@ -102,6 +102,7 @@ const HomePage = () => {
         lg:px-0
         lg:pb-[75px]
         lg:pt-[60px]
+        lg:gap-[30px]
       "
     >
       <HomeHeader />

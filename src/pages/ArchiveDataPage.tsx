@@ -2,13 +2,17 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import {
   getMaterialAnalysis,
   getMaterialDetail,
   getMaterialOriginUrl,
   getMaterialTags,
+  updateMaterialSummary,
   type MaterialAnalysis,
   type MaterialDetail,
   type MaterialTag,
@@ -18,6 +22,8 @@ import ArchiveDataHeader from "../components/archive/ArchiveDataHeader";
 import ArchiveDataSummary from "../components/archive/ArchiveDataSummary";
 
 const ArchiveDataPage = () => {
+  const navigate = useNavigate();
+
   const { folderId, materialId } =
     useParams<{
       folderId: string;
@@ -184,6 +190,66 @@ const ArchiveDataPage = () => {
     };
   }, [folderId, materialId]);
 
+  const handleBack = () => {
+    navigate(`/archive/folder/${folderId}`);
+  };
+
+  const handleUpdateSummary = async (
+    newSummary: string,
+  ) => {
+    if (!folderId || !materialId) {
+      throw new Error(
+        "자료 정보를 확인할 수 없습니다.",
+      );
+    }
+
+    const parsedFolderId = Number(folderId);
+    const parsedMaterialId =
+      Number(materialId);
+
+    try {
+      const result =
+        await updateMaterialSummary(
+          parsedFolderId,
+          parsedMaterialId,
+          {
+            shortSummary: newSummary,
+          },
+        );
+
+      setMaterial((prev) =>
+        prev
+          ? {
+              ...prev,
+              summary: result.shortSummary,
+              updatedAt: result.updatedAt,
+            }
+          : prev,
+      );
+
+      setMaterialAnalysis((prev) =>
+        prev
+          ? {
+              ...prev,
+              shortSummary:
+                result.shortSummary,
+              isUserEdited:
+                result.isUserEdited,
+              updatedAt:
+                result.updatedAt,
+            }
+          : prev,
+      );
+    } catch (error) {
+      console.error(
+        "AI 요약 수정 실패:",
+        error,
+      );
+
+      throw error;
+    }
+  };
+
   if (isLoading) {
     return (
       <main className="py-10">
@@ -215,10 +281,14 @@ const ArchiveDataPage = () => {
           tags={materialTags.map(
             (tag) => tag.tagName,
           )}
+          onBack={handleBack}
         />
 
         <ArchiveDataSummary
           summary={material.summary}
+          onUpdateSummary={
+            handleUpdateSummary
+          }
         />
 
         {isAnalysisLoading ? (

@@ -27,12 +27,12 @@ const RecentKnowledgeItem = ({
       />
 
       {/* 제목 */}
-      <p className="flex-1 truncate text-left font-['SUIT'] text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D0D0D2]">
+      <p className="flex-1 truncate text-left text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D0D0D2]">
         {title}
       </p>
 
       {/* 저장 시간 */}
-      <span className="mr-80 shrink-0 font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#42444C]">
+      <span className="mr-80 shrink-0 text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#42444C]">
         {savedAt}
       </span>
 

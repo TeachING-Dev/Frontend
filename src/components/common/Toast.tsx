@@ -32,7 +32,7 @@ const Toast = ({ message, actionText, onAction, variant = "default" }: ToastProp
         <button
           type="button"
           onClick={onAction}
-          className="ml-5 shrink-0 font-['SUIT'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#917DEC] underline transition hover:text-[#8068E2]"
+          className="ml-5 shrink-0 text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#2B2C35] underline transition"
         >
           {actionText}
         </button>

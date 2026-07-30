@@ -43,7 +43,7 @@ const FolderGridItem = ({
       tabIndex={0}
       onClick={handleFolderClick}
       onKeyDown={handleKeyDown}
-      className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] py-[26px] transition hover:border-[#8B6DFF]"
+      className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] pt-[56px] pb-[12px] transition hover:border-[#8B6DFF]"
     >
       <div className="flex w-full flex-col justify-between">
         {/* 첫 번째 줄 */}

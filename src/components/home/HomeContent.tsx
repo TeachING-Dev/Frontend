@@ -57,6 +57,7 @@ const HomeContent = ({
           px-[15px]
           pt-[15px]
           md:px-[20px]
+          md:py-[15px]
           lg:flex-row
           lg:items-center
           lg:justify-between
@@ -111,10 +112,10 @@ const HomeContent = ({
             }`}
           >
             <img
-              src="/icon/Subtract.png"
+              src="/icon/티칭맵3.png"
               alt=""
               aria-hidden="true"
-              className="h-5 w-4 shrink-0"
+              className="h-5 w-5 shrink-0"
             />
 
             <span className="break-keep">
@@ -132,7 +133,6 @@ const HomeContent = ({
             flex
             items-center
             gap-1
-            font-['SUIT']
             text-[14px]
             font-medium
             leading-[150%]
@@ -155,7 +155,7 @@ const HomeContent = ({
       </div>
 
       {/* 내용 */}
-      <div className="pt-[15px] md:pt-[20px]">
+      <div className="md:pt-[5px]">
         {isLoading ? (
           <div className="flex min-h-[280px] items-center justify-center">
             <p className="text-[16px] font-medium text-[#717379]">
@@ -164,7 +164,7 @@ const HomeContent = ({
           </div>
         ) : selectedTab === "knowledge" ? (
           <RecentKnowledgeList
-            materials={recentMaterials}
+            materials={recentMaterials.slice(0, 5)}
           />
         ) : (
           <TeachingMapList
