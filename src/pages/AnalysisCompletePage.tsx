@@ -13,6 +13,7 @@ import {
 import {
   finalizeMaterial,
   updateMaterialSummary,
+  type MaterialTag,
 } from "../apis/material";
 
 import AnalysisHeader from "../components/home/AnalysisHeader";
@@ -49,10 +50,7 @@ type AnalysisLocationState = {
       | string
       | null;
 
-    tags: {
-      tagId: number;
-      tagName: string;
-    }[];
+    tags: MaterialTag[];
   };
 };
 
@@ -99,12 +97,12 @@ const AnalysisCompletePage = () => {
      태그
   ============================== */
 
-  const [selectedTagIds] =
-    useState<number[]>(
-      analysisResult?.tags.map(
-        (tag) => tag.tagId,
-      ) ?? [],
-    );
+  const [
+    selectedTags,
+    setSelectedTags,
+  ] = useState<MaterialTag[]>(
+    analysisResult?.tags ?? [],
+  );
 
   /* ==============================
      요약
@@ -140,10 +138,6 @@ const AnalysisCompletePage = () => {
 
         setFolders(mappedFolders);
 
-        /*
-         * 추천 폴더가 실제 폴더 목록에
-         * 존재하는지 확인
-         */
         const recommendedFolderId =
           analysisResult
             ?.recommendedFolderId;
@@ -156,9 +150,6 @@ const AnalysisCompletePage = () => {
               recommendedFolderId,
           );
 
-        /*
-         * 추천 폴더가 있으면 추천 폴더 선택
-         */
         if (
           hasRecommendedFolder &&
           recommendedFolderId != null
@@ -170,10 +161,6 @@ const AnalysisCompletePage = () => {
           return;
         }
 
-        /*
-         * 추천 폴더가 없으면
-         * 첫 번째 폴더 선택
-         */
         if (
           mappedFolders.length > 0
         ) {
@@ -220,6 +207,15 @@ const AnalysisCompletePage = () => {
 
     try {
       setIsSaving(true);
+
+      /*
+       * 현재 활성화되어 있는 태그들의
+       * tagId만 추출
+       */
+      const selectedTagIds =
+        selectedTags.map(
+          (tag) => tag.tagId,
+        );
 
       /*
        * 1. 자료 저장 위치 / 태그 확정
@@ -308,10 +304,10 @@ const AnalysisCompletePage = () => {
               }
               tags={
                 analysisResult
-                  ?.tags.map(
-                    (tag) =>
-                      tag.tagName,
-                  ) ?? []
+                  ?.tags ?? []
+              }
+              onSelectedTagsChange={
+                setSelectedTags
               }
             />
           </div>

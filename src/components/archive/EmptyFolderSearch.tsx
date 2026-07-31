@@ -1,6 +1,6 @@
 const EmptyArchiveSearch = () => {
   return (
-    <div className="flex flex-col items-center pt-[140px]">
+    <div className="flex flex-col items-center pt-[180px]">
       <img
         src="/character/NotFound.png"
         alt="검색 결과 없음"

@@ -43,7 +43,7 @@ const DataPopover = ({
             className="flex h-[44px] w-full items-center gap-3 rounded-[4px] px-3 text-left text-[16px] text-[#D8CCFF] transition hover:bg-[#24242E]"
           >
             <img
-              src="/icon/trash.png"
+              src="/icon/휴지통.png"
               alt=""
               aria-hidden="true"
               className="h-[24px] w-[24px] shrink-0 object-contain"

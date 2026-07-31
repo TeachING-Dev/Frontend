@@ -5,6 +5,7 @@ type ArchiveDataItemProps = {
   date: string;
   title: string;
   description: string;
+  platformType: string;
   isMoveMode?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
@@ -13,11 +14,18 @@ type ArchiveDataItemProps = {
   onOpenOriginal?: () => void;
 };
 
+const platformIconMap: Record<string, string> = {
+  VELOG: "/icon/velog.png",
+  YOUTUBE: "/icon/youtube-app-icon.png",
+  CAFE: "/icon/cafe-icon.svg",
+};
+
 const ArchiveDataItem = ({
   tag,
   date,
   title,
   description,
+  platformType,
   isMoveMode = false,
   isSelected = false,
   onSelect,
@@ -71,14 +79,14 @@ const ArchiveDataItem = ({
       }
       onClick={handleItemClick}
       onKeyDown={handleItemKeyDown}
-      className={`relative flex h-[335px] w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
+      className={`relative flex max-h-[335px] w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[#3A3946]"
       }`}
     >
       <div className="flex h-[75px] shrink-0 items-center justify-between px-[29px]">
-        <div className="flex items-center gap-8 font-['ABeeZee'] text-[18px] font-normal italic leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">
+        <div className="flex items-center gap-8 text-center font-suit text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">
           <span>#{tag}</span>
           <span>{date}</span>
         </div>
@@ -123,8 +131,13 @@ const ArchiveDataItem = ({
       <div className="min-h-0 flex-1 rounded-t-[10px] bg-[#11121A] px-[30px] py-[40px]">
         <div className="mb-[20px] flex items-center gap-[15px]">
           <img
-            src="/icon/youtube-app-icon.png"
-            alt="YouTube"
+            src={
+              platformIconMap[
+                platformType
+              ] ??
+              "/icon/최근에 저장한 지식3.png"
+            }
+            alt={platformType}
             className="h-[36px] w-[36px] shrink-0 rounded-full object-contain"
           />
 

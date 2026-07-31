@@ -304,7 +304,7 @@ const SignupPage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-[22.425px]">
               <div className="flex flex-col items-start gap-2.5">
                 <button
                   type="button"
@@ -325,7 +325,7 @@ const SignupPage = () => {
               </div>
 
               <div className="flex flex-col items-start gap-7">
-                <div className="flex w-[640px] flex-col items-start gap-[4.56px] py-3">
+                <div className="flex w-[640px] flex-col items-start gap-[11.85px] py-3">
                   <button
                     type="button"
                     onClick={() => toggleTerm("age")}

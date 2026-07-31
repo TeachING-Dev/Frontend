@@ -83,6 +83,19 @@ export interface TeachingMapDetailResult {
   steps: TeachingMapDetailStep[];
 }
 
+export interface ToggleTeachingMapStepResult {
+  stepId: number;
+  isCompleted: boolean;
+  completedStepCount: number;
+  totalStepCount: number;
+  progressRate: number;
+}
+
+export interface TrashTeachingMapsResult {
+  deletedTeachingMapIds: number[];
+  deletedCount: number;
+}
+
 export interface TeachingMapHighlight {
   highlightId: number;
   text: string;
@@ -156,6 +169,31 @@ export const getTeachingMap = async (
   const { data } = await api.get<
     ApiResponse<TeachingMapDetailResult>
   >(`/api/v1/teaching-maps/${teachingMapId}`);
+
+  return data.result;
+};
+
+export const toggleTeachingMapStep = async (
+  teachingMapId: number,
+  stepId: number,
+): Promise<ToggleTeachingMapStepResult> => {
+  const { data } = await api.patch<
+    ApiResponse<ToggleTeachingMapStepResult>
+  >(
+    `/api/v1/teaching-maps/${teachingMapId}/steps/${stepId}/toggle`,
+  );
+
+  return data.result;
+};
+
+export const trashTeachingMaps = async (
+  teachingMapIds: number[],
+): Promise<TrashTeachingMapsResult> => {
+  const { data } = await api.patch<
+    ApiResponse<TrashTeachingMapsResult>
+  >("/api/v1/teaching-maps/trash", {
+    teachingMapIds,
+  });
 
   return data.result;
 };

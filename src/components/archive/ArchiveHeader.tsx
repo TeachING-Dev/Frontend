@@ -70,8 +70,7 @@ const ArchiveHeader = ({
               )
             }
             placeholder="폴더 검색"
-            className="flex-1 bg-transparent text-[24px] font-semibold text-[#5D5D5D] outline-none placeholder:text-gray-500"
-          />
+            className="flex-1 bg-transparent text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#5D5D5D] outline-none placeholder:text-gray-500"          />
 
           <button
             type="submit"
@@ -96,12 +95,12 @@ const ArchiveHeader = ({
                   (prev) => !prev,
                 )
               }
-              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#D9CDFF]"
+              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#F5F2FF]"
             >
               <span>{sortLabel[sort]}</span>
 
               <span
-                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white transition-transform ${
+                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white ${
                   isSortOpen
                     ? "rotate-180"
                     : ""
@@ -110,7 +109,7 @@ const ArchiveHeader = ({
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-[46px] z-10 w-[160px] overflow-hidden rounded bg-[#24232D] shadow-lg">
+              <div className="absolute top-[46px] z-10 w-[147px] overflow-hidden rounded bg-[#24232D] shadow-lg">
                 <button
                   type="button"
                   onClick={() =>
@@ -118,7 +117,7 @@ const ArchiveHeader = ({
                       "recent",
                     )
                   }
-                  className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
                 >
                   최신순
                 </button>
@@ -128,7 +127,7 @@ const ArchiveHeader = ({
                   onClick={() =>
                     handleSortSelect("name")
                   }
-                  className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
                 >
                   이름순
                 </button>
@@ -140,7 +139,7 @@ const ArchiveHeader = ({
                       "oldest",
                     )
                   }
-                  className="w-full px-5 py-3 text-left text-[16px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
                 >
                   오래된순
                 </button>

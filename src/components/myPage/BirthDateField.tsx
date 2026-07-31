@@ -121,12 +121,16 @@ const BirthDateDropdown = ({
         >
           {value ?? placeholder}
         </span>
-        <img
-          src={"/dropdown.svg"}
-          alt=""
+        <span
           aria-hidden="true"
-          className="h-7 w-7 shrink-0 object-contain"
-        />
+          className={[
+            "flex h-7 w-7 shrink-0 items-center justify-center",
+            "transition-transform",
+            isOpen ? "rotate-180" : "",
+          ].join(" ")}
+        >
+          <span className="h-0 w-0 border-x-[9px] border-t-[10px] border-x-transparent border-t-[#917DEC]" />
+        </span>
       </button>
 
       {isOpen && (

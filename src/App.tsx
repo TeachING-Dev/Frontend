@@ -52,222 +52,226 @@ function App() {
           path="/oauth/callback"
           element={<OAuthCallbackPage />}
         />
+
         <Route
           path="/oauth2/redirect"
           element={<OAuthCallbackPage />}
         />
+
         <Route
           path="/oauth/success"
           element={<OAuthCallbackPage />}
         />
+
         <Route
           path="/login/oauth2/code/:provider"
           element={<OAuthCallbackPage />}
         />
 
         <Route element={<RequireAuth />}>
-        {/* 회원가입 완료 */}
-        <Route
-          path="/signup/complete"
-          element={<SignupCompletePage />}
-        />
-
-        {/* 구독 완료 */}
-        <Route
-          path="/subscription/complete"
-          element={
-            <SubscriptionCompletePage />
-          }
-        />
-
-        {/* 홈 전용 레이아웃 */}
-        <Route element={<HomeLayout />}>
+          {/* 회원가입 완료 */}
           <Route
-            path="/"
-            element={<HomePage />}
+            path="/signup/complete"
+            element={<SignupCompletePage />}
           />
-        </Route>
 
-        {/* 분석 전용 레이아웃 */}
-        <Route element={<AnalysisLayout />}>
+          {/* 구독 완료 */}
           <Route
-            path="/analysis/complete"
+            path="/subscription/complete"
             element={
-              <AnalysisCompletePage />
-            }
-          />
-        </Route>
-
-        {/* 알림 전용 레이아웃 */}
-        <Route
-          element={<NotificationLayout />}
-        >
-          <Route
-            path="/notifications"
-            element={<NotificationPage />}
-          />
-        </Route>
-
-        {/* 기본 레이아웃 */}
-        <Route element={<MainLayout />}>
-          {/* 보관함 */}
-          <Route
-            path="/archive"
-            element={<ArchivePage />}
-          />
-
-          {/* 보관함 폴더 상세 */}
-          <Route
-            path="/archive/folder/:folderId"
-            element={<ArchiveFolderPage />}
-          />
-
-          {/* 보관함 자료 상세 */}
-          <Route
-            path="/archive/folder/:folderId/materials/:materialId"
-            element={<ArchiveDataPage />}
-          />
-
-          {/* 티칭맵 목록 */}
-          <Route
-            path="/teaching-map"
-            element={<TeachingMapPage />}
-          />
-
-          {/* 티칭맵 생성 */}
-          <Route
-            path="/teaching-map/create"
-            element={
-              <TeachingMapCreatePage />
+              <SubscriptionCompletePage />
             }
           />
 
-          {/* 임시 티칭맵 보관함 */}
-          <Route
-            path="/teaching-map/drafts"
-            element={
-              <TemporaryTeachingMapPage />
-            }
-          />
+          {/* 홈 전용 레이아웃 */}
+          <Route element={<HomeLayout />}>
+            <Route
+              path="/"
+              element={<HomePage />}
+            />
+          </Route>
 
-          {/* 임시 티칭맵 수정 */}
-          <Route
-            path="/teaching-map/drafts/:draftId/edit"
-            element={
-              <TeachingMapCreatePage />
-            }
-          />
+          {/* 분석 전용 레이아웃 */}
+          <Route element={<AnalysisLayout />}>
+            <Route
+              path="/analysis/complete"
+              element={
+                <AnalysisCompletePage />
+              }
+            />
+          </Route>
 
-          {/* 티칭맵 콘텐츠 상세 */}
+          {/* 알림 전용 레이아웃 */}
           <Route
-            path="/teaching-map/:teachingMapId/:contentId"
-            element={
-              <TeachingMapContentPage />
-            }
-          />
+            element={<NotificationLayout />}
+          >
+            <Route
+              path="/notifications"
+              element={<NotificationPage />}
+            />
+          </Route>
 
-          {/* 티칭맵 상세 */}
-          <Route
-            path="/teaching-map/:teachingMapId"
-            element={
-              <TeachingMapDetailPage />
-            }
-          />
+          {/* 기본 레이아웃 */}
+          <Route element={<MainLayout />}>
+            {/* 보관함 */}
+            <Route
+              path="/archive"
+              element={<ArchivePage />}
+            />
 
-          {/* 휴지통 */}
-          <Route
-            path="/trash"
-            element={<TrashPage />}
-          />
+            {/* 보관함 폴더 상세 */}
+            <Route
+              path="/archive/folder/:folderId"
+              element={<ArchiveFolderPage />}
+            />
 
-          {/* 구독 */}
-          <Route
-            path="/subscription"
-            element={<SubscriptionPage />}
-          />
+            {/* 자료 상세 */}
+            <Route
+              path="/archive/folder/:folderId/materials/:materialId"
+              element={<ArchiveDataPage />}
+            />
 
-          {/* 마이페이지 */}
-          <Route
-            path="/mypage"
-            element={<MyPage />}
-          />
+            {/* 티칭맵 목록 */}
+            <Route
+              path="/teaching-map"
+              element={<TeachingMapPage />}
+            />
 
-          {/* 비로그인 마이페이지 */}
-          <Route
-            path="/mypage/auth-required"
-            element={
-              <MyPageAuthRequiredPage />
-            }
-          />
+            {/* 티칭맵 생성 */}
+            <Route
+              path="/teaching-map/create"
+              element={
+                <TeachingMapCreatePage />
+              }
+            />
 
-          {/* 회원 정보 수정 */}
-          <Route
-            path="/mypage/edit"
-            element={<MyPageEditPage />}
-          />
+            {/* 임시 티칭맵 보관함 */}
+            <Route
+              path="/teaching-map/drafts"
+              element={
+                <TemporaryTeachingMapPage />
+              }
+            />
 
-          {/* 알림 설정 */}
-          <Route
-            path="/mypage/notification"
-            element={
-              <MyPageNotificationPage />
-            }
-          />
+            {/* 임시 티칭맵 수정 */}
+            <Route
+              path="/teaching-map/drafts/:draftId/edit"
+              element={
+                <TeachingMapCreatePage />
+              }
+            />
 
-          {/* 티칭맵 설정 */}
-          <Route
-            path="/mypage/teaching-style"
-            element={
-              <MyPageTeachingStylePage />
-            }
-          />
+            {/* 티칭맵 콘텐츠 상세 */}
+            <Route
+              path="/teaching-map/:teachingMapId/:contentId"
+              element={
+                <TeachingMapContentPage />
+              }
+            />
 
-          {/* 1:1 문의 */}
-          <Route
-            path="/mypage/inquiry"
-            element={
-              <MyPageInquiryPage />
-            }
-          />
+            {/* 티칭맵 상세 */}
+            <Route
+              path="/teaching-map/:teachingMapId"
+              element={
+                <TeachingMapDetailPage />
+              }
+            />
 
-          {/* 탈퇴 사유 */}
-          <Route
-            path="/mypage/withdrawal-reason"
-            element={
-              <MyPageWithdrawalReasonPage />
-            }
-          />
+            {/* 휴지통 */}
+            <Route
+              path="/trash"
+              element={<TrashPage />}
+            />
 
-          {/* 탈퇴 확인 */}
-          <Route
-            path="/mypage/withdrawal-confirm"
-            element={
-              <MyPageWithdrawalConfirmPage />
-            }
-          />
+            {/* 구독 */}
+            <Route
+              path="/subscription"
+              element={<SubscriptionPage />}
+            />
 
-          {/* 탈퇴 완료 */}
-          <Route
-            path="/mypage/withdrawal-complete"
-            element={
-              <MyPageWithdrawalCompletePage />
-            }
-          />
-        </Route>
+            {/* 마이페이지 */}
+            <Route
+              path="/mypage"
+              element={<MyPage />}
+            />
 
-        {/* 챗봇 전용 레이아웃 */}
-        <Route
-          element={<MainLayout insetMenu />}
-        >
+            {/* 비로그인 마이페이지 */}
+            <Route
+              path="/mypage/auth-required"
+              element={
+                <MyPageAuthRequiredPage />
+              }
+            />
+
+            {/* 회원 정보 수정 */}
+            <Route
+              path="/mypage/edit"
+              element={<MyPageEditPage />}
+            />
+
+            {/* 알림 설정 */}
+            <Route
+              path="/mypage/notification"
+              element={
+                <MyPageNotificationPage />
+              }
+            />
+
+            {/* 티칭맵 설정 */}
+            <Route
+              path="/mypage/teaching-style"
+              element={
+                <MyPageTeachingStylePage />
+              }
+            />
+
+            {/* 1:1 문의 */}
+            <Route
+              path="/mypage/inquiry"
+              element={
+                <MyPageInquiryPage />
+              }
+            />
+
+            {/* 탈퇴 사유 */}
+            <Route
+              path="/mypage/withdrawal-reason"
+              element={
+                <MyPageWithdrawalReasonPage />
+              }
+            />
+
+            {/* 탈퇴 확인 */}
+            <Route
+              path="/mypage/withdrawal-confirm"
+              element={
+                <MyPageWithdrawalConfirmPage />
+              }
+            />
+
+            {/* 탈퇴 완료 */}
+            <Route
+              path="/mypage/withdrawal-complete"
+              element={
+                <MyPageWithdrawalCompletePage />
+              }
+            />
+          </Route>
+
+          {/* 챗봇 전용 레이아웃 */}
           <Route
-            path="/chatbot"
-            element={<ChatbotPage />}
-          />
-          <Route
-            path="/chatbot/:chatRoomId"
-            element={<ChatbotPage />}
-          />
-        </Route>
+            element={<MainLayout insetMenu />}
+          >
+            <Route
+              path="/chatbot"
+              element={<ChatbotPage />}
+            />
+
+            <Route
+              path="/chatbot/:chatRoomId"
+              element={<ChatbotPage />}
+            />
+          </Route>
         </Route>
 
         {/* 회원가입 전용 레이아웃 */}

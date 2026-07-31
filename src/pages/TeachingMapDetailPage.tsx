@@ -5,7 +5,10 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 
-import { getTeachingMap } from "../apis/teachingMap";
+import {
+  getTeachingMap,
+  toggleTeachingMapStep,
+} from "../apis/teachingMap";
 import TeachingMapDetailHeader from "../components/teachingMap/detail/TeachingMapDetailHeader";
 import TeachingMapProgressSummary from "../components/teachingMap/detail/TeachingMapProgressSummary";
 import TeachingMapStepList from "../components/teachingMap/detail/TeachingMapStepList";
@@ -46,6 +49,12 @@ const TeachingMapDetailPage = () => {
     useState(true);
   const [loadError, setLoadError] =
     useState("");
+  const [toggleError, setToggleError] =
+    useState("");
+  const [
+    togglingStepIds,
+    setTogglingStepIds,
+  ] = useState<number[]>([]);
 
   useEffect(() => {
     if (!hasValidTeachingMapId) {
@@ -135,23 +144,59 @@ const TeachingMapDetailPage = () => {
     // 티칭맵 수정 API가 제공되면 서버 저장으로 교체합니다.
   };
 
-  const handleToggleCompletion = (
+  const handleToggleCompletion = async (
     stepId: number,
   ) => {
-    setSteps((previousSteps) =>
-      previousSteps.map((step) =>
-        step.id === stepId &&
-        step.isSourceAvailable !== false
-          ? {
-              ...step,
-              isCompleted:
-                !step.isCompleted,
-            }
-          : step,
-      ),
+    const targetStep = steps.find(
+      (step) => step.id === stepId,
     );
 
-    // 스텝 완료 상태 변경 API가 제공되면 서버 저장으로 교체합니다.
+    if (
+      !targetStep ||
+      targetStep.isSourceAvailable === false ||
+      togglingStepIds.includes(stepId)
+    ) {
+      return;
+    }
+
+    setToggleError("");
+    setTogglingStepIds((previousIds) => [
+      ...previousIds,
+      stepId,
+    ]);
+
+    try {
+      const result =
+        await toggleTeachingMapStep(
+          parsedTeachingMapId,
+          stepId,
+        );
+
+      setSteps((previousSteps) =>
+        previousSteps.map((step) =>
+          step.id === result.stepId
+            ? {
+                ...step,
+                isCompleted:
+                  result.isCompleted,
+              }
+            : step,
+        ),
+      );
+    } catch (error) {
+      setToggleError(
+        error instanceof Error
+          ? error.message
+          : "스텝 완료 상태를 변경하지 못했습니다.",
+      );
+    } finally {
+      setTogglingStepIds(
+        (previousIds) =>
+          previousIds.filter(
+            (id) => id !== stepId,
+          ),
+      );
+    }
   };
 
   if (!hasValidTeachingMapId) {
@@ -207,6 +252,15 @@ const TeachingMapDetailPage = () => {
         />
 
         <section className="relative mt-[111px] w-[1000px]">
+          {toggleError && (
+            <p
+              role="alert"
+              className="mb-4 text-[16px] text-[#F07A7A]"
+            >
+              {toggleError}
+            </p>
+          )}
+
           <TeachingMapProgressSummary
             completedCount={
               completedCount
