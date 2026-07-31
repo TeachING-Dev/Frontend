@@ -8,13 +8,16 @@ import {
 } from "react-router-dom";
 
 import {
+  createFolder,
   getFolders,
 } from "../apis/folder";
 import {
   finalizeMaterial,
-  updateMaterialSummary,
   type MaterialTag,
 } from "../apis/material";
+
+import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
+import FolderLimitModal from "../components/archive/modal/CreateErrorModal";
 
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
@@ -94,6 +97,20 @@ const AnalysisCompletePage = () => {
   ] = useState(true);
 
   /* ==============================
+     폴더 생성 모달
+  ============================== */
+
+  const [
+    isCreateFolderModalOpen,
+    setIsCreateFolderModalOpen,
+  ] = useState(false);
+
+  const [
+    isFolderLimitModalOpen,
+    setIsFolderLimitModalOpen,
+  ] = useState(false);
+
+  /* ==============================
      태그
   ============================== */
 
@@ -105,13 +122,8 @@ const AnalysisCompletePage = () => {
   );
 
   /* ==============================
-     요약
+     저장
   ============================== */
-
-  const [summary, setSummary] =
-    useState(
-      "AI가 분석한 내용을 요약해드릴게요.",
-    );
 
   const [isSaving, setIsSaving] =
     useState(false);
@@ -161,13 +173,7 @@ const AnalysisCompletePage = () => {
           return;
         }
 
-        if (
-          mappedFolders.length > 0
-        ) {
-          setSelectedFolderId(
-            mappedFolders[0].id,
-          );
-        }
+        setSelectedFolderId(0);
       } catch (error) {
         console.error(
           "폴더 목록 조회 실패:",
@@ -183,6 +189,56 @@ const AnalysisCompletePage = () => {
     analysisResult
       ?.recommendedFolderId,
   ]);
+
+  /* ==============================
+     새 폴더 만들기 버튼
+  ============================== */
+
+  const handleOpenCreateFolder =
+    () => {
+      if (folders.length >= 6) {
+        setIsFolderLimitModalOpen(
+          true,
+        );
+
+        return;
+      }
+
+      setIsCreateFolderModalOpen(
+        true,
+      );
+    };
+
+  /* ==============================
+     폴더 생성
+  ============================== */
+
+  const handleCreateFolder = async (
+    folderName: string,
+  ) => {
+    const createdFolder =
+      await createFolder(folderName);
+
+    const newFolder: FolderOption = {
+      id: createdFolder.folderId,
+      name: createdFolder.folderName,
+    };
+
+    /*
+     * 새 폴더를 목록에 바로 추가
+     */
+    setFolders((prev) => [
+      newFolder,
+      ...prev,
+    ]);
+
+    /*
+     * 생성한 폴더 자동 선택
+     */
+    setSelectedFolderId(
+      createdFolder.folderId,
+    );
+  };
 
   /* ==============================
      저장
@@ -208,25 +264,17 @@ const AnalysisCompletePage = () => {
     try {
       setIsSaving(true);
 
-      /*
-       * 현재 활성화되어 있는 태그들의
-       * tagId만 추출
-       */
       const selectedTagIds =
         selectedTags.map(
           (tag) => tag.tagId,
         );
 
-      /*
-       * 1. 자료 저장 위치 / 태그 확정
-       */
       const finalizeResult =
         await finalizeMaterial(
           materialId,
           {
             folderId:
               selectedFolderId,
-
             tagIds:
               selectedTagIds,
           },
@@ -237,32 +285,6 @@ const AnalysisCompletePage = () => {
         finalizeResult,
       );
 
-      /*
-       * 2. AI 요약 수정
-       */
-      const summaryResult =
-        await updateMaterialSummary(
-          finalizeResult.folderId,
-          finalizeResult.materialId,
-          {
-            shortSummary:
-              summary,
-          },
-        );
-
-      setSummary(
-        summaryResult.shortSummary,
-      );
-
-      console.log(
-        "AI 요약 수정 성공:",
-        summaryResult,
-      );
-
-      /*
-       * 3. 저장 완료 후
-       * 해당 폴더로 이동
-       */
       navigate(
         `/archive/folder/${finalizeResult.folderId}`,
       );
@@ -277,88 +299,121 @@ const AnalysisCompletePage = () => {
   };
 
   return (
-    <main className="relative py-[55px]">
-      {/* 좌측 고정 사이드바 */}
-      {!isFolderLoading && (
-        <AnalysisSidebar
-          folders={folders}
-          selectedFolderId={
-            selectedFolderId
+    <>
+      <main className="relative py-[55px]">
+        {!isFolderLoading && (
+          <AnalysisSidebar
+            folders={folders}
+            selectedFolderId={
+              selectedFolderId
+            }
+            onFolderChange={
+              setSelectedFolderId
+            }
+            recommendedFolderId={
+              analysisResult
+                ?.recommendedFolderId
+            }
+            recommendedFolderName={
+              analysisResult
+                ?.recommendedFolderName
+            }
+            onCreateFolder={
+              handleOpenCreateFolder
+            }
+          />
+        )}
+
+        <section className="mx-auto w-[1100px]">
+          <div className="ml-[350px]">
+            <div className="ml-[30px]">
+              <AnalysisHeader
+                date="2026-05-10"
+                title={
+                  analysisResult
+                    ?.title ??
+                  "분석된 콘텐츠"
+                }
+                tags={
+                  analysisResult
+                    ?.tags ?? []
+                }
+                onSelectedTagsChange={
+                  setSelectedTags
+                }
+              />
+            </div>
+
+            <div className="mt-[20px] flex flex-col gap-[20px]">
+              <AnalysisUrl
+                url={originalUrl}
+              />
+
+              <AnalysisSummary
+                summary="AI가 분석한 내용을 요약해드릴게요."
+                onSummaryChange={() => {}}
+              />
+
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={
+                  isSaving ||
+                  isFolderLoading ||
+                  !materialId ||
+                  !selectedFolderId
+                }
+                className="
+                  h-[54px]
+                  w-full
+                  rounded-[5px]
+                  bg-[#917DEC]
+                  text-center
+                  text-[24px]
+                  font-semibold
+                  leading-[150%]
+                  tracking-[-0.72px]
+                  text-white
+                  transition-colors
+                  hover:bg-[#8269E7]
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+                "
+              >
+                {isSaving
+                  ? "저장 중..."
+                  : "저장하기"}
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* 새 폴더 생성 모달 */}
+      {isCreateFolderModalOpen && (
+        <CreateFolderModal
+          onClose={() =>
+            setIsCreateFolderModalOpen(
+              false,
+            )
           }
-          onFolderChange={
-            setSelectedFolderId
+          onCreate={
+            handleCreateFolder
           }
         />
       )}
 
-      {/* 가운데 콘텐츠 */}
-      <section className="mx-auto w-[1100px]">
-        <div className="ml-[350px]">
-          <div className="ml-[30px]">
-            <AnalysisHeader
-              date="2026-05-10"
-              title={
-                analysisResult
-                  ?.title ??
-                "분석된 콘텐츠"
-              }
-              tags={
-                analysisResult
-                  ?.tags ?? []
-              }
-              onSelectedTagsChange={
-                setSelectedTags
-              }
-            />
-          </div>
-
-          {/* 본문 */}
-          <div className="mt-[20px] flex flex-col gap-[20px]">
-            <AnalysisUrl
-              url={originalUrl}
-            />
-
-            <AnalysisSummary
-              summary={summary}
-              onSummaryChange={
-                setSummary
-              }
-            />
-
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={
-                isSaving ||
-                isFolderLoading ||
-                !materialId ||
-                !selectedFolderId
-              }
-              className="
-                h-[54px]
-                w-full
-                rounded-[5px]
-                bg-[#917DEC]
-                text-center
-                text-[24px]
-                font-semibold
-                leading-[150%]
-                tracking-[-0.72px]
-                text-white
-                transition-colors
-                hover:bg-[#8269E7]
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-              "
-            >
-              {isSaving
-                ? "저장 중..."
-                : "저장하기"}
-            </button>
-          </div>
-        </div>
-      </section>
-    </main>
+      {/* 폴더 생성 제한 모달 */}
+      {isFolderLimitModalOpen && (
+        <FolderLimitModal
+          onClose={() =>
+            setIsFolderLimitModalOpen(
+              false,
+            )
+          }
+        />
+      )}
+    </>
   );
 };
 
