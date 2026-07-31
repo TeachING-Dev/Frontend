@@ -533,11 +533,11 @@ const ChatbotPage = () => {
           </div>
         ) : (
           <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-            <div className="flex h-[220px] w-[360px] shrink-0 items-center justify-center pb-[14px] ">
+            <div className="flex h-[120px] w-[250px] shrink-0 items-center justify-center pb-[14px] ">
               <img
-                src="/character/ChatbotEmpty.png"
+                src="/character/ConfidentTaka.svg"
                 alt="열공 티키"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </div>
 
@@ -565,7 +565,7 @@ const ChatbotPage = () => {
           <label
   className="
     flex
-    h-12
+    h-[60px]
     w-full
     max-w-[976px]
     items-center
@@ -585,7 +585,7 @@ const ChatbotPage = () => {
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="궁금한 점을 물어보세요"
-              className="flex-1 bg-transparent font-['SUIT'] text-sm font-normal leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
+              className="flex-1 bg-transparent font-['SUIT'] text-[16px] font-normal leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
             />
             <button
               type="submit"

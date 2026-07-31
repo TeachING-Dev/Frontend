@@ -28,13 +28,24 @@ const MyPageMenuList = () => {
     },
   ];
 
+  const handleMenuClick = (path: string) => {
+    if (path === "/subscription") {
+      navigate(path, {
+        state: { showMyPageBack: true },
+      });
+      return;
+    }
+
+    navigate(path);
+  };
+
   return (
     <div className="flex w-[736px] flex-col gap-[10px]">
       {menuItems.map((menuItem) => (
         <MyPageMenuItem
           key={menuItem.label}
           label={menuItem.label}
-          onClick={() => navigate(menuItem.path)}
+          onClick={() => handleMenuClick(menuItem.path)}
         />
       ))}
     </div>
