@@ -76,10 +76,7 @@ const RecentKnowledgeList = ({
       {materials.map((material) => (
         <RecentKnowledgeItem
           key={material.materialId}
-          title={
-            material.analysisTitle ||
-            material.title
-          }
+          title={material.title}
           savedAt={formatSavedAt(
             material.createdAt,
           )}
@@ -90,8 +87,8 @@ const RecentKnowledgeList = ({
           }
           onClick={() =>
             navigate(
-              `/archive/materials/${material.materialId}`,
-            )
+              `/archive/folder/${material.folderId}/materials/${material.materialId}`,
+          )
           }
         />
       ))}

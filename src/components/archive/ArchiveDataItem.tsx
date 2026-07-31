@@ -17,7 +17,7 @@ type ArchiveDataItemProps = {
 const platformIconMap: Record<string, string> = {
   VELOG: "/icon/velog.png",
   YOUTUBE: "/icon/youtube-app-icon.png",
-  CAFE: "/icon/cafe.png",
+  CAFE: "/icon/cafe-icon.svg",
 };
 
 const ArchiveDataItem = ({
