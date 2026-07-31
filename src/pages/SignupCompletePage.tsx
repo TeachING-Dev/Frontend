@@ -19,19 +19,13 @@ const SignupCompletePage = () => {
           <img
             src="/character/Star17.svg"
             alt=""
-            className="absolute -right-[8%] -top-[9%] z-10 h-[22%] w-auto drop-shadow-[0_0_8px_rgba(145,125,236,0.9)]"
+            className="absolute -right-[8%] top-[8%] z-10 h-[18%] w-auto drop-shadow-[0_0_8px_rgba(145,125,236,0)]"
           />
 
           <img
-            src="/character/Star1.png"
+            src="/character/SignupCompleteCharacter.png"
             alt=""
-            className="absolute left-[5.15%] top-[6%] h-[93.53%] w-[91.51%] drop-shadow-[0_0_20.6px_rgba(145,125,236,1)]"
-          />
-
-          <img
-            src="/SignupCompleteFace.svg"
-            alt=""
-            className="absolute left-[37.5%] top-[43.83%] h-[18.06%] w-[30%]"
+            className="absolute left-[5.15%] top-[6%] h-[93.53%] w-[91.51%] object-contain"
           />
         </div>
 
