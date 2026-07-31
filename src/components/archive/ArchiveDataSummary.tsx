@@ -1,4 +1,8 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type ArchiveDataSummaryProps = {
   summary: string;
@@ -11,9 +15,38 @@ const ArchiveDataSummary = ({
   summary,
   onUpdateSummary,
 }: ArchiveDataSummaryProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedSummary, setEditedSummary] =
-    useState(summary);
+  const [isEditing, setIsEditing] =
+    useState(false);
+
+  const [
+    editedSummary,
+    setEditedSummary,
+  ] = useState(summary);
+
+  const textareaRef =
+    useRef<HTMLTextAreaElement | null>(
+      null,
+    );
+
+  const resizeTextarea = () => {
+    const textarea =
+      textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+
+    textarea.style.height =
+      `${textarea.scrollHeight}px`;
+  };
+
+  useEffect(() => {
+    if (isEditing) {
+      resizeTextarea();
+    }
+  }, [isEditing, editedSummary]);
 
   const handleEdit = () => {
     setEditedSummary(summary);
@@ -24,17 +57,21 @@ const ArchiveDataSummary = ({
     setEditedSummary(summary);
   };
 
-  const handleComplete = async () => {
-    try {
-      await onUpdateSummary(editedSummary);
-      setIsEditing(false);
-    } catch (error) {
-      console.error(
-        "요약 수정 실패:",
-        error,
-      );
-    }
-  };
+  const handleComplete =
+    async () => {
+      try {
+        await onUpdateSummary(
+          editedSummary,
+        );
+
+        setIsEditing(false);
+      } catch (error) {
+        console.error(
+          "요약 수정 실패:",
+          error,
+        );
+      }
+    };
 
   const handleCancel = () => {
     setEditedSummary(summary);
@@ -137,6 +174,7 @@ const ArchiveDataSummary = ({
           </div>
 
           <textarea
+            ref={textareaRef}
             value={editedSummary}
             onChange={(event) =>
               setEditedSummary(
@@ -145,7 +183,7 @@ const ArchiveDataSummary = ({
             }
             rows={1}
             autoFocus
-            className="w-full resize-none bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"
+            className="w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"
           />
         </div>
       )}
