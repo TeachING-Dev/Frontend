@@ -39,6 +39,13 @@ type AnalysisLocationState = {
     resultType: string;
     materialId: number;
     existingMaterialId: number;
+
+    /*
+     * 새로 추가된 응답값
+     */
+    folderId: number;
+    summary: string;
+
     originalUrl: string;
     title: string;
     platformType: string;
@@ -75,6 +82,10 @@ const AnalysisCompletePage = () => {
     state?.originalUrl ??
     analysisResult?.originalUrl ??
     "";
+
+  const summary =
+    analysisResult?.summary ??
+    "AI가 분석한 내용을 요약해드릴게요.";
 
   /* ==============================
      폴더
@@ -150,6 +161,10 @@ const AnalysisCompletePage = () => {
 
         setFolders(mappedFolders);
 
+        /*
+         * 사이드바 기본 선택은
+         * 기존처럼 추천 폴더만 사용
+         */
         const recommendedFolderId =
           analysisResult
             ?.recommendedFolderId;
@@ -179,6 +194,8 @@ const AnalysisCompletePage = () => {
           "폴더 목록 조회 실패:",
           error,
         );
+
+        setSelectedFolderId(0);
       } finally {
         setIsFolderLoading(false);
       }
@@ -237,6 +254,13 @@ const AnalysisCompletePage = () => {
      */
     setSelectedFolderId(
       createdFolder.folderId,
+    );
+
+    /*
+     * 생성 성공 후 모달 닫기
+     */
+    setIsCreateFolderModalOpen(
+      false,
     );
   };
 
@@ -350,7 +374,7 @@ const AnalysisCompletePage = () => {
               />
 
               <AnalysisSummary
-                summary="AI가 분석한 내용을 요약해드릴게요."
+                summary={summary}
                 onSummaryChange={() => {}}
               />
 
