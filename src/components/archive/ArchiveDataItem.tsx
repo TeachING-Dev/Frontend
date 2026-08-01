@@ -9,7 +9,6 @@ type ArchiveDataItemProps = {
   isMoveMode?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
-  onClick?: () => void;
   onAiAnalysis?: () => void;
   onOpenOriginal?: () => void;
 };
@@ -29,22 +28,24 @@ const ArchiveDataItem = ({
   isMoveMode = false,
   isSelected = false,
   onSelect,
-  onClick,
   onAiAnalysis,
   onOpenOriginal,
 }: ArchiveDataItemProps) => {
   const handleItemClick = () => {
-    if (isMoveMode) {
-      onSelect?.();
+    if (!isMoveMode) {
       return;
     }
 
-    onClick?.();
+    onSelect?.();
   };
 
   const handleItemKeyDown = (
     event: React.KeyboardEvent<HTMLElement>,
   ) => {
+    if (!isMoveMode) {
+      return;
+    }
+
     if (
       event.key !== "Enter" &&
       event.key !== " "
@@ -53,7 +54,7 @@ const ArchiveDataItem = ({
     }
 
     event.preventDefault();
-    handleItemClick();
+    onSelect?.();
   };
 
   const handleAiAnalysis = (
@@ -72,14 +73,18 @@ const ArchiveDataItem = ({
 
   return (
     <article
-      role="button"
-      tabIndex={0}
+      role={isMoveMode ? "button" : undefined}
+      tabIndex={isMoveMode ? 0 : undefined}
       aria-pressed={
         isMoveMode ? isSelected : undefined
       }
       onClick={handleItemClick}
       onKeyDown={handleItemKeyDown}
-      className={`relative flex max-h-[335px] w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
+      className={`relative flex max-h-[335px] w-full flex-col overflow-hidden rounded-[12px] border bg-[#2B2C35] transition ${
+        isMoveMode
+          ? "cursor-pointer"
+          : "cursor-default"
+      } ${
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[#3A3946]"
@@ -132,9 +137,7 @@ const ArchiveDataItem = ({
         <div className="mb-[20px] flex items-center gap-[15px]">
           <img
             src={
-              platformIconMap[
-                platformType
-              ] ??
+              platformIconMap[platformType] ??
               "/icon/최근에 저장한 지식3.png"
             }
             alt={platformType}
