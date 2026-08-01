@@ -13,6 +13,7 @@ import {
 } from "../apis/folder";
 import {
   finalizeMaterial,
+  type AnalyzeMaterialResult,
   type MaterialTag,
 } from "../apis/material";
 
@@ -33,34 +34,8 @@ type AnalysisLocationState = {
   originalUrl?: string;
   materialId?: number;
   materialAnalysisId?: number;
-
-  result?: {
-    materialAnalysisId: number;
-    resultType: string;
-    materialId: number;
-    existingMaterialId: number;
-
-    /*
-     * 새로 추가된 응답값
-     */
-    folderId: number;
-    summary: string;
-
-    originalUrl: string;
-    title: string;
-    platformType: string;
-    status: string;
-    chunkCount: number;
-
-    recommendedFolderId:
-      | number
-      | null;
-
-    recommendedFolderName:
-      | string
-      | null;
-
-    tags: MaterialTag[];
+  result?: AnalyzeMaterialResult & {
+    summary?: string;
   };
 };
 
@@ -71,8 +46,7 @@ const AnalysisCompletePage = () => {
   const state =
     location.state as AnalysisLocationState | null;
 
-  const analysisResult =
-    state?.result;
+  const analysisResult = state?.result;
 
   const materialId =
     state?.materialId ??
@@ -269,7 +243,7 @@ const AnalysisCompletePage = () => {
   ============================== */
 
   const handleSave = async () => {
-    if (!materialId) {
+    if (materialId == null) {
       console.error(
         "materialId가 없습니다.",
       );
@@ -384,7 +358,7 @@ const AnalysisCompletePage = () => {
                 disabled={
                   isSaving ||
                   isFolderLoading ||
-                  !materialId ||
+                  materialId == null ||
                   !selectedFolderId
                 }
                 className="
