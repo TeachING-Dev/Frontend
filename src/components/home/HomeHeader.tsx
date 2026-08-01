@@ -8,34 +8,14 @@ import { useNavigate } from "react-router-dom";
 
 import {
   analyzeMaterial,
+  moveMaterialsToTrash,
+  type AnalyzeMaterialResult,
 } from "../../apis/material";
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
 import AnalysisFailModal, {
   type AnalysisFailType,
 } from "./modal/AnalysisFailModal";
-
-type ExistingAnalysisResult = {
-  materialAnalysisId: number;
-  resultType: string;
-  materialId: number;
-  existingMaterialId: number;
-  originalUrl: string;
-  title: string;
-  platformType: string;
-  status: string;
-  chunkCount: number;
-  recommendedFolderId:
-    | number
-    | null;
-  recommendedFolderName:
-    | string
-    | null;
-  tags: {
-    tagId: number;
-    tagName: string;
-  }[];
-};
 
 const HomeHeader = () => {
   const navigate = useNavigate();
@@ -65,7 +45,7 @@ const HomeHeader = () => {
     existingAnalysisResult,
     setExistingAnalysisResult,
   ] =
-    useState<ExistingAnalysisResult | null>(
+    useState<AnalyzeMaterialResult | null>(
       null,
     );
 
@@ -163,8 +143,8 @@ const HomeHeader = () => {
       /*
        * 이미 분석된 자료인 경우
        *
-       * 기존처럼 바로 페이지로
-       * 이동하지 않고 모달 표시
+       * 기존 분석 보기 /
+       * 새로 분석하기 모달 표시
        */
       if (
         result.resultType ===
@@ -176,6 +156,23 @@ const HomeHeader = () => {
 
         setAnalysisFailType(
           "alreadyAnalyzed",
+        );
+
+        return;
+      }
+
+      /*
+       * 새 분석 결과의 materialId 확인
+       */
+      if (
+        result.materialId == null
+      ) {
+        console.error(
+          "새 분석 결과의 materialId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
         );
 
         return;
@@ -222,7 +219,7 @@ const HomeHeader = () => {
 
   /*
    * 이미 분석된 자료
-   * → 기존 내용 보기
+   * → 기존 자료 상세 보기
    */
   const handleViewExisting =
     () => {
@@ -232,34 +229,43 @@ const HomeHeader = () => {
         return;
       }
 
+      const existingMaterialId =
+        existingAnalysisResult
+          .existingMaterialId;
+
+      const existingFolderId =
+        existingAnalysisResult
+          .existingFolderId;
+
+      if (
+        existingMaterialId == null ||
+        existingFolderId == null
+      ) {
+        console.error(
+          "기존 자료의 materialId 또는 folderId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
       setAnalysisFailType(null);
+      setExistingAnalysisResult(
+        null,
+      );
 
       navigate(
-        "/analysis/complete",
-        {
-          state: {
-            originalUrl:
-              existingAnalysisResult
-                .originalUrl,
-
-            materialId:
-              existingAnalysisResult
-                .existingMaterialId,
-
-            materialAnalysisId:
-              existingAnalysisResult
-                .materialAnalysisId,
-
-            result:
-              existingAnalysisResult,
-          },
-        },
+        `/archive/folder/${existingFolderId}/materials/${existingMaterialId}`,
       );
     };
 
   /*
    * 이미 분석된 자료
-   * → 새로 분석하기
+   * → 기존 자료 휴지통 이동
+   * → 같은 URL 새로 분석
    */
   const handleForceAnalyze =
     async () => {
@@ -282,6 +288,43 @@ const HomeHeader = () => {
         return;
       }
 
+      if (
+        !existingAnalysisResult
+      ) {
+        console.error(
+          "기존 분석 결과가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
+      const existingMaterialId =
+        existingAnalysisResult
+          .existingMaterialId;
+
+      const existingFolderId =
+        existingAnalysisResult
+          .existingFolderId;
+
+      if (
+        existingMaterialId == null ||
+        existingFolderId == null
+      ) {
+        console.error(
+          "기존 자료의 materialId 또는 folderId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
       setAnalysisFailType(
         null,
       );
@@ -293,6 +336,35 @@ const HomeHeader = () => {
       setIsAnalyzing(true);
 
       try {
+        /*
+         * 기존 자료 휴지통 이동
+         */
+        const trashResult =
+          await moveMaterialsToTrash(
+            existingFolderId,
+            {
+              materialIds: [
+                existingMaterialId,
+              ],
+            },
+          );
+
+        console.log(
+          "기존 자료 휴지통 이동 결과:",
+          trashResult,
+        );
+
+        if (
+          trashResult.deletedCount < 1
+        ) {
+          throw new Error(
+            "기존 자료가 휴지통으로 이동되지 않았습니다.",
+          );
+        }
+
+        /*
+         * 같은 URL 강제 재분석
+         */
         const result =
           await analyzeMaterial({
             url: trimmedUrl,
@@ -306,6 +378,28 @@ const HomeHeader = () => {
 
         setIsAnalysisModalOpen(
           false,
+        );
+
+        /*
+         * 강제 재분석 결과의
+         * materialId 확인
+         */
+        if (
+          result.materialId == null
+        ) {
+          console.error(
+            "강제 재분석 결과의 materialId가 없습니다.",
+          );
+
+          setAnalysisFailType(
+            "analysisFailed",
+          );
+
+          return;
+        }
+
+        setExistingAnalysisResult(
+          null,
         );
 
         navigate(
@@ -328,7 +422,7 @@ const HomeHeader = () => {
         );
       } catch (error) {
         console.error(
-          "URL 재분석 요청 실패:",
+          "기존 자료 휴지통 이동 또는 URL 재분석 실패:",
           error,
         );
 

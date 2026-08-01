@@ -14,11 +14,7 @@ const RecentKnowledgeItem = ({
   onClick,
 }: RecentKnowledgeItemProps) => {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group flex h-[60px] w-full items-center px-[30px] py-5 transition-colors hover:bg-white/5"
-    >
+    <div className="flex h-[60px] w-full items-center px-[30px] py-5">
       <img
         src={iconSrc}
         alt=""
@@ -33,11 +29,18 @@ const RecentKnowledgeItem = ({
         {savedAt}
       </span>
 
-      <ChevronRight
-        size={24}
-        className="shrink-0 text-[#717379] transition-colors group-hover:text-[#917DEC]"
-      />
-    </button>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`${title} 상세 보기`}
+        className="group flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+      >
+        <ChevronRight
+          size={24}
+          className="text-[#717379] transition-colors group-hover:text-[#917DEC]"
+        />
+      </button>
+    </div>
   );
 };
 

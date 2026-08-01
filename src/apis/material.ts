@@ -210,21 +210,29 @@ export type MoveMaterialsToTrashRequest = {
   materialIds: number[];
 };
 
+export type MoveMaterialsToTrashResult = {
+  deletedCount: number;
+  folderId: number;
+};
+
 type MoveMaterialsToTrashResponse = {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: unknown;
+  result: MoveMaterialsToTrashResult;
 };
 
 export const moveMaterialsToTrash = async (
   folderId: number,
   data: MoveMaterialsToTrashRequest,
-): Promise<void> => {
-  await api.patch<MoveMaterialsToTrashResponse>(
-    `/api/folders/${folderId}/materials/trash`,
-    data,
-  );
+): Promise<MoveMaterialsToTrashResult> => {
+  const response =
+    await api.patch<MoveMaterialsToTrashResponse>(
+      `/api/folders/${folderId}/materials/trash`,
+      data,
+    );
+
+  return response.data.result;
 };
 
 /* ==============================
@@ -269,11 +277,20 @@ export type AnalyzeMaterialRequest = {
   forceAnalyze: boolean;
 };
 
+export type AnalyzeResultType =
+  | "ANALYSIS_COMPLETED"
+  | "ALREADY_ANALYZED";
+
 export type AnalyzeMaterialResult = {
   materialAnalysisId: number;
-  resultType: string;
-  materialId: number;
-  existingMaterialId: number;
+  resultType: AnalyzeResultType;
+
+  materialId: number | null;
+  existingMaterialId: number | null;
+  existingFolderId: number | null;
+
+  summary: string;
+
   originalUrl: string;
   title: string;
   platformType: string;
