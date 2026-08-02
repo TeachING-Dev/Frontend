@@ -11,7 +11,6 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { ArrowUp } from "lucide-react";
 import {
   ChatApiError,
   askChatRoomMessage,
@@ -752,9 +751,14 @@ const ChatbotPage = () => {
               type="submit"
               aria-label="질문 보내기"
               disabled={isSubmitting}
-              className="flex size-7 items-center justify-center rounded-full bg-[#917DEC] text-[#090713] transition hover:opacity-85"
+              className="flex size-9 items-center justify-center transition hover:opacity-85 disabled:opacity-50"
             >
-              <ArrowUp size={18} strokeWidth={2.6} />
+              <img
+                src="/icon/icon-shortcut.svg"
+                alt=""
+                aria-hidden="true"
+                className="size-9"
+              />
             </button>
           </label>
         </form>
