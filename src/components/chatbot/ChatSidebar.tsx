@@ -62,7 +62,7 @@ const ChatSidebar = ({
                 새 채팅
               </span>
             </button>
-            <span className="font-['SUIT'] text-[14px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379]">
+            <span className="font-['SUIT'] text-[12px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379]">
               최근
             </span>
             {files.map((fileName, index) => (

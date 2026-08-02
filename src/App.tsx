@@ -1,4 +1,4 @@
-import {
+﻿import {
   BrowserRouter,
   Route,
   Routes,
@@ -35,6 +35,9 @@ import TeachingMapContentPage from "./pages/TeachingMapContentPage";
 import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
 import TeachingMapDetailPage from "./pages/TeachingMapDetailPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
+import TermsEventPage from "./pages/TermsEventPage";
+import TermsMarketingPage from "./pages/TermsMarketingPage";
+import TermsServicePage from "./pages/TermsServicePage";
 import TemporaryTeachingMapPage from "./pages/TemporaryTeachingMapPage";
 import TrashPage from "./pages/TrashPage";
 
@@ -42,7 +45,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 로그인 */}
+        {/* 濡쒓렇??*/}
         <Route
           path="/login"
           element={<LoginPage />}
@@ -65,14 +68,27 @@ function App() {
           element={<OAuthCallbackPage />}
         />
 
+        <Route
+          path="/signup/terms/service"
+          element={<TermsServicePage />}
+        />
+        <Route
+          path="/signup/terms/marketing"
+          element={<TermsMarketingPage />}
+        />
+        <Route
+          path="/signup/terms/event"
+          element={<TermsEventPage />}
+        />
+
         <Route element={<RequireAuth />}>
-        {/* 회원가입 완료 */}
+        {/* ?뚯썝媛???꾨즺 */}
         <Route
           path="/signup/complete"
           element={<SignupCompletePage />}
         />
 
-        {/* 구독 완료 */}
+        {/* 援щ룆 ?꾨즺 */}
         <Route
           path="/subscription/complete"
           element={
@@ -80,7 +96,7 @@ function App() {
           }
         />
 
-        {/* 홈 전용 레이아웃 */}
+        {/* ???꾩슜 ?덉씠?꾩썐 */}
         <Route element={<HomeLayout />}>
           <Route
             path="/"
@@ -88,7 +104,7 @@ function App() {
           />
         </Route>
 
-        {/* 분석 전용 레이아웃 */}
+        {/* 遺꾩꽍 ?꾩슜 ?덉씠?꾩썐 */}
         <Route element={<AnalysisLayout />}>
           <Route
             path="/analysis/complete"
@@ -98,7 +114,7 @@ function App() {
           />
         </Route>
 
-        {/* 알림 전용 레이아웃 */}
+        {/* ?뚮┝ ?꾩슜 ?덉씠?꾩썐 */}
         <Route
           element={<NotificationLayout />}
         >
@@ -108,33 +124,33 @@ function App() {
           />
         </Route>
 
-        {/* 기본 레이아웃 */}
+        {/* 湲곕낯 ?덉씠?꾩썐 */}
         <Route element={<MainLayout />}>
-          {/* 보관함 */}
+          {/* 蹂닿???*/}
           <Route
             path="/archive"
             element={<ArchivePage />}
           />
 
-          {/* 보관함 폴더 상세 */}
+          {/* 蹂닿????대뜑 ?곸꽭 */}
           <Route
             path="/archive/folder/:folderId"
             element={<ArchiveFolderPage />}
           />
 
-          {/* 보관함 자료 상세 */}
+          {/* 蹂닿????먮즺 ?곸꽭 */}
           <Route
             path="/archive/folder/:folderId/materials/:materialId"
             element={<ArchiveDataPage />}
           />
 
-          {/* 티칭맵 목록 */}
+          {/* ?곗묶留?紐⑸줉 */}
           <Route
             path="/teaching-map"
             element={<TeachingMapPage />}
           />
 
-          {/* 티칭맵 생성 */}
+          {/* ?곗묶留??앹꽦 */}
           <Route
             path="/teaching-map/create"
             element={
@@ -142,7 +158,7 @@ function App() {
             }
           />
 
-          {/* 임시 티칭맵 보관함 */}
+          {/* ?꾩떆 ?곗묶留?蹂닿???*/}
           <Route
             path="/teaching-map/drafts"
             element={
@@ -150,7 +166,7 @@ function App() {
             }
           />
 
-          {/* 임시 티칭맵 수정 */}
+          {/* ?꾩떆 ?곗묶留??섏젙 */}
           <Route
             path="/teaching-map/drafts/:draftId/edit"
             element={
@@ -158,7 +174,7 @@ function App() {
             }
           />
 
-          {/* 티칭맵 콘텐츠 상세 */}
+          {/* ?곗묶留?肄섑뀗痢??곸꽭 */}
           <Route
             path="/teaching-map/:teachingMapId/:contentId"
             element={
@@ -166,7 +182,7 @@ function App() {
             }
           />
 
-          {/* 티칭맵 상세 */}
+          {/* ?곗묶留??곸꽭 */}
           <Route
             path="/teaching-map/:teachingMapId"
             element={
@@ -174,25 +190,26 @@ function App() {
             }
           />
 
-          {/* 휴지통 */}
+          {/* ?댁???*/}
           <Route
             path="/trash"
             element={<TrashPage />}
           />
 
-          {/* 구독 */}
+          {/* 援щ룆 */}
+
+          {/* 留덉씠?섏씠吏 */}
           <Route
             path="/subscription"
             element={<SubscriptionPage />}
           />
 
-          {/* 마이페이지 */}
           <Route
             path="/mypage"
             element={<MyPage />}
           />
 
-          {/* 비로그인 마이페이지 */}
+          {/* 鍮꾨줈洹몄씤 留덉씠?섏씠吏 */}
           <Route
             path="/mypage/auth-required"
             element={
@@ -200,13 +217,13 @@ function App() {
             }
           />
 
-          {/* 회원 정보 수정 */}
+          {/* ?뚯썝 ?뺣낫 ?섏젙 */}
           <Route
             path="/mypage/edit"
             element={<MyPageEditPage />}
           />
 
-          {/* 알림 설정 */}
+          {/* ?뚮┝ ?ㅼ젙 */}
           <Route
             path="/mypage/notification"
             element={
@@ -214,7 +231,7 @@ function App() {
             }
           />
 
-          {/* 티칭맵 설정 */}
+          {/* ?곗묶留??ㅼ젙 */}
           <Route
             path="/mypage/teaching-style"
             element={
@@ -222,7 +239,7 @@ function App() {
             }
           />
 
-          {/* 1:1 문의 */}
+          {/* 1:1 臾몄쓽 */}
           <Route
             path="/mypage/inquiry"
             element={
@@ -230,7 +247,7 @@ function App() {
             }
           />
 
-          {/* 탈퇴 사유 */}
+          {/* ?덊눜 ?ъ쑀 */}
           <Route
             path="/mypage/withdrawal-reason"
             element={
@@ -238,7 +255,7 @@ function App() {
             }
           />
 
-          {/* 탈퇴 확인 */}
+          {/* ?덊눜 ?뺤씤 */}
           <Route
             path="/mypage/withdrawal-confirm"
             element={
@@ -246,7 +263,7 @@ function App() {
             }
           />
 
-          {/* 탈퇴 완료 */}
+          {/* ?덊눜 ?꾨즺 */}
           <Route
             path="/mypage/withdrawal-complete"
             element={
@@ -255,7 +272,8 @@ function App() {
           />
         </Route>
 
-        {/* 챗봇 전용 레이아웃 */}
+
+        {/* 梨쀫큸 ?꾩슜 ?덉씠?꾩썐 */}
         <Route
           element={<MainLayout insetMenu />}
         >
@@ -270,7 +288,7 @@ function App() {
         </Route>
         </Route>
 
-        {/* 회원가입 전용 레이아웃 */}
+        {/* ?뚯썝媛???꾩슜 ?덉씠?꾩썐 */}
         <Route
           element={
             <MainLayout
