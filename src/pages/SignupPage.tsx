@@ -1,5 +1,8 @@
 ﻿import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useCallback } from "react";
 import { ChevronLeft } from "lucide-react";
 
@@ -17,6 +20,13 @@ import {
 
 type SignupStep = "nickname" | "terms";
 type TermKey = "age" | "service" | "marketing" | "event";
+
+type SignupLocationState = {
+  step?: SignupStep;
+  nickname?: string;
+  terms?: Record<TermKey, boolean>;
+  termList?: Term[];
+};
 
 const REQUIRED_TERMS: TermKey[] = ["age", "service"];
 const TERM_ORDER: TermKey[] = [
@@ -52,16 +62,22 @@ const CheckIcon = ({
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<SignupStep>("nickname");
-  const [nickname, setNickname] = useState("");
-  const [terms, setTerms] = useState<Record<TermKey, boolean>>({
-    age: false,
-    service: false,
-    marketing: false,
-    event: false,
-  });
+  const location = useLocation();
+  const signupState = location.state as SignupLocationState | null;
+  const [step, setStep] = useState<SignupStep>(() =>
+    signupState?.step === "terms" ? "terms" : "nickname",
+  );
+  const [nickname, setNickname] = useState(signupState?.nickname ?? "");
+  const [terms, setTerms] = useState<Record<TermKey, boolean>>(
+    signupState?.terms ?? {
+      age: false,
+      service: false,
+      marketing: false,
+      event: false,
+    },
+  );
   const [termList, setTermList] =
-    useState<Term[]>([]);
+    useState<Term[]>(signupState?.termList ?? []);
   const [isSubmitting, setIsSubmitting] =
     useState(false);
   const [
@@ -76,6 +92,42 @@ const SignupPage = () => {
   const isAllTermsChecked = Object.values(terms).every(Boolean);
   const isTermsNextEnabled = REQUIRED_TERMS.every((key) => terms[key]);
   const isNextEnabled = step === "nickname" ? isNicknameNextEnabled : isTermsNextEnabled;
+
+  useEffect(() => {
+    if (step !== "nickname") {
+      return;
+    }
+
+    if (normalizedNickname.length === 0) {
+      return;
+    }
+
+    let isCancelled = false;
+    const timeoutId = window.setTimeout(() => {
+      void checkNickname(normalizedNickname)
+        .then(() => {
+          if (isCancelled) {
+            return;
+          }
+
+          setNicknameErrorMessage("");
+        })
+        .catch(() => {
+          if (isCancelled) {
+            return;
+          }
+
+          setNicknameErrorMessage(
+            "이미 사용중인 닉네임입니다.",
+          );
+        });
+    }, 300);
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [normalizedNickname, step]);
 
   const handleBack = () => {
     if (step === "terms") {
@@ -115,7 +167,7 @@ const SignupPage = () => {
       } catch (error) {
         const errorMessage =
           error instanceof Error
-            ? error.message
+            ? "이미 사용중인 닉네임입니다."
             : "회원가입 정보를 확인하지 못했습니다.";
 
         setNicknameErrorMessage(
@@ -223,7 +275,7 @@ const SignupPage = () => {
     <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
-       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75]">
+       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.8] px-20">
         <div className="mb-10 flex items-center gap-2.5">
           <button
             type="button"
@@ -246,7 +298,7 @@ const SignupPage = () => {
               </h2>
 
               <div className="flex w-full flex-col items-start gap-[10px]">
-                <label className="flex h-14 w-[640px] items-center rounded-[5px] bg-[#1F212A] px-5 py-3.5">
+                <label className="flex h-[60px] w-[640px] items-center rounded-[5px] bg-[#1F212A] px-5 py-3.5">
                   <input
                     type="text"
                     value={nickname}
@@ -304,12 +356,12 @@ const SignupPage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-[22.425px]">
+            <div className="flex flex-col gap-[25px]">
               <div className="flex flex-col items-start gap-2.5">
                 <button
                   type="button"
                   onClick={toggleAllTerms}
-                  className={`inline-flex h-14 w-[640px] items-center justify-start gap-[8px] rounded-[5px] px-7 py-3.5 ${
+                  className={`inline-flex h-[60px] w-[640px] items-center justify-start gap-[8px] rounded-[5px] px-7 py-3.5 ${
                     isAllTermsChecked ? "bg-[#917DEC]" : "bg-[#1F212A]"
                   }`}
                 >
@@ -325,19 +377,19 @@ const SignupPage = () => {
               </div>
 
               <div className="flex flex-col items-start gap-7">
-                <div className="flex w-[640px] flex-col items-start gap-[11.85px] py-3">
+                <div className="flex w-[640px] flex-col items-start gap-[8px] py-3">
                   <button
                     type="button"
                     onClick={() => toggleTerm("age")}
                     className="flex h-12 w-full items-center px-3.5 "
                   >
-                    <div className="inline-flex w-48 items-center gap-[4.56px]">
+                    <div className="inline-flex w-48 items-center gap-[10px]">
                       <CheckIcon checked={terms.age} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
                           [필수]
                         </span>
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
                           만 14세 이상입니다
                         </span>
                       </div>
@@ -345,52 +397,88 @@ const SignupPage = () => {
                   </button>
 
                   <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("service")} className="flex w-48 items-center gap-[4.56px]">
+                    <button type="button" onClick={() => toggleTerm("service")} className="flex w-48 items-center gap-[10px]">
                       <CheckIcon checked={terms.service} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
                           [필수]
                         </span>
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
                           약관 이용동의
                         </span>
                       </div>
                     </button>
-                    <button type="button" className="font-['SUIT'] text-sm font-normal leading-5 text-zinc-700 underline">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/signup/terms/service", {
+                          state: {
+                            nickname,
+                            terms,
+                            termList,
+                          },
+                        })
+                      }
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                    >
                       보기
                     </button>
                   </div>
 
                   <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("marketing")} className="flex items-center gap-[4.56px]">
+                    <button type="button" onClick={() => toggleTerm("marketing")} className="flex items-center gap-[10px]">
                       <CheckIcon checked={terms.marketing} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
                           [선택]
                         </span>
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
                           개인정보 마케팅 활용 동의
                         </span>
                       </div>
                     </button>
-                    <button type="button" className="font-['SUIT'] text-sm font-normal leading-5 text-zinc-700 underline">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/signup/terms/marketing", {
+                          state: {
+                            nickname,
+                            terms,
+                            termList,
+                          },
+                        })
+                      }
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                    >
                       보기
                     </button>
                   </div>
 
                   <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("event")} className="flex items-center gap-[4.56px]">
+                    <button type="button" onClick={() => toggleTerm("event")} className="flex items-center gap-[10px]">
                       <CheckIcon checked={terms.event} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
                           [선택]
                         </span>
-                        <span className={`font-['SUIT'] text-base font-normal leading-6 ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
                           이벤트 및 혜택 안내 메일 및 SMS 수신
                         </span>
                       </div>
                     </button>
-                    <button type="button" className="font-['SUIT'] text-sm font-normal leading-5 text-zinc-700 underline">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/signup/terms/event", {
+                          state: {
+                            nickname,
+                            terms,
+                            termList,
+                          },
+                        })
+                      }
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                    >
                       보기
                     </button>
                   </div>
@@ -399,11 +487,13 @@ const SignupPage = () => {
             </div>
           )}
 </div>
-<div className="absolute bottom-[260px] left-1/2 w-[640px] -translate-x-1/2">
+<div className="absolute bottom-[150px] left-1/2 w-[640px] -translate-x-1/2">
   <PrimaryButton
     disabled={!isNextEnabled || isSubmitting}
     onClick={handleNext}
-    className="!flex !h-[60px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] bg-[#1F212A] px-[50px] py-[20px] !font-['SUIT'] !text-[20px] !font-normal !leading-[150%] !tracking-[-0.6px]"
+    className={`!flex !h-[60px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] px-[50px] py-[20px] !font-['SUIT'] !text-[20px] !font-normal !leading-[150%] !tracking-[-0.6px] ${
+      !isNextEnabled || isSubmitting ? "!bg-[#1F212A]" : "!bg-[#917DEC]"
+    }`}
   >
     다음
   </PrimaryButton>

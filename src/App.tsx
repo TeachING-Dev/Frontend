@@ -35,6 +35,9 @@ import TeachingMapContentPage from "./pages/TeachingMapContentPage";
 import TeachingMapCreatePage from "./pages/TeachingMapCreatePage";
 import TeachingMapDetailPage from "./pages/TeachingMapDetailPage";
 import TeachingMapPage from "./pages/TeachingMapPage";
+import TermsEventPage from "./pages/TermsEventPage";
+import TermsMarketingPage from "./pages/TermsMarketingPage";
+import TermsServicePage from "./pages/TermsServicePage";
 import TemporaryTeachingMapPage from "./pages/TemporaryTeachingMapPage";
 import TrashPage from "./pages/TrashPage";
 
@@ -66,6 +69,19 @@ function App() {
         <Route
           path="/login/oauth2/code/:provider"
           element={<OAuthCallbackPage />}
+        />
+
+        <Route
+          path="/signup/terms/service"
+          element={<TermsServicePage />}
+        />
+        <Route
+          path="/signup/terms/marketing"
+          element={<TermsMarketingPage />}
+        />
+        <Route
+          path="/signup/terms/event"
+          element={<TermsEventPage />}
         />
 
         <Route element={<RequireAuth />}>

@@ -21,11 +21,14 @@ export class ChatApiError extends Error {
 export type ChatSource = {
   chatsourceId: number;
   materialId: number;
+  folderId?: number;
   materialTitle: string;
   folderName: string;
   url: string;
   citedText: string;
   position: string;
+  startLine?: number | null;
+  endLine?: number | null;
 };
 
 export type ChatHistoryMessage = {

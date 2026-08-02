@@ -1,4 +1,3 @@
-import { ChevronLeft } from "lucide-react";
 import {
   useLocation,
   useNavigate,
@@ -67,9 +66,13 @@ const SubscriptionPage = () => {
       <button
         type="button"
         onClick={() => navigate("/mypage")}
-          className="absolute left-[110px] top-[20px] z-10 flex origin-top-left scale-[0.75] items-center gap-[8px] text-[#E8E8E8]"
+          className="absolute left-[138px] top-[20px] z-10 flex origin-top-left scale-[0.75] items-center gap-[8px] text-[#E8E8E8]"
       >
-        <ChevronLeft size={28} strokeWidth={2} />
+        <img
+          src="/Chevron-down.svg"
+          alt=""
+          className="size-12"
+        />
         <span className="hidden font-['SUIT'] text-[36px] font-medium leading-[150%] tracking-[-1.08px]">
           구독하기
         </span>
