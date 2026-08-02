@@ -1,22 +1,28 @@
 export type SourceItem = {
   label: string;
   location: string;
+  materialTitle: string;
+  folderName: string;
+  url?: string;
+  startLine?: number | null;
+  endLine?: number | null;
   materialId?: number;
+  folderId?: number;
 };
 
 type SourceListProps = {
   sources: SourceItem[];
-  onSourceClick: (source: SourceItem) => void;
+  onSourceNameClick: (source: SourceItem) => void;
 };
 
 const SourceList = ({
   sources,
-  onSourceClick,
+  onSourceNameClick,
 }: SourceListProps) => {
   return (
     <div className="flex flex-col items-start gap-2.5">
-      <div className="inline-block rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
-        <div className="rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 py-1 font-['SUIT'] text-sm font-normal leading-5 text-white">
+      <div className="inline-block max-w-[605px] rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
+        <div className="max-w-full whitespace-pre-wrap rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 py-1 text-left font-['SUIT'] text-[15px] font-normal leading-[160%] text-white">
           답변 출처
         </div>
       </div>
@@ -29,10 +35,10 @@ const SourceList = ({
           >
             <button
               type="button"
-              onClick={() => onSourceClick(source)}
-              className="w-full rounded-[9px] bg-[#13151F] px-4 py-2 text-left font-['SUIT'] text-sm font-normal leading-5 text-white transition-colors hover:bg-zinc-800"
+              onClick={() => onSourceNameClick(source)}
+              className="w-full rounded-[9px] bg-[#13151F] px-4 py-3 text-left font-['SUIT'] text-[15px] font-normal leading-[160%] text-white transition-colors hover:bg-zinc-800"
             >
-              {source.label}
+              {source.materialTitle}
             </button>
           </div>
         ))}

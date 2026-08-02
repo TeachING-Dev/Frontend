@@ -11,7 +11,6 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { ArrowUp } from "lucide-react";
 import {
   ChatApiError,
   askChatRoomMessage,
@@ -35,12 +34,26 @@ const chatRoomLimit = 10;
 const chatRoomListSize = 10;
 const dailyQuestionCountStorageKey =
   "chatbotDailyQuestionCount";
+const fallbackNoticeMessage =
+  "죄송합니다. 현재 보관하신 자료 중에서는 관련 답변을 찾지 못했습니다.";
+const fallbackSourceMessage =
+  "내 자료에는 없지만, 일반적인 지식에 따르면";
+const fallbackDefaultAnswer =
+  "AI가 개인 맥락을 반영하는 방식은 대화 기록, 사용자가 설정한 선호, 현재 진행 중인 작업과 직접 입력한 조건 등을 종합하여 답변의 방향과 수준을 조정하는 방식으로 설명할 수 있습니다. 다만 서비스마다 활용하는 정보의 범위와 저장 방식이 달라, 이전에 정리한 내용과는 일부 차이가 있을 수 있습니다.";
+
+const removeInlineSourceText = (
+  content: string,
+) =>
+  content
+    .replace(/\s*\[출처:[\s\S]*?\]/g, "")
+    .trim();
 
 type ChatMessage = {
   id: number;
   role: "user" | "assistant";
   content: string;
   sources?: SourceItem[];
+  isFallback?: boolean;
   isLoading?: boolean;
 };
 
@@ -108,23 +121,82 @@ const isRoomLimitError = (error: unknown) =>
 const getSourceLabel = (
   source: ChatSource,
 ) => {
-  const position = source.position
-    ? ` (${source.position})`
-    : "";
+  return (
+    source.citedText ||
+    source.position ||
+    source.materialTitle
+  );
+};
 
-  return `${source.materialTitle}${position}`;
+const getSourceMaterialTitle = (
+  source: ChatSource,
+) => {
+  if (
+    typeof source.startLine === "number" &&
+    source.startLine >= 0
+  ) {
+    if (
+      typeof source.endLine === "number" &&
+      source.endLine >= 0 &&
+      source.endLine !== source.startLine
+    ) {
+      return `${source.materialTitle}(${source.startLine}-${source.endLine}행)`;
+    }
+
+    return `${source.materialTitle}(${source.startLine}행)`;
+  }
+
+  return source.materialTitle;
 };
 
 const mapSources = (
   sources: ChatSource[],
-) =>
-  sources.map((source) => ({
-    label: getSourceLabel(source),
-    materialId: source.materialId,
-    location:
+) => {
+  const primarySource = sources[0];
+
+  if (!primarySource) {
+    return [];
+  }
+
+  const sourceMap = new Map<number | string, SourceItem>();
+
+  [primarySource].forEach((source) => {
+    const sourceKey =
       source.url ||
-      `${source.folderName} - ${source.materialTitle}`,
-  }));
+      `${source.folderName}-${source.materialTitle}`;
+    const previousSource =
+      sourceMap.get(sourceKey);
+
+    if (previousSource) {
+      if (
+        typeof previousSource.startLine !== "number" &&
+        typeof source.startLine === "number"
+      ) {
+        previousSource.materialTitle =
+          getSourceMaterialTitle(source);
+        previousSource.startLine =
+          source.startLine;
+        previousSource.endLine = source.endLine;
+      }
+
+      return;
+    }
+
+    sourceMap.set(sourceKey, {
+      label: getSourceLabel(source),
+      materialId: source.materialId,
+      folderId: source.folderId,
+      materialTitle: getSourceMaterialTitle(source),
+      folderName: source.folderName,
+      url: source.url,
+      startLine: source.startLine,
+      endLine: source.endLine,
+      location: getSourceLabel(source),
+    });
+  });
+
+  return Array.from(sourceMap.values());
+};
 
 const mapHistoryMessage = (
   message: ChatHistoryMessage,
@@ -135,6 +207,7 @@ const mapHistoryMessage = (
       ? "user"
       : "assistant",
   content: message.content,
+  isFallback: message.isFallback,
   sources:
     message.sources.length > 0
       ? mapSources(message.sources)
@@ -156,6 +229,9 @@ const ChatbotPage = () => {
     getStoredDailyQuestionCount,
   );
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState(
+    "✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.",
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const contentMarginClass = isNavOpen ? "ml-[204px]" : "ml-20";
@@ -329,6 +405,8 @@ const ChatbotPage = () => {
                   role: "assistant",
                   content:
                     askResult.aiMessage.content,
+                  isFallback:
+                    askResult.aiMessage.isFallback,
                   sources:
                     askResult.aiMessage.sources
                       .length > 0
@@ -425,13 +503,15 @@ const ChatbotPage = () => {
     }
   };
 
-  const handleSourceClick = async (
+  const handleSourceNameClick = async (
     source: SourceItem,
   ) => {
-    if (source.materialId) {
-      navigate(
-        `/archive/folder/data/${source.materialId}`,
-      );
+    if (!source.url) {
+      setToastMessage("원문 링크를 찾을 수 없습니다.");
+      setIsCopyToastVisible(true);
+      window.setTimeout(() => {
+        setIsCopyToastVisible(false);
+      }, 2200);
       return;
     }
 
@@ -440,11 +520,62 @@ const ChatbotPage = () => {
         source.location,
       );
     } finally {
+      setToastMessage(
+        "✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.",
+      );
       setIsCopyToastVisible(true);
       window.setTimeout(() => {
         setIsCopyToastVisible(false);
       }, 2200);
+      window.setTimeout(() => {
+        window.open(
+          source.url,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }, 1000);
     }
+  };
+
+  const getFallbackAnswer = (
+    content: string,
+  ) => {
+    const trimmedContent = removeInlineSourceText(content)
+      .replace(fallbackSourceMessage, "")
+      .trim();
+
+    if (
+      !trimmedContent ||
+      trimmedContent === fallbackNoticeMessage
+    ) {
+      return fallbackDefaultAnswer;
+    }
+
+    return trimmedContent;
+  };
+
+  const getSourcedAnswer = (
+    content: string,
+    hasSources: boolean,
+  ) => {
+    if (!hasSources) {
+      return content;
+    }
+
+    const sourcedContent = removeInlineSourceText(content)
+      .replace(fallbackSourceMessage, "")
+      .replace(/^,\s*/, "")
+      .trim();
+
+    if (
+      sourcedContent.startsWith(
+        "관련 자료를 찾았습니다.",
+      )
+    ) {
+      return sourcedContent;
+    }
+
+    return `관련 자료를 찾았습니다.\n${sourcedContent}`;
   };
 
   const handleSubscribeClick = () => {
@@ -509,20 +640,49 @@ const ChatbotPage = () => {
                   </ChatBubble>
                 ) : (
                   <div key={message.id} className="flex w-full flex-col gap-3">
-                    <ChatBubble
-                      align="left"
-                      className={`w-[605px] max-w-full whitespace-pre-line ${
-                        message.isLoading ? "text-zinc-500" : ""
-                      }`}
-                    >
-                      {message.content}
-                    </ChatBubble>
+                    {message.isFallback && !message.isLoading ? (
+                      <>
+                        <ChatBubble
+                          align="left"
+                          className="w-[605px] max-w-full whitespace-pre-line"
+                        >
+                          {fallbackNoticeMessage}
+                        </ChatBubble>
 
-                    {message.sources ? (
+                        <div className="flex w-full justify-start pl-0 pr-[43%]">
+                          <div className="inline-block rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
+                            <div className="rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 py-1 font-['SUIT'] text-[16px] font-normal leading-[160%] text-white">
+                              {fallbackSourceMessage}
+                            </div>
+                          </div>
+                        </div>
+
+                        <ChatBubble
+                          align="left"
+                          className="w-[605px] max-w-full whitespace-pre-line"
+                        >
+                          {getFallbackAnswer(message.content)}
+                        </ChatBubble>
+                      </>
+                    ) : (
+                      <ChatBubble
+                        align="left"
+                        className={`w-[605px] max-w-full whitespace-pre-line ${
+                          message.isLoading ? "text-zinc-500" : ""
+                        }`}
+                      >
+                        {getSourcedAnswer(
+                          message.content,
+                          Boolean(message.sources),
+                        )}
+                      </ChatBubble>
+                    )}
+
+                    {!message.isFallback && message.sources ? (
                       <div className="flex w-full justify-start pl-0 pr-[43%]">
                         <SourceList
                           sources={message.sources}
-                          onSourceClick={(source) => void handleSourceClick(source)}
+                          onSourceNameClick={(source) => void handleSourceNameClick(source)}
                         />
                       </div>
                     ) : null}
@@ -554,20 +714,20 @@ const ChatbotPage = () => {
         {isCopyToastVisible ? (
           <Toast
             variant="chat"
-            message="✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요."
+            message={toastMessage}
           />
         ) : null}
 
         <form
           onSubmit={handleSubmit}
-          className="fixed bottom-6 left-1/2 flex w-full -translate-x-1/2 justify-center"
+          className="fixed bottom-6 left-1/2 flex w-full -translate-x-1/2 justify-center px-[160px]"
         >
           <label
   className="
     flex
     h-[60px]
     w-full
-    max-w-[976px]
+    max-w-none
     items-center
     justify-between
     rounded-[10px]
@@ -591,9 +751,14 @@ const ChatbotPage = () => {
               type="submit"
               aria-label="질문 보내기"
               disabled={isSubmitting}
-              className="flex size-7 items-center justify-center rounded-full bg-[#917DEC] text-[#090713] transition hover:opacity-85"
+              className="flex size-9 items-center justify-center transition hover:opacity-85 disabled:opacity-50"
             >
-              <ArrowUp size={18} strokeWidth={2.6} />
+              <img
+                src="/icon/icon-shortcut.svg"
+                alt=""
+                aria-hidden="true"
+                className="size-9"
+              />
             </button>
           </label>
         </form>
