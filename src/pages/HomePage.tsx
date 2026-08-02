@@ -6,10 +6,6 @@ import {
   type RecentMaterial,
 } from "../apis/home";
 
-import {
-  getMaterials,
-} from "../apis/material";
-
 import HomeContent from "../components/home/HomeContent";
 import HomeHeader from "../components/home/HomeHeader";
 
@@ -26,46 +22,11 @@ const HomePage = () => {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const [
-          materials,
-          homeData,
-        ] = await Promise.all([
-          getMaterials(6),
-          getHome(),
-        ]);
-
-        const mappedMaterials: RecentMaterial[] =
-          materials.map((material) => ({
-            materialId:
-              material.materialId,
-
-            title:
-              material.dataTitle,
-
-            analysisTitle:
-              material.analysisTitle,
-
-            summary:
-              material.summary,
-
-            platformType:
-              material.platformType,
-
-            platformImageUrl:
-              material.platformImageUrl,
-
-            difficulty:
-              material.difficultyScore,
-
-            aiStatus:
-              material.statusAi,
-
-            createdAt:
-              material.createdAt,
-          }));
+        const homeData =
+          await getHome();
 
         setRecentMaterials(
-          mappedMaterials,
+          homeData.recentMaterials,
         );
 
         setActiveTeachingMaps(
@@ -81,7 +42,7 @@ const HomePage = () => {
       }
     };
 
-    fetchHome();
+    void fetchHome();
   }, []);
 
   return (
@@ -102,6 +63,7 @@ const HomePage = () => {
         lg:px-0
         lg:pb-[75px]
         lg:pt-[60px]
+        lg:gap-[30px]
       "
     >
       <HomeHeader />

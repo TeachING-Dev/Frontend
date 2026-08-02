@@ -503,8 +503,17 @@ const TemporaryTeachingMapPage = () => {
               }
             />
           ) : (
-            <div className="flex h-[300px] w-full items-center justify-center text-[20px] font-medium text-[#717379]">
-              임시저장한 티칭맵이 없습니다.
+            <div className="flex h-[480px] w-full flex-col items-center justify-center gap-10">
+              <img
+                src="/TempCharacter.svg"
+                alt=""
+                aria-hidden="true"
+                draggable={false}
+                className="h-[224px] w-[235px] select-none object-contain"
+              />
+              <p className="font-['SUIT'] text-[20px] font-semibold leading-7 tracking-[-0.6px] text-[#42444C]">
+                임시저장한 티칭맵이 없습니다.
+              </p>
             </div>
           )}
         </div>

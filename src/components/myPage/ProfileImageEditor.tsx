@@ -21,13 +21,15 @@ const ProfileImageEditor = ({
           <img
             src={imageUrl}
             alt="프로필"
+            draggable={false}
             className="h-full w-full rounded-full object-cover"
           />
         ) : (
           <img
             src={profileFrameImage}
             alt="프로필"
-            className="h-full w-full"
+            draggable={false}
+            className="h-full w-full select-none"
           />
         )}
 
@@ -40,7 +42,8 @@ const ProfileImageEditor = ({
           <img
             src={cameraIcon}
             alt=""
-            className="h-[40px] w-[40px]"
+            draggable={false}
+            className="h-[40px] w-[40px] select-none"
           />
         </button>
       </div>

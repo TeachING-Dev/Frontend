@@ -1,28 +1,46 @@
 import { useState } from "react";
 
+import type { MaterialTag } from "../../apis/material";
+
 type AnalysisHeaderProps = {
   date: string;
   title: string;
-  tags: string[];
+  tags: MaterialTag[];
+  onSelectedTagsChange?: (
+    tags: MaterialTag[],
+  ) => void;
 };
 
 const AnalysisHeader = ({
   date,
   title,
   tags,
+  onSelectedTagsChange,
 }: AnalysisHeaderProps) => {
-  const [removedTagIndexes, setRemovedTagIndexes] =
+  const [removedTagIds, setRemovedTagIds] =
     useState<number[]>([]);
 
-  const handleToggleTag = (index: number) => {
-    setRemovedTagIndexes((prev) => {
-      if (prev.includes(index)) {
-        return prev.filter(
-          (item) => item !== index,
-        );
-      }
+  const handleToggleTag = (tagId: number) => {
+    setRemovedTagIds((prev) => {
+      const nextRemovedTagIds =
+        prev.includes(tagId)
+          ? prev.filter(
+              (id) => id !== tagId,
+            )
+          : [...prev, tagId];
 
-      return [...prev, index];
+      const selectedTags = tags.filter(
+        (tag) =>
+          !nextRemovedTagIds.includes(
+            tag.tagId,
+          ),
+      );
+
+      onSelectedTagsChange?.(
+        selectedTags,
+      );
+
+      return nextRemovedTagIds;
     });
   };
 
@@ -54,13 +72,15 @@ const AnalysisHeader = ({
 
       {/* 태그 목록 */}
       <div className="flex flex-wrap items-center gap-[12px]">
-        {tags.map((tag, index) => {
+        {tags.map((tag) => {
           const isRemoved =
-            removedTagIndexes.includes(index);
+            removedTagIds.includes(
+              tag.tagId,
+            );
 
           return (
             <div
-              key={`${tag}-${index}`}
+              key={tag.tagId}
               className={`
                 flex h-[32px] items-center
                 rounded-full
@@ -86,18 +106,20 @@ const AnalysisHeader = ({
                   }
                 `}
               >
-                {tag}
+                {tag.tagName}
               </span>
 
               <button
                 type="button"
                 onClick={() =>
-                  handleToggleTag(index)
+                  handleToggleTag(
+                    tag.tagId,
+                  )
                 }
                 aria-label={
                   isRemoved
-                    ? `${tag} 태그 삭제 취소`
-                    : `${tag} 태그 삭제`
+                    ? `${tag.tagName} 태그 삭제 취소`
+                    : `${tag.tagName} 태그 삭제`
                 }
                 className={`
                   ml-[2px]
