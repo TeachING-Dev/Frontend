@@ -102,7 +102,7 @@ const TeachingMapFolderSelect = ({
               (previous) => !previous,
             )
           }
-          className="flex h-[64px] w-full items-center rounded-[4px] bg-[#F5F2FF] px-5 text-left outline-none"
+          className="flex h-[64px] w-full items-center rounded-[4px] border border-[#D0D0D2] bg-transparent px-5 text-left outline-none"
         >
           <img
             src="/folder/folder1.png"
@@ -117,14 +117,10 @@ const TeachingMapFolderSelect = ({
           </span>
 
           <img
-            src={
-              isOpen
-                ? "/rollup.svg"
-                : "/dropdown.svg"
-            }
+            src="/dropdown.svg"
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 shrink-0"
+            className={`h-6 w-6 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
           />
         </button>
 

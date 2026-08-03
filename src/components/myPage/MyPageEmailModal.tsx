@@ -1,4 +1,3 @@
-import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import Toast from "../common/Toast";
 
@@ -63,13 +62,13 @@ const MyPageEmailModal = ({
       >
         <h2
           id="email-modal-title"
-          className="text-[28px] font-bold leading-[42px] tracking-[-0.84px] text-[#F5F2FF]"
+          className="font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-white"
         >
           이메일
         </h2>
 
         <div className="flex h-[56px] w-full items-center justify-between rounded-[5px] bg-[#1F212A] p-[10px]">
-          <span className="truncate text-[24px] font-semibold leading-[36px] tracking-[-0.72px] text-white">
+          <span className="truncate font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-white">
             {email}
           </span>
 
@@ -79,7 +78,12 @@ const MyPageEmailModal = ({
             aria-label={isCopied ? "이메일 복사 완료" : "이메일 주소 복사"}
             className="flex h-9 w-9 shrink-0 items-center justify-center text-[#8D8E94] transition hover:text-white"
           >
-            {isCopied ? <Check size={24} /> : <Copy size={24} />}
+            <img
+              src="/icon/icon_copy.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-6 w-6"
+            />
           </button>
         </div>
 

@@ -6,6 +6,7 @@ type ArchiveDataItemProps = {
   title: string;
   description: string;
   platformType: string;
+  platformImageUrl?: string;
   isMoveMode?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
@@ -25,12 +26,19 @@ const ArchiveDataItem = ({
   title,
   description,
   platformType,
+  platformImageUrl,
   isMoveMode = false,
   isSelected = false,
   onSelect,
   onAiAnalysis,
   onOpenOriginal,
 }: ArchiveDataItemProps) => {
+  const normalizedPlatformImageUrl = platformImageUrl
+    ? platformImageUrl.startsWith("http") || platformImageUrl.startsWith("/")
+      ? platformImageUrl
+      : `/icon/${platformImageUrl}`
+    : undefined;
+
   const handleItemClick = () => {
     if (!isMoveMode) {
       return;
@@ -137,7 +145,8 @@ const ArchiveDataItem = ({
         <div className="mb-[20px] flex items-center gap-[15px]">
           <img
             src={
-              platformIconMap[platformType] ??
+              normalizedPlatformImageUrl ??
+              platformIconMap[platformType.toUpperCase()] ??
               "/icon/최근에 저장한 지식3.png"
             }
             alt={platformType}
