@@ -542,6 +542,7 @@ const ChatbotPage = () => {
   ) => {
     const trimmedContent = removeInlineSourceText(content)
       .replace(fallbackSourceMessage, "")
+      .replace(/^,\s*/, "")
       .trim();
 
     if (
@@ -651,7 +652,7 @@ const ChatbotPage = () => {
 
                         <div className="flex w-full justify-start pl-0 pr-[43%]">
                           <div className="inline-block rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
-                            <div className="rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 py-1 font-['SUIT'] text-[16px] font-normal leading-[160%] text-white">
+                            <div className="flex h-[42px] items-center rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 font-['SUIT'] text-[15px] font-normal leading-[160%] text-white">
                               {fallbackSourceMessage}
                             </div>
                           </div>
@@ -720,16 +721,14 @@ const ChatbotPage = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="fixed bottom-6 left-1/2 flex w-full -translate-x-1/2 justify-center px-[160px]"
+          className="fixed bottom-[50px] left-1/2 flex w-full -translate-x-1/2 justify-center px-[170px]"
         >
           <label
   className="
-    flex
-    h-[60px]
+    box-border
+    h-[50px]
     w-full
     max-w-none
-    items-center
-    justify-between
     rounded-[10px]
     border-[2px]
     border-[#917DEC]
@@ -737,15 +736,16 @@ const ChatbotPage = () => {
     py-2.5
     pl-5
     pr-3
-    shadow-[0_0_60px_0_rgba(145,125,236,0.7)]
+    shadow-[0_0_70px_10px_rgba(145,125,236,0.80)]
   "
 >
+            <div className="flex h-full w-full items-center justify-between">
             <input
               type="text"
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="궁금한 점을 물어보세요"
-              className="flex-1 bg-transparent font-['SUIT'] text-[16px] font-normal leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
+              className="flex-1 bg-transparent font-['SUIT'] text-[15px] font-medium leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
             />
             <button
               type="submit"
@@ -760,6 +760,7 @@ const ChatbotPage = () => {
                 className="size-9"
               />
             </button>
+            </div>
           </label>
         </form>
       </main>
