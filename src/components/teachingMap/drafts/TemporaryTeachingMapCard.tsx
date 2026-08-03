@@ -68,13 +68,13 @@ const TemporaryTeachingMapCard = ({
                   alt=""
                   aria-hidden="true"
                   className={[
-                    "h-9 w-9 rounded-full border-2 border-[#F5F2FF] object-cover",
+                    "h-9 w-9 rounded-full bg-white p-[2px] object-contain",
                     index === 0 ? "" : "-ml-3",
                   ].join(" ")}
                 />
               ))}
             {teachingMap.extraThumbnailCount > 0 && (
-              <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full border-2 border-[#F5F2FF] bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
+              <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
                 +{teachingMap.extraThumbnailCount}
               </span>
             )}

@@ -27,7 +27,7 @@ const Toast = ({
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-[36px] left-1/2 z-[200] flex min-h-[68px] w-fit min-w-[320px] -translate-x-1/2 items-center justify-between gap-5 rounded-[6px] bg-[#FAFAFA] px-5 py-4 font-['SUIT'] shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
+      className="fixed bottom-[36px] left-1/2 z-[200] box-border flex min-h-[62px] w-max min-w-[768px] -translate-x-1/2 items-center justify-between gap-[10px] whitespace-nowrap rounded-[10px] border border-[#917DEC] bg-[#F5F2FF] px-5 py-4 font-['SUIT'] shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
     >
       <p className="whitespace-nowrap text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#2B2C35]">
         {message}

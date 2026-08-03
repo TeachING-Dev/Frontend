@@ -23,7 +23,7 @@ const TeachingMapContentPage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [originalUrl, setOriginalUrl] = useState("");
   const [materialId, setMaterialId] = useState<number | null>(null);
-  const [summary, setSummary] = useState("");
+  const [detailAnalysis, setDetailAnalysis] = useState("");
   const [sections, setSections] = useState<TeachingMapContentSection[]>([]);
   const [openAnalysisIds, setOpenAnalysisIds] = useState<number[]>([]);
   const [loadError, setLoadError] = useState("");
@@ -51,7 +51,9 @@ const TeachingMapContentPage = () => {
         setTags(step.tags ?? []);
         setOriginalUrl(step.originalUrl);
         setMaterialId(step.materialId);
-        setSummary(step.existingAiAnalysis?.summary ?? "");
+        setDetailAnalysis(
+          step.existingAiAnalysis?.detailAnalysis ?? "",
+        );
 
         const highlights = step.existingAiAnalysis?.highlights ?? [];
         const feedbacks = step.aiTeacherAnalysis?.feedbacks ?? [];
@@ -65,15 +67,10 @@ const TeachingMapContentPage = () => {
               highlightId: highlight.highlightId,
               highlightText: highlight.text,
               title: step.title,
-              highlightType: [
-                "CORE",
-                "KEY",
-                "KEY_POINT",
-                "MAIN",
-                "핵심",
-              ].includes(highlight.type.trim().toUpperCase())
-                ? "core"
-                : "warning",
+              highlightType:
+                highlight.type.trim().toUpperCase() === "CAUTION"
+                  ? "CAUTION"
+                  : "MAIN",
               analysisTitle: highlight.text,
               analysisDescriptions: feedback ? [feedback.content] : [],
             };
@@ -164,7 +161,7 @@ const TeachingMapContentPage = () => {
           <div className="mt-[33px]">
             <TeachingMapContentSectionList
               title={title}
-              summary={summary}
+              summary={detailAnalysis}
               sections={sections}
               onHighlightClick={handleToggleAnalysis}
             />

@@ -13,22 +13,22 @@ const desktopMenuItems = [
   {
     label: "홈",
     path: "/",
-    icon: "/icon/홈.png",
+    icon: "/icon/홈.svg",
   },
   {
     label: "보관함",
     path: "/archive",
-    icon: "/icon/보관함.png",
+    icon: "/icon/보관함.svg",
   },
   {
     label: "티칭맵",
     path: "/teaching-map",
-    icon: "/icon/티칭맵.png",
+    icon: "/icon/티칭맵.svg",
   },
   {
     label: "AI 챗봇",
     path: "/chatbot",
-    icon: "/icon/AI챗봇.png",
+    icon: "/icon/AI챗봇.svg",
   },
   {
     label: "휴지통",
@@ -65,8 +65,8 @@ const mobileMenuItems = [
   {
     label: "마이",
     path: "/mypage",
-    icon: "/icon/마이페이지.svg",
-    activeIcon: "/icon/마이페이지_active.svg",
+    icon: "/icon/마이페이지.png",
+    activeIcon: "/icon/마이페이지_active.png",
   },
 ];
 
@@ -236,21 +236,21 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
               ))}
             </nav>
 
-            <div className="mt-auto flex flex-col gap-[10px]">
+            <div className="mt-auto flex w-[290px] flex-col items-start gap-[10px] px-[20px] py-[10px]">
               <NavLink
                 to="/mypage"
                 onClick={onClose}
-                className="flex h-[60px] items-center rounded-[5px] border-2 border-[#917DEC] bg-[#0B0A18] px-[20px] transition hover:bg-[#141225]"
+                className="flex h-[52px] w-[250px] items-center rounded-[5px] bg-[#15151F] px-[10px] transition hover:bg-[#1F202A]"
               >
                 <div className="flex items-center gap-[10px]">
                   <img
                     src="/icon/마이페이지.png"
                     alt=""
                     aria-hidden="true"
-                    className="h-[40px] w-[40px] object-contain"
+                    className="h-[32px] w-[32px] object-contain"
                   />
 
-                  <span className="text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#917DEC]">
+                  <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#917DEC]">
                     마이페이지
                   </span>
                 </div>
@@ -259,17 +259,17 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex h-[60px] items-center rounded-[5px] bg-[#917DEC] px-[20px] transition hover:bg-[#806BDB]"
+                className="flex h-[52px] w-[250px] items-center rounded-[5px] bg-transparent px-[10px] transition hover:bg-white/5"
               >
                 <div className="flex items-center gap-[10px]">
                   <img
                     src="/icon/로그아웃.png"
                     alt=""
                     aria-hidden="true"
-                    className="h-[40px] w-[40px] object-contain"
+                    className="h-[32px] w-[32px] object-contain opacity-50"
                   />
 
-                  <span className="text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-white">
+                  <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#42444C]">
                     로그아웃
                   </span>
                 </div>

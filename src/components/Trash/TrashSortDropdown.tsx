@@ -21,7 +21,7 @@ const TrashSortDropdown = ({
         { value: "oldest", label: "오래된 삭제순" },
       ]}
       onChange={onSortChange}
-      widthClassName="w-[170px]"
+      widthClassName="w-fit"
     />
   );
 };
