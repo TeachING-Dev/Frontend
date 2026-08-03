@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const sadEmptyStarImage = "/myPage/SadStar.svg";
+const sadEmptyStarImage = "/myPage/SadStar.png";
 
 const MyPageAuthRequired = () => {
   const navigate = useNavigate();

@@ -1,7 +1,4 @@
-import {
-  NavLink,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { logout } from "../../apis/auth";
 import { clearTokens } from "../../utils/authToken";
@@ -36,7 +33,7 @@ const desktopMenuItems = [
   {
     label: "휴지통",
     path: "/trash",
-    icon: "/icon/휴지통.png",
+    icon: "/icon/휴지통.svg",
   },
 ];
 
@@ -69,15 +66,11 @@ const mobileMenuItems = [
     label: "마이",
     path: "/mypage",
     icon: "/icon/마이페이지.svg",
-    activeIcon: "/icon/마이_active.svg",
+    activeIcon: "/icon/마이페이지_active.svg",
   },
 ];
 
-const Sidebar = ({
-  open,
-  onClose,
-  onLogout,
-}: SidebarProps) => {
+const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -132,9 +125,7 @@ const Sidebar = ({
             className={({ isActive }) =>
               [
                 "flex min-w-[48px] flex-col items-center justify-center gap-[3px] transition",
-                isActive
-                  ? "text-[#A996FF]"
-                  : "text-[#F5F2FF]",
+                isActive ? "text-[#A996FF]" : "text-[#F5F2FF]",
               ].join(" ")
             }
           >
@@ -149,10 +140,10 @@ const Sidebar = ({
 
                 <span
                   className={[
-                  "transition",
-                  isActive
-                    ? "text-[12px] font-medium leading-[150%] tracking-[-0.42px] text-[#C1AEFF]"
-                    : "text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#F5F2FF]",
+                    "transition",
+                    isActive
+                      ? "text-[12px] font-medium leading-[150%] tracking-[-0.42px] text-[#C1AEFF]"
+                      : "text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#F5F2FF]",
                   ].join(" ")}
                 >
                   {item.label}
@@ -194,11 +185,7 @@ const Sidebar = ({
             "
           >
             <div className="flex items-center justify-between px-[10px]">
-              <NavLink
-                to="/"
-                onClick={onClose}
-                className="flex items-center"
-              >
+              <NavLink to="/" onClick={onClose} className="flex items-center">
                 <img
                   src="/logo/logo.png"
                   alt="TeachING"
@@ -231,9 +218,7 @@ const Sidebar = ({
                   className={({ isActive }) =>
                     [
                       "flex h-[56px] items-center gap-[20px] rounded-[6px] px-[10px] transition",
-                      isActive
-                        ? "bg-[#2B2C35]"
-                        : "hover:bg-white/5",
+                      isActive ? "bg-[#2B2C35]" : "hover:bg-white/5",
                     ].join(" ")
                   }
                 >

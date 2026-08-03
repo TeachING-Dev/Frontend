@@ -117,14 +117,10 @@ const TeachingMapFolderSelect = ({
           </span>
 
           <img
-            src={
-              isOpen
-                ? "/rollup.svg"
-                : "/dropdown.svg"
-            }
+            src="/dropdown.svg"
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 shrink-0"
+            className={`h-6 w-6 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
           />
         </button>
 

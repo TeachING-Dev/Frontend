@@ -2,24 +2,26 @@ import type { TeachingMapContentSection } from "../../../pages/TeachingMapConten
 import TeachingMapContentSectionItem from "./TeachingMapContentSectionItem";
 
 interface TeachingMapContentSectionListProps {
+  title: string;
+  summary: string;
   sections: TeachingMapContentSection[];
   onHighlightClick: (sectionId: number) => void;
 }
 
 const TeachingMapContentSectionList = ({
+  title,
+  summary,
   sections,
   onHighlightClick,
 }: TeachingMapContentSectionListProps) => {
   return (
     <div className="flex w-full flex-col items-start px-[30px] py-[10px]">
-      {sections.map((section, index) => (
-        <TeachingMapContentSectionItem
-          key={section.id}
-          section={section}
-          isLast={index === sections.length - 1}
-          onHighlightClick={onHighlightClick}
-        />
-      ))}
+      <TeachingMapContentSectionItem
+        title={title}
+        summary={summary}
+        sections={sections}
+        onHighlightClick={onHighlightClick}
+      />
     </div>
   );
 };
