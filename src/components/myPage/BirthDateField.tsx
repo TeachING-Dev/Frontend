@@ -111,26 +111,22 @@ const BirthDateDropdown = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
-        className="flex h-[60px] w-full items-center gap-[10px] rounded-[5px] bg-[#1F212A] px-5 py-[14px] text-left"
+        className="flex h-[60px] w-full items-center gap-[10px] rounded-[5px] border border-[#D0D0D2] bg-transparent px-5 py-[14px] text-left"
       >
         <span
           className={[
-            "min-w-0 flex-1 text-[28px] font-bold leading-[42px] tracking-[-0.84px]",
+            "min-w-0 flex-1 font-['SUIT'] text-[28px] font-semibold leading-[42px] tracking-[-0.84px]",
             value ? "text-[#D0D0D2]" : "text-[#42444C]",
           ].join(" ")}
         >
           {value ?? placeholder}
         </span>
-        <span
+        <img
+          src="/icon/purple_dropdown.svg"
+          alt=""
           aria-hidden="true"
-          className={[
-            "flex h-7 w-7 shrink-0 items-center justify-center",
-            "transition-transform",
-            isOpen ? "rotate-180" : "",
-          ].join(" ")}
-        >
-          <span className="h-0 w-0 border-x-[9px] border-t-[10px] border-x-transparent border-t-[#917DEC]" />
-        </span>
+          className={`h-7 w-7 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
+        />
       </button>
 
       {isOpen && (

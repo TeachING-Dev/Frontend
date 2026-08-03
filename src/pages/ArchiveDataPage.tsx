@@ -10,12 +10,9 @@ import {
 import {
   getMaterialAnalysis,
   getMaterialDetail,
-  getMaterialOriginUrl,
-  getMaterialTags,
   updateMaterialSummary,
   type MaterialAnalysis,
   type MaterialDetail,
-  type MaterialTag,
 } from "../apis/material";
 import ArchiveDataAnalysis from "../components/archive/ArchiveDataAnalysis";
 import ArchiveDataHeader from "../components/archive/ArchiveDataHeader";
@@ -33,18 +30,12 @@ const ArchiveDataPage = () => {
   const [material, setMaterial] =
     useState<MaterialDetail | null>(null);
 
-  const [materialTags, setMaterialTags] =
-    useState<MaterialTag[]>([]);
-
   const [
     materialAnalysis,
     setMaterialAnalysis,
   ] = useState<MaterialAnalysis | null>(
     null,
   );
-
-  const [originUrl, setOriginUrl] =
-    useState("");
 
   const [isLoading, setIsLoading] =
     useState(true);
@@ -99,34 +90,17 @@ const ArchiveDataPage = () => {
       setAnalysisErrorMessage("");
 
       try {
-        const [
-          materialDetail,
-          tags,
-          originUrlData,
-        ] = await Promise.all([
-          getMaterialDetail(
+        const materialDetail =
+          await getMaterialDetail(
             parsedFolderId,
             parsedMaterialId,
-          ),
-          getMaterialTags(
-            parsedFolderId,
-            parsedMaterialId,
-          ),
-          getMaterialOriginUrl(
-            parsedFolderId,
-            parsedMaterialId,
-          ),
-        ]);
+          );
 
         if (isCancelled) {
           return;
         }
 
         setMaterial(materialDetail);
-        setMaterialTags(tags);
-        setOriginUrl(
-          originUrlData.originUrl,
-        );
       } catch (error) {
         if (isCancelled) {
           return;
@@ -138,8 +112,6 @@ const ArchiveDataPage = () => {
         );
 
         setMaterial(null);
-        setMaterialTags([]);
-        setOriginUrl("");
 
         setErrorMessage(
           "자료를 불러오지 못했습니다.",
@@ -275,17 +247,17 @@ const ArchiveDataPage = () => {
     <main className="py-10">
       <div className="mx-auto w-[1120px]">
         <ArchiveDataHeader
-        date={material.createdAt}
-        title={material.title}
-        originalUrl={originUrl}
-        platformType={material.platformType}
-        platformImageUrl={
-          material.platformImageUrl
-        }
-        tags={materialTags.map(
-          (tag) => tag.tagName,
-        )}
-        onBack={handleBack}
+          date={material.createdAt}
+          title={material.title}
+          originalUrl={material.originUrl}
+          platformType={material.platformType}
+          platformImageUrl={
+            material.platformImageUrl
+          }
+          tags={material.tags.map(
+            (tag) => tag.tagName,
+          )}
+          onBack={handleBack}
         />
 
         <ArchiveDataSummary

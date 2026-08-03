@@ -19,12 +19,13 @@ const ArchiveDataHeader = ({
   platformImageUrl,
   onBack,
 }: ArchiveDataHeaderProps) => {
+  const fallbackPlatformIcon =
+    platformType.toUpperCase() === "YOUTUBE"
+      ? "/icon/youtube-app-icon.png"
+      : "/icons.svg";
+  const platformIconSrc = platformImageUrl || fallbackPlatformIcon;
   const handleOpenOriginal = () => {
-    window.open(
-      originalUrl,
-      "_blank",
-      "noopener,noreferrer",
-    );
+    window.open(originalUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -58,8 +59,12 @@ const ArchiveDataHeader = ({
           {/* 플랫폼 아이콘 */}
           <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
-              src={`/icon/${platformImageUrl}`}
+              src={platformIconSrc}
               alt={platformType}
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = fallbackPlatformIcon;
+              }}
               className="h-[32px] w-[32px] rounded-full object-contain"
             />
           </div>
@@ -74,10 +79,7 @@ const ArchiveDataHeader = ({
           onClick={handleOpenOriginal}
           className="flex h-[40px] shrink-0 items-center justify-center gap-[5px] rounded-[5px] bg-[#24232D] px-[14px] font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#F5F2FF] transition-colors hover:bg-[#3A3847]"
         >
-          <Globe
-            size={24}
-            strokeWidth={2}
-          />
+          <Globe size={24} strokeWidth={2} />
           원문으로 이동
         </button>
       </div>

@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -13,6 +8,7 @@ import {
 } from "../apis/teachingMap";
 import { restoreTeachingMaps } from "../apis/trash";
 import Pagination from "../components/common/Pagination";
+import PageContainer from "../components/common/PageContainer";
 import Toast from "../components/common/Toast";
 import TemporaryTeachingMapHeader from "../components/teachingMap/drafts/TemporaryTeachingMapHeader";
 import TemporaryTeachingMapList from "../components/teachingMap/drafts/TemporaryTeachingMapList";
@@ -34,13 +30,8 @@ const toTemporaryTeachingMapData = (
   id: teachingMap.teachingMapId,
   title: teachingMap.title,
   description: teachingMap.description,
-  type:
-    teachingMap.type === "DEEPDIVE"
-      ? "deepDive"
-      : "shortcut",
-  thumbnailSrc:
-    teachingMap.sourcePlatforms?.[0]?.imageUrl ??
-    "/icons.svg",
+  type: teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
+  thumbnailSrc: teachingMap.sourcePlatforms?.[0]?.imageUrl ?? "/icons.svg",
   thumbnailSrcs: (teachingMap.sourcePlatforms ?? []).map(
     (platform) => platform.imageUrl,
   ),
@@ -52,49 +43,30 @@ const toTemporaryTeachingMapData = (
 const TemporaryTeachingMapPage = () => {
   const navigate = useNavigate();
 
-  const [
-    teachingMaps,
-    setTeachingMaps,
-  ] = useState<
-    TemporaryTeachingMapData[]
+  const [teachingMaps, setTeachingMaps] = useState<TemporaryTeachingMapData[]>(
+    [],
+  );
+
+  const [loadError, setLoadError] = useState("");
+
+  const [selectedFilter, setSelectedFilter] =
+    useState<TeachingMapFilterType>("all");
+
+  const [sortType, setSortType] = useState<TeachingMapSortType>("latest");
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+  const [selectedTeachingMapIds, setSelectedTeachingMapIds] = useState<
+    number[]
   >([]);
 
-  const [loadError, setLoadError] =
-    useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [
-    selectedFilter,
-    setSelectedFilter,
-  ] =
-    useState<TeachingMapFilterType>(
-      "all",
-    );
-
-  const [sortType, setSortType] =
-    useState<TeachingMapSortType>(
-      "latest",
-    );
-
-  const [currentPage, setCurrentPage] =
-    useState(1);
-
-  const [
-    isDeleteMode,
-    setIsDeleteMode,
-  ] = useState(false);
-
-  const [
-    selectedTeachingMapIds,
-    setSelectedTeachingMapIds,
-  ] = useState<number[]>([]);
-
-  const [
-    isDeleteModalOpen,
-    setIsDeleteModalOpen,
-  ] = useState(false);
-
-  const [deletedTeachingMaps, setDeletedTeachingMaps] =
-    useState<TemporaryTeachingMapData[]>([]);
+  const [deletedTeachingMaps, setDeletedTeachingMaps] = useState<
+    TemporaryTeachingMapData[]
+  >([]);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -115,24 +87,17 @@ const TemporaryTeachingMapPage = () => {
       try {
         setLoadError("");
 
-        const result =
-          await getTemporaryTeachingMaps(
-            selectedFilter === "all"
-              ? "ALL"
-              : selectedFilter === "deepDive"
-                ? "DEEPDIVE"
-                : "SHORTCUT",
-            sortType === "latest"
-              ? "LATEST"
-              : "OLDEST",
-          );
+        const result = await getTemporaryTeachingMaps(
+          selectedFilter === "all"
+            ? "ALL"
+            : selectedFilter === "deepDive"
+              ? "DEEPDIVE"
+              : "SHORTCUT",
+          sortType === "latest" ? "LATEST" : "OLDEST",
+        );
 
         if (!isCancelled) {
-          setTeachingMaps(
-            result.teachingMaps.map(
-              toTemporaryTeachingMapData,
-            ),
-          );
+          setTeachingMaps(result.teachingMaps.map(toTemporaryTeachingMapData));
         }
       } catch (error) {
         if (!isCancelled) {
@@ -153,89 +118,52 @@ const TemporaryTeachingMapPage = () => {
     };
   }, [selectedFilter, sortType]);
 
-  const filteredTeachingMaps =
-    useMemo(() => {
-      const filteredMaps =
-        teachingMaps.filter(
-          (teachingMap) =>
-            selectedFilter === "all" ||
-            teachingMap.type ===
-              selectedFilter,
-        );
+  const filteredTeachingMaps = useMemo(() => {
+    const filteredMaps = teachingMaps.filter(
+      (teachingMap) =>
+        selectedFilter === "all" || teachingMap.type === selectedFilter,
+    );
 
-      return [...filteredMaps].sort(
-        (firstMap, secondMap) => {
-          const firstSavedTime =
-            new Date(
-              firstMap.savedAt,
-            ).getTime();
+    return [...filteredMaps].sort((firstMap, secondMap) => {
+      const firstSavedTime = new Date(firstMap.savedAt).getTime();
 
-          const secondSavedTime =
-            new Date(
-              secondMap.savedAt,
-            ).getTime();
+      const secondSavedTime = new Date(secondMap.savedAt).getTime();
 
-          return sortType === "latest"
-            ? secondSavedTime -
-                firstSavedTime
-            : firstSavedTime -
-                secondSavedTime;
-        },
-      );
-    }, [
-      selectedFilter,
-      sortType,
-      teachingMaps,
-    ]);
+      return sortType === "latest"
+        ? secondSavedTime - firstSavedTime
+        : firstSavedTime - secondSavedTime;
+    });
+  }, [selectedFilter, sortType, teachingMaps]);
 
   const totalPages = Math.max(
     1,
-    Math.ceil(
-      filteredTeachingMaps.length /
-        TEACHING_MAPS_PER_PAGE,
-    ),
+    Math.ceil(filteredTeachingMaps.length / TEACHING_MAPS_PER_PAGE),
   );
 
-  const activePage = Math.min(
-    currentPage,
-    totalPages,
-  );
+  const activePage = Math.min(currentPage, totalPages);
 
-  const visibleTeachingMaps =
-    useMemo(() => {
-      const startIndex =
-        (activePage - 1) *
-        TEACHING_MAPS_PER_PAGE;
+  const visibleTeachingMaps = useMemo(() => {
+    const startIndex = (activePage - 1) * TEACHING_MAPS_PER_PAGE;
 
-      return filteredTeachingMaps.slice(
-        startIndex,
-        startIndex +
-          TEACHING_MAPS_PER_PAGE,
-      );
-    }, [
-      activePage,
-      filteredTeachingMaps,
-    ]);
+    return filteredTeachingMaps.slice(
+      startIndex,
+      startIndex + TEACHING_MAPS_PER_PAGE,
+    );
+  }, [activePage, filteredTeachingMaps]);
 
-  const handleFilterChange = (
-    filter: TeachingMapFilterType,
-  ) => {
+  const handleFilterChange = (filter: TeachingMapFilterType) => {
     setSelectedFilter(filter);
     setCurrentPage(1);
     setIsDeleteMode(false);
     setSelectedTeachingMapIds([]);
   };
 
-  const handleSortChange = (
-    nextSortType: TeachingMapSortType,
-  ) => {
+  const handleSortChange = (nextSortType: TeachingMapSortType) => {
     setSortType(nextSortType);
     setCurrentPage(1);
   };
 
-  const handlePageChange = (
-    page: number,
-  ) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
 
     window.scrollTo({
@@ -244,31 +172,15 @@ const TemporaryTeachingMapPage = () => {
     });
   };
 
-  const handleTeachingMapClick = (
-    teachingMapId: number,
-  ) => {
-    navigate(
-      `/teaching-map/drafts/${teachingMapId}/edit`,
-    );
+  const handleTeachingMapClick = (teachingMapId: number) => {
+    navigate(`/teaching-map/drafts/${teachingMapId}/edit`);
   };
 
-  const handleTeachingMapSelect = (
-    teachingMapId: number,
-  ) => {
-    setSelectedTeachingMapIds(
-      (previousIds) =>
-        previousIds.includes(
-          teachingMapId,
-        )
-          ? previousIds.filter(
-              (selectedId) =>
-                selectedId !==
-                teachingMapId,
-            )
-          : [
-              ...previousIds,
-              teachingMapId,
-            ],
+  const handleTeachingMapSelect = (teachingMapId: number) => {
+    setSelectedTeachingMapIds((previousIds) =>
+      previousIds.includes(teachingMapId)
+        ? previousIds.filter((selectedId) => selectedId !== teachingMapId)
+        : [...previousIds, teachingMapId],
     );
   };
 
@@ -282,78 +194,55 @@ const TemporaryTeachingMapPage = () => {
     setSelectedTeachingMapIds([]);
   };
 
-  const visibleTeachingMapIds =
-    visibleTeachingMaps.map(
-      (teachingMap) => teachingMap.id,
-    );
+  const visibleTeachingMapIds = visibleTeachingMaps.map(
+    (teachingMap) => teachingMap.id,
+  );
   const isCurrentPageAllSelected =
     visibleTeachingMapIds.length > 0 &&
-    visibleTeachingMapIds.every((id) =>
-      selectedTeachingMapIds.includes(id),
-    );
+    visibleTeachingMapIds.every((id) => selectedTeachingMapIds.includes(id));
 
   const handleToggleSelectAll = () => {
     setSelectedTeachingMapIds((previousIds) => {
       if (isCurrentPageAllSelected) {
-        return previousIds.filter(
-          (id) => !visibleTeachingMapIds.includes(id),
-        );
+        return previousIds.filter((id) => !visibleTeachingMapIds.includes(id));
       }
 
-      return Array.from(
-        new Set([...previousIds, ...visibleTeachingMapIds]),
-      );
+      return Array.from(new Set([...previousIds, ...visibleTeachingMapIds]));
     });
   };
 
-  const handleDeleteButtonClick =
-    () => {
-      if (
-        selectedTeachingMapIds.length ===
-        0
-      ) {
-        return;
-      }
+  const handleDeleteButtonClick = () => {
+    if (selectedTeachingMapIds.length === 0) {
+      return;
+    }
 
-      setIsDeleteModalOpen(true);
-    };
+    setIsDeleteModalOpen(true);
+  };
 
   const handleDeleteConfirm = async () => {
-    if (
-      selectedTeachingMapIds.length === 0 ||
-      isDeleting
-    ) {
+    if (selectedTeachingMapIds.length === 0 || isDeleting) {
       return;
     }
 
     setIsDeleting(true);
 
-    const teachingMapsToDelete =
-      teachingMaps.filter((teachingMap) =>
-        selectedTeachingMapIds.includes(teachingMap.id),
-      );
+    const teachingMapsToDelete = teachingMaps.filter((teachingMap) =>
+      selectedTeachingMapIds.includes(teachingMap.id),
+    );
 
     try {
-      const result = await trashTeachingMaps(
-        selectedTeachingMapIds,
-      );
-      const deletedIds =
-        result.deletedTeachingMapIds;
+      const result = await trashTeachingMaps(selectedTeachingMapIds);
+      const deletedIds = result.deletedTeachingMapIds;
 
       setDeletedTeachingMaps(
-        teachingMapsToDelete.filter(
-          (teachingMap) =>
-            deletedIds.includes(teachingMap.id),
+        teachingMapsToDelete.filter((teachingMap) =>
+          deletedIds.includes(teachingMap.id),
         ),
       );
-      setTeachingMaps(
-        (previousTeachingMaps) =>
-          previousTeachingMaps.filter(
-            (teachingMap) =>
-              !deletedIds.includes(
-                teachingMap.id,
-              ),
-          ),
+      setTeachingMaps((previousTeachingMaps) =>
+        previousTeachingMaps.filter(
+          (teachingMap) => !deletedIds.includes(teachingMap.id),
+        ),
       );
 
       setIsDeleteModalOpen(false);
@@ -391,24 +280,16 @@ const TemporaryTeachingMapPage = () => {
 
     try {
       const result = await restoreTeachingMaps(
-        deletedTeachingMaps.map(
-          (teachingMap) => teachingMap.id,
-        ),
+        deletedTeachingMaps.map((teachingMap) => teachingMap.id),
       );
-      const restoredMaps =
-        deletedTeachingMaps.filter(
-          (teachingMap) =>
-            result.restoredIds.includes(
-              teachingMap.id,
-            ),
-        );
+      const restoredMaps = deletedTeachingMaps.filter((teachingMap) =>
+        result.restoredIds.includes(teachingMap.id),
+      );
 
-      setTeachingMaps(
-        (previousTeachingMaps) => [
-          ...previousTeachingMaps,
-          ...restoredMaps,
-        ],
-      );
+      setTeachingMaps((previousTeachingMaps) => [
+        ...previousTeachingMaps,
+        ...restoredMaps,
+      ]);
       setIsToastOpen(false);
       setDeletedTeachingMaps([]);
       if (toastTimerRef.current !== null) {
@@ -431,48 +312,30 @@ const TemporaryTeachingMapPage = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <div className="relative z-10 mx-auto w-[1120px] py-10">
+      <PageContainer className="relative z-10 py-10">
         <TemporaryTeachingMapHeader />
 
         <div className="mt-5">
           {isDeleteMode ? (
             <TeachingMapDeleteToolbar
-              selectedCount={
-                selectedTeachingMapIds.length
-              }
-              isAllSelected={
-                isCurrentPageAllSelected
-              }
-              onToggleSelectAll={
-                handleToggleSelectAll
-              }
+              selectedCount={selectedTeachingMapIds.length}
+              isAllSelected={isCurrentPageAllSelected}
+              onToggleSelectAll={handleToggleSelectAll}
               actionLabel="휴지통으로 이동"
-              onDeleteClick={
-                handleDeleteButtonClick
-              }
-              onCancelClick={
-                handleDeleteModeCancel
-              }
+              onDeleteClick={handleDeleteButtonClick}
+              onCancelClick={handleDeleteModeCancel}
             />
           ) : (
             <div className="flex w-full items-center justify-between">
               <TeachingMapFilter
-                selectedFilter={
-                  selectedFilter
-                }
-                onFilterChange={
-                  handleFilterChange
-                }
+                selectedFilter={selectedFilter}
+                onFilterChange={handleFilterChange}
               />
 
               <TeachingMapToolbar
                 sortType={sortType}
-                onSortChange={
-                  handleSortChange
-                }
-                onDeleteModeStart={
-                  handleDeleteModeStart
-                }
+                onSortChange={handleSortChange}
+                onDeleteModeStart={handleDeleteModeStart}
               />
             </div>
           )}
@@ -483,24 +346,13 @@ const TemporaryTeachingMapPage = () => {
             <div className="flex h-[300px] w-full items-center justify-center text-[18px] text-[#F07A7A]">
               {loadError}
             </div>
-          ) : visibleTeachingMaps.length >
-          0 ? (
+          ) : visibleTeachingMaps.length > 0 ? (
             <TemporaryTeachingMapList
-              teachingMaps={
-                visibleTeachingMaps
-              }
-              isDeleteMode={
-                isDeleteMode
-              }
-              selectedTeachingMapIds={
-                selectedTeachingMapIds
-              }
-              onTeachingMapClick={
-                handleTeachingMapClick
-              }
-              onTeachingMapSelect={
-                handleTeachingMapSelect
-              }
+              teachingMaps={visibleTeachingMaps}
+              isDeleteMode={isDeleteMode}
+              selectedTeachingMapIds={selectedTeachingMapIds}
+              onTeachingMapClick={handleTeachingMapClick}
+              onTeachingMapSelect={handleTeachingMapSelect}
             />
           ) : (
             <div className="flex h-[480px] w-full flex-col items-center justify-center gap-10">
@@ -518,43 +370,30 @@ const TemporaryTeachingMapPage = () => {
           )}
         </div>
 
-        {filteredTeachingMaps.length > 1 &&
-          !isDeleteMode && (
-            <div className="pb-[77px]">
-              <Pagination
-                currentPage={activePage}
-                totalPages={totalPages}
-                onPageChange={
-                  handlePageChange
-                }
-              />
-            </div>
-          )}
-      </div>
+        {filteredTeachingMaps.length > 0 && (
+          <div className="pb-[77px]">
+            <Pagination
+              currentPage={activePage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
+      </PageContainer>
 
       <TeachingMapDeleteModal
         isOpen={isDeleteModalOpen}
         confirmLabel="휴지통으로 이동"
-        onClose={() =>
-          setIsDeleteModalOpen(false)
-        }
-        onDeleteConfirm={
-          handleDeleteConfirm
-        }
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeleteConfirm={handleDeleteConfirm}
       />
 
       {isToastOpen && (
         <Toast
           message={toastMessage}
-          actionText={
-            deletedTeachingMaps.length > 0
-              ? "실행취소"
-              : undefined
-          }
+          actionText={deletedTeachingMaps.length > 0 ? "실행취소" : undefined}
           onAction={
-            deletedTeachingMaps.length > 0
-              ? handleDeleteUndo
-              : undefined
+            deletedTeachingMaps.length > 0 ? handleDeleteUndo : undefined
           }
         />
       )}
