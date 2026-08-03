@@ -27,7 +27,7 @@ const TeachingMapToolbar = ({
           { value: "oldest", label: "오래된순" },
         ]}
         onChange={onSortChange}
-        widthClassName="w-[120px]"
+        widthClassName="w-fit"
       />
 
       <button

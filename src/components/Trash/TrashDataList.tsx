@@ -1,4 +1,6 @@
-import TrashDataCard from "./TrashDataCard";
+import formatDeletedAt from "../../utils/formatDeletedAt";
+import MaterialCard from "../common/MaterialCard";
+
 import type { TrashDataItem } from "./trashTypes";
 
 interface TrashDataListProps {
@@ -13,22 +15,30 @@ const TrashDataList = ({
   isRestoreMode,
   selectedItemIds,
   onSelect,
-}: TrashDataListProps) => {
-  return (
-    <div className="flex flex-col gap-5">
-      {dataList.map((data) => (
-        <TrashDataCard
-          key={data.id}
-          data={data}
-          isRestoreMode={isRestoreMode}
-          isSelected={selectedItemIds.includes(
-            data.id,
-          )}
-          onSelect={onSelect}
-        />
-      ))}
-    </div>
-  );
-};
+}: TrashDataListProps) => (
+  <div className="flex flex-col gap-5">
+    {dataList.map((data) => (
+      <MaterialCard
+        key={data.id}
+        tag={data.tag}
+        date={data.createdAt.split("T")[0]}
+        title={data.title}
+        description={data.description}
+        platformType={data.platformType}
+        platformImageUrl={data.platformImageUrl}
+        extraMeta={formatDeletedAt(data.deletedAt)}
+        selectable={isRestoreMode}
+        selected={selectedItemIds.includes(data.id)}
+        showAiButton
+        onSelect={() => onSelect(data.id)}
+        onOpenOriginal={
+          data.originalUrl
+            ? () => window.open(data.originalUrl, "_blank", "noopener,noreferrer")
+            : undefined
+        }
+      />
+    ))}
+  </div>
+);
 
 export default TrashDataList;

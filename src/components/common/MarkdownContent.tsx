@@ -1,51 +1,106 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-type MarkdownContentProps = {
+export interface MarkdownHighlight {
+  id: number;
+  text: string;
+  type: "MAIN" | "CAUTION";
+}
+
+interface MarkdownContentProps {
   content: string;
-  renderInline?: (text: string, lineIndex: number) => ReactNode;
+  highlights?: MarkdownHighlight[];
+  onHighlightClick?: (highlightId: number) => void;
   className?: string;
-};
+}
 
 const MarkdownContent = ({
   content,
-  renderInline = (text) => text,
+  highlights = [],
+  onHighlightClick,
   className = "",
 }: MarkdownContentProps) => {
-  const lines = content.split("\n");
+  const renderText = (value: string): ReactNode => {
+    if (highlights.length === 0) return value;
+
+    const matches = highlights
+      .flatMap((highlight) => {
+        const result: Array<{ index: number; highlight: MarkdownHighlight }> = [];
+        let start = 0;
+        while (highlight.text && start < value.length) {
+          const index = value.indexOf(highlight.text, start);
+          if (index < 0) break;
+          result.push({ index, highlight });
+          start = index + highlight.text.length;
+        }
+        return result;
+      })
+      .sort((a, b) => a.index - b.index || b.highlight.text.length - a.highlight.text.length);
+
+    if (matches.length === 0) return value;
+
+    const nodes: ReactNode[] = [];
+    let cursor = 0;
+    matches.forEach(({ index, highlight }) => {
+      if (index < cursor) return;
+      if (index > cursor) nodes.push(value.slice(cursor, index));
+      nodes.push(
+        <button
+          key={`${highlight.id}-${index}`}
+          type="button"
+          onClick={() => onHighlightClick?.(highlight.id)}
+          className={`inline cursor-pointer underline underline-offset-[3px] ${
+            highlight.type === "MAIN"
+              ? "text-[#83E2FF] decoration-[#83E2FF]"
+              : "text-[#FAC3A5] decoration-[#FAC3A5]"
+          }`}
+        >
+          {highlight.text}
+        </button>,
+      );
+      cursor = index + highlight.text.length;
+    });
+    if (cursor < value.length) nodes.push(value.slice(cursor));
+    return nodes;
+  };
+
+  const renderChildren = (children: ReactNode): ReactNode => {
+    if (typeof children === "string") return renderText(children);
+    if (Array.isArray(children)) return children.map((child) => renderChildren(child));
+    return children;
+  };
+
+  const paragraph = ({ children, ...props }: ComponentPropsWithoutRef<"p">) => (
+    <p {...props}>{renderChildren(children)}</p>
+  );
 
   return (
-    <div className={`space-y-3 ${className}`}>
-      {lines.map((line, index) => {
-        const heading = /^(#{1,3})\s+(.+)$/.exec(line);
-        if (heading) {
-          const level = heading[1].length;
-          const headingClass =
-            level === 1
-              ? "text-[24px] font-bold text-[#F5F2FF]"
-              : level === 2
-                ? "text-[20px] font-semibold text-[#F5F2FF]"
-                : "text-[17px] font-semibold text-[#D0D0D2]";
-          return (
-            <h3 key={index} className={headingClass}>
-              {renderInline(heading[2], index)}
-            </h3>
-          );
-        }
-
-        const listItem = /^[-*]\s+(.+)$/.exec(line);
-        if (listItem) {
-          return (
-            <div key={index} className="flex gap-2">
-              <span aria-hidden="true">•</span>
-              <p>{renderInline(listItem[1], index)}</p>
-            </div>
-          );
-        }
-
-        if (!line.trim()) return <div key={index} className="h-2" />;
-
-        return <p key={index}>{renderInline(line, index)}</p>;
-      })}
+    <div className={`space-y-[12px] break-words ${className}`}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+        p: paragraph,
+        h1: ({ children, ...props }) => <h1 className="text-[24px] font-bold text-[#F5F2FF]" {...props}>{renderChildren(children)}</h1>,
+        h2: ({ children, ...props }) => <h2 className="text-[20px] font-semibold text-[#F5F2FF]" {...props}>{renderChildren(children)}</h2>,
+        h3: ({ children, ...props }) => <h3 className="text-[17px] font-semibold text-[#D0D0D2]" {...props}>{renderChildren(children)}</h3>,
+        ul: ({ ...props }) => <ul className="ml-[22px] list-disc space-y-[6px]" {...props} />,
+        ol: ({ ...props }) => <ol className="ml-[22px] list-decimal space-y-[6px]" {...props} />,
+        li: ({ children, ...props }) => <li {...props}>{renderChildren(children)}</li>,
+        blockquote: ({ ...props }) => <blockquote className="border-l-[3px] border-[#917DEC] pl-[14px] text-[#B9BAC0]" {...props} />,
+        strong: ({ children, ...props }) => <strong {...props}>{renderChildren(children)}</strong>,
+        em: ({ children, ...props }) => <em {...props}>{renderChildren(children)}</em>,
+        del: ({ children, ...props }) => <del {...props}>{renderChildren(children)}</del>,
+        a: ({ children, ...props }) => <a className="text-[#A99AF2] underline underline-offset-2" target="_blank" rel="noreferrer" {...props}>{renderChildren(children)}</a>,
+        code: ({ ...props }) => <code className="rounded bg-[#242630] px-[5px] py-[2px] text-[#F5F2FF]" {...props} />,
+        hr: ({ ...props }) => <hr className="border-[#42444C]" {...props} />,
+        table: ({ ...props }) => <div className="overflow-x-auto"><table className="w-full border-collapse" {...props} /></div>,
+        th: ({ ...props }) => <th className="border border-[#42444C] bg-[#242630] px-[10px] py-[8px] text-left" {...props} />,
+        td: ({ ...props }) => <td className="border border-[#42444C] px-[10px] py-[8px]" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };

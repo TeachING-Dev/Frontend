@@ -15,7 +15,7 @@ const TeachingMapAnalysisDropdown = ({
       aria-expanded={isOpen}
       onClick={onToggle}
       className={[
-        "flex h-[50px] w-full items-center rounded-[5px] bg-transparent p-[10px]",
+        "flex h-[50px] w-full items-center rounded-[5px] bg-[#13151F] p-[10px]",
         isOpen ? "border border-[#917DEC]" : "border border-transparent",
       ].join(" ")}
     >
@@ -26,7 +26,7 @@ const TeachingMapAnalysisDropdown = ({
       <img
         src="/dropdown.svg"
         alt=""
-        className={`ml-[10px] h-[24px] w-[24px] shrink-0 object-contain ${isOpen ? "scale-y-[-1]" : ""}`}
+        className={`ml-[10px] h-[24px] w-[24px] shrink-0 object-contain ${isOpen ? "scale-[-1]" : ""}`}
       />
     </button>
   );

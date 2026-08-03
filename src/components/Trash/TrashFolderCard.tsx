@@ -6,6 +6,7 @@ interface TrashFolderCardProps {
   isRestoreMode: boolean;
   isSelected: boolean;
   onSelect: (folderId: number) => void;
+  onOpen: (folderId: number) => void;
 }
 
 const TrashFolderCard = ({
@@ -13,26 +14,30 @@ const TrashFolderCard = ({
   isRestoreMode,
   isSelected,
   onSelect,
+  onOpen,
 }: TrashFolderCardProps) => {
   const handleCardClick = () => {
     if (isRestoreMode) {
       onSelect(folder.id);
+      return;
     }
+
+    onOpen(folder.id);
   };
 
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (!isRestoreMode || (event.key !== "Enter" && event.key !== " ")) {
+    if (event.key !== "Enter" && event.key !== " ") {
       return;
     }
 
     event.preventDefault();
-    onSelect(folder.id);
+    handleCardClick();
   };
 
   return (
     <article
-      role={isRestoreMode ? "button" : undefined}
-      tabIndex={isRestoreMode ? 0 : undefined}
+      role="button"
+      tabIndex={0}
       aria-pressed={isRestoreMode ? isSelected : undefined}
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
@@ -40,7 +45,7 @@ const TrashFolderCard = ({
         "relative h-[128px] w-full overflow-hidden rounded-[8px]",
         "border bg-[linear-gradient(180deg,rgba(145,125,236,0)_0%,rgba(145,125,236,0.3)_100%)]",
         "transition-[border-color,box-shadow]",
-        isRestoreMode ? "cursor-pointer" : "",
+        "cursor-pointer",
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[rgba(145,125,236,0)]",

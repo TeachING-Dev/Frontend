@@ -65,7 +65,7 @@ const TeachingMapDetailPage = () => {
               id: step.stepId,
               order: step.order,
               tip: step.tip,
-              title: step.detailAnalysis,
+              title: step.stepTitle || step.detailAnalysis,
               isCompleted: step.isFinished,
             })),
         );

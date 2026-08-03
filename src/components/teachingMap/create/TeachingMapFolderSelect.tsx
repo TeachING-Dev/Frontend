@@ -102,7 +102,7 @@ const TeachingMapFolderSelect = ({
               (previous) => !previous,
             )
           }
-          className="flex h-[64px] w-full items-center rounded-[4px] border border-[#D0D0D2] bg-transparent px-5 text-left outline-none"
+          className="flex h-[64px] w-full items-center rounded-[4px] border border-[#D0D0D2] bg-[#F5F2FF] px-5 text-left outline-none"
         >
           <img
             src="/folder/folder1.png"
@@ -120,7 +120,7 @@ const TeachingMapFolderSelect = ({
             src="/dropdown.svg"
             alt=""
             aria-hidden="true"
-            className={`h-6 w-6 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
+            className={`h-6 w-6 shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
           />
         </button>
 
@@ -128,7 +128,7 @@ const TeachingMapFolderSelect = ({
           <div
             role="listbox"
             aria-label="티칭맵 폴더 선택"
-            className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[5px] bg-[#FAFAFA] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+            className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[5px] bg-[#F5F2FF] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
           >
             {folders.length === 0 ? (
               <div className="flex h-9 items-center px-2 font-['SUIT'] text-[16px] font-medium text-[#8D8E94]">
@@ -160,7 +160,7 @@ const TeachingMapFolderSelect = ({
                         "transition-colors last:border-b-0",
                         isSelected
                           ? "bg-[#D2C7FA]"
-                          : "bg-[#FAFAFA] hover:bg-[#EEEAFD]",
+                          : "bg-[#F5F2FF] hover:bg-[#EEEAFD]",
                       ].join(" ")}
                     >
                       <img

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   getTrashFolders,
@@ -40,6 +41,7 @@ const EMPTY_PAGE: TrashPageState = {
 };
 
 const TrashContent = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
     useState<TrashCategory>("folder");
   const [sortType, setSortType] = useState<TrashSortType>("latest");
@@ -313,6 +315,7 @@ const TrashContent = () => {
           isRestoreMode={isRestoreMode}
           selectedItemIds={selectedItemIds}
           onSelect={handleItemSelect}
+          onOpen={(folderId) => navigate(`/archive/folder/${folderId}`)}
         />
       );
     }

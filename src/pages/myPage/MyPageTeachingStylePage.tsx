@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   getMyProfile,
@@ -9,12 +9,15 @@ import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import TeachingStyleSelector, {
   type TeachingStyle,
 } from "../../components/myPage/TeachingStyleSelector";
+import Toast from "../../components/common/Toast";
 
 const MyPageTeachingStylePage = () => {
   const [selectedStyle, setSelectedStyle] =
     useState<TeachingStyle>("friendly");
   const [isSaving, setIsSaving] =
     useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const toastTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const loadTeacherPersona = async () => {
@@ -40,10 +43,29 @@ const MyPageTeachingStylePage = () => {
     void loadTeacherPersona();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  const showChangeToast = () => {
+    setToastMessage("티칭맵 설정이 변경되었습니다.");
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage("");
+      toastTimerRef.current = null;
+    }, 3000);
+  };
+
   const handleTeachingStyleChange = async (
     teachingStyle: TeachingStyle,
   ) => {
-    if (isSaving) {
+    if (isSaving || teachingStyle === selectedStyle) {
       return;
     }
 
@@ -83,6 +105,7 @@ const MyPageTeachingStylePage = () => {
           savedProfile.teacherPersona
         ],
       );
+      showChangeToast();
     } catch (error) {
       setSelectedStyle(previousStyle);
       console.error(error);
@@ -101,6 +124,8 @@ const MyPageTeachingStylePage = () => {
           onChange={handleTeachingStyleChange}
         />
       </section>
+
+      {toastMessage && <Toast message={toastMessage} />}
     </main>
   );
 };
