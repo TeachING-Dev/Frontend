@@ -1,4 +1,8 @@
-﻿import { useCallback, useEffect, useState } from "react";
+﻿import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import {
   createFolder,
@@ -11,47 +15,60 @@ import {
 import ArchiveFolderGrid from "../components/archive/ArchiveFolderGrid";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
 import ArchiveHeader from "../components/archive/ArchiveHeader";
+import ArchivePagination from "../components/archive/ArchivePagination";
 import EmptyArchiveSearch from "../components/archive/EmptyFolderSearch";
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
-import PageContainer from "../components/common/PageContainer";
-import Pagination from "../components/common/Pagination";
 
 const ArchivePage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const FOLDERS_PER_PAGE = 9;
-  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [viewMode, setViewMode] =
+    useState<"list" | "grid">("grid");
 
-  const [sort, setSort] = useState<FolderSort>("recent");
+  const [sort, setSort] =
+    useState<FolderSort>("recent");
 
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folders, setFolders] =
+    useState<Folder[]>([]);
 
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] =
+    useState("");
 
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] =
+    useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] =
+    useState(true);
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] =
+    useState(false);
 
-  const [toastMessage, setToastMessage] = useState("");
+  const [toastMessage, setToastMessage] =
+    useState("");
 
-  const [trashedFolderId, setTrashedFolderId] = useState<number | null>(null);
+  const [trashedFolderId, setTrashedFolderId] =
+    useState<number | null>(null);
 
   const fetchFolders = useCallback(async () => {
     try {
       setIsLoading(true);
       setErrorMessage("");
 
-      const folderList = await getFolders(sort);
+      const folderList =
+        await getFolders(sort);
 
       setFolders(folderList);
     } catch (error) {
-      console.error("폴더 목록 조회 실패:", error);
+      console.error(
+        "폴더 목록 조회 실패:",
+        error,
+      );
 
-      setErrorMessage("폴더 목록을 불러오지 못했어요.");
+      setErrorMessage(
+        "폴더 목록을 불러오지 못했어요.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +82,9 @@ const ArchivePage = () => {
     void initializeFolders();
   }, [fetchFolders]);
 
-  const handleSearchKeywordChange = (value: string) => {
+  const handleSearchKeywordChange = (
+    value: string,
+  ) => {
     setSearchInput(value);
 
     if (!value.trim()) {
@@ -77,48 +96,61 @@ const ArchivePage = () => {
     setKeyword(searchInput.trim());
   };
 
-  const filteredFolders = folders.filter((folder) =>
-    folder.folderName.toLowerCase().includes(keyword.toLowerCase()),
-  );
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredFolders.length / FOLDERS_PER_PAGE),
-  );
-  const activePage = Math.min(currentPage, totalPages);
-  const visibleFolders = filteredFolders.slice(
-    (activePage - 1) * FOLDERS_PER_PAGE,
-    activePage * FOLDERS_PER_PAGE,
-  );
+  const filteredFolders =
+    folders.filter((folder) =>
+      folder.folderName
+        .toLowerCase()
+        .includes(keyword.toLowerCase()),
+    );
 
-  const handleCreateFolder = async (folderName: string) => {
+  const handleCreateFolder = async (
+    folderName: string,
+  ) => {
     await createFolder(folderName);
 
     await fetchFolders();
 
-    setToastMessage("새로운 폴더가 생성되었습니다");
+    setToastMessage(
+      "새로운 폴더가 생성되었습니다",
+    );
   };
 
-  const handleMoveToTrash = async (folderId: number) => {
+  const handleMoveToTrash = async (
+    folderId: number,
+  ) => {
     try {
-      const result = await moveFolderToTrash(folderId);
+      const result =
+        await moveFolderToTrash(folderId);
 
       if (!result.isDeleted) {
-        setToastMessage("폴더를 휴지통으로 이동하지 못했습니다.");
+        setToastMessage(
+          "폴더를 휴지통으로 이동하지 못했습니다.",
+        );
         return;
       }
 
       setFolders((prev) =>
-        prev.filter((folder) => folder.folderId !== folderId),
+        prev.filter(
+          (folder) =>
+            folder.folderId !== folderId,
+        ),
       );
 
       // 실행취소를 위해 마지막으로 삭제한 폴더 ID 저장
       setTrashedFolderId(folderId);
 
-      setToastMessage("폴더가 휴지통으로 이동되었습니다");
+      setToastMessage(
+        "폴더가 휴지통으로 이동되었습니다",
+      );
     } catch (error) {
-      console.error("폴더 휴지통 이동 실패:", error);
+      console.error(
+        "폴더 휴지통 이동 실패:",
+        error,
+      );
 
-      setToastMessage("폴더를 휴지통으로 이동하지 못했습니다.");
+      setToastMessage(
+        "폴더를 휴지통으로 이동하지 못했습니다.",
+      );
     }
   };
 
@@ -133,11 +165,18 @@ const ArchivePage = () => {
 
       setTrashedFolderId(null);
 
-      setToastMessage("폴더가 복구되었습니다.");
+      setToastMessage(
+        "폴더가 복구되었습니다.",
+      );
     } catch (error) {
-      console.error("폴더 복구 실패:", error);
+      console.error(
+        "폴더 복구 실패:",
+        error,
+      );
 
-      setToastMessage("폴더를 복구하지 못했습니다.");
+      setToastMessage(
+        "폴더를 복구하지 못했습니다.",
+      );
     }
   };
 
@@ -156,14 +195,16 @@ const ArchivePage = () => {
   return (
     <>
       <main className="py-10">
-        <PageContainer>
+        <div className="mx-auto w-[1120px]">
           <ArchiveHeader
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             sort={sort}
             onSortChange={setSort}
             searchKeyword={searchInput}
-            onSearchKeywordChange={handleSearchKeywordChange}
+            onSearchKeywordChange={
+              handleSearchKeywordChange
+            }
             onSearch={handleSearch}
           />
 
@@ -176,36 +217,41 @@ const ArchivePage = () => {
               <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
                 {errorMessage}
               </div>
-            ) : keyword && filteredFolders.length === 0 ? (
+            ) : keyword &&
+              filteredFolders.length === 0 ? (
               <EmptyArchiveSearch />
             ) : viewMode === "list" ? (
               <ArchiveFolderList
-                folders={visibleFolders}
-                onAddFolder={() => setIsCreateModalOpen(true)}
-                onMoveToTrash={handleMoveToTrash}
+                folders={filteredFolders}
+                onAddFolder={() =>
+                  setIsCreateModalOpen(true)
+                }
+                onMoveToTrash={
+                  handleMoveToTrash
+                }
               />
             ) : (
               <ArchiveFolderGrid
-                folders={visibleFolders}
-                onAddFolder={() => setIsCreateModalOpen(true)}
-                onMoveToTrash={handleMoveToTrash}
+                folders={filteredFolders}
+                onAddFolder={() =>
+                  setIsCreateModalOpen(true)
+                }
+                onMoveToTrash={
+                  handleMoveToTrash
+                }
               />
             )}
           </div>
 
-          {filteredFolders.length > 0 && (
-            <Pagination
-              currentPage={activePage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </PageContainer>
+          <ArchivePagination />
+        </div>
       </main>
 
       {isCreateModalOpen && (
         <CreateFolderModal
-          onClose={() => setIsCreateModalOpen(false)}
+          onClose={() =>
+            setIsCreateModalOpen(false)
+          }
           onCreate={handleCreateFolder}
         />
       )}
@@ -213,8 +259,16 @@ const ArchivePage = () => {
       {toastMessage && (
         <Toast
           message={toastMessage}
-          actionText={trashedFolderId !== null ? "실행취소" : undefined}
-          onAction={trashedFolderId !== null ? handleUndoTrash : undefined}
+          actionText={
+            trashedFolderId !== null
+              ? "실행취소"
+              : undefined
+          }
+          onAction={
+            trashedFolderId !== null
+              ? handleUndoTrash
+              : undefined
+          }
         />
       )}
     </>

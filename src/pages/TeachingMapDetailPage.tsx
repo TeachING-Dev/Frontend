@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 
 import {
   getTeachingMap,
   toggleTeachingMapStep,
-  updateTeachingMap,
 } from "../apis/teachingMap";
 import TeachingMapDetailHeader from "../components/teachingMap/detail/TeachingMapDetailHeader";
 import TeachingMapProgressSummary from "../components/teachingMap/detail/TeachingMapProgressSummary";
@@ -20,22 +23,38 @@ export interface TeachingMapStep {
 }
 
 const TeachingMapDetailPage = () => {
-  const { teachingMapId } = useParams<{ teachingMapId: string }>();
+  const { teachingMapId } =
+    useParams<{ teachingMapId: string }>();
   const parsedTeachingMapId = Number(teachingMapId);
   const hasValidTeachingMapId =
-    Number.isInteger(parsedTeachingMapId) && parsedTeachingMapId > 0;
+    Number.isInteger(parsedTeachingMapId) &&
+    parsedTeachingMapId > 0;
 
-  const [teachingMapTitle, setTeachingMapTitle] = useState("");
-  const [teachingMapDescription, setTeachingMapDescription] = useState("");
-  const [teachingMapType, setTeachingMapType] = useState<
-    "shortcut" | "deepDive"
-  >("shortcut");
-  const [steps, setSteps] = useState<TeachingMapStep[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
-  const [toggleError, setToggleError] = useState("");
-  const [saveError, setSaveError] = useState("");
-  const [togglingStepIds, setTogglingStepIds] = useState<number[]>([]);
+  const [
+    teachingMapTitle,
+    setTeachingMapTitle,
+  ] = useState("");
+  const [
+    teachingMapDescription,
+    setTeachingMapDescription,
+  ] = useState("");
+  const [teachingMapType, setTeachingMapType] =
+    useState<"shortcut" | "deepDive">(
+      "shortcut",
+    );
+  const [steps, setSteps] = useState<
+    TeachingMapStep[]
+  >([]);
+  const [isLoading, setIsLoading] =
+    useState(true);
+  const [loadError, setLoadError] =
+    useState("");
+  const [toggleError, setToggleError] =
+    useState("");
+  const [
+    togglingStepIds,
+    setTogglingStepIds,
+  ] = useState<number[]>([]);
 
   useEffect(() => {
     if (!hasValidTeachingMapId) {
@@ -47,20 +66,33 @@ const TeachingMapDetailPage = () => {
     const loadTeachingMap = async () => {
       try {
         setLoadError("");
-        const teachingMap = await getTeachingMap(parsedTeachingMapId);
+        const teachingMap =
+          await getTeachingMap(
+            parsedTeachingMapId,
+          );
 
         if (isCancelled) {
           return;
         }
 
-        setTeachingMapTitle(teachingMap.title);
-        setTeachingMapDescription(teachingMap.description);
+        setTeachingMapTitle(
+          teachingMap.title,
+        );
+        setTeachingMapDescription(
+          teachingMap.description,
+        );
         setTeachingMapType(
-          teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
+          teachingMap.type === "DEEPDIVE"
+            ? "deepDive"
+            : "shortcut",
         );
         setSteps(
           [...(teachingMap.steps ?? [])]
-            .sort((firstStep, secondStep) => firstStep.order - secondStep.order)
+            .sort(
+              (firstStep, secondStep) =>
+                firstStep.order -
+                secondStep.order,
+            )
             .map((step) => ({
               id: step.stepId,
               order: step.order,
@@ -89,34 +121,35 @@ const TeachingMapDetailPage = () => {
     return () => {
       isCancelled = true;
     };
-  }, [hasValidTeachingMapId, parsedTeachingMapId]);
+  }, [
+    hasValidTeachingMapId,
+    parsedTeachingMapId,
+  ]);
 
   const completedCount = useMemo(
-    () => steps.filter((step) => step.isCompleted).length,
+    () =>
+      steps.filter(
+        (step) => step.isCompleted,
+      ).length,
     [steps],
   );
 
-  const handleTeachingMapSave = async (title: string, description: string) => {
-    try {
-      setSaveError("");
-      const updated = await updateTeachingMap(parsedTeachingMapId, {
-        title,
-        description,
-      });
-      setTeachingMapTitle(updated.title ?? title);
-      setTeachingMapDescription(updated.description ?? description);
-    } catch (error) {
-      setSaveError(
-        error instanceof Error
-          ? error.message
-          : "티칭맵 제목과 설명을 저장하지 못했습니다.",
-      );
-      throw error;
-    }
+  const handleTeachingMapSave = (
+    title: string,
+    description: string,
+  ) => {
+    setTeachingMapTitle(title);
+    setTeachingMapDescription(description);
+
+    // 티칭맵 수정 API가 제공되면 서버 저장으로 교체합니다.
   };
 
-  const handleToggleCompletion = async (stepId: number) => {
-    const targetStep = steps.find((step) => step.id === stepId);
+  const handleToggleCompletion = async (
+    stepId: number,
+  ) => {
+    const targetStep = steps.find(
+      (step) => step.id === stepId,
+    );
 
     if (
       !targetStep ||
@@ -127,17 +160,25 @@ const TeachingMapDetailPage = () => {
     }
 
     setToggleError("");
-    setTogglingStepIds((previousIds) => [...previousIds, stepId]);
+    setTogglingStepIds((previousIds) => [
+      ...previousIds,
+      stepId,
+    ]);
 
     try {
-      const result = await toggleTeachingMapStep(parsedTeachingMapId, stepId);
+      const result =
+        await toggleTeachingMapStep(
+          parsedTeachingMapId,
+          stepId,
+        );
 
       setSteps((previousSteps) =>
         previousSteps.map((step) =>
           step.id === result.stepId
             ? {
                 ...step,
-                isCompleted: result.isCompleted,
+                isCompleted:
+                  result.isCompleted,
               }
             : step,
         ),
@@ -149,8 +190,11 @@ const TeachingMapDetailPage = () => {
           : "스텝 완료 상태를 변경하지 못했습니다.",
       );
     } finally {
-      setTogglingStepIds((previousIds) =>
-        previousIds.filter((id) => id !== stepId),
+      setTogglingStepIds(
+        (previousIds) =>
+          previousIds.filter(
+            (id) => id !== stepId,
+          ),
       );
     }
   };
@@ -193,32 +237,42 @@ const TeachingMapDetailPage = () => {
       <div className="relative z-10 px-[160px] pb-[160px] pt-[40px]">
         <TeachingMapDetailHeader
           title={teachingMapTitle}
-          description={teachingMapDescription}
-          mode={teachingMapType === "deepDive" ? "Deep-dive" : "Short-cut"}
-          onSave={handleTeachingMapSave}
+          description={
+            teachingMapDescription
+          }
+          mode={
+            teachingMapType ===
+            "deepDive"
+              ? "Deep-dive"
+              : "Short-cut"
+          }
+          onSave={
+            handleTeachingMapSave
+          }
         />
-
-        {saveError && (
-          <p role="alert" className="mt-4 text-[16px] text-[#F07A7A]">
-            {saveError}
-          </p>
-        )}
 
         <section className="relative mt-[111px] w-[1000px]">
           {toggleError && (
-            <p role="alert" className="mb-4 text-[16px] text-[#F07A7A]">
+            <p
+              role="alert"
+              className="mb-4 text-[16px] text-[#F07A7A]"
+            >
               {toggleError}
             </p>
           )}
 
           <TeachingMapProgressSummary
-            completedCount={completedCount}
+            completedCount={
+              completedCount
+            }
             totalCount={steps.length}
           />
 
           <TeachingMapStepList
             steps={steps}
-            onToggleCompletion={handleToggleCompletion}
+            onToggleCompletion={
+              handleToggleCompletion
+            }
           />
         </section>
       </div>

@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -22,24 +25,29 @@ export interface TeachingMapContentSection {
 }
 
 const TeachingMapContentPage = () => {
-  const { teachingMapId, contentId } = useParams<{
-    teachingMapId: string;
-    contentId: string;
-  }>();
+  const { teachingMapId, contentId } =
+    useParams<{
+      teachingMapId: string;
+      contentId: string;
+    }>();
 
   const [title, setTitle] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [originalUrl, setOriginalUrl] = useState("");
-  const [materialId, setMaterialId] = useState<number | null>(null);
-  const [summary, setSummary] = useState("");
-  const [sections, setSections] = useState<TeachingMapContentSection[]>([]);
-  const [openAnalysisIds, setOpenAnalysisIds] = useState<number[]>([]);
+  const [materialId, setMaterialId] =
+    useState<number | null>(null);
+  const [sections, setSections] = useState<
+    TeachingMapContentSection[]
+  >([]);
+  const [openAnalysisIds, setOpenAnalysisIds] =
+    useState<number[]>([]);
   const [loadError, setLoadError] = useState("");
   const mapId = Number(teachingMapId);
   const stepId = Number(contentId);
   const hasValidRouteParams =
-    Number.isInteger(mapId) && Number.isInteger(stepId);
+    Number.isInteger(mapId) &&
+    Number.isInteger(stepId);
 
   useEffect(() => {
     if (!hasValidRouteParams) return;
@@ -49,7 +57,10 @@ const TeachingMapContentPage = () => {
     const loadStep = async () => {
       try {
         setLoadError("");
-        const step = await getTeachingMapStep(mapId, stepId);
+        const step = await getTeachingMapStep(
+          mapId,
+          stepId,
+        );
 
         if (isCancelled) {
           return;
@@ -60,10 +71,11 @@ const TeachingMapContentPage = () => {
         setTags(step.tags ?? []);
         setOriginalUrl(step.originalUrl);
         setMaterialId(step.materialId);
-        setSummary(step.existingAiAnalysis?.summary ?? "");
 
-        const highlights = step.existingAiAnalysis?.highlights ?? [];
-        const feedbacks = step.aiTeacherAnalysis?.feedbacks ?? [];
+        const highlights =
+          step.existingAiAnalysis?.highlights ?? [];
+        const feedbacks =
+          step.aiTeacherAnalysis?.feedbacks ?? [];
 
         setSections(
           highlights.map((highlight, index) => {
@@ -74,17 +86,16 @@ const TeachingMapContentPage = () => {
               highlightId: highlight.highlightId,
               highlightText: highlight.text,
               title: step.title,
-              highlightType: [
-                "CORE",
-                "KEY",
-                "KEY_POINT",
-                "MAIN",
-                "핵심",
-              ].includes(highlight.type.trim().toUpperCase())
-                ? "core"
-                : "warning",
-              analysisTitle: highlight.text,
-              analysisDescriptions: feedback ? [feedback.content] : [],
+              highlightType:
+                highlight.type.toUpperCase() === "CORE"
+                  ? "core"
+                  : "warning",
+              analysisTitle:
+                feedback?.title ??
+                "AI 선생님의 분석을 확인해보세요.",
+              analysisDescriptions: feedback
+                ? [feedback.content]
+                : [],
             };
           }),
         );
@@ -106,7 +117,9 @@ const TeachingMapContentPage = () => {
     };
   }, [mapId, stepId, hasValidRouteParams]);
 
-  const handleToggleAnalysis = async (sectionId: number) => {
+  const handleToggleAnalysis = async (
+    sectionId: number,
+  ) => {
     if (openAnalysisIds.includes(sectionId)) {
       setOpenAnalysisIds((previousIds) =>
         previousIds.filter((id) => id !== sectionId),
@@ -114,29 +127,38 @@ const TeachingMapContentPage = () => {
       return;
     }
 
-    const section = sections.find((item) => item.id === sectionId);
+    const section = sections.find(
+      (item) => item.id === sectionId,
+    );
 
     if (!section || materialId === null) {
       return;
     }
 
     try {
-      const analysis = await getHighlightTeacherAnalysis(
-        materialId,
-        section.highlightId,
-      );
+      const analysis =
+        await getHighlightTeacherAnalysis(
+          materialId,
+          section.highlightId,
+        );
 
       setSections((previousSections) =>
         previousSections.map((item) =>
           item.id === sectionId
             ? {
                 ...item,
-                analysisDescriptions: [analysis.content],
+                analysisTitle: analysis.title,
+                analysisDescriptions: [
+                  analysis.content,
+                ],
               }
             : item,
         ),
       );
-      setOpenAnalysisIds((previousIds) => [...previousIds, sectionId]);
+      setOpenAnalysisIds((previousIds) => [
+        ...previousIds,
+        sectionId,
+      ]);
     } catch (error) {
       setLoadError(
         error instanceof Error
@@ -146,10 +168,15 @@ const TeachingMapContentPage = () => {
     }
   };
 
-  if (!hasValidRouteParams || (loadError && sections.length === 0)) {
+  if (
+    !hasValidRouteParams ||
+    (loadError && sections.length === 0)
+  ) {
     return (
       <main className="flex h-[calc(100vh-80px)] items-center justify-center bg-[#13151F] text-[18px] text-[#F07A7A]">
-        {hasValidRouteParams ? loadError : "유효하지 않은 티칭맵 스텝입니다."}
+        {hasValidRouteParams
+          ? loadError
+          : "유효하지 않은 티칭맵 스텝입니다."}
       </main>
     );
   }
@@ -158,7 +185,10 @@ const TeachingMapContentPage = () => {
     <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_535px] bg-[#13151F]">
       <section className="min-w-0 overflow-y-auto bg-[#13151F]">
         <div className="w-full pb-[70px] pt-[40px]">
-          <TeachingMapContentHeader title={title} createdAt={createdAt} />
+          <TeachingMapContentHeader
+            title={title}
+            createdAt={createdAt}
+          />
 
           <div className="mt-[24px]">
             <TeachingMapTagList tags={tags} />
@@ -172,8 +202,6 @@ const TeachingMapContentPage = () => {
 
           <div className="mt-[33px]">
             <TeachingMapContentSectionList
-              title={title}
-              summary={summary}
               sections={sections}
               onHighlightClick={handleToggleAnalysis}
             />
