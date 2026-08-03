@@ -1,4 +1,3 @@
-import { ChevronLeft } from "lucide-react";
 import {
   useLocation,
   useNavigate,
@@ -49,7 +48,12 @@ const TermsEventPage = () => {
           }
           className="mb-[25.5px] mt-[21px] flex items-center gap-[7.5px] font-['SUIT'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]"
         >
-          <ChevronLeft size={22.5} strokeWidth={1.8} />
+          <img
+            src="/Chevron-down.svg"
+            alt=""
+            aria-hidden="true"
+            className="size-12"
+          />
           <span>[TeachING] 이벤트·혜택 안내 수신 동의</span>
         </button>
 
