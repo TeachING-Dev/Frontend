@@ -22,13 +22,21 @@ const TrashTeachingMapCard = ({
     title: teachingMap.title,
     description: teachingMap.description,
     type: teachingMap.type,
-    status: teachingMap.status === "FINISHED" ? "completed" : "inProgress",
+    status:
+      teachingMap.currentStep >=
+      teachingMap.totalStep
+        ? "completed"
+        : "inProgress",
     currentStep: teachingMap.currentStep,
     totalStep: teachingMap.totalStep,
-    thumbnailSrc: teachingMap.thumbnails[0] ?? "/icons.svg",
-    thumbnailSrcs: teachingMap.thumbnails.slice(0, 3),
-    extraThumbnailCount: teachingMap.extraThumbnailCount,
-    deletedAtLabel: formatDeletedAt(teachingMap.deletedAt),
+    thumbnailSrc:
+      teachingMap.thumbnails[0] ??
+      "/icons.svg",
+    thumbnailSrcs:
+      teachingMap.thumbnails.slice(0, 3),
+    deletedAtLabel: formatDeletedAt(
+      teachingMap.deletedAt,
+    ),
   };
 
   return (

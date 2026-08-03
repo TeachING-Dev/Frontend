@@ -20,8 +20,14 @@ const TrashFolderCard = ({
     }
   };
 
-  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (!isRestoreMode || (event.key !== "Enter" && event.key !== " ")) {
+  const handleCardKeyDown = (
+    event: React.KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      !isRestoreMode ||
+      (event.key !== "Enter" &&
+        event.key !== " ")
+    ) {
       return;
     }
 
@@ -33,14 +39,20 @@ const TrashFolderCard = ({
     <article
       role={isRestoreMode ? "button" : undefined}
       tabIndex={isRestoreMode ? 0 : undefined}
-      aria-pressed={isRestoreMode ? isSelected : undefined}
+      aria-pressed={
+        isRestoreMode
+          ? isSelected
+          : undefined
+      }
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
         "relative h-[128px] w-full overflow-hidden rounded-[8px]",
         "border bg-[linear-gradient(180deg,rgba(145,125,236,0)_0%,rgba(145,125,236,0.3)_100%)]",
         "transition-[border-color,box-shadow]",
-        isRestoreMode ? "cursor-pointer" : "",
+        isRestoreMode
+          ? "cursor-pointer"
+          : "",
         isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-[rgba(145,125,236,0)]",
@@ -53,10 +65,16 @@ const TrashFolderCard = ({
 
         <div className="flex items-center gap-3 font-suit text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#F5F2FF]">
           {folder.itemCount !== undefined && (
-            <span>{folder.itemCount}개 항목</span>
+            <span>
+              {folder.itemCount}개 항목
+            </span>
           )}
 
-          <span>{formatDeletedAt(folder.deletedAt)}</span>
+          <span className="[font-family:Montserrat,sans-serif] italic tracking-[-0.4px]">
+            {formatDeletedAt(
+              folder.deletedAt,
+            )}
+          </span>
         </div>
       </div>
     </article>

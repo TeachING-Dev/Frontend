@@ -1,11 +1,19 @@
 import type { ApiResponse } from "./apiTypes";
 import api from "./axios";
 
-export type TeachingMapStatus = "IN_PROGRESS" | "FINISHED" | "TEMPORARY";
+export type TeachingMapStatus =
+  | "IN_PROGRESS"
+  | "FINISHED"
+  | "TEMPORARY";
 
-export type TeachingMapType = "ALL" | "SHORTCUT" | "DEEPDIVE";
+export type TeachingMapType =
+  | "ALL"
+  | "SHORTCUT"
+  | "DEEPDIVE";
 
-export type TeachingMapSort = "LATEST" | "OLDEST";
+export type TeachingMapSort =
+  | "LATEST"
+  | "OLDEST";
 
 export interface TeachingMapSourcePlatform {
   type: string;
@@ -75,11 +83,6 @@ export interface TeachingMapDetailResult {
   steps: TeachingMapDetailStep[];
 }
 
-export interface UpdateTeachingMapRequest {
-  title: string;
-  description: string;
-}
-
 export interface ToggleTeachingMapStepResult {
   stepId: number;
   isCompleted: boolean;
@@ -131,12 +134,11 @@ export const getTeachingMaps = async ({
   type = "ALL",
   sort = "LATEST",
 }: GetTeachingMapsParams = {}): Promise<TeachingMapListResult> => {
-  const { data } = await api.get<ApiResponse<TeachingMapListResult>>(
-    "/api/v1/teaching-maps",
-    {
-      params: { status, type, sort },
-    },
-  );
+  const { data } = await api.get<
+    ApiResponse<TeachingMapListResult>
+  >("/api/v1/teaching-maps", {
+    params: { status, type, sort },
+  });
 
   return data.result;
 };
@@ -154,10 +156,9 @@ export const getTemporaryTeachingMaps = async (
 export const createTeachingMap = async (
   request: CreateTeachingMapRequest,
 ): Promise<CreateTeachingMapResult> => {
-  const { data } = await api.post<ApiResponse<CreateTeachingMapResult>>(
-    "/api/v1/teaching-maps",
-    request,
-  );
+  const { data } = await api.post<
+    ApiResponse<CreateTeachingMapResult>
+  >("/api/v1/teaching-maps", request);
 
   return data.result;
 };
@@ -165,9 +166,9 @@ export const createTeachingMap = async (
 export const getTeachingMap = async (
   teachingMapId: number,
 ): Promise<TeachingMapDetailResult> => {
-  const { data } = await api.get<ApiResponse<TeachingMapDetailResult>>(
-    `/api/v1/teaching-maps/${teachingMapId}`,
-  );
+  const { data } = await api.get<
+    ApiResponse<TeachingMapDetailResult>
+  >(`/api/v1/teaching-maps/${teachingMapId}`);
 
   return data.result;
 };
@@ -176,7 +177,9 @@ export const toggleTeachingMapStep = async (
   teachingMapId: number,
   stepId: number,
 ): Promise<ToggleTeachingMapStepResult> => {
-  const { data } = await api.patch<ApiResponse<ToggleTeachingMapStepResult>>(
+  const { data } = await api.patch<
+    ApiResponse<ToggleTeachingMapStepResult>
+  >(
     `/api/v1/teaching-maps/${teachingMapId}/steps/${stepId}/toggle`,
   );
 
@@ -186,12 +189,11 @@ export const toggleTeachingMapStep = async (
 export const trashTeachingMaps = async (
   teachingMapIds: number[],
 ): Promise<TrashTeachingMapsResult> => {
-  const { data } = await api.patch<ApiResponse<TrashTeachingMapsResult>>(
-    "/api/v1/teaching-maps/trash",
-    {
-      teachingMapIds,
-    },
-  );
+  const { data } = await api.patch<
+    ApiResponse<TrashTeachingMapsResult>
+  >("/api/v1/teaching-maps/trash", {
+    teachingMapIds,
+  });
 
   return data.result;
 };
@@ -200,7 +202,9 @@ export const getTeachingMapStep = async (
   teachingMapId: number,
   stepId: number,
 ): Promise<TeachingMapStepDetail> => {
-  const { data } = await api.get<ApiResponse<TeachingMapStepDetail>>(
+  const { data } = await api.get<
+    ApiResponse<TeachingMapStepDetail>
+  >(
     `/api/v1/teaching-maps/${teachingMapId}/steps/${stepId}`,
   );
 
@@ -211,20 +215,10 @@ export const getHighlightTeacherAnalysis = async (
   materialId: number,
   highlightId: number,
 ): Promise<AiTeacherFeedback> => {
-  const { data } = await api.get<ApiResponse<AiTeacherFeedback>>(
+  const { data } = await api.get<
+    ApiResponse<AiTeacherFeedback>
+  >(
     `/api/v1/teaching-maps/materials/${materialId}/highlights/${highlightId}/analysis`,
-  );
-
-  return data.result;
-};
-
-export const updateTeachingMap = async (
-  teachingMapId: number,
-  request: UpdateTeachingMapRequest,
-): Promise<TeachingMapDetailResult> => {
-  const { data } = await api.patch<ApiResponse<TeachingMapDetailResult>>(
-    `/api/v1/teaching-maps/${teachingMapId}`,
-    request,
   );
 
   return data.result;

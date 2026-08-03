@@ -1,4 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   getTrashFolders,
@@ -9,8 +13,6 @@ import {
   restoreTeachingMaps,
 } from "../../apis/trash";
 import Pagination from "../common/Pagination";
-import PageContainer from "../common/PageContainer";
-import Toast from "../common/Toast";
 
 import TrashCategoryTabs from "./TrashCategoryTabs";
 import TrashDataList from "./TrashDataList";
@@ -42,22 +44,39 @@ const EMPTY_PAGE: TrashPageState = {
 const TrashContent = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<TrashCategory>("folder");
-  const [sortType, setSortType] = useState<TrashSortType>("latest");
-  const [currentFolderPage, setCurrentFolderPage] = useState(1);
-  const [currentTeachingMapPage, setCurrentTeachingMapPage] = useState(1);
-  const [currentDataPage, setCurrentDataPage] = useState(1);
-  const [isRestoreMode, setIsRestoreMode] = useState(false);
-  const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
-  const [folders, setFolders] = useState<TrashFolderItem[]>([]);
-  const [dataList, setDataList] = useState<TrashDataItem[]>([]);
-  const [teachingMaps, setTeachingMaps] = useState<TrashTeachingMapItem[]>([]);
-  const [folderPage, setFolderPage] = useState<TrashPageState>(EMPTY_PAGE);
-  const [dataPage, setDataPage] = useState<TrashPageState>(EMPTY_PAGE);
+  const [sortType, setSortType] =
+    useState<TrashSortType>("latest");
+  const [currentFolderPage, setCurrentFolderPage] =
+    useState(1);
+  const [
+    currentTeachingMapPage,
+    setCurrentTeachingMapPage,
+  ] = useState(1);
+  const [currentDataPage, setCurrentDataPage] =
+    useState(1);
+  const [isRestoreMode, setIsRestoreMode] =
+    useState(false);
+  const [selectedItemIds, setSelectedItemIds] =
+    useState<number[]>([]);
+  const [folders, setFolders] = useState<
+    TrashFolderItem[]
+  >([]);
+  const [dataList, setDataList] = useState<
+    TrashDataItem[]
+  >([]);
+  const [teachingMaps, setTeachingMaps] = useState<
+    TrashTeachingMapItem[]
+  >([]);
+  const [folderPage, setFolderPage] =
+    useState<TrashPageState>(EMPTY_PAGE);
+  const [dataPage, setDataPage] =
+    useState<TrashPageState>(EMPTY_PAGE);
   const [teachingMapPage, setTeachingMapPage] =
     useState<TrashPageState>(EMPTY_PAGE);
   const [reloadKey, setReloadKey] = useState(0);
   const [loadError, setLoadError] = useState("");
-  const [toastMessage, setToastMessage] = useState("");
+  const [toastMessage, setToastMessage] =
+    useState("");
   const toastTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -76,7 +95,10 @@ const TrashContent = () => {
         setLoadError("");
 
         if (selectedCategory === "folder") {
-          const result = await getTrashFolders(sortType, currentFolderPage - 1);
+          const result = await getTrashFolders(
+            sortType,
+            currentFolderPage - 1,
+          );
           if (isCancelled) return;
 
           setFolders(
@@ -94,17 +116,20 @@ const TrashContent = () => {
         }
 
         if (selectedCategory === "data") {
-          const result = await getTrashMaterials(sortType, currentDataPage - 1);
+          const result = await getTrashMaterials(
+            sortType,
+            currentDataPage - 1,
+          );
           if (isCancelled) return;
 
           setDataList(
             result.content.map((material) => ({
               id: material.materialId,
+              tag: "",
               deletedAt: material.deletedAt,
-              title: material.title ?? material.analysisTitle ?? "제목 없음",
-              description: material.description ?? "",
-              tag: material.tag ?? "",
-              thumbnail: material.imageUrl ?? "/icons.svg",
+              title: material.analysisTitle,
+              description: "",
+              thumbnail: "",
             })),
           );
           setDataPage({
@@ -124,15 +149,11 @@ const TrashContent = () => {
           result.content.map((teachingMap) => ({
             id: teachingMap.teachingMapId,
             title: teachingMap.title,
-            description: teachingMap.description ?? "",
-            status: teachingMap.status ?? "IN_PROGRESS",
-            currentStep: teachingMap.completedStepCount ?? 0,
-            totalStep: teachingMap.totalStepCount ?? 0,
-            type: teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
-            thumbnails: (teachingMap.sourcePlatforms ?? [])
-              .map((source) => source.imageUrl)
-              .filter(Boolean),
-            extraThumbnailCount: teachingMap.extraCount ?? 0,
+            description: "",
+            currentStep: 0,
+            totalStep: 0,
+            type: "shortcut",
+            thumbnails: [],
             deletedAt: teachingMap.deletedAt,
           })),
         );
@@ -171,7 +192,9 @@ const TrashContent = () => {
       : selectedCategory === "data"
         ? dataList
         : teachingMaps;
-  const visibleItemIds = visibleItems.map((item) => item.id);
+  const visibleItemIds = visibleItems.map(
+    (item) => item.id,
+  );
   const currentPage =
     selectedCategory === "folder"
       ? currentFolderPage
@@ -185,7 +208,8 @@ const TrashContent = () => {
         ? dataPage
         : teachingMapPage;
   const isEmpty = visibleItems.length === 0;
-  const showPagination = pageState.totalElements > 0;
+  const showPagination =
+    !isRestoreMode && pageState.totalElements > 1;
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -202,7 +226,9 @@ const TrashContent = () => {
     setReloadKey((previous) => previous + 1);
   };
 
-  const handleCategoryChange = (category: TrashCategory) => {
+  const handleCategoryChange = (
+    category: TrashCategory,
+  ) => {
     setSelectedCategory(category);
     setIsRestoreMode(false);
     setSelectedItemIds([]);
@@ -213,7 +239,9 @@ const TrashContent = () => {
     }
   };
 
-  const handleSortChange = (newSortType: TrashSortType) => {
+  const handleSortChange = (
+    newSortType: TrashSortType,
+  ) => {
     setSortType(newSortType);
     setCurrentFolderPage(1);
     setCurrentDataPage(1);
@@ -257,8 +285,8 @@ const TrashContent = () => {
         selectedCategory === "folder"
           ? await restoreFolders(selectedItemIds)
           : selectedCategory === "data"
-            ? await restoreMaterials(selectedItemIds)
-            : await restoreTeachingMaps(selectedItemIds);
+          ? await restoreMaterials(selectedItemIds)
+          : await restoreTeachingMaps(selectedItemIds);
       const label =
         selectedCategory === "folder"
           ? "폴더"
@@ -270,23 +298,17 @@ const TrashContent = () => {
         result.failedIds.length > 0
           ? selectedCategory === "folder"
             ? `${result.restoredIds.length}개 폴더 복구 완료, 이름이 중복된 ${result.failedIds.length}개 폴더 복구 실패`
-            : selectedCategory === "data"
-              ? "자료가 있던 폴더를 먼저 복구해주세요."
-              : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
-          : selectedCategory === "folder"
-            ? "해당 폴더가 복구되었습니다."
-            : selectedCategory === "data"
-              ? result.restoredMaterials?.[0]?.folderName
-                ? `자료가 ${result.restoredMaterials[0].folderName}(으)로 복구되었습니다.`
-                : "해당 자료가 복구되었습니다."
-              : `선택한 ${label}이 복구되었습니다.`,
+            : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
+          : `선택한 ${label}이 복구되었습니다.`,
       );
       setIsRestoreMode(false);
       setSelectedItemIds([]);
       reloadCurrentPage();
     } catch (error) {
       showToast(
-        error instanceof Error ? error.message : "복구에 실패했습니다.",
+        error instanceof Error
+          ? error.message
+          : "복구에 실패했습니다.",
       );
     }
   };
@@ -296,17 +318,17 @@ const TrashContent = () => {
       const result = await restoreMaterials([dataId]);
       showToast(
         result.failedIds.length > 0
-          ? "자료가 있던 폴더를 먼저 복구해주세요."
-          : result.restoredMaterials?.[0]?.folderName
-            ? `자료가 ${result.restoredMaterials[0].folderName}(으)로 복구되었습니다.`
-            : "해당 자료가 복구되었습니다.",
+          ? "상위 폴더를 먼저 복구해주세요."
+          : "해당 자료가 복구되었습니다.",
       );
       if (result.restoredIds.length > 0) {
         reloadCurrentPage();
       }
     } catch (error) {
       showToast(
-        error instanceof Error ? error.message : "자료 복구에 실패했습니다.",
+        error instanceof Error
+          ? error.message
+          : "자료 복구에 실패했습니다.",
       );
     }
   };
@@ -358,7 +380,7 @@ const TrashContent = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[296px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 pb-[120px] pt-10">
+      <div className="relative z-10 mx-auto w-[1120px] pb-[120px] pt-10">
         <TrashHeader />
 
         <div className="mt-5 flex items-center justify-between">
@@ -429,9 +451,23 @@ const TrashContent = () => {
             onPageChange={handlePageChange}
           />
         )}
-      </PageContainer>
+      </div>
 
-      {toastMessage && <Toast message={toastMessage} />}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={[
+            "fixed bottom-[44px] left-1/2 z-50 -translate-x-1/2",
+            "flex w-[768px] flex-col items-start gap-[10px]",
+            "rounded-[10px] border border-[#917DEC] bg-[#F5F2FF] px-5 py-4",
+            "font-suit text-[20px] font-semibold leading-[28px] tracking-[-0.6px]",
+            "text-[#2B2C35]",
+          ].join(" ")}
+        >
+          {toastMessage}
+        </div>
+      )}
     </main>
   );
 };

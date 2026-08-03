@@ -23,14 +23,22 @@ const TeachingMapAnalysisPanel = ({
             타카의 분석
           </h2>
 
-          <TeachingMapOriginalButton originalUrl={originalUrl} />
+          <TeachingMapOriginalButton
+            originalUrl={originalUrl}
+          />
         </div>
 
         <div className="mt-[51px] flex flex-col gap-[40px]">
-          {sections.map((section) => (
+          {sections.map((section, index) => (
             <TeachingMapAnalysisSection
               key={section.id}
-              label={section.highlightType === "core" ? "핵심:" : "주의할 점:"}
+              label={
+                section.highlightType === "core"
+                  ? "핵심:"
+                  : index === 1
+                    ? "주의할 점:"
+                    : ""
+              }
               title={section.analysisTitle}
               descriptions={section.analysisDescriptions}
               isOpen={openAnalysisIds.includes(section.id)}

@@ -1,6 +1,10 @@
-import type { KeyboardEvent } from "react";
+import type {
+  KeyboardEvent,
+} from "react";
 
-import type { TemporaryTeachingMapData } from "../../../constants/temporaryTeachingMaps";
+import type {
+  TemporaryTeachingMapData,
+} from "../../../constants/temporaryTeachingMaps";
 
 interface TemporaryTeachingMapCardProps {
   teachingMap: TemporaryTeachingMapData;
@@ -17,7 +21,10 @@ const TemporaryTeachingMapCard = ({
   onClick,
   onSelect,
 }: TemporaryTeachingMapCardProps) => {
-  const typeLabel = teachingMap.type === "shortcut" ? "Short-cut" : "Deep-dive";
+  const typeLabel =
+    teachingMap.type === "shortcut"
+      ? "Short-cut"
+      : "Deep-dive";
 
   const handleCardClick = () => {
     if (isDeleteMode) {
@@ -28,8 +35,13 @@ const TemporaryTeachingMapCard = ({
     onClick(teachingMap.id);
   };
 
-  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key !== "Enter" && event.key !== " ") {
+  const handleCardKeyDown = (
+    event: KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      event.key !== "Enter" &&
+      event.key !== " "
+    ) {
       return;
     }
 
@@ -42,18 +54,24 @@ const TemporaryTeachingMapCard = ({
       role="button"
       tabIndex={0}
       aria-label={`${teachingMap.title} 임시 티칭맵`}
-      aria-pressed={isDeleteMode ? isSelected : undefined}
+      aria-pressed={
+        isDeleteMode
+          ? isSelected
+          : undefined
+      }
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
-        "flex h-[100px] w-full cursor-pointer items-center rounded-[10px]",
+        "flex h-[100px] w-[1120px] cursor-pointer items-center rounded-[10px]",
         "border bg-[#13151F] p-5 outline-none",
         "transition-[border-color,box-shadow,background-color]",
         "focus-visible:ring-2 focus-visible:ring-[#917DEC]",
         isDeleteMode && isSelected
           ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
           : "border-transparent",
-        !isDeleteMode ? "hover:bg-[#171822]" : "",
+        !isDeleteMode
+          ? "hover:bg-[#171822]"
+          : "",
       ].join(" ")}
     >
       <div className="flex min-w-0 flex-1 items-center gap-[10px]">

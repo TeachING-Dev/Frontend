@@ -44,14 +44,14 @@ const MyPageInquiryPage = () => {
     contact?.email || DEFAULT_INQUIRY_EMAIL;
 
   return (
-    <main className="min-h-full px-[232px] pb-[120px] pt-[40px]">
+    <main className="min-h-full px-[160px] pb-[120px] pt-[40px]">
       <MyPageBackHeader title="1:1 문의" />
 
-      <section className="ml-[53px] mt-[65px] flex w-[687px] max-w-[calc(100%_-_53px)] flex-col gap-[19px]">
+      <section className="mt-[50px] flex w-[640px] flex-col gap-[20px]">
         <button
           type="button"
           onClick={handleKakaoClick}
-          className="flex h-[66px] w-full items-center justify-center rounded-[5px] bg-[#1F212A] p-[10px] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#FAFAFA] transition-colors hover:bg-[#42444C]"
+          className="flex h-[60px] w-full items-center justify-center rounded-[5px] bg-[#1F212A] p-[10px] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#FAFAFA] transition-colors hover:bg-[#42444C]"
         >
           카카오톡 문의하기
         </button>
@@ -59,7 +59,7 @@ const MyPageInquiryPage = () => {
         <button
           type="button"
           onClick={handleEmailClick}
-          className="flex h-[66px] w-full items-center justify-center rounded-[5px] bg-[#1F212A] p-[10px] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#FAFAFA] transition-colors hover:bg-[#42444C]"
+          className="flex h-[60px] w-full items-center justify-center rounded-[5px] bg-[#1F212A] p-[10px] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#FAFAFA] transition-colors hover:bg-[#42444C]"
         >
           이메일 문의하기
         </button>
