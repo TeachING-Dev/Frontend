@@ -1,13 +1,10 @@
 import type { KeyboardEvent } from "react";
 import ProgressBar from "../../common/ProgressBar";
+import SourceImage from "../../common/SourceImage";
 
-export type TeachingMapType =
-  | "shortcut"
-  | "deepDive";
+export type TeachingMapType = "shortcut" | "deepDive";
 
-export type TeachingMapStatus =
-  | "inProgress"
-  | "completed";
+export type TeachingMapStatus = "inProgress" | "completed";
 
 export interface TeachingMapCardData {
   id: number;
@@ -28,12 +25,8 @@ interface TeachingMapCardProps {
   teachingMap: TeachingMapCardData;
   isDeleteMode?: boolean;
   isSelected?: boolean;
-  onClick?: (
-    teachingMapId: number,
-  ) => void;
-  onSelect?: (
-    teachingMapId: number,
-  ) => void;
+  onClick?: (teachingMapId: number) => void;
+  onSelect?: (teachingMapId: number) => void;
 }
 
 const TeachingMapCard = ({
@@ -57,24 +50,17 @@ const TeachingMapCard = ({
     deletedAtLabel,
   } = teachingMap;
 
-  const isCompleted =
-    status === "completed";
+  const isCompleted = status === "completed";
 
-  const typeLabel =
-    type === "shortcut"
-      ? "Short-cut"
-      : "Deep-dive";
+  const typeLabel = type === "shortcut" ? "Short-cut" : "Deep-dive";
 
-  const progress =
-    isCompleted
-      ? 100
-      : totalStep > 0
-        ? (currentStep / totalStep) *
-          100
-        : 0;
+  const progress = isCompleted
+    ? 100
+    : totalStep > 0
+      ? (currentStep / totalStep) * 100
+      : 0;
 
-  const visibleThumbnails =
-    thumbnailSrcs?.slice(0, 3);
+  const visibleThumbnails = thumbnailSrcs?.slice(0, 3);
 
   const handleCardClick = () => {
     if (isDeleteMode) {
@@ -85,13 +71,8 @@ const TeachingMapCard = ({
     onClick?.(id);
   };
 
-  const handleCardKeyDown = (
-    event: KeyboardEvent<HTMLElement>,
-  ) => {
-    if (
-      event.key !== "Enter" &&
-      event.key !== " "
-    ) {
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") {
       return;
     }
 
@@ -104,11 +85,7 @@ const TeachingMapCard = ({
       role="button"
       tabIndex={0}
       aria-label={`${title} 티칭맵`}
-      aria-pressed={
-        isDeleteMode
-          ? isSelected
-          : undefined
-      }
+      aria-pressed={isDeleteMode ? isSelected : undefined}
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
@@ -122,32 +99,24 @@ const TeachingMapCard = ({
               "shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]",
             ].join(" ")
           : "border-transparent",
-        !isDeleteMode
-          ? "hover:bg-[#171822]"
-          : "",
+        !isDeleteMode ? "hover:bg-[#171822]" : "",
       ].join(" ")}
     >
       <div className="flex min-w-0 items-start gap-[10px]">
         <div className="flex h-[60px] w-[98px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#1F212A] p-[10px]">
-          {visibleThumbnails &&
-          visibleThumbnails.length > 0 ? (
+          {visibleThumbnails && visibleThumbnails.length > 0 ? (
             <div className="relative flex items-center">
-              {visibleThumbnails.map(
-                (source, index) => (
-                <img
+              {visibleThumbnails.map((source, index) => (
+                <SourceImage
                   key={`${source}-${index}`}
                   src={source}
                   alt=""
-                  aria-hidden="true"
                   className={[
                     "h-9 w-9 rounded-full border-2 border-[#F5F2FF] object-cover",
-                    index === 0
-                      ? ""
-                      : "-ml-3",
+                    index === 0 ? "" : "-ml-3",
                   ].join(" ")}
                 />
-                ),
-              )}
+              ))}
               {extraThumbnailCount > 0 && (
                 <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full border-2 border-[#F5F2FF] bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
                   +{extraThumbnailCount}
@@ -155,10 +124,9 @@ const TeachingMapCard = ({
               )}
             </div>
           ) : (
-            <img
+            <SourceImage
               src={thumbnailSrc}
               alt=""
-              aria-hidden="true"
               className="h-[40px] w-[78px] object-contain"
             />
           )}
@@ -194,11 +162,7 @@ const TeachingMapCard = ({
           value={progress}
           ariaLabel="티칭맵 학습 진행률"
           ariaValueMax={totalStep}
-          ariaValueNow={
-            isCompleted
-              ? totalStep
-              : currentStep
-          }
+          ariaValueNow={isCompleted ? totalStep : currentStep}
           className="min-w-0 flex-1"
           trackClassName="!h-[10px] !rounded-[100px]"
           indicatorClassName="!rounded-[100px] !bg-[linear-gradient(90deg,#917DEC_0%,#C1AEFF_100%)] shadow-[0_0_8px_rgba(193,174,255,0.8)] transition-[width] duration-300"
@@ -211,17 +175,11 @@ const TeachingMapCard = ({
             </span>
           ) : (
             <>
-              <span className="text-[#917DEC]">
-                {currentStep}
-              </span>
+              <span className="text-[#917DEC]">{currentStep}</span>
 
-              <span className="mx-2 text-[#717379]">
-                /
-              </span>
+              <span className="mx-2 text-[#717379]">/</span>
 
-              <span className="text-[#717379]">
-                {totalStep}단계
-              </span>
+              <span className="text-[#717379]">{totalStep}단계</span>
             </>
           )}
         </div>

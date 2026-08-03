@@ -245,8 +245,7 @@ const ArchiveFolderHeader = ({
       </div>
 
       <p className="mb-6 text-[20px] text-[#A1A1A5]">
-        {savedItemCount}개의 저장된
-        자료
+        {savedItemCount}개의 저장된 자료
       </p>
 
       <div className="flex items-center justify-between">
@@ -290,7 +289,7 @@ const ArchiveFolderHeader = ({
                   (prev) => !prev,
                 )
               }
-              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-[#24232D] px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#F5F2FF]"
+              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-transparent px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#F5F2FF]"
             >
               <span>
                 {
@@ -300,12 +299,11 @@ const ArchiveFolderHeader = ({
                 }
               </span>
 
-              <span
-                className={`h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-white ${
-                  isSortOpen
-                    ? "rotate-180"
-                    : ""
-                }`}
+              <img
+                src="/dropdown.svg"
+                alt=""
+                aria-hidden="true"
+                className={`h-5 w-5 shrink-0 ${isSortOpen ? "scale-y-[-1]" : ""}`}
               />
             </button>
 

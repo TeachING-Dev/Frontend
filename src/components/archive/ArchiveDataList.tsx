@@ -6,6 +6,8 @@ export type ArchiveData = {
   date: string;
   title: string;
   description: string;
+  platformType: string;
+  originalUrl: string;
 };
 
 type ArchiveDataListProps = {
@@ -13,9 +15,10 @@ type ArchiveDataListProps = {
   isMoveMode: boolean;
   selectedItemIds: number[];
   onToggleItem: (id: number) => void;
-  onItemClick: (id: number) => void;
   onAiAnalysis?: (id: number) => void;
-  onOpenOriginal?: (id: number) => void;
+  onOpenOriginal?: (
+    originalUrl: string,
+  ) => void;
 };
 
 const ArchiveDataList = ({
@@ -23,7 +26,6 @@ const ArchiveDataList = ({
   isMoveMode,
   selectedItemIds,
   onToggleItem,
-  onItemClick,
   onAiAnalysis,
   onOpenOriginal,
 }: ArchiveDataListProps) => {
@@ -36,13 +38,23 @@ const ArchiveDataList = ({
           date={item.date}
           title={item.title}
           description={item.description}
+          platformType={
+            item.platformType
+          }
           isMoveMode={isMoveMode}
-          isSelected={selectedItemIds.includes(item.id)}
-          onSelect={() => onToggleItem(item.id)}
-          onClick={() => onItemClick(item.id)}
-          onAiAnalysis={() => onAiAnalysis?.(item.id)}
+          isSelected={selectedItemIds.includes(
+            item.id,
+          )}
+          onSelect={() =>
+            onToggleItem(item.id)
+          }
+          onAiAnalysis={() =>
+            onAiAnalysis?.(item.id)
+          }
           onOpenOriginal={() =>
-            onOpenOriginal?.(item.id)
+            onOpenOriginal?.(
+              item.originalUrl,
+            )
           }
         />
       ))}

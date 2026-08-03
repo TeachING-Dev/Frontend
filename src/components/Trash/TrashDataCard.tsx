@@ -1,10 +1,3 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-
-import TrashRestoredMenu from "./TrashRestoredMenu";
 import type { TrashDataItem } from "./trashTypes";
 import formatDeletedAt from "../../utils/formatDeletedAt";
 
@@ -13,7 +6,6 @@ interface TrashDataCardProps {
   isRestoreMode: boolean;
   isSelected: boolean;
   onSelect: (dataId: number) => void;
-  onRestore: (dataId: number) => void;
 }
 
 const TrashDataCard = ({
@@ -21,41 +13,7 @@ const TrashDataCard = ({
   isRestoreMode,
   isSelected,
   onSelect,
-  onRestore,
 }: TrashDataCardProps) => {
-  const [isMenuOpen, setIsMenuOpen] =
-    useState(false);
-
-  const cardRef =
-    useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (
-      event: MouseEvent,
-    ) => {
-      if (
-        cardRef.current &&
-        !cardRef.current.contains(
-          event.target as Node,
-        )
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener(
-      "mousedown",
-      handleOutsideClick,
-    );
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleOutsideClick,
-      );
-    };
-  }, []);
-
   const handleCardClick = () => {
     if (isRestoreMode) {
       onSelect(data.id);
@@ -77,16 +35,8 @@ const TrashDataCard = ({
     onSelect(data.id);
   };
 
-  const handleRestore = () => {
-    onRestore(data.id);
-    setIsMenuOpen(false);
-  };
-
   return (
-    <div
-      ref={cardRef}
-      className="relative"
-    >
+    <div className="relative">
       <article
         role={
           isRestoreMode
@@ -164,37 +114,8 @@ const TrashDataCard = ({
             {data.description}
           </p>
 
-          {!isRestoreMode && (
-            <button
-              type="button"
-              aria-label={`${data.title} 메뉴 열기`}
-              onClick={(event) => {
-                event.stopPropagation();
-
-                setIsMenuOpen(
-                  (previous) => !previous,
-                );
-              }}
-              className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center"
-            >
-              <img
-                src="/hambugi.svg"
-                alt=""
-                aria-hidden="true"
-                className="h-9 w-9"
-              />
-            </button>
-          )}
         </div>
       </article>
-
-      {isMenuOpen && !isRestoreMode && (
-        <div className="absolute right-5 top-[112px] z-30">
-          <TrashRestoredMenu
-            onRestore={handleRestore}
-          />
-        </div>
-      )}
     </div>
   );
 };

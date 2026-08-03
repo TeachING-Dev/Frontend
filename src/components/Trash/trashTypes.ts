@@ -1,11 +1,6 @@
-export type TrashCategory =
-  | "folder"
-  | "data"
-  | "teachingMap";
+export type TrashCategory = "folder" | "data" | "teachingMap";
 
-export type TrashSortType =
-  | "latest"
-  | "oldest";
+export type TrashSortType = "latest" | "oldest";
 
 export interface TrashFolderItem {
   id: number;
@@ -27,9 +22,11 @@ export interface TrashTeachingMapItem {
   id: number;
   title: string;
   description: string;
+  status: "IN_PROGRESS" | "FINISHED";
   currentStep: number;
   totalStep: number;
   type: "shortcut" | "deepDive";
   thumbnails: string[];
+  extraThumbnailCount?: number;
   deletedAt: string;
 }

@@ -275,13 +275,17 @@ const ArchiveDataPage = () => {
     <main className="py-10">
       <div className="mx-auto w-[1120px]">
         <ArchiveDataHeader
-          date={material.createdAt}
-          title={material.title}
-          originalUrl={originUrl}
-          tags={materialTags.map(
-            (tag) => tag.tagName,
-          )}
-          onBack={handleBack}
+        date={material.createdAt}
+        title={material.title}
+        originalUrl={originUrl}
+        platformType={material.platformType}
+        platformImageUrl={
+          material.platformImageUrl
+        }
+        tags={materialTags.map(
+          (tag) => tag.tagName,
+        )}
+        onBack={handleBack}
         />
 
         <ArchiveDataSummary

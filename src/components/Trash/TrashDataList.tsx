@@ -6,7 +6,6 @@ interface TrashDataListProps {
   isRestoreMode: boolean;
   selectedItemIds: number[];
   onSelect: (dataId: number) => void;
-  onRestore: (dataId: number) => void;
 }
 
 const TrashDataList = ({
@@ -14,7 +13,6 @@ const TrashDataList = ({
   isRestoreMode,
   selectedItemIds,
   onSelect,
-  onRestore,
 }: TrashDataListProps) => {
   return (
     <div className="flex flex-col gap-10">
@@ -27,7 +25,6 @@ const TrashDataList = ({
             data.id,
           )}
           onSelect={onSelect}
-          onRestore={onRestore}
         />
       ))}
     </div>

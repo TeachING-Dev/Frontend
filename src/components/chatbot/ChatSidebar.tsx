@@ -15,7 +15,7 @@ const ChatSidebar = ({
   onCreateRoomClick,
   onFileClick,
 }: ChatSidebarProps) => {
-  const navWidthClass = isOpen ? "w-[204px]" : "w-20";
+  const navWidthClass = isOpen ? "w-[240px]" : "w-20";
 
   return (
     <aside
@@ -25,7 +25,7 @@ const ChatSidebar = ({
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            aria-label="챗봇 사이드바 열기"
+            aria-label="筌?ロ겦 ?????뺤뺍 ??용┛"
             onClick={(event) => {
               event.stopPropagation();
               onOpen();
@@ -55,19 +55,22 @@ const ChatSidebar = ({
               type="button"
               aria-label="새 채팅 만들기"
               onClick={onCreateRoomClick}
-              className="flex h-9 items-center justify-start gap-2.5 hover:opacity-80"
+              className="flex h-9 items-center justify-start gap-[6px] hover:opacity-80"
             >
               <img src="/NewFileDesign.svg" alt="" className="h-9 w-8 object-contain" />
-              <span className="whitespace-nowrap font-['SUIT'] text-18px font-normal leading-[150%] tracking-[-0.72px] text-[#917DEC]">
+              <span className="whitespace-nowrap font-['SUIT'] text-[18px] font-semibold leading-[150%] tracking-[-0.72px] text-[#917DEC]">
                 새 채팅
               </span>
             </button>
+            <span className="font-['SUIT'] text-[14px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379]">
+              최근
+            </span>
             {files.map((fileName, index) => (
               <button
                 type="button"
                 key={`${fileName}-${index}`}
                 onClick={() => onFileClick?.(index)}
-                className="text-left font-['SUIT'] text-sm font-normal leading-5 text-violet-50 hover:text-[#917DEC]"
+                className="text-left font-['SUIT'] text-[18px] font-normal leading-5 text-violet-50 hover:text-[#917DEC]"
               >
                 {fileName}
               </button>

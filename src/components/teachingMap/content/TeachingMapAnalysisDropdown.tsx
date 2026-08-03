@@ -24,9 +24,9 @@ const TeachingMapAnalysisDropdown = ({
       </span>
 
       <img
-        src={isOpen ? "/rollup.svg" : "/dropdowndown.svg"}
+        src="/dropdown.svg"
         alt=""
-        className="ml-[10px] h-[24px] w-[24px] shrink-0 object-contain"
+        className={`ml-[10px] h-[24px] w-[24px] shrink-0 object-contain ${isOpen ? "scale-y-[-1]" : ""}`}
       />
     </button>
   );

@@ -1,23 +1,32 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { analyzeMaterial } from "../../apis/material";
+import {
+  analyzeMaterial,
+  moveMaterialsToTrash,
+  type AnalyzeMaterialResult,
+} from "../../apis/material";
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
-import AnalysisFailModal from "./modal/AnalysisFailModal";
-
-type AnalysisFailType =
-  | "loginRequired"
-  | "analysisFailed"
-  | "complexLink";
+import AnalysisFailModal, {
+  type AnalysisFailType,
+} from "./modal/AnalysisFailModal";
 
 const HomeHeader = () => {
   const navigate = useNavigate();
 
-  const [url, setUrl] = useState("");
-  const [showToast, setShowToast] =
-    useState(false);
+  const [url, setUrl] =
+    useState("");
+
+  const [
+    showToast,
+    setShowToast,
+  ] = useState(false);
 
   const [
     isAnalysisModalOpen,
@@ -27,54 +36,79 @@ const HomeHeader = () => {
   const [
     analysisFailType,
     setAnalysisFailType,
-  ] = useState<AnalysisFailType | null>(
-    null,
-  );
+  ] =
+    useState<AnalysisFailType | null>(
+      null,
+    );
 
-  const [isAnalyzing, setIsAnalyzing] =
-    useState(false);
+  const [
+    existingAnalysisResult,
+    setExistingAnalysisResult,
+  ] =
+    useState<AnalyzeMaterialResult | null>(
+      null,
+    );
+
+  const [
+    isAnalyzing,
+    setIsAnalyzing,
+  ] = useState(false);
 
   const toastTimerRef =
-    useRef<ReturnType<
-      typeof setTimeout
-    > | null>(null);
+    useRef<
+      ReturnType<typeof setTimeout> | null
+    >(null);
 
-  const isValidUrl = (value: string) => {
+  const isValidUrl = (
+    value: string,
+  ) => {
     try {
-      const parsedUrl = new URL(value);
+      const parsedUrl =
+        new URL(value);
 
       return (
-        parsedUrl.protocol === "http:" ||
-        parsedUrl.protocol === "https:"
+        parsedUrl.protocol ===
+          "http:" ||
+        parsedUrl.protocol ===
+          "https:"
       );
     } catch {
       return false;
     }
   };
 
-  const showInvalidUrlToast = () => {
-    setShowToast(true);
+  const showInvalidUrlToast =
+    () => {
+      setShowToast(true);
 
-    if (toastTimerRef.current) {
-      clearTimeout(
-        toastTimerRef.current,
-      );
-    }
+      if (
+        toastTimerRef.current
+      ) {
+        clearTimeout(
+          toastTimerRef.current,
+        );
+      }
 
-    toastTimerRef.current =
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-  };
+      toastTimerRef.current =
+        setTimeout(() => {
+          setShowToast(false);
+        }, 3000);
+    };
 
+  /*
+   * URL 분석
+   */
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
 
-    const trimmedUrl = url.trim();
+    const trimmedUrl =
+      url.trim();
 
-    if (!isValidUrl(trimmedUrl)) {
+    if (
+      !isValidUrl(trimmedUrl)
+    ) {
       showInvalidUrlToast();
       return;
     }
@@ -85,60 +119,95 @@ const HomeHeader = () => {
 
     setShowToast(false);
     setAnalysisFailType(null);
+    setExistingAnalysisResult(null);
+
     setIsAnalysisModalOpen(true);
     setIsAnalyzing(true);
 
     try {
-      const result = await analyzeMaterial({
-        url: trimmedUrl,
-        forceAnalyze: false,
-      });
+      const result =
+        await analyzeMaterial({
+          url: trimmedUrl,
+          forceAnalyze: false,
+        });
 
       console.log(
         "URL 분석 요청 결과:",
         result,
       );
 
-      setIsAnalysisModalOpen(false);
+      setIsAnalysisModalOpen(
+        false,
+      );
 
+      /*
+       * 이미 분석된 자료인 경우
+       *
+       * 기존 분석 보기 /
+       * 새로 분석하기 모달 표시
+       */
       if (
         result.resultType ===
         "ALREADY_ANALYZED"
       ) {
-        navigate("/analysis/complete", {
-          state: {
-            originalUrl:
-              result.originalUrl,
-            materialId:
-              result.existingMaterialId,
-            materialAnalysisId:
-              result.materialAnalysisId,
-            result,
-          },
-        });
+        setExistingAnalysisResult(
+          result,
+        );
+
+        setAnalysisFailType(
+          "alreadyAnalyzed",
+        );
 
         return;
       }
 
-      navigate("/analysis/complete", {
-        state: {
-          originalUrl:
-            result.originalUrl ||
-            trimmedUrl,
-          materialId:
-            result.materialId,
-          materialAnalysisId:
-            result.materialAnalysisId,
-          result,
+      /*
+       * 새 분석 결과의 materialId 확인
+       */
+      if (
+        result.materialId == null
+      ) {
+        console.error(
+          "새 분석 결과의 materialId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
+      /*
+       * 새 분석 결과
+       */
+      navigate(
+        "/analysis/complete",
+        {
+          state: {
+            originalUrl:
+              result.originalUrl ||
+              trimmedUrl,
+
+            materialId:
+              result.materialId,
+
+            materialAnalysisId:
+              result.materialAnalysisId,
+
+            result,
+          },
         },
-      });
+      );
     } catch (error) {
       console.error(
         "URL 분석 요청 실패:",
         error,
       );
 
-      setIsAnalysisModalOpen(false);
+      setIsAnalysisModalOpen(
+        false,
+      );
 
       setAnalysisFailType(
         "analysisFailed",
@@ -148,9 +217,232 @@ const HomeHeader = () => {
     }
   };
 
+  /*
+   * 이미 분석된 자료
+   * → 기존 자료 상세 보기
+   */
+  const handleViewExisting =
+    () => {
+      if (
+        !existingAnalysisResult
+      ) {
+        return;
+      }
+
+      const existingMaterialId =
+        existingAnalysisResult
+          .existingMaterialId;
+
+      const existingFolderId =
+        existingAnalysisResult
+          .existingFolderId;
+
+      if (
+        existingMaterialId == null ||
+        existingFolderId == null
+      ) {
+        console.error(
+          "기존 자료의 materialId 또는 folderId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
+      setAnalysisFailType(null);
+      setExistingAnalysisResult(
+        null,
+      );
+
+      navigate(
+        `/archive/folder/${existingFolderId}/materials/${existingMaterialId}`,
+      );
+    };
+
+  /*
+   * 이미 분석된 자료
+   * → 기존 자료 휴지통 이동
+   * → 같은 URL 새로 분석
+   */
+  const handleForceAnalyze =
+    async () => {
+      const trimmedUrl =
+        url.trim();
+
+      if (
+        !isValidUrl(trimmedUrl)
+      ) {
+        setAnalysisFailType(
+          null,
+        );
+
+        showInvalidUrlToast();
+
+        return;
+      }
+
+      if (isAnalyzing) {
+        return;
+      }
+
+      if (
+        !existingAnalysisResult
+      ) {
+        console.error(
+          "기존 분석 결과가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
+      const existingMaterialId =
+        existingAnalysisResult
+          .existingMaterialId;
+
+      const existingFolderId =
+        existingAnalysisResult
+          .existingFolderId;
+
+      if (
+        existingMaterialId == null ||
+        existingFolderId == null
+      ) {
+        console.error(
+          "기존 자료의 materialId 또는 folderId가 없습니다.",
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+
+        return;
+      }
+
+      setAnalysisFailType(
+        null,
+      );
+
+      setIsAnalysisModalOpen(
+        true,
+      );
+
+      setIsAnalyzing(true);
+
+      try {
+        /*
+         * 기존 자료 휴지통 이동
+         */
+        const trashResult =
+          await moveMaterialsToTrash(
+            existingFolderId,
+            {
+              materialIds: [
+                existingMaterialId,
+              ],
+            },
+          );
+
+        console.log(
+          "기존 자료 휴지통 이동 결과:",
+          trashResult,
+        );
+
+        if (
+          trashResult.deletedCount < 1
+        ) {
+          throw new Error(
+            "기존 자료가 휴지통으로 이동되지 않았습니다.",
+          );
+        }
+
+        /*
+         * 같은 URL 강제 재분석
+         */
+        const result =
+          await analyzeMaterial({
+            url: trimmedUrl,
+            forceAnalyze: true,
+          });
+
+        console.log(
+          "URL 강제 재분석 결과:",
+          result,
+        );
+
+        setIsAnalysisModalOpen(
+          false,
+        );
+
+        /*
+         * 강제 재분석 결과의
+         * materialId 확인
+         */
+        if (
+          result.materialId == null
+        ) {
+          console.error(
+            "강제 재분석 결과의 materialId가 없습니다.",
+          );
+
+          setAnalysisFailType(
+            "analysisFailed",
+          );
+
+          return;
+        }
+
+        setExistingAnalysisResult(
+          null,
+        );
+
+        navigate(
+          "/analysis/complete",
+          {
+            state: {
+              originalUrl:
+                result.originalUrl ||
+                trimmedUrl,
+
+              materialId:
+                result.materialId,
+
+              materialAnalysisId:
+                result.materialAnalysisId,
+
+              result,
+            },
+          },
+        );
+      } catch (error) {
+        console.error(
+          "기존 자료 휴지통 이동 또는 URL 재분석 실패:",
+          error,
+        );
+
+        setIsAnalysisModalOpen(
+          false,
+        );
+
+        setAnalysisFailType(
+          "analysisFailed",
+        );
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+
   useEffect(() => {
     return () => {
-      if (toastTimerRef.current) {
+      if (
+        toastTimerRef.current
+      ) {
         clearTimeout(
           toastTimerRef.current,
         );
@@ -191,13 +483,15 @@ const HomeHeader = () => {
             lg:tracking-[-0.6px]
           "
         >
-          TeachING은 링크 속 내용을
-          분석하여 쉬운 학습 콘텐츠로
-          정리해드려요.
+          TeachING은 링크 속
+          내용을 분석하여 쉬운 학습
+          콘텐츠로 정리해드려요.
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={
+            handleSubmit
+          }
           className="
             relative
             mt-5
@@ -335,23 +629,56 @@ const HomeHeader = () => {
 
       {analysisFailType && (
         <AnalysisFailModal
-          type={analysisFailType}
-          onClose={() =>
-            setAnalysisFailType(null)
+          type={
+            analysisFailType
           }
+          onClose={() => {
+            setAnalysisFailType(
+              null,
+            );
+
+            setExistingAnalysisResult(
+              null,
+            );
+          }}
+          onSecondaryAction={() => {
+            if (
+              analysisFailType ===
+              "alreadyAnalyzed"
+            ) {
+              handleViewExisting();
+              return;
+            }
+
+            setAnalysisFailType(
+              null,
+            );
+          }}
           onPrimaryAction={() => {
+            if (
+              analysisFailType ===
+              "alreadyAnalyzed"
+            ) {
+              void handleForceAnalyze();
+              return;
+            }
+
             if (
               analysisFailType ===
               "loginRequired"
             ) {
-              console.log("로그인");
+              console.log(
+                "로그인",
+              );
             } else {
               console.log(
                 "다시 시도하기",
               );
             }
 
-            setAnalysisFailType(null);
+            setAnalysisFailType(
+              null,
+            );
           }}
         />
       )}

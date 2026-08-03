@@ -76,6 +76,14 @@ const ArchiveFolderPage = () => {
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
 
+  /**
+   * 현재 폴더의 전체 저장 자료 수
+   */
+  const [
+    totalMaterialCount,
+    setTotalMaterialCount,
+  ] = useState(0);
+
   const [
     folderOptions,
     setFolderOptions,
@@ -226,6 +234,10 @@ const ArchiveFolderPage = () => {
             title: material.title,
             description:
               material.summary,
+            platformType:
+              material.platformType,
+            originalUrl:
+              material.originalUrl,
           }),
         );
 
@@ -234,9 +246,20 @@ const ArchiveFolderPage = () => {
       setMaterials(
         convertedMaterials,
       );
+
+      /**
+       * 검색 중이 아닐 때만
+       * 폴더 전체 자료 수 갱신
+       */
+      if (!keyword) {
+        setTotalMaterialCount(
+          materialsResult.totalElements,
+        );
+      }
     }, [
       fetchFolder,
       fetchFolderMaterials,
+      keyword,
     ]);
 
   /**
@@ -282,12 +305,26 @@ const ArchiveFolderPage = () => {
                   material.title,
                 description:
                   material.summary,
+                platformType:
+                  material.platformType,
+                originalUrl:
+                  material.originalUrl,
               }),
             );
 
           setMaterials(
             convertedMaterials,
           );
+
+          /**
+           * 검색 중이 아닐 때만
+           * 폴더 전체 자료 수 저장
+           */
+          if (!keyword) {
+            setTotalMaterialCount(
+              materialsResult.totalElements,
+            );
+          }
 
           setSelectedItemIds([]);
           setSelectMode(null);
@@ -324,6 +361,7 @@ const ArchiveFolderPage = () => {
   }, [
     fetchFolder,
     fetchFolderMaterials,
+    keyword,
   ]);
 
   /**
@@ -589,10 +627,6 @@ const ArchiveFolderPage = () => {
         },
       );
 
-      /**
-       * 실행취소를 위해
-       * 원래 폴더와 이동한 폴더 저장
-       */
       setLastAction({
         type: "move",
         materialIds:
@@ -603,9 +637,6 @@ const ArchiveFolderPage = () => {
           targetFolderId,
       });
 
-      /**
-       * 화면에서 이동한 자료 제거
-       */
       setMaterials((prev) =>
         prev.filter(
           (material) =>
@@ -615,21 +646,13 @@ const ArchiveFolderPage = () => {
         ),
       );
 
-      /**
-       * 자료 개수 감소
-       */
-      setFolder((prev) =>
-        prev
-          ? {
-              ...prev,
-              materialCount:
-                Math.max(
-                  0,
-                  prev.materialCount -
-                    movedMaterialIds.length,
-                ),
-            }
-          : prev,
+      setTotalMaterialCount(
+        (prev) =>
+          Math.max(
+            0,
+            prev -
+              movedMaterialIds.length,
+          ),
       );
 
       setIsMoveModalOpen(false);
@@ -680,11 +703,6 @@ const ArchiveFolderPage = () => {
           },
         );
 
-        /**
-         * 실행취소를 위해
-         * 휴지통으로 이동한 자료와
-         * 원래 폴더 저장
-         */
         setLastAction({
           type: "trash",
           materialIds:
@@ -693,9 +711,6 @@ const ArchiveFolderPage = () => {
             parsedFolderId,
         });
 
-        /**
-         * 화면에서 휴지통 이동 자료 제거
-         */
         setMaterials((prev) =>
           prev.filter(
             (material) =>
@@ -705,21 +720,13 @@ const ArchiveFolderPage = () => {
           ),
         );
 
-        /**
-         * 현재 폴더 자료 개수 감소
-         */
-        setFolder((prev) =>
-          prev
-            ? {
-                ...prev,
-                materialCount:
-                  Math.max(
-                    0,
-                    prev.materialCount -
-                      trashedMaterialIds.length,
-                  ),
-              }
-            : prev,
+        setTotalMaterialCount(
+          (prev) =>
+            Math.max(
+              0,
+              prev -
+                trashedMaterialIds.length,
+          ),
         );
 
         setSelectMode(null);
@@ -758,7 +765,7 @@ const ArchiveFolderPage = () => {
     };
 
   /**
-   * 자료 상세 페이지
+   * AI 분석 결과 페이지로 이동
    */
   const handleOpenDataPage = (
     materialId: number,
@@ -773,6 +780,36 @@ const ArchiveFolderPage = () => {
   };
 
   /**
+   * 원문 페이지를 새 탭으로 열기
+   */
+  const handleOpenOriginal = (
+    originalUrl: string,
+  ) => {
+    if (!originalUrl) {
+      setLastAction(null);
+
+      setToastMessage(
+        "원문 주소를 확인할 수 없어요.",
+      );
+
+      return;
+    }
+
+    const normalizedUrl =
+      /^https?:\/\//i.test(
+        originalUrl,
+      )
+        ? originalUrl
+        : `https://${originalUrl}`;
+
+    window.open(
+      normalizedUrl,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
+  /**
    * 마지막 작업 실행취소
    */
   const handleUndoToast =
@@ -781,19 +818,13 @@ const ArchiveFolderPage = () => {
         return;
       }
 
-      /**
-       * 비동기 요청 중 state가 변경될 수 있으므로
-       * 현재 작업을 복사해둔다.
-       */
       const actionToUndo =
         lastAction;
 
+      let restoredCount =
+        actionToUndo.materialIds.length;
+
       try {
-        /**
-         * 일반 폴더 이동 실행취소
-         *
-         * 이동 대상 폴더 -> 원래 폴더
-         */
         if (
           actionToUndo.type ===
           "move"
@@ -809,12 +840,6 @@ const ArchiveFolderPage = () => {
           );
         }
 
-        /**
-         * 휴지통 이동 실행취소
-         *
-         * restore API를 호출해서
-         * 기존 폴더로 복구
-         */
         if (
           actionToUndo.type ===
           "trash"
@@ -828,9 +853,9 @@ const ArchiveFolderPage = () => {
               },
             );
 
-          /**
-           * 일부 자료 복구 실패
-           */
+          restoredCount =
+            restoreResult.restoredIds.length;
+
           if (
             restoreResult.failedIds.length >
             0
@@ -842,11 +867,15 @@ const ArchiveFolderPage = () => {
           }
         }
 
-        /**
-         * 서버에서 다시 조회해서
-         * 화면 상태 동기화
-         */
         await refetchFolderPageData();
+
+        if (keyword) {
+          setTotalMaterialCount(
+            (prev) =>
+              prev +
+              restoredCount,
+          );
+        }
 
         setLastAction(null);
 
@@ -862,10 +891,6 @@ const ArchiveFolderPage = () => {
           error,
         );
 
-        /**
-         * 실패 시 lastAction을 유지해서
-         * 토스트가 떠있는 동안 재시도 가능
-         */
         setToastMessage(
           "실행 취소에 실패했어요.",
         );
@@ -903,7 +928,7 @@ const ArchiveFolderPage = () => {
               folder.folderName
             }
             savedItemCount={
-              folder.materialCount
+              totalMaterialCount
             }
             searchKeyword={
               searchInput
@@ -1016,8 +1041,11 @@ const ArchiveFolderPage = () => {
                 onToggleItem={
                   handleToggleItem
                 }
-                onItemClick={
+                onAiAnalysis={
                   handleOpenDataPage
+                }
+                onOpenOriginal={
+                  handleOpenOriginal
                 }
               />
             )}

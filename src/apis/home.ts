@@ -2,12 +2,11 @@ import api from "./axios";
 
 export type RecentMaterial = {
   materialId: number;
+  folderId: number;
   title: string;
-  analysisTitle: string;
   summary: string;
   platformType: string;
   platformImageUrl: string;
-  difficulty: number;
   aiStatus: string;
   createdAt: string;
 };

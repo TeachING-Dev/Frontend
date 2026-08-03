@@ -54,20 +54,17 @@ const SortDropdown = <T extends string>({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
-        className="flex h-10 w-full items-center justify-center gap-2 rounded-[8px] bg-[#24232D] px-3 font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-[#F5F2FF]"
+        className="flex h-10 w-full items-center justify-center gap-2 rounded-[8px] bg-transparent px-3 font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-[#F5F2FF]"
       >
         <span className="min-w-0 whitespace-nowrap">
           {selectedOption.label}
         </span>
 
-        <span
+        <img
+          src="/dropdown.svg"
+          alt=""
           aria-hidden="true"
-          className={[
-            "h-0 w-0 shrink-0 border-x-[7px] border-t-[9px]",
-            "border-x-transparent border-t-[#F5F2FF]",
-            "transition-transform duration-200",
-            isOpen ? "rotate-180" : "",
-          ].join(" ")}
+          className={`h-5 w-5 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
         />
       </button>
 

@@ -34,6 +34,8 @@ const MyPageEditPage = () => {
 
   const [birthDate, setBirthDate] =
     useState("");
+  const [originalBirthDate, setOriginalBirthDate] =
+    useState("");
   const [
     isBirthDateComplete,
     setIsBirthDateComplete,
@@ -62,6 +64,7 @@ const MyPageEditPage = () => {
         setNickname(profile.nickname);
         setOriginalNickname(profile.nickname);
         setBirthDate(profile.birthDate ?? "");
+        setOriginalBirthDate(profile.birthDate ?? "");
         setProfileImageUrl(
           profile.profileImageUrl,
         );
@@ -143,7 +146,10 @@ const MyPageEditPage = () => {
 
   const isSubmitDisabled =
     Boolean(validateNickname(nickname)) ||
-    !isBirthDateComplete;
+    !isBirthDateComplete ||
+    (nickname.trim() === originalNickname.trim() &&
+      birthDate === originalBirthDate &&
+      !profileImageFile);
 
   const handleSubmit = async () => {
     const errorMessage =

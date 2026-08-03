@@ -1,6 +1,15 @@
 import api from "./axios";
 
 /* ==============================
+   자료 태그 타입
+============================== */
+
+export type MaterialTag = {
+  tagId: number;
+  tagName: string;
+};
+
+/* ==============================
    자료 상세 조회
 ============================== */
 
@@ -10,7 +19,9 @@ export type MaterialDetail = {
   title: string;
   originUrl: string;
   summary: string;
-  tags: string[];
+  platformType: string;
+  platformImageUrl: string;
+  tags: MaterialTag[];
   statusAi: string;
   createdAt: string;
   updatedAt: string;
@@ -38,11 +49,6 @@ export const getMaterialDetail = async (
 /* ==============================
    자료 태그 조회
 ============================== */
-
-export type MaterialTag = {
-  tagId: number;
-  tagName: string;
-};
 
 type MaterialTagsResponse = {
   isSuccess: boolean;
@@ -204,21 +210,29 @@ export type MoveMaterialsToTrashRequest = {
   materialIds: number[];
 };
 
+export type MoveMaterialsToTrashResult = {
+  deletedCount: number;
+  folderId: number;
+};
+
 type MoveMaterialsToTrashResponse = {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: unknown;
+  result: MoveMaterialsToTrashResult;
 };
 
 export const moveMaterialsToTrash = async (
   folderId: number,
   data: MoveMaterialsToTrashRequest,
-): Promise<void> => {
-  await api.patch<MoveMaterialsToTrashResponse>(
-    `/api/folders/${folderId}/materials/trash`,
-    data,
-  );
+): Promise<MoveMaterialsToTrashResult> => {
+  const response =
+    await api.patch<MoveMaterialsToTrashResponse>(
+      `/api/folders/${folderId}/materials/trash`,
+      data,
+    );
+
+  return response.data.result;
 };
 
 /* ==============================
@@ -263,11 +277,20 @@ export type AnalyzeMaterialRequest = {
   forceAnalyze: boolean;
 };
 
+export type AnalyzeResultType =
+  | "ANALYSIS_COMPLETED"
+  | "ALREADY_ANALYZED";
+
 export type AnalyzeMaterialResult = {
   materialAnalysisId: number;
-  resultType: string;
-  materialId: number;
-  existingMaterialId: number;
+  resultType: AnalyzeResultType;
+
+  materialId: number | null;
+  existingMaterialId: number | null;
+  existingFolderId: number | null;
+
+  summary: string;
+
   originalUrl: string;
   title: string;
   platformType: string;
@@ -369,28 +392,6 @@ export const getMaterials = async (
             ? { size }
             : undefined,
       },
-    );
-
-  return response.data.result;
-};
-
-/* ==============================
-   자료 태그 삭제
-============================== */
-
-type DeleteMaterialTagResponse = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: string;
-};
-
-export const deleteMaterialTag = async (
-  materialTagId: number,
-): Promise<string> => {
-  const response =
-    await api.delete<DeleteMaterialTagResponse>(
-      `/materials/tags/${materialTagId}`,
     );
 
   return response.data.result;
