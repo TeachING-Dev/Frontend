@@ -1,6 +1,4 @@
-export type TemporaryTeachingMapType =
-  | "shortcut"
-  | "deepDive";
+export type TemporaryTeachingMapType = "shortcut" | "deepDive";
 
 export interface TemporaryTeachingMapData {
   id: number;
@@ -22,11 +20,7 @@ export const TEMPORARY_TEACHING_MAPS: TemporaryTeachingMapData[] = [
       "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
     type: "shortcut",
     thumbnailSrc: "/icons.svg",
-    thumbnailSrcs: [
-      "/youtube-app-icon.png",
-      "/Google.svg",
-      "/icons.svg",
-    ],
+    thumbnailSrcs: ["/icon/youtube-app-icon.png", "/Google.svg", "/icons.svg"],
     extraThumbnailCount: 3,
     folderId: 1,
     savedAt: "2026-07-18T12:00:00",
@@ -38,11 +32,7 @@ export const TEMPORARY_TEACHING_MAPS: TemporaryTeachingMapData[] = [
       "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
     type: "deepDive",
     thumbnailSrc: "/icons.svg",
-    thumbnailSrcs: [
-      "/youtube-app-icon.png",
-      "/Google.svg",
-      "/icons.svg",
-    ],
+    thumbnailSrcs: ["/icon/youtube-app-icon.png", "/Google.svg", "/icons.svg"],
     extraThumbnailCount: 3,
     folderId: 1,
     savedAt: "2026-07-17T12:00:00",
@@ -54,11 +44,7 @@ export const TEMPORARY_TEACHING_MAPS: TemporaryTeachingMapData[] = [
       "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
     type: "shortcut",
     thumbnailSrc: "/icons.svg",
-    thumbnailSrcs: [
-      "/youtube-app-icon.png",
-      "/Google.svg",
-      "/icons.svg",
-    ],
+    thumbnailSrcs: ["/icon/youtube-app-icon.png", "/Google.svg", "/icons.svg"],
     extraThumbnailCount: 3,
     folderId: 1,
     savedAt: "2026-07-16T12:00:00",
@@ -70,11 +56,7 @@ export const TEMPORARY_TEACHING_MAPS: TemporaryTeachingMapData[] = [
       "로드맵에 대한 상세설명들 몇자까지 처음에 보이나요? 로드맵에 대한 상세설명들 몇자까지 처음에 보이나요?",
     type: "deepDive",
     thumbnailSrc: "/icons.svg",
-    thumbnailSrcs: [
-      "/youtube-app-icon.png",
-      "/Google.svg",
-      "/icons.svg",
-    ],
+    thumbnailSrcs: ["/icon/youtube-app-icon.png", "/Google.svg", "/icons.svg"],
     extraThumbnailCount: 3,
     folderId: 1,
     savedAt: "2026-07-15T12:00:00",
