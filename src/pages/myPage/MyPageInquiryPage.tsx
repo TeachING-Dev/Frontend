@@ -47,7 +47,7 @@ const MyPageInquiryPage = () => {
     <main className="min-h-full px-[220px] pb-[120px] pt-[40px]">
       <MyPageBackHeader title="1:1 문의" />
 
-      <section className="mt-[50px] flex w-[620px] max-w-full flex-col gap-[10px] py-[10px]">
+      <section className="mt-[50px] flex w-[1000px] max-w-full flex-col gap-[10px] py-[10px]">
         <button
           type="button"
           onClick={handleKakaoClick}

@@ -18,7 +18,7 @@ const SortDropdown = <T extends string>({
   value,
   options,
   onChange,
-  widthClassName = "w-[147px]",
+  widthClassName = "w-fit",
 }: SortDropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ const SortDropdown = <T extends string>({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
-        className="flex h-10 w-full items-center justify-center gap-2 rounded-[8px] bg-transparent px-3 font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-[#F5F2FF]"
+        className="flex h-[30px] w-full items-center justify-center gap-[4px] bg-transparent font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
       >
         <span className="min-w-0 whitespace-nowrap">
           {selectedOption.label}
@@ -64,7 +64,7 @@ const SortDropdown = <T extends string>({
           src="/dropdown.svg"
           alt=""
           aria-hidden="true"
-          className={`h-5 w-5 shrink-0 ${isOpen ? "scale-y-[-1]" : ""}`}
+          className={`h-5 w-5 shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
         />
       </button>
 
@@ -72,7 +72,7 @@ const SortDropdown = <T extends string>({
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="absolute right-0 top-[46px] z-30 w-full overflow-hidden rounded-[8px] bg-[#24232D] shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
+          className="absolute right-0 top-[36px] z-30 min-w-max overflow-hidden rounded-[8px] bg-[#24232D] shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
         >
           {options.map((option) => (
             <button

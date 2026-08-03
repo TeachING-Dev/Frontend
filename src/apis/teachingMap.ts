@@ -118,6 +118,7 @@ export interface TeachingMapStepDetail {
   originalUrl: string;
   existingAiAnalysis: {
     summary: string;
+    detailAnalysis: string;
     highlights: TeachingMapHighlight[];
   } | null;
   aiTeacherAnalysis: {

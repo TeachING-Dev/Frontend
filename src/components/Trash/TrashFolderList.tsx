@@ -6,6 +6,7 @@ interface TrashFolderListProps {
   isRestoreMode: boolean;
   selectedItemIds: number[];
   onSelect: (folderId: number) => void;
+  onOpen: (folderId: number) => void;
 }
 
 const TrashFolderList = ({
@@ -13,6 +14,7 @@ const TrashFolderList = ({
   isRestoreMode,
   selectedItemIds,
   onSelect,
+  onOpen,
 }: TrashFolderListProps) => {
   return (
     <div className="grid grid-cols-3 gap-x-6 gap-y-6">
@@ -25,6 +27,7 @@ const TrashFolderList = ({
             folder.id,
           )}
           onSelect={onSelect}
+          onOpen={onOpen}
         />
       ))}
     </div>

@@ -303,7 +303,7 @@ const ArchiveFolderHeader = ({
                 src="/dropdown.svg"
                 alt=""
                 aria-hidden="true"
-                className={`h-5 w-5 shrink-0 ${isSortOpen ? "scale-y-[-1]" : ""}`}
+                className={`h-5 w-5 shrink-0 ${isSortOpen ? "scale-[-1]" : ""}`}
               />
             </button>
 

@@ -1,6 +1,7 @@
 import { Globe } from "lucide-react";
 
 import formatDeletedAt from "../../utils/formatDeletedAt";
+import SourceImage from "../common/SourceImage";
 
 import type { TrashDataItem } from "./trashTypes";
 
@@ -124,14 +125,18 @@ const TrashDataCard = ({
 
       <div className="min-h-0 flex-1 rounded-t-[10px] bg-[#11121A] px-[30px] py-[40px]">
         <div className="mb-[20px] flex items-center gap-[15px]">
-          <img
+          <SourceImage
             src={
               normalizedPlatformImageUrl ??
               platformIconMap[data.platformType.toUpperCase()] ??
               "/icon/최근에 저장한 지식3.png"
             }
-            alt={data.platformType}
-            className="h-[36px] w-[36px] shrink-0 rounded-full object-contain"
+            fallbackSrc={
+              platformIconMap[data.platformType.toUpperCase()] ??
+              "/icon/최근에 저장한 지식3.png"
+            }
+            alt=""
+            className="h-[36px] w-[36px] shrink-0 object-contain"
           />
           <h2 className="truncate font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D0D0D2]">
             {data.title}
