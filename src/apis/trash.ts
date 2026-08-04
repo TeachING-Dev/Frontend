@@ -37,17 +37,26 @@ export interface TrashMaterial {
 export interface TrashFolder {
   folderId: number;
   name: string;
+  materialCount: number;
   deletedAt: string;
 }
 
-export interface RestoreResult {
+export interface RestoreIdsResult {
   restoredIds: number[];
   failedIds: number[];
-  restoredMaterials?: Array<{
+}
+
+export interface RestoreMaterialsResult {
+  restored: Array<{
     materialId: number;
-    folderId: number;
     folderName: string;
   }>;
+  failedIds: number[];
+}
+
+export interface TrashFolderMaterialsResult extends PageResult<TrashMaterial> {
+  folderId: number;
+  folderName: string;
 }
 
 const getTrashPage = async <T>(
@@ -71,10 +80,23 @@ export const getTrashMaterials = (sort: TrashSort = "latest", page = 0) =>
 export const getTrashFolders = (sort: TrashSort = "latest", page = 0) =>
   getTrashPage<TrashFolder>("/api/v1/trash/folders", sort, page);
 
+export const getTrashFolderMaterials = async (
+  folderId: number,
+  sort: TrashSort = "latest",
+  page = 0,
+): Promise<TrashFolderMaterialsResult> => {
+  const { data } = await api.get<ApiResponse<TrashFolderMaterialsResult>>(
+    `/api/v1/trash/folders/${folderId}/materials`,
+    { params: { sort, page } },
+  );
+
+  return data.result;
+};
+
 export const restoreTeachingMaps = async (
   teachingMapIds: number[],
-): Promise<RestoreResult> => {
-  const { data } = await api.patch<ApiResponse<RestoreResult>>(
+): Promise<RestoreIdsResult> => {
+  const { data } = await api.patch<ApiResponse<RestoreIdsResult>>(
     "/api/v1/trash/teaching-maps/restore",
     {
       teachingMapIds,
@@ -86,8 +108,8 @@ export const restoreTeachingMaps = async (
 
 export const restoreMaterials = async (
   materialIds: number[],
-): Promise<RestoreResult> => {
-  const { data } = await api.patch<ApiResponse<RestoreResult>>(
+): Promise<RestoreMaterialsResult> => {
+  const { data } = await api.patch<ApiResponse<RestoreMaterialsResult>>(
     "/api/v1/trash/materials/restore",
     {
       materialIds,
@@ -99,8 +121,8 @@ export const restoreMaterials = async (
 
 export const restoreFolders = async (
   folderIds: number[],
-): Promise<RestoreResult> => {
-  const { data } = await api.patch<ApiResponse<RestoreResult>>(
+): Promise<RestoreIdsResult> => {
+  const { data } = await api.patch<ApiResponse<RestoreIdsResult>>(
     "/api/v1/trash/folders/restore",
     {
       folderIds,

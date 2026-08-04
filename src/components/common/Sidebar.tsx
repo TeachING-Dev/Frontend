@@ -65,8 +65,8 @@ const mobileMenuItems = [
   {
     label: "마이",
     path: "/mypage",
-    icon: "/icon/마이페이지.png",
-    activeIcon: "/icon/마이페이지_active.png",
+    icon: "/icon/마이페이지.svg",
+    activeIcon: "/icon/마이페이지_active.svg",
   },
 ];
 
@@ -200,7 +200,7 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
                 className="flex h-[36px] w-[36px] items-center justify-center transition hover:opacity-80"
               >
                 <img
-                  src="/icon/닫기.png"
+                  src="/icon/닫기.svg"
                   alt=""
                   aria-hidden="true"
                   className="h-[40px] w-[40px]"
@@ -244,7 +244,7 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
               >
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src="/icon/마이페이지.png"
+                    src="/icon/icon_마이페이지.svg"
                     alt=""
                     aria-hidden="true"
                     className="h-[32px] w-[32px] object-contain"
@@ -263,10 +263,10 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
               >
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src="/icon/로그아웃.png"
+                    src="/icon/로그아웃.svg"
                     alt=""
                     aria-hidden="true"
-                    className="h-[32px] w-[32px] object-contain opacity-50"
+                    className="h-[32px] w-[32px] object-contain"
                   />
 
                   <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#42444C]">

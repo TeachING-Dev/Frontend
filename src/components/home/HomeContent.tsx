@@ -84,12 +84,12 @@ const HomeContent = ({
             }
             className={`${tabButtonClass} ${
               selectedTab === "knowledge"
-                ? "border-transparent bg-[#2B2C35] text-white"
-                : "border-[#2B2C35] bg-transparent text-[#717379]"
+                ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
+                : "border-[#2B2C35] bg-transparent text-[#A1A1A5]"
             }`}
           >
             <img
-              src="/icon/최근에 저장한 지식.png"
+              src="/icon/최근에 저장한 지식.svg"
               alt=""
               aria-hidden="true"
               className="h-5 w-5 shrink-0"
@@ -107,8 +107,8 @@ const HomeContent = ({
             }
             className={`${tabButtonClass} ${
               selectedTab === "teachingMap"
-                ? "border-transparent bg-[#2B2C35] text-white"
-                : "border-[#2B2C35] bg-transparent text-[#717379]"
+                ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
+                : "border-[#2B2C35] bg-transparent text-[#A1A1A5]"
             }`}
           >
             <img

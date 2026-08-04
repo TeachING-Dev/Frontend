@@ -23,6 +23,8 @@ export interface TeachingMapCardData {
 
 interface TeachingMapCardProps {
   teachingMap: TeachingMapCardData;
+  variant?: "progress" | "temporary";
+  ariaLabel?: string;
   isDeleteMode?: boolean;
   isSelected?: boolean;
   onClick?: (teachingMapId: number) => void;
@@ -31,6 +33,8 @@ interface TeachingMapCardProps {
 
 const TeachingMapCard = ({
   teachingMap,
+  variant = "progress",
+  ariaLabel,
   isDeleteMode = false,
   isSelected = false,
   onClick,
@@ -80,11 +84,74 @@ const TeachingMapCard = ({
     handleCardClick();
   };
 
+  if (variant === "temporary") {
+    const temporaryThumbnails = thumbnailSrcs ?? [thumbnailSrc];
+
+    return (
+      <article
+        role="button"
+        tabIndex={0}
+        aria-label={ariaLabel ?? `${title} 임시 티칭맵`}
+        aria-pressed={isDeleteMode ? isSelected : undefined}
+        onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
+        className={[
+          "flex h-[100px] w-full cursor-pointer items-center rounded-[10px]",
+          "border bg-[#13151F] p-5 outline-none",
+          "transition-[border-color,box-shadow,background-color]",
+          "focus-visible:ring-2 focus-visible:ring-[#917DEC]",
+          isDeleteMode && isSelected
+            ? "border-[#917DEC] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.6)]"
+            : "border-transparent",
+          !isDeleteMode ? "hover:bg-[#171822]" : "",
+        ].join(" ")}
+      >
+        <div className="flex min-w-0 flex-1 items-center gap-[10px]">
+          <div className="flex h-[60px] w-[98px] shrink-0 items-center justify-center rounded-[10px] bg-[#1F212A] p-[10px]">
+            <div className="relative flex items-center">
+              {temporaryThumbnails.slice(0, 3).map((source, index) => (
+                <SourceImage
+                  key={`${source}-${index}`}
+                  src={source}
+                  alt=""
+                  className={[
+                    "h-9 w-9 rounded-full bg-white p-[2px] object-contain",
+                    index === 0 ? "" : "-ml-3",
+                  ].join(" ")}
+                />
+              ))}
+              {extraThumbnailCount > 0 && (
+                <span className="-ml-3 flex h-9 min-w-9 items-center justify-center rounded-full bg-[#2B2C35] px-1 text-[14px] font-medium text-white">
+                  +{extraThumbnailCount}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate font-['SUIT'] text-[24px] font-bold leading-[36px] tracking-[-0.24px] text-[#F5F2FF]">
+              {title}
+            </h2>
+            <p className="truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#717379]">
+              {description}
+            </p>
+          </div>
+        </div>
+
+        <div className="ml-[10px] flex h-[60px] w-[130px] shrink-0 items-center justify-center p-[10px]">
+          <span className="flex h-10 items-center justify-center whitespace-nowrap rounded-[10px] border border-[#917DEC] px-[10px] font-['SUIT'] text-[16px] font-normal leading-6 tracking-[-0.48px] text-[#917DEC]">
+            {typeLabel}
+          </span>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article
       role="button"
       tabIndex={0}
-      aria-label={`${title} 티칭맵`}
+      aria-label={ariaLabel ?? `${title} 티칭맵`}
       aria-pressed={isDeleteMode ? isSelected : undefined}
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}

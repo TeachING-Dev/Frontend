@@ -14,7 +14,7 @@ const AnalysisSummary = ({
       {/* 제목 */}
       <div className="mb-[10px] flex items-center gap-[10px]">
         <img
-          src="/icon/AI.png"
+          src="/icon/AI.svg"
           alt=""
           aria-hidden="true"
           className="h-[28px] w-[28px] object-contain"
