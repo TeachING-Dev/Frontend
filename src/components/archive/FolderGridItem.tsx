@@ -77,7 +77,7 @@ const FolderGridItem = ({
         {/* 두 번째 줄 */}
         <div className="flex items-center gap-4 text-[16px] text-[#FAFAFA]">
           <span>
-            {String(count).padStart(2, "0")}개 항목
+            {count}개 항목
           </span>
 
           <span>{date}</span>

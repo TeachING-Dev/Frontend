@@ -8,7 +8,7 @@ const EmptyArchiveData = () => {
       />
 
       <p className="text-center text-[24px] font-semibold not-italic leading-[150%] tracking-[-0.72px] text-[#717379]">
-        자료가 존재하지 않습니다.
+        검색결과가 존재하지 않습니다.
       </p>
     </div>
   );

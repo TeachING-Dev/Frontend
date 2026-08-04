@@ -26,8 +26,8 @@ const HomeLayout = ({
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#090713]">
-      {/* PC 상단 헤더 */}
-      <div className="hidden lg:block">
+      {/* PC 상단 고정 헤더 */}
+      <div className="fixed inset-x-0 top-0 z-50 hidden lg:block">
         <Header
           showRightIcons={showRightIcons}
           insetMenu={insetMenu}
@@ -61,7 +61,8 @@ const HomeLayout = ({
           z-10
           min-h-[calc(100vh-56px)]
           overflow-hidden
-          lg:min-h-[calc(100vh-64px)]
+          lg:min-h-screen
+          lg:pt-16
         "
       >
         {/* 홈 전용 배경 이미지 */}
@@ -81,7 +82,7 @@ const HomeLayout = ({
             opacity-70
             md:top-[60px]
             md:w-[1100px]
-            lg:top-[81px]
+            lg:top-[145px]
             lg:w-[1440px]
             lg:opacity-100
           "
