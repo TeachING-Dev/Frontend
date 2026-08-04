@@ -15,7 +15,8 @@ const MainLayout = ({
   insetMenu = false,
   showMenuIcon = true,
 }: MainLayoutProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] =
+    useState(false);
 
   const handleOpenSidebar = () => {
     setIsSidebarOpen(true);
@@ -27,12 +28,15 @@ const MainLayout = ({
 
   return (
     <div className="min-h-screen bg-[#090713]">
-      <Header
-        showRightIcons={showRightIcons}
-        insetMenu={insetMenu}
-        showMenuIcon={showMenuIcon}
-        onMenuClick={handleOpenSidebar}
-      />
+      {/* PC 상단 고정 헤더 */}
+      <div className="fixed inset-x-0 top-0 z-50 hidden lg:block">
+        <Header
+          showRightIcons={showRightIcons}
+          insetMenu={insetMenu}
+          showMenuIcon={showMenuIcon}
+          onMenuClick={handleOpenSidebar}
+        />
+      </div>
 
       <Sidebar
         open={isSidebarOpen}
@@ -45,7 +49,7 @@ const MainLayout = ({
         className="pointer-events-none fixed inset-x-0 bottom-0 top-[64px] z-0 bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)]"
       />
 
-      <main className="relative z-10 min-h-[calc(100vh-64px)]">
+      <main className="relative z-10 min-h-screen pt-16">
         <Outlet />
       </main>
     </div>
