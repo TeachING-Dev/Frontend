@@ -353,7 +353,7 @@ const TeachingMapPage = () => {
   const isEmpty = filteredTeachingMaps.length === 0;
 
   return (
-    <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[#0B0A18]">
+    <main className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#0B0A18] lg:min-h-[calc(100vh-80px)]">
       <div
         aria-hidden="true"
         className={[
@@ -363,7 +363,7 @@ const TeachingMapPage = () => {
         ].join(" ")}
       />
 
-      <PageContainer className="relative z-10 py-10">
+      <PageContainer className="relative z-10 px-4 pb-[120px] pt-[36px] lg:px-5 lg:py-10 xl:px-0">
         <TeachingMapHeader />
 
         <TeachingMapTab
@@ -372,7 +372,9 @@ const TeachingMapPage = () => {
         />
 
         <>
-          <div className="mt-[55px]">
+          <div
+            className={isEmpty ? "mt-[55px] hidden lg:block" : "mt-[55px]"}
+          >
             {isDeleteMode ? (
               <TeachingMapDeleteToolbar
                 selectedCount={selectedTeachingMapIds.length}
@@ -398,7 +400,7 @@ const TeachingMapPage = () => {
             )}
           </div>
 
-          <div className="mt-5 flex min-h-[540px] flex-col">
+          <div className="flex min-h-[540px] flex-col lg:mt-5">
             {loadError ? (
               <div className="flex h-[300px] items-center justify-center text-[18px] text-[#F07A7A]">
                 {loadError}
