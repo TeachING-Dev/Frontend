@@ -57,7 +57,7 @@ const FolderListItem = ({
       </p>
 
       <p className="ml-[40px] w-[240px] text-[16px] text-white">
-        {String(count).padStart(2, "0")}개 항목
+        {count}개 항목
       </p>
 
       <p className="ml-[60px] w-[220px] text-[16px] text-white">
