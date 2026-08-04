@@ -1,16 +1,15 @@
+import EmptyState from "../common/EmptyState";
+
 const EmptyArchiveData = () => {
   return (
-    <div className="flex flex-col items-center pt-[180px]">
-      <img
-        src="/character/NotFound.png"
-        alt="자료 없음"
-        className="mb-8 h-[200px] w-[200px]"
-      />
-
-      <p className="text-center text-[24px] font-semibold not-italic leading-[150%] tracking-[-0.72px] text-[#717379]">
-        검색결과가 존재하지 않습니다.
-      </p>
-    </div>
+    <EmptyState
+      imageSrc="/character/NotFound.png"
+      imageAlt="자료 없음"
+      message="검색결과가 존재하지 않습니다."
+      containerClassName="flex flex-col items-center pt-[180px]"
+      imageClassName="mb-8 h-[200px] w-[200px]"
+      messageClassName="text-center text-[24px] font-semibold not-italic leading-[150%] tracking-[-0.72px] text-[#717379]"
+    />
   );
 };
 

@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import RequireAuth from "./components/auth/RequireAuth";
 import AnalysisLayout from "./layouts/AnalysisLayout";
@@ -40,100 +36,65 @@ import TermsMarketingPage from "./pages/TermsMarketingPage";
 import TermsServicePage from "./pages/TermsServicePage";
 import TemporaryTeachingMapPage from "./pages/TemporaryTeachingMapPage";
 import TrashPage from "./pages/TrashPage";
+import TrashFolderPage from "./pages/TrashFolderPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 로그인 */}
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
+        <Route path="/login" element={<LoginPage />} />
 
-        <Route
-          path="/oauth/callback"
-          element={<OAuthCallbackPage />}
-        />
+        <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 
-        <Route
-          path="/oauth2/redirect"
-          element={<OAuthCallbackPage />}
-        />
+        <Route path="/oauth2/redirect" element={<OAuthCallbackPage />} />
 
-        <Route
-          path="/oauth/success"
-          element={<OAuthCallbackPage />}
-        />
+        <Route path="/oauth/success" element={<OAuthCallbackPage />} />
 
         <Route
           path="/login/oauth2/code/:provider"
           element={<OAuthCallbackPage />}
         />
 
-        <Route
-          path="/signup/terms/service"
-          element={<TermsServicePage />}
-        />
+        <Route path="/signup/terms/service" element={<TermsServicePage />} />
         <Route
           path="/signup/terms/marketing"
           element={<TermsMarketingPage />}
         />
-        <Route
-          path="/signup/terms/event"
-          element={<TermsEventPage />}
-        />
+        <Route path="/signup/terms/event" element={<TermsEventPage />} />
 
         <Route element={<RequireAuth />}>
           {/* 회원가입 완료 */}
-          <Route
-            path="/signup/complete"
-            element={<SignupCompletePage />}
-          />
+          <Route path="/signup/complete" element={<SignupCompletePage />} />
 
           {/* 구독 완료 */}
           <Route
             path="/subscription/complete"
-            element={
-              <SubscriptionCompletePage />
-            }
+            element={<SubscriptionCompletePage />}
           />
 
           {/* 홈 전용 레이아웃 */}
           <Route element={<HomeLayout />}>
-            <Route
-              path="/"
-              element={<HomePage />}
-            />
+            <Route path="/" element={<HomePage />} />
           </Route>
 
           {/* 분석 전용 레이아웃 */}
           <Route element={<AnalysisLayout />}>
             <Route
               path="/analysis/complete"
-              element={
-                <AnalysisCompletePage />
-              }
+              element={<AnalysisCompletePage />}
             />
           </Route>
 
           {/* 알림 전용 레이아웃 */}
-          <Route
-            element={<NotificationLayout />}
-          >
-            <Route
-              path="/notifications"
-              element={<NotificationPage />}
-            />
+          <Route element={<NotificationLayout />}>
+            <Route path="/notifications" element={<NotificationPage />} />
           </Route>
 
           {/* 기본 레이아웃 */}
           <Route element={<MainLayout />}>
             {/* 보관함 */}
-            <Route
-              path="/archive"
-              element={<ArchivePage />}
-            />
+            <Route path="/archive" element={<ArchivePage />} />
 
             {/* 보관함 폴더 상세 */}
             <Route
@@ -148,161 +109,108 @@ function App() {
             />
 
             {/* 티칭맵 목록 */}
-            <Route
-              path="/teaching-map"
-              element={<TeachingMapPage />}
-            />
+            <Route path="/teaching-map" element={<TeachingMapPage />} />
 
             {/* 티칭맵 생성 */}
             <Route
               path="/teaching-map/create"
-              element={
-                <TeachingMapCreatePage />
-              }
+              element={<TeachingMapCreatePage />}
             />
 
             {/* 임시 티칭맵 보관함 */}
             <Route
               path="/teaching-map/drafts"
-              element={
-                <TemporaryTeachingMapPage />
-              }
+              element={<TemporaryTeachingMapPage />}
             />
 
             {/* 임시 티칭맵 수정 */}
             <Route
               path="/teaching-map/drafts/:draftId/edit"
-              element={
-                <TeachingMapCreatePage />
-              }
+              element={<TeachingMapCreatePage />}
             />
 
             {/* 티칭맵 콘텐츠 상세 */}
             <Route
               path="/teaching-map/:teachingMapId/:contentId"
-              element={
-                <TeachingMapContentPage />
-              }
+              element={<TeachingMapContentPage />}
             />
 
             {/* 티칭맵 상세 */}
             <Route
               path="/teaching-map/:teachingMapId"
-              element={
-                <TeachingMapDetailPage />
-              }
+              element={<TeachingMapDetailPage />}
             />
 
             {/* 휴지통 */}
+            <Route path="/trash" element={<TrashPage />} />
+
             <Route
-              path="/trash"
-              element={<TrashPage />}
+              path="/trash/folders/:folderId"
+              element={<TrashFolderPage />}
             />
 
             {/* 구독 */}
-            <Route
-              path="/subscription"
-              element={<SubscriptionPage />}
-            />
+            <Route path="/subscription" element={<SubscriptionPage />} />
 
             {/* 마이페이지 */}
-            <Route
-              path="/mypage"
-              element={<MyPage />}
-            />
+            <Route path="/mypage" element={<MyPage />} />
 
             {/* 비로그인 마이페이지 */}
             <Route
               path="/mypage/auth-required"
-              element={
-                <MyPageAuthRequiredPage />
-              }
+              element={<MyPageAuthRequiredPage />}
             />
 
             {/* 회원 정보 수정 */}
-            <Route
-              path="/mypage/edit"
-              element={<MyPageEditPage />}
-            />
+            <Route path="/mypage/edit" element={<MyPageEditPage />} />
 
             {/* 알림 설정 */}
             <Route
               path="/mypage/notification"
-              element={
-                <MyPageNotificationPage />
-              }
+              element={<MyPageNotificationPage />}
             />
 
             {/* 티칭맵 설정 */}
             <Route
               path="/mypage/teaching-style"
-              element={
-                <MyPageTeachingStylePage />
-              }
+              element={<MyPageTeachingStylePage />}
             />
 
             {/* 1:1 문의 */}
-            <Route
-              path="/mypage/inquiry"
-              element={
-                <MyPageInquiryPage />
-              }
-            />
+            <Route path="/mypage/inquiry" element={<MyPageInquiryPage />} />
 
             {/* 탈퇴 사유 */}
             <Route
               path="/mypage/withdrawal-reason"
-              element={
-                <MyPageWithdrawalReasonPage />
-              }
+              element={<MyPageWithdrawalReasonPage />}
             />
 
             {/* 탈퇴 확인 */}
             <Route
               path="/mypage/withdrawal-confirm"
-              element={
-                <MyPageWithdrawalConfirmPage />
-              }
+              element={<MyPageWithdrawalConfirmPage />}
             />
 
             {/* 탈퇴 완료 */}
             <Route
               path="/mypage/withdrawal-complete"
-              element={
-                <MyPageWithdrawalCompletePage />
-              }
+              element={<MyPageWithdrawalCompletePage />}
             />
           </Route>
 
           {/* 챗봇 전용 레이아웃 */}
-          <Route
-            element={<MainLayout insetMenu />}
-          >
-            <Route
-              path="/chatbot"
-              element={<ChatbotPage />}
-            />
+          <Route element={<MainLayout insetMenu />}>
+            <Route path="/chatbot" element={<ChatbotPage />} />
 
-            <Route
-              path="/chatbot/:chatRoomId"
-              element={<ChatbotPage />}
-            />
+            <Route path="/chatbot/:chatRoomId" element={<ChatbotPage />} />
           </Route>
         </Route>
 
         {/* 회원가입 전용 레이아웃 */}
         <Route
-          element={
-            <MainLayout
-              showRightIcons={false}
-              showMenuIcon={false}
-            />
-          }
+          element={<MainLayout showRightIcons={false} showMenuIcon={false} />}
         >
-          <Route
-            path="/signup"
-            element={<SignupPage />}
-          />
+          <Route path="/signup" element={<SignupPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
