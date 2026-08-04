@@ -70,6 +70,7 @@ const ArchiveHeader = ({
               { value: "oldest", label: "오래된순" },
             ]}
             onChange={onSortChange}
+            widthClassName="w-[147px]"
           />
 
           {/* 뷰 전환 */}
@@ -83,7 +84,7 @@ const ArchiveHeader = ({
                   : "text-white hover:bg-[#3A3847]"
               }`}
             >
-              <img src="/icon/grid.png" alt="그리드 보기" className="h-9 w-9" />
+              <img src="/icon/grid.svg" alt="그리드 보기" className="h-9 w-9" />
             </button>
 
             <button
@@ -95,7 +96,7 @@ const ArchiveHeader = ({
                   : "text-white hover:bg-[#3A3847]"
               }`}
             >
-              <img src="/icon/list.png" alt="리스트 보기" className="h-9 w-9" />
+              <img src="/icon/list.svg" alt="리스트 보기" className="h-9 w-9" />
             </button>
           </div>
         </div>
