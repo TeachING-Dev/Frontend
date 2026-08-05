@@ -21,7 +21,7 @@ const LoginPage = () => {
           <div className="mt-[24px] flex w-[739px] flex-col gap-[10px]">
             <button
   type="button"
-  className="flex h-[60px] w-[739px] items-center pl-[280px] gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#13151F]"
+  className="flex h-[60px] w-[739px] items-center pl-[280px] gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#13151F]"
 >
   <span className="flex w-[30px] justify-center">
     <img
@@ -36,7 +36,7 @@ const LoginPage = () => {
 
             <button
   type="button"
-  className="flex h-[60px] w-[739px] items-center pl-[280px] gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#A1A1A5]"
+  className="flex h-[60px] w-[739px] items-center pl-[280px] gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#A1A1A5]"
 >
   <span className="flex w-[30px] justify-center">
     <img
@@ -66,7 +66,7 @@ const LoginPage = () => {
 
           <button
             type="button"
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
+            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
           >
             <span className="flex w-[30px] justify-center">
               <img
@@ -81,7 +81,7 @@ const LoginPage = () => {
 
           <button
             type="button"
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
+            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
           >
             <span className="flex w-[30px] justify-center">
               <img

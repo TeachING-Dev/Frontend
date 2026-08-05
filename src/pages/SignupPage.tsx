@@ -112,20 +112,20 @@ const SignupPage = () => {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
+    <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:min-h-screen">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
-       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75] max-md:w-[640px] max-md:scale-[0.5]">
-        <div className="mb-10 flex items-center gap-2.5">
+       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75] max-md:left-0 max-md:top-[72px] max-md:h-[calc(100vh-72px)] max-md:w-full max-md:translate-x-0 max-md:scale-100 max-md:px-5">
+        <div className="mb-10 flex items-center gap-2.5 max-md:mb-[30px] max-md:gap-2">
           <button
             type="button"
             aria-label="이전으로"
             onClick={handleBack}
-            className="flex size-12 items-center justify-center text-[#FAFAFA]"
+            className="flex size-12 items-center justify-center text-[#FAFAFA] max-md:size-6"
           >
-            <ChevronLeft size={36} strokeWidth={2} />
+            <ChevronLeft className="size-9 max-md:size-6" strokeWidth={2} />
           </button>
-          <h1 className="font-['SUIT'] text-[28px] font-medium leading-[150%] tracking-[-0.84px] text-[#FAFAFA]">
+          <h1 className="font-['SUIT'] text-[28px] font-normal leading-[150%] tracking-[-0.84px] text-[#FAFAFA] max-md:text-[16px] max-md:tracking-[-0.48px]">
             {step === "nickname" ? "회원가입" : "약관 동의"}
           </h1>
         </div>
@@ -133,22 +133,22 @@ const SignupPage = () => {
         <div className="flex flex-1 flex-col justify-between">
           {step === "nickname" ? (
             <div className="flex flex-col gap-2.5">
-              <h2 className="font-['SUIT'] text-[28px] font-medium leading-[150%] tracking-[-0.84px] text-[#717379]">
+              <h2 className="font-['SUIT'] text-[28px] font-normal leading-[150%] tracking-[-0.84px] text-[#717379] max-md:text-[15px] max-md:tracking-[-0.45px]">
                 닉네임
               </h2>
 
-              <div className="flex w-full flex-col items-start gap-[10px]">
-                <label className="flex h-14 w-[640px] items-center rounded-[5px] bg-[#1F212A] px-5 py-3.5">
+              <div className="flex w-full flex-col items-start gap-[10px] max-md:gap-[8px]">
+                <label className="flex h-14 w-[640px] items-center rounded-[5px] bg-[#1F212A] px-5 py-3.5 max-md:h-[52px] max-md:w-[361px]">
                   <input
                     type="text"
                     value={nickname}
                     maxLength={10}
                     placeholder="(2~10자 이내의 한글, 영문, 숫자)"
                     onChange={(event) => setNickname(event.target.value.slice(0, 10))}
-                    className="flex-1 bg-transparent font-['SUIT_Variable'] text-xl font-normal leading-8 text-neutral-50 outline-none placeholder:text-[#42444C]"
+                    className="flex-1 bg-transparent font-['SUIT'] text-xl font-normal leading-8 text-neutral-50 outline-none placeholder:text-[#42444C] max-md:text-[16px] max-md:leading-[150%]"
                   />
                   <span
-                    className={`font-['SUIT_Variable'] text-base font-normal leading-6 ${
+                    className={`font-['SUIT'] text-base font-normal leading-6 ${
                       isNicknameNextEnabled ? "text-neutral-50" : "text-zinc-700"
                     }`}
                   >
@@ -159,24 +159,24 @@ const SignupPage = () => {
                 {isNicknameTaken ? (
                   <div className="flex w-[1115px] items-start gap-2.5 max-md:w-[640px]">
                     <div className="flex h-12 items-start px-0.5 py-[3px]">
-                      <img src="/SignupNoticeIcon.svg" alt="" className="size-5" />
+                      <img src="/SignupNoticeIcon.svg" alt="" className="size-5 max-md:size-3" />
                     </div>
-                    <p className="w-80 justify-center font-['SUIT_Variable'] text-base font-normal leading-6 text-[#917DEC]">
+                    <p className="w-80 justify-center font-['SUIT'] text-base font-normal leading-6 text-[#917DEC] max-md:text-[14px] max-md:leading-[150%]">
                       이미 사용 중인 닉네임입니다.
                     </p>
                   </div>
                 ) : isNicknameNextEnabled ? (
                   <div className="inline-flex w-[1115px] items-start justify-start gap-2.5 max-md:w-[640px]">
-                    <p className="w-80 justify-center font-['SUIT_Variable'] text-base font-normal leading-6 text-[#917DEC]">
+                    <p className="w-80 justify-center font-['SUIT'] text-base font-normal leading-6 text-[#917DEC] max-md:text-[14px] max-md:leading-[150%]">
                       사용 가능한 아이디입니다.
                     </p>
                   </div>
                 ) : (
                   <div className="flex w-[1115px] items-start gap-2.5 max-md:w-[640px]">
                     <div className="flex h-12 items-start px-0.5 py-[3px]">
-                      <img src="/SignupNoticeIcon.svg" alt="" className="size-5" />
+                      <img src="/SignupNoticeIcon.svg" alt="" className="size-5 max-md:size-3" />
                     </div>
-                    <p className="w-80 font-['SUIT_Variable'] text-base font-normal leading-6 text-[#717379]">
+                    <p className="w-80 font-['SUIT'] text-base font-normal leading-6 text-[#717379] max-md:text-[14px] max-md:leading-[150%]">
                       다른 유저와 겹치지 않도록 입력해주세요.
                       <br />
                       닉네임은 나중에 변경할 수 있습니다.
@@ -197,7 +197,7 @@ const SignupPage = () => {
                 >
                   <CheckIcon checked={isAllTermsChecked} inverted />
                   <span
-                    className={`font-['SUIT_Variable'] text-xl font-medium leading-8 ${
+                    className={`font-['SUIT'] text-xl font-medium leading-8 ${
                       isAllTermsChecked ? "text-violet-50" : "text-[#717379]"
                     }`}
                   >
@@ -281,11 +281,11 @@ const SignupPage = () => {
             </div>
           )}
 </div>
-<div className="absolute bottom-[260px] left-1/2 w-[640px] -translate-x-1/2">
+<div className="absolute bottom-[260px] left-1/2 w-[640px] -translate-x-1/2 max-md:bottom-[66px] max-md:w-[361px]">
   <PrimaryButton
     disabled={!isNextEnabled}
     onClick={handleNext}
-    className="!flex !h-[60px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] bg-[#1F212A] px-[50px] py-[20px] !font-['SUIT'] !text-[20px] !font-normal !leading-[150%] !tracking-[-0.6px]"
+    className="!flex !h-[60px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] bg-[#1F212A] px-[50px] py-[20px] !font-['SUIT'] !text-[20px] !font-normal !leading-[150%] !tracking-[-0.6px] max-md:!h-[48px] max-md:!text-[16px] max-md:!tracking-[-0.48px]"
   >
     다음
   </PrimaryButton>

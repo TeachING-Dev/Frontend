@@ -206,6 +206,7 @@ function App() {
             <MainLayout
               showRightIcons={false}
               showMenuIcon={false}
+              hideHeaderOnMobile
             />
           }
         >
