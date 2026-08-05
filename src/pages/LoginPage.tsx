@@ -12,7 +12,7 @@ const LoginPage = () => {
 
         {/* 안내 문구: 원본 기준 상단 577px */}
         <div className="absolute left-1/2 top-[577px] flex w-[739px] -translate-x-1/2 flex-col items-center">
-          <p className="text-center font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#F5F2FF]">
+          <p className="text-center font-['SUIT'] text-[20px] font-normal leading-[150%] tracking-[-0.6px] text-[#F5F2FF]">
             간편 로그인으로
             <br />
             바로 학습을 시작해보세요!
@@ -53,12 +53,12 @@ const LoginPage = () => {
       </div>
 
       <div className="absolute inset-0 md:hidden">
-        <div className="absolute left-1/2 top-[120px] -translate-x-1/2 [&>div>div>svg]:h-[36.1px] [&>div>div>svg]:w-[215px] [&>div>img]:h-[39.04px] [&>div>img]:w-[35.2px]">
+        <div className="absolute left-1/2 top-[145px] -translate-x-1/2 [&>div>div>svg]:h-[36.1px] [&>div>div>svg]:w-[214.54px] [&>div>img]:h-[47px] [&>div>img]:w-[42px]">
           <AuthBrandLogo gapClassName="gap-7" />
         </div>
 
-        <div className="absolute bottom-[62px] left-1/2 flex w-[361px] -translate-x-1/2 flex-col gap-[10px]">
-          <p className="mb-[18px] text-center font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#F5F2FF]">
+        <div className="absolute bottom-[75px] left-1/2 flex w-[361px] -translate-x-1/2 flex-col gap-[12px]">
+          <p className="mb-[8px] text-center font-['SUIT'] text-[14px] font-normal leading-[150%] tracking-[-0.42px] text-[#F5F2FF]">
             간편 로그인으로
             <br />
             바로 학습을 시작해보세요!
