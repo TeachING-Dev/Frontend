@@ -1,20 +1,93 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
+import { logout } from "../../apis/auth";
+import { withdrawMe } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
+import { clearTokens } from "../../utils/authToken";
+
+const WITHDRAWAL_REASON_MAP = {
+  rejoin: "REJOIN",
+  unused: "RARELY_USED",
+  accuracy: "LOW_ACCURANCY",
+  other: "ETC",
+} as const;
 
 const MyPageWithdrawalConfirmPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if (!isConfirmed) {
       return;
     }
 
-    navigate("/mypage/withdrawal-complete");
+    const withdrawal = location.state as
+      | {
+          reason?: string;
+          reasonDetail?: string;
+        }
+      | null;
+
+    if (!withdrawal?.reason) {
+      navigate("/mypage/withdrawal-reason");
+      return;
+    }
+
+    const reason =
+      WITHDRAWAL_REASON_MAP[
+        withdrawal.reason as keyof typeof WITHDRAWAL_REASON_MAP
+      ] ?? withdrawal.reason;
+    const reasonDetail =
+      withdrawal.reasonDetail ?? "";
+
+    if (
+      reason === "ETC" &&
+      reasonDetail.trim().length === 0
+    ) {
+      setErrorMessage(
+        "기타 사유를 입력해주세요.",
+      );
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      await withdrawMe({
+        reason,
+        reasonDetail,
+        isConfirmed,
+      });
+      clearTokens();
+      try {
+        await logout();
+      } catch {
+        // 탈퇴 후 세션 정리는 실패해도 로컬 토큰 삭제와 완료 이동은 진행합니다.
+      }
+      clearTokens();
+      navigate("/mypage/withdrawal-complete", {
+        replace: true,
+      });
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -36,21 +109,30 @@ const MyPageWithdrawalConfirmPage = () => {
             onChange={setIsConfirmed}
           />
         </div>
+
+        {errorMessage && (
+          <p
+            role="alert"
+            className="mt-[16px] text-[16px] font-medium leading-[150%] text-[#FF6B6B]"
+          >
+            {errorMessage}
+          </p>
+        )}
       </section>
 
       <button
         type="button"
-        disabled={!isConfirmed}
+        disabled={!isConfirmed || isSubmitting}
         onClick={handleNextClick}
         className={[
           "mx-auto mt-[590px] flex h-[60px] w-[640px] items-center justify-center rounded-[5px] px-[50px] py-[20px]",
           "text-[20px] font-medium leading-[150%] tracking-[-0.6px]",
-          isConfirmed
+          isConfirmed && !isSubmitting
             ? "bg-[#917DEC] text-[#FAFAFA]"
             : "cursor-default bg-[#1F212A] text-[#717379]",
         ].join(" ")}
       >
-        다음
+        {isSubmitting ? "탈퇴 처리 중..." : "다음"}
       </button>
     </main>
   );

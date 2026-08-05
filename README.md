@@ -14,9 +14,9 @@ AI분석&자동 폴더 추천</br>
 
 # 👥 팀원 및 프론트엔드 역할 분담
 
-김범수 : PL 및 메인페이지, 보관함 UI 작업
-</br>김수빈 : 로그인 및 회원가입 페이지, 챗봇 UI 작업
-</br>남윤서 : 티칭맵, 휴지통 UI 작업
+김범수 : PL 및 메인페이지, 보관함 UI 작업, 모바일 UI 작업
+</br>김수빈 : 로그인 및 회원가입 페이지, 챗봇 UI 작업, 모바일 UI 작업
+</br>남윤서 : 티칭맵, 휴지통 UI 작업, 모바일 UI 작업
 
 ---
 
@@ -24,9 +24,14 @@ AI분석&자동 폴더 추천</br>
 
 <div align="center">
 
-![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-
+![React](https://img.shields.io/badge/React_19.2.7-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript_6.0.2-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_8.1.0-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4.3.1-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router_7.18.1-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios_1.18.1-5A29E4?style=flat-square&logo=axios&logoColor=white)
+![Radix UI](https://img.shields.io/badge/Radix_UI_1.1.19-161618?style=flat-square&logo=radixui&logoColor=white)
+![Lucide React](https://img.shields.io/badge/Lucide_React_1.23.0-F56565?style=flat-square)
 
 </div>
 
@@ -36,13 +41,13 @@ AI분석&자동 폴더 추천</br>
 
 ```
 src/
-├── components            # 공통 컴포넌트 및 컴포넌트 폴더
-├── layouts               # 화면 구성 폴더
-├── pages                 # 각 페이지들 저장 폴더
-├── styles                # 세부 CSS 폴더
-├── App.jsx               # 메인
-├── index.css             # 최상위 CSS
-└── App.css               # 스타일
+├── components    # 공통 컴포넌트 및 기능별 컴포넌트
+├── layouts       # 공통 레이아웃 컴포넌트
+├── pages         # 페이지 컴포넌트
+├── apis          # API 요청 및 관련 함수
+├── App.tsx       # 애플리케이션 진입점
+├── index.css     # 전역 스타일
+└── App.css       # App 컴포넌트 스타일
 ```
 
 ---
@@ -128,9 +133,11 @@ src/
 
 ### 🧹 스타일링 (CSS/SCSS)
 
-- **방식**: CSS Module, TailwindCSS, styled-components 중 하나 사용
+- **방식**: TailwindCSS 사용
 - **공통 변수**: `:root`, `variables.css`로 색상, 여백 등 관리
 - **클래스명**: 역할 기반 명명 (`searchInput`, `formWrapper` 등)
+- **스타일 관리**: Utility Class 기반으로 컴포넌트별 스타일을 작성
+- **공통 디자인**: Figma 디자인 시스템을 기준으로 색상과 간격을 일관되게 적용
 
 ---
 
@@ -142,11 +149,34 @@ src/
 
 ## 🚀 실행 방법
 
+### 1. 프로젝트 설치
+
+```bash
+pnpm install
 ```
-1.	사용자가 URL을 입력하면,
-2.	AI가 내용을 분석하고,
-3.	태그와 폴더를 자동으로 분류하여 저장한다.
-4.	이후 저장된 데이터를 바탕으로 티칭맵과 챗봇을 제공하게 된다.
+
+### 2. 개발 서버 실행
+
+```bash
+pnpm run dev
+```
+
+### 3. 브라우저에서 확인
+
+```
+http://localhost:5173
+```
+
+### 4. 프로덕션 빌드
+
+```bash
+pnpm run build
+```
+
+### 5. 빌드 결과 미리보기 (선택)
+
+```bash
+pnpm run preview
 ```
 
 ---

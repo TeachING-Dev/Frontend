@@ -1,4 +1,4 @@
-import ArchiveDataItem from "./ArchiveDataItem";
+import MaterialCard from "../common/MaterialCard";
 
 export type ArchiveData = {
   id: number;
@@ -6,6 +6,9 @@ export type ArchiveData = {
   date: string;
   title: string;
   description: string;
+  platformType: string;
+  platformImageUrl?: string;
+  originalUrl: string;
 };
 
 type ArchiveDataListProps = {
@@ -13,9 +16,8 @@ type ArchiveDataListProps = {
   isMoveMode: boolean;
   selectedItemIds: number[];
   onToggleItem: (id: number) => void;
-  onItemClick: (id: number) => void;
   onAiAnalysis?: (id: number) => void;
-  onOpenOriginal?: (id: number) => void;
+  onOpenOriginal?: (originalUrl: string) => void;
 };
 
 const ArchiveDataList = ({
@@ -23,31 +25,32 @@ const ArchiveDataList = ({
   isMoveMode,
   selectedItemIds,
   onToggleItem,
-  onItemClick,
   onAiAnalysis,
   onOpenOriginal,
-}: ArchiveDataListProps) => {
-  return (
-    <div className="flex flex-col gap-5">
-      {data.map((item) => (
-        <ArchiveDataItem
-          key={item.id}
-          tag={item.tag}
-          date={item.date}
-          title={item.title}
-          description={item.description}
-          isMoveMode={isMoveMode}
-          isSelected={selectedItemIds.includes(item.id)}
-          onSelect={() => onToggleItem(item.id)}
-          onClick={() => onItemClick(item.id)}
-          onAiAnalysis={() => onAiAnalysis?.(item.id)}
-          onOpenOriginal={() =>
-            onOpenOriginal?.(item.id)
-          }
-        />
-      ))}
-    </div>
-  );
-};
+}: ArchiveDataListProps) => (
+  <div className="flex flex-col gap-5">
+    {data.map((item) => (
+      <MaterialCard
+        key={item.id}
+        tag={item.tag}
+        date={item.date}
+        title={item.title}
+        description={item.description}
+        platformType={item.platformType}
+        platformImageUrl={item.platformImageUrl}
+        selectable={isMoveMode}
+        selected={selectedItemIds.includes(item.id)}
+        showAiButton
+        onSelect={() => onToggleItem(item.id)}
+        onAiAnalysis={() => onAiAnalysis?.(item.id)}
+        onOpenOriginal={
+          item.originalUrl
+            ? () => onOpenOriginal?.(item.originalUrl)
+            : undefined
+        }
+      />
+    ))}
+  </div>
+);
 
 export default ArchiveDataList;

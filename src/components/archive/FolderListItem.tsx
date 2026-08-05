@@ -22,14 +22,17 @@ const FolderListItem = ({
   const navigate = useNavigate();
 
   const handleFolderClick = () => {
-    navigate("/archive/folder");
+    navigate(`/archive/folder/${id}`);
   };
 
   const handleKeyDown = (
-    e: KeyboardEvent<HTMLDivElement>,
+    event: KeyboardEvent<HTMLDivElement>,
   ) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+      event.preventDefault();
       handleFolderClick();
     }
   };
@@ -43,7 +46,7 @@ const FolderListItem = ({
       className="flex h-[88px] w-full cursor-pointer items-center border-b border-[#252131] transition hover:bg-white/5"
     >
       <img
-        src="/Folder.png"
+        src="/folder/folder1.png"
         alt=""
         aria-hidden="true"
         className="h-[64px] w-[64px]"
@@ -54,7 +57,7 @@ const FolderListItem = ({
       </p>
 
       <p className="ml-[40px] w-[240px] text-[16px] text-white">
-        {String(count).padStart(2, "0")}개 항목
+        {count}개 항목
       </p>
 
       <p className="ml-[60px] w-[220px] text-[16px] text-white">
@@ -65,11 +68,16 @@ const FolderListItem = ({
         trigger={
           <button
             type="button"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
             aria-label={`${name} 폴더 메뉴`}
             className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
           >
-            <EllipsisVertical size={20} strokeWidth={4} />
+            <EllipsisVertical
+              size={20}
+              strokeWidth={4}
+            />
           </button>
         }
         onMoveToTrash={() => {

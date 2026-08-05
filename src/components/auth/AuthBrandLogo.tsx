@@ -5,7 +5,7 @@
 const AuthBrandLogo = ({ gapClassName = "gap-10" }: AuthBrandLogoProps) => {
   return (
     <div className={`flex w-full flex-col items-center ${gapClassName}`}>
-      <img src="/Star17.svg" alt="" className="h-[78px] w-[70px]" />
+      <img src="/character/Star17.svg" alt="" className="h-[78px] w-[70px]" />
       <div className="self-stretch inline-flex items-center justify-center gap-1.5">
         <svg
           xmlns="http://www.w3.org/2000/svg"

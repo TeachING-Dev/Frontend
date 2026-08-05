@@ -3,24 +3,36 @@ import type { TrashTeachingMapItem } from "./trashTypes";
 
 interface TrashTeachingMapListProps {
   teachingMaps: TrashTeachingMapItem[];
-  onRestore: (
+  isRestoreMode: boolean;
+  selectedItemIds: number[];
+  onSelect: (
     teachingMapId: number,
   ) => void;
 }
 
 const TrashTeachingMapList = ({
   teachingMaps,
-  onRestore,
+  isRestoreMode,
+  selectedItemIds,
+  onSelect,
 }: TrashTeachingMapListProps) => {
   return (
     <div className="flex flex-col gap-10">
-      {teachingMaps.map((teachingMap) => (
-        <TrashTeachingMapCard
-          key={teachingMap.id}
-          teachingMap={teachingMap}
-          onRestore={onRestore}
-        />
-      ))}
+      {teachingMaps.map(
+        (teachingMap) => (
+          <TrashTeachingMapCard
+            key={teachingMap.id}
+            teachingMap={teachingMap}
+            isRestoreMode={
+              isRestoreMode
+            }
+            isSelected={selectedItemIds.includes(
+              teachingMap.id,
+            )}
+            onSelect={onSelect}
+          />
+        ),
+      )}
     </div>
   );
 };

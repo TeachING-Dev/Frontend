@@ -1,0 +1,125 @@
+/* src/styles/design-system.css */
+
+@theme {
+  /* ==============================
+     Font Family
+  ============================== */
+
+  --font-suit: "SUIT", sans-serif;
+
+  /* ==============================
+     Main Colors
+  ============================== */
+
+  /* Main */
+
+  --color-main-100: #f5f2ff;
+  --color-main-200: #d9cdff;
+  --color-main-300: #c1aeff;
+  --color-main-400: #9f82ff;
+
+  /* ==============================
+     Gray Scale
+  ============================== */
+
+  --color-gray-50: #e8e8e8;
+  --color-gray-100: #d0d0d2;
+  --color-gray-200: #b8b9bc;
+  --color-gray-300: #a1a1a5;
+  --color-gray-400: #898a8f;
+  --color-gray-500: #717379;
+  --color-gray-600: #5a5b62;
+  --color-gray-700: #42444c;
+  --color-gray-800: #2b2c35;
+  --color-gray-900: #13151f;
+
+  /* ==============================
+     Gradient Base Color
+  ============================== */
+
+  --color-gradient-purple: #866ff1;
+}
+
+/* ==============================
+   Typography
+============================== */
+
+@layer components {
+  /* Heading */
+
+  .typo-h0 {
+    font-family: var(--font-suit);
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .typo-h1 {
+    font-family: var(--font-suit);
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .typo-h2 {
+    font-family: var(--font-suit);
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .typo-h3 {
+    font-family: var(--font-suit);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  /* Subtitle */
+
+  .typo-st0 {
+    font-family: var(--font-suit);
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .typo-st1 {
+    font-family: var(--font-suit);
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .typo-st2 {
+    font-family: var(--font-suit);
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .typo-st3 {
+    font-family: var(--font-suit);
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .typo-st4 {
+    font-family: var(--font-suit);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Material */
+
+  .typo-material-title {
+    font-family: var(--font-suit);
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .typo-material-body-1 {
+    font-family: var(--font-suit);
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .typo-material-body-2 {
+    font-family: var(--font-suit);
+    font-size: 15px;
+    font-weight: 500;
+  }
+}

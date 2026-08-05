@@ -3,12 +3,18 @@ import type { TrashFolderItem } from "./trashTypes";
 
 interface TrashFolderListProps {
   folders: TrashFolderItem[];
-  onRestore: (folderId: number) => void;
+  isRestoreMode: boolean;
+  selectedItemIds: number[];
+  onSelect: (folderId: number) => void;
+  onOpen: (folderId: number) => void;
 }
 
 const TrashFolderList = ({
   folders,
-  onRestore,
+  isRestoreMode,
+  selectedItemIds,
+  onSelect,
+  onOpen,
 }: TrashFolderListProps) => {
   return (
     <div className="grid grid-cols-3 gap-x-6 gap-y-6">
@@ -16,7 +22,12 @@ const TrashFolderList = ({
         <TrashFolderCard
           key={folder.id}
           folder={folder}
-          onRestore={onRestore}
+          isRestoreMode={isRestoreMode}
+          isSelected={selectedItemIds.includes(
+            folder.id,
+          )}
+          onSelect={onSelect}
+          onOpen={onOpen}
         />
       ))}
     </div>

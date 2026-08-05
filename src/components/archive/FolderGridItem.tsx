@@ -1,7 +1,7 @@
-import type { KeyboardEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
+import FolderCard from "../common/FolderCard";
 import FolderPopover from "./popover/FolderPopover";
 
 type FolderGridItemProps = {
@@ -22,57 +22,32 @@ const FolderGridItem = ({
   const navigate = useNavigate();
 
   const handleFolderClick = () => {
-    navigate("/archive/folder");
-  };
-
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLDivElement>,
-  ) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleFolderClick();
-    }
+    navigate(`/archive/folder/${id}`);
   };
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <FolderCard
+      variant="archive-grid"
+      name={name}
+      itemCount={count}
+      meta={date}
       onClick={handleFolderClick}
-      onKeyDown={handleKeyDown}
-      className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] py-[56px] transition hover:border-[#8B6DFF]"
-    >
-      <div className="flex w-full flex-col">
-        {/* 첫 번째 줄 */}
-        <div className="flex items-center justify-between">
-          <h3 className="truncate text-[24px] font-semibold leading-none text-white">
-            {name}
-          </h3>
-
-          <FolderPopover
-            trigger={
-              <button
-                type="button"
-                onClick={(e) => e.stopPropagation()}
-                className="flex h-8 w-8 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
-                aria-label="폴더 메뉴"
-              >
-                <EllipsisVertical size={20} strokeWidth={4} />
-              </button>
-            }
-            onMoveToTrash={() => {
-              onMoveToTrash?.(id);
-            }}
-          />
-        </div>
-
-        {/* 두 번째 줄 */}
-        <div className="flex items-center gap-4 text-[16px] text-[#FAFAFA]">
-          <span>{String(count).padStart(2, "0")}개 항목</span>
-          <span>{date}</span>
-        </div>
-      </div>
-    </div>
+      menu={
+        <FolderPopover
+          trigger={
+            <button
+              type="button"
+              onClick={(event) => event.stopPropagation()}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
+              aria-label={`${name} 폴더 메뉴`}
+            >
+              <EllipsisVertical size={20} strokeWidth={4} />
+            </button>
+          }
+          onMoveToTrash={() => onMoveToTrash?.(id)}
+        />
+      }
+    />
   );
 };
 

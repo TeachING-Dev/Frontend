@@ -14,14 +14,16 @@ const TeachingStyleCard = ({
   onSelect,
 }: TeachingStyleCardProps) => {
   return (
-    <article
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
       className={[
         "flex h-[468px] w-[352px] shrink-0 flex-col items-center rounded-[10px] border",
-        "border-[rgba(145,125,236,0)]",
         "bg-[linear-gradient(180deg,rgba(145,125,236,0)_0%,rgba(145,125,236,0.3)_100%)]",
         selected
-          ? "opacity-100 shadow-[0_0_50px_0_rgba(145,125,236,0.5)]"
-          : "opacity-50",
+          ? "border-[#917DEC] opacity-100 shadow-[0_0_50px_0_rgba(145,125,236,0.5)]"
+          : "border-transparent opacity-50",
       ].join(" ")}
     >
       <h2
@@ -46,21 +48,7 @@ const TeachingStyleCard = ({
         />
       </div>
 
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-pressed={selected}
-        className={[
-          "mb-[20px] flex h-[50px] w-[310px] shrink-0 items-center justify-center rounded-[5px] p-[10px]",
-          "text-[18px] font-medium leading-[150%] tracking-[-0.54px]",
-          selected
-            ? "bg-[#917DEC] text-[#FAFAFA]"
-            : "bg-[#2B2C35] text-[#717379]",
-        ].join(" ")}
-      >
-        선택하기
-      </button>
-    </article>
+    </button>
   );
 };
 

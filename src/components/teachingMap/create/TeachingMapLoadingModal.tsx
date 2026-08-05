@@ -67,7 +67,7 @@ const TeachingMapLoadingModal = ({
             className="flex h-9 w-9 shrink-0 items-center justify-center"
           >
             <img
-              src="/cancel.png"
+              src="/icon/cancel.png"
               alt=""
               aria-hidden="true"
               className="h-9 w-9 object-contain"
@@ -77,7 +77,7 @@ const TeachingMapLoadingModal = ({
 
         <div className="h-[300px] w-full">
           <img
-            src="/TeachingmapMakeStar.png"
+            src="/character/TeachingmapMakeStar.png"
             alt=""
             aria-hidden="true"
             className="h-full w-full object-cover"

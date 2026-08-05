@@ -5,6 +5,9 @@ type ArchiveDataHeaderProps = {
   title: string;
   tags: string[];
   originalUrl: string;
+  platformType: string;
+  platformImageUrl: string;
+  onBack: () => void;
 };
 
 const ArchiveDataHeader = ({
@@ -12,34 +15,61 @@ const ArchiveDataHeader = ({
   title,
   tags,
   originalUrl,
+  platformType,
+  platformImageUrl,
+  onBack,
 }: ArchiveDataHeaderProps) => {
+  const fallbackPlatformIcon =
+    platformType.toUpperCase() === "YOUTUBE"
+      ? "/icon/youtube-app-icon.png"
+      : "/icons.svg";
+  const platformIconSrc = platformImageUrl || fallbackPlatformIcon;
   const handleOpenOriginal = () => {
-    window.open(
-      originalUrl,
-      "_blank",
-      "noopener,noreferrer",
-    );
+    window.open(originalUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
     <header className="mb-[58px]">
+      {/* 자료 목록으로 이동 */}
+      <button
+        type="button"
+        onClick={onBack}
+        className="group mb-1 flex items-center gap-2 rounded px-1 py-1 transition hover:bg-white/10"
+      >
+        <span
+          aria-hidden="true"
+          className="text-[20px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 group-hover:text-white"
+        >
+          &lt;
+        </span>
+
+        <span className="text-[16px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white">
+          자료 목록으로 이동
+        </span>
+      </button>
+
       {/* 날짜 */}
-      <p className="mb-[10px] font-['ABeeZee'] text-[18px] italic font-normal leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
-        {date}
+      <p className="mb-[10px] font-['ABeeZee'] text-[18px] font-normal italic leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
+        {date.split("T")[0]}
       </p>
 
       {/* 제목과 원문 버튼 */}
       <div className="mb-[24px] flex items-center justify-between">
-        <div className="flex min-w-0 items-center gap-[12px]">
+        <div className="flex min-w-0 items-center gap-[15px]">
+          {/* 플랫폼 아이콘 */}
           <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
-              src="/youtube-app-icon.png"
-              alt="YouTube"
-              className="h-[32px] w-[32px] object-contain rounded-full"
+              src={platformIconSrc}
+              alt={platformType}
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = fallbackPlatformIcon;
+              }}
+              className="h-[32px] w-[32px] rounded-full object-contain"
             />
           </div>
 
-          <h1 className="min-w-0 font-['SUIT_Variable'] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
+          <h1 className="min-w-0 text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#FAFAFA]">
             {title}
           </h1>
         </div>
@@ -57,7 +87,7 @@ const ArchiveDataHeader = ({
       {/* 태그 제목 */}
       <div className="mb-[12px] flex items-center gap-[11px]">
         <img
-          src="/tag.png"
+          src="/icon/tag.png"
           alt=""
           aria-hidden="true"
           className="h-[20px] w-[20px] object-contain"
@@ -73,7 +103,7 @@ const ArchiveDataHeader = ({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] font-['ABeeZee'] text-[12px] italic leading-none text-[#B7A4FF]"
+            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
           >
             #{tag}
           </span>

@@ -1,22 +1,27 @@
+import type { Folder } from "../../apis/folder";
+
 import AddFolderList from "./AddFolderList";
 import FolderListItem from "./FolderListItem";
 
 type ArchiveFolderListProps = {
+  folders: Folder[];
   onAddFolder: () => void;
   onMoveToTrash?: (folderId: number) => void;
 };
 
-const dummyFolders = Array.from(
-  { length: 5 },
-  (_, index) => ({
-    id: index + 1,
-    name: "기존 폴더(10자)",
-    count: 0,
-    date: "2026.01.01",
-  }),
-);
+const formatDate = (date: string) => {
+  return new Date(date)
+    .toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\. /g, ".")
+    .replace(/\.$/, "");
+};
 
 const ArchiveFolderList = ({
+  folders,
   onAddFolder,
   onMoveToTrash,
 }: ArchiveFolderListProps) => {
@@ -26,13 +31,13 @@ const ArchiveFolderList = ({
       <AddFolderList onClick={onAddFolder} />
 
       {/* 기존 폴더 목록 */}
-      {dummyFolders.map((folder) => (
+      {folders.map((folder) => (
         <FolderListItem
-          key={folder.id}
-          id={folder.id}
-          name={folder.name}
-          count={folder.count}
-          date={folder.date}
+          key={folder.folderId}
+          id={folder.folderId}
+          name={folder.folderName}
+          count={folder.materialCount}
+          date={formatDate(folder.updatedAt)}
           onMoveToTrash={onMoveToTrash}
         />
       ))}

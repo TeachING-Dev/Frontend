@@ -1,11 +1,14 @@
 import type { TeachingMapStep } from "../../../pages/TeachingMapDetailPage";
-import TeachingMapStepHeader from "./TeachingMapStepHeader";
+
 import TeachingMapStepContent from "./TeachingMapStepContent";
+import TeachingMapStepHeader from "./TeachingMapStepHeader";
 
 interface TeachingMapStepItemProps {
   step: TeachingMapStep;
   isLast: boolean;
-  onToggleCompletion: (stepId: number) => void;
+  onToggleCompletion: (
+    stepId: number,
+  ) => void;
 }
 
 const TeachingMapStepItem = ({
@@ -18,12 +21,14 @@ const TeachingMapStepItem = ({
       className={[
         "relative flex h-[167px] items-start gap-[25px]",
         "transition-opacity duration-200",
-        step.isCompleted ? "opacity-100" : "opacity-50",
+        step.isCompleted
+          ? "opacity-100"
+          : "opacity-50",
       ].join(" ")}
     >
       <div className="relative flex w-[36px] shrink-0 flex-col items-center">
         <div className="z-10 flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#917DEC] text-[20px] font-medium leading-[160%] text-[#0B0A18]">
-          {step.id}
+          {step.order}
         </div>
 
         {!isLast && (
@@ -46,13 +51,26 @@ const TeachingMapStepItem = ({
       </div>
 
       <div className="h-[167px] w-[939px] overflow-hidden rounded-[10px] border border-[#C1AEFF] shadow-[0_0_50px_0_rgba(145,125,236,0.5)]">
-        <TeachingMapStepHeader tip={step.tip} />
+        <TeachingMapStepHeader
+          tip={step.tip}
+          contentId={step.id}
+          isSourceAvailable={
+            step.isSourceAvailable !== false
+          }
+        />
 
         <TeachingMapStepContent
           stepId={step.id}
           title={step.title}
-          isCompleted={step.isCompleted}
-          onToggleCompletion={onToggleCompletion}
+          isCompleted={
+            step.isCompleted
+          }
+          onToggleCompletion={
+            onToggleCompletion
+          }
+          isSourceAvailable={
+            step.isSourceAvailable !== false
+          }
         />
       </div>
     </article>

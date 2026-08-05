@@ -1,4 +1,4 @@
-/*무료 버전 파일 갯수 제한 모달창*/import { useEffect } from "react";
+import { useEffect } from "react";
 
 type FolderLimitModalProps = {
   isOpen: boolean;
@@ -43,13 +43,13 @@ const FolderLimitModal = ({
       aria-labelledby="teaching-map-limit-title"
       className="fixed inset-0 z-[400] flex items-center justify-center bg-[rgba(11,10,24,0.9)]"
     >
-      <div className="flex h-[430px] w-[474px] flex-col items-center rounded-[10px] bg-[#0B0A18] px-5 pb-5 pt-[10px] shadow-[0_0_50px_rgba(145,125,236,0.5)]">
+      <div className="flex h-[379px] w-[450px] flex-col items-start justify-center rounded-[10px] bg-[#0B0A18] px-5 py-[30px] shadow-[0_0_50px_rgba(145,125,236,0.5)]">
         <div className="flex w-full flex-1 flex-col items-center">
           <h2
             id="teaching-map-limit-title"
-            className="mt-[10px] whitespace-nowrap text-center font-['SUIT_Variable'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]"
+            className="whitespace-nowrap text-center font-['SUIT_Variable'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]"
           >
-            무료 요금제는 티칭맵을 5개까지 만들 수 있어요.
+            티칭맵 생성 한도에 도달했어요
           </h2>
 
           <p className="mt-[10px] whitespace-pre-line text-center font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379]">
@@ -57,14 +57,14 @@ const FolderLimitModal = ({
           </p>
 
           <img
-            src="/SadStar.png"
+            src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
-            className="mt-6 h-[190px] w-[190px] object-contain"
+            className="mt-5 h-[140px] w-[140px] object-contain"
           />
         </div>
 
-        <div className="flex w-full gap-[10px]">
+        <div className="mt-5 flex w-full gap-[10px]">
           <button
             type="button"
             onClick={onClose}

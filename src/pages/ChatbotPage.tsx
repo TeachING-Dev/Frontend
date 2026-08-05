@@ -1,7 +1,26 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowUp } from "lucide-react";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  ChatApiError,
+  askChatRoomMessage,
+  createChatRoom,
+  getChatRooms,
+  getChatRoomMessages,
+  type ChatSource,
+  type ChatHistoryMessage,
+  type ChatRoomSummary,
+} from "../apis/chat";
 import ChatBubble from "../components/chatbot/ChatBubble";
 import ChatLimitModal from "../components/chatbot/ChatLimitModal";
 import ChatSidebar from "../components/chatbot/ChatSidebar";
@@ -9,44 +28,283 @@ import SourceList from "../components/chatbot/SourceList";
 import Toast from "../components/common/Toast";
 import type { SourceItem } from "../components/chatbot/SourceList";
 
-const mockFiles = ["파일 이름", "파일 이름", "파일 이름", "파일 이름", "파일 이름"];
-
-const mockSources: SourceItem[] = [
-  {
-    label: "내가 저장한 자료 제목(15행)",
-    location: "내가 저장한 자료 제목 - 15행",
-  },
-  {
-    label: "내가 저장한 자료 제목 (05:20)",
-    location: "내가 저장한 자료 제목 - 05:20",
-  },
-];
-
 const limitDescription = "요금제를 업그레이드하고 무제한으로 티칭잉을 만들어 보세요!";
+const dailyQuestionLimit = 5;
+const chatRoomLimit = 10;
+const chatRoomListSize = 10;
+const dailyQuestionCountStorageKey =
+  "chatbotDailyQuestionCount";
+const fallbackNoticeMessage =
+  "죄송합니다. 현재 보관하신 자료 중에서는 관련 답변을 찾지 못했습니다.";
+const fallbackSourceMessage =
+  "내 자료에는 없지만, 일반적인 지식에 따르면";
+const fallbackDefaultAnswer =
+  "AI가 개인 맥락을 반영하는 방식은 대화 기록, 사용자가 설정한 선호, 현재 진행 중인 작업과 직접 입력한 조건 등을 종합하여 답변의 방향과 수준을 조정하는 방식으로 설명할 수 있습니다. 다만 서비스마다 활용하는 정보의 범위와 저장 방식이 달라, 이전에 정리한 내용과는 일부 차이가 있을 수 있습니다.";
+
+const removeInlineSourceText = (
+  content: string,
+) =>
+  content
+    .replace(/\s*\[출처:[\s\S]*?\]/g, "")
+    .trim();
 
 type ChatMessage = {
   id: number;
   role: "user" | "assistant";
   content: string;
   sources?: SourceItem[];
+  isFallback?: boolean;
   isLoading?: boolean;
 };
 
-const createMockAnswer = (question: string) =>
-  `관련 자료를 찾았습니다.\n'${question}'에 대한 내용을 내 자료에서 확인해보니, 사용자의 목적과 이전 맥락을 반영해 답변을 조정하는 방식과 관련이 있습니다. 핵심은 AI가 모든 정보를 자동으로 사용하는 것이 아니라, 사용자가 허용한 맥락만 선택적으로 반영한다는 점입니다.`;
+type ChatbotLocationState = {
+  chatRoomId?: number | string;
+} | null;
+
+const getTodayKey = () =>
+  new Date().toLocaleDateString("sv-SE");
+
+const getStoredDailyQuestionCount = () => {
+  const storedValue = localStorage.getItem(
+    dailyQuestionCountStorageKey,
+  );
+
+  if (!storedValue) {
+    return 0;
+  }
+
+  try {
+    const parsedValue = JSON.parse(
+      storedValue,
+    ) as {
+      date?: string;
+      count?: number;
+    };
+
+    if (parsedValue.date !== getTodayKey()) {
+      return 0;
+    }
+
+    return parsedValue.count ?? 0;
+  } catch {
+    return 0;
+  }
+};
+
+const setStoredDailyQuestionCount = (
+  count: number,
+) => {
+  localStorage.setItem(
+    dailyQuestionCountStorageKey,
+    JSON.stringify({
+      date: getTodayKey(),
+      count,
+    }),
+  );
+};
+
+const isQuestionLimitError = (error: unknown) =>
+  error instanceof ChatApiError &&
+  (error.code?.includes("LIMIT") ||
+    error.message.includes("제한") ||
+    error.message.includes("하루") ||
+    error.message.includes("무료") ||
+    error.message.includes("5"));
+
+const isRoomLimitError = (error: unknown) =>
+  error instanceof ChatApiError &&
+  (error.code?.includes("LIMIT") ||
+    error.message.includes("대화방") ||
+    error.message.includes("채팅방") ||
+    error.message.includes("10"));
+
+const getSourceLabel = (
+  source: ChatSource,
+) => {
+  return (
+    source.citedText ||
+    source.position ||
+    source.materialTitle
+  );
+};
+
+const getSourceMaterialTitle = (
+  source: ChatSource,
+) => {
+  if (
+    typeof source.startLine === "number" &&
+    source.startLine >= 0
+  ) {
+    if (
+      typeof source.endLine === "number" &&
+      source.endLine >= 0 &&
+      source.endLine !== source.startLine
+    ) {
+      return `${source.materialTitle}(${source.startLine}-${source.endLine}행)`;
+    }
+
+    return `${source.materialTitle}(${source.startLine}행)`;
+  }
+
+  return source.materialTitle;
+};
+
+const mapSources = (
+  sources: ChatSource[],
+) => {
+  const primarySource = sources[0];
+
+  if (!primarySource) {
+    return [];
+  }
+
+  const sourceMap = new Map<number | string, SourceItem>();
+
+  [primarySource].forEach((source) => {
+    const sourceKey =
+      source.url ||
+      `${source.folderName}-${source.materialTitle}`;
+    const previousSource =
+      sourceMap.get(sourceKey);
+
+    if (previousSource) {
+      if (
+        typeof previousSource.startLine !== "number" &&
+        typeof source.startLine === "number"
+      ) {
+        previousSource.materialTitle =
+          getSourceMaterialTitle(source);
+        previousSource.startLine =
+          source.startLine;
+        previousSource.endLine = source.endLine;
+      }
+
+      return;
+    }
+
+    sourceMap.set(sourceKey, {
+      label: getSourceLabel(source),
+      materialId: source.materialId,
+      folderId: source.folderId,
+      materialTitle: getSourceMaterialTitle(source),
+      folderName: source.folderName,
+      url: source.url,
+      startLine: source.startLine,
+      endLine: source.endLine,
+      location: getSourceLabel(source),
+    });
+  });
+
+  return Array.from(sourceMap.values());
+};
+
+const mapHistoryMessage = (
+  message: ChatHistoryMessage,
+): ChatMessage => ({
+  id: message.messageId,
+  role:
+    message.role === "USER"
+      ? "user"
+      : "assistant",
+  content: message.content,
+  isFallback: message.isFallback,
+  sources:
+    message.sources.length > 0
+      ? mapSources(message.sources)
+      : undefined,
+});
 
 const ChatbotPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatRooms, setChatRooms] = useState<ChatRoomSummary[]>([]);
   const [isRoomLimitModalOpen, setIsRoomLimitModalOpen] = useState(false);
   const [isQuestionLimitModalOpen, setIsQuestionLimitModalOpen] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(
+    getStoredDailyQuestionCount,
+  );
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState(
+    "✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.",
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const contentMarginClass = isNavOpen ? "ml-[204px]" : "ml-20";
   const hasConversation = messages.length > 0;
+  const locationState =
+    location.state as ChatbotLocationState;
+  const chatRoomIdValue =
+    params.chatRoomId ??
+    searchParams.get("chatRoomId") ??
+    locationState?.chatRoomId;
+  const chatRoomId =
+    chatRoomIdValue === undefined ||
+    chatRoomIdValue === null
+      ? null
+      : Number(chatRoomIdValue);
+  const hasValidChatRoomId =
+    chatRoomId !== null &&
+    !Number.isNaN(chatRoomId);
+
+  const loadChatRooms = useCallback(async () => {
+    try {
+      const chatRoomList = await getChatRooms({
+        size: chatRoomListSize,
+      });
+      setChatRooms(chatRoomList.chatrooms);
+      return chatRoomList.chatrooms;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }, []);
+
+  useEffect(() => {
+    const loadInitialChatRooms = async () => {
+      const loadedChatRooms =
+        await loadChatRooms();
+
+      if (
+        !hasValidChatRoomId &&
+        loadedChatRooms.length > 0
+      ) {
+        navigate(
+          `/chatbot/${loadedChatRooms[0].chatroomId}`,
+          { replace: true },
+        );
+      }
+    };
+
+    void loadInitialChatRooms();
+  }, [hasValidChatRoomId, loadChatRooms, navigate]);
+
+  useEffect(() => {
+    if (!hasValidChatRoomId) {
+      return;
+    }
+
+    const loadChatMessages = async () => {
+      try {
+        const chatHistory =
+          await getChatRoomMessages(chatRoomId);
+
+        setMessages(
+          chatHistory.messages.map(
+            mapHistoryMessage,
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadChatMessages();
+  }, [chatRoomId, hasValidChatRoomId]);
 
   useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
@@ -61,7 +319,7 @@ const ChatbotPage = () => {
     });
   }, [messages]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextQuestion = question.trim();
@@ -70,8 +328,26 @@ const ChatbotPage = () => {
       return;
     }
 
-    if (questionCount >= 5) {
+    if (isSubmitting) {
+      return;
+    }
+
+    const currentQuestionCount = Math.max(
+      questionCount,
+      getStoredDailyQuestionCount(),
+    );
+
+    if (currentQuestionCount >= dailyQuestionLimit) {
+      setQuestionCount(currentQuestionCount);
       setIsQuestionLimitModalOpen(true);
+      return;
+    }
+
+    if (
+      !hasValidChatRoomId &&
+      chatRooms.length >= chatRoomLimit
+    ) {
+      setIsRoomLimitModalOpen(true);
       return;
     }
 
@@ -89,38 +365,254 @@ const ChatbotPage = () => {
     };
 
     setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
-    setQuestionCount((prevCount) => prevCount + 1);
     setQuestion("");
+    setIsSubmitting(true);
+    let createdChatRoomId: number | null = null;
 
-    window.setTimeout(() => {
+    const resolveChatRoomId = async () => {
+      if (hasValidChatRoomId) {
+        return chatRoomId;
+      }
+
+      const createdChatRoom =
+        await createChatRoom();
+      createdChatRoomId =
+        createdChatRoom.chatroomId;
+
+      return createdChatRoom.chatroomId;
+    };
+
+    try {
+      const activeChatRoomId =
+        await resolveChatRoomId();
+      const askResult =
+        await askChatRoomMessage(activeChatRoomId, {
+          content: nextQuestion,
+        });
+
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === userMessage.id
+            ? {
+                ...message,
+                id: askResult.userMessage.messageId,
+                content:
+                  askResult.userMessage.content,
+              }
+            : message.id === loadingMessage.id
+              ? {
+                  id: askResult.aiMessage.messageId,
+                  role: "assistant",
+                  content:
+                    askResult.aiMessage.content,
+                  isFallback:
+                    askResult.aiMessage.isFallback,
+                  sources:
+                    askResult.aiMessage.sources
+                      .length > 0
+                      ? mapSources(
+                          askResult.aiMessage
+                            .sources,
+                        )
+                      : undefined,
+                  isLoading: false,
+                }
+              : message,
+        ),
+      );
+
+      const nextQuestionCount =
+        typeof askResult.remainingCount === "number"
+          ? Math.min(
+              dailyQuestionLimit,
+              Math.max(
+                0,
+                dailyQuestionLimit -
+                  askResult.remainingCount,
+              ),
+            )
+          : Math.min(
+              dailyQuestionLimit,
+              currentQuestionCount + 1,
+            );
+
+      setQuestionCount(nextQuestionCount);
+      setStoredDailyQuestionCount(
+        nextQuestionCount,
+      );
+
+      if (createdChatRoomId !== null) {
+        await loadChatRooms();
+        navigate(
+          `/chatbot/${createdChatRoomId}`,
+          { replace: true },
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (isQuestionLimitError(error)) {
+        setQuestionCount(dailyQuestionLimit);
+        setStoredDailyQuestionCount(
+          dailyQuestionLimit,
+        );
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        setIsQuestionLimitModalOpen(true);
+        return;
+      }
+
+      if (isRoomLimitError(error)) {
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        setIsRoomLimitModalOpen(true);
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "답변을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
           message.id === loadingMessage.id
             ? {
                 ...message,
-                content: createMockAnswer(nextQuestion),
-                sources: mockSources,
+                content:
+                  errorMessage,
                 isLoading: false,
               }
             : message,
         ),
       );
-    }, 700);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const copySourceLocation = async (location: string) => {
-    try {
-      await navigator.clipboard.writeText(location);
-    } finally {
+  const handleSourceNameClick = async (
+    source: SourceItem,
+  ) => {
+    if (!source.url) {
+      setToastMessage("원문 링크를 찾을 수 없습니다.");
       setIsCopyToastVisible(true);
       window.setTimeout(() => {
         setIsCopyToastVisible(false);
       }, 2200);
+      return;
     }
+
+    try {
+      await navigator.clipboard.writeText(
+        source.location,
+      );
+    } finally {
+      setToastMessage(
+        "✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.",
+      );
+      setIsCopyToastVisible(true);
+      window.setTimeout(() => {
+        setIsCopyToastVisible(false);
+      }, 2200);
+      window.setTimeout(() => {
+        window.open(
+          source.url,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }, 1000);
+    }
+  };
+
+  const getFallbackAnswer = (
+    content: string,
+  ) => {
+    const trimmedContent = removeInlineSourceText(content)
+      .replace(fallbackSourceMessage, "")
+      .replace(/^,\s*/, "")
+      .trim();
+
+    if (
+      !trimmedContent ||
+      trimmedContent === fallbackNoticeMessage
+    ) {
+      return fallbackDefaultAnswer;
+    }
+
+    return trimmedContent;
+  };
+
+  const getSourcedAnswer = (
+    content: string,
+    hasSources: boolean,
+  ) => {
+    if (!hasSources) {
+      return content;
+    }
+
+    const sourcedContent = removeInlineSourceText(content)
+      .replace(fallbackSourceMessage, "")
+      .replace(/^,\s*/, "")
+      .trim();
+
+    if (
+      sourcedContent.startsWith(
+        "관련 자료를 찾았습니다.",
+      )
+    ) {
+      return sourcedContent;
+    }
+
+    return `관련 자료를 찾았습니다.\n${sourcedContent}`;
   };
 
   const handleSubscribeClick = () => {
     navigate("/subscription");
+  };
+
+  const handleCreateRoomClick = async () => {
+    if (chatRooms.length >= chatRoomLimit) {
+      setIsRoomLimitModalOpen(true);
+      return;
+    }
+
+    try {
+      const createdChatRoom =
+        await createChatRoom();
+      await loadChatRooms();
+      setMessages([]);
+      navigate(
+        `/chatbot/${createdChatRoom.chatroomId}`,
+      );
+      setIsNavOpen(false);
+    } catch (error) {
+      console.error(error);
+      setIsRoomLimitModalOpen(true);
+    }
+  };
+
+  const handleChatRoomClick = (index: number) => {
+    const selectedRoom = chatRooms[index];
+
+    if (!selectedRoom) {
+      return;
+    }
+
+    navigate(`/chatbot/${selectedRoom.chatroomId}`);
+    setIsNavOpen(false);
   };
 
   return (
@@ -129,10 +621,11 @@ const ChatbotPage = () => {
 
       <ChatSidebar
         isOpen={isNavOpen}
-        files={mockFiles}
+        files={chatRooms.map((room) => room.title)}
         onOpen={() => setIsNavOpen(true)}
         onClose={() => setIsNavOpen(false)}
-        onCreateRoomClick={() => setIsRoomLimitModalOpen(true)}
+        onCreateRoomClick={() => void handleCreateRoomClick()}
+        onFileClick={handleChatRoomClick}
       />
 
       <main
@@ -148,20 +641,49 @@ const ChatbotPage = () => {
                   </ChatBubble>
                 ) : (
                   <div key={message.id} className="flex w-full flex-col gap-3">
-                    <ChatBubble
-                      align="left"
-                      className={`w-[605px] max-w-full whitespace-pre-line ${
-                        message.isLoading ? "text-zinc-500" : ""
-                      }`}
-                    >
-                      {message.content}
-                    </ChatBubble>
+                    {message.isFallback && !message.isLoading ? (
+                      <>
+                        <ChatBubble
+                          align="left"
+                          className="w-[605px] max-w-full whitespace-pre-line"
+                        >
+                          {fallbackNoticeMessage}
+                        </ChatBubble>
 
-                    {message.sources ? (
+                        <div className="flex w-full justify-start pl-0 pr-[43%]">
+                          <div className="inline-block rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
+                            <div className="flex h-[42px] items-center rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 font-['SUIT'] text-[15px] font-normal leading-[160%] text-white">
+                              {fallbackSourceMessage}
+                            </div>
+                          </div>
+                        </div>
+
+                        <ChatBubble
+                          align="left"
+                          className="w-[605px] max-w-full whitespace-pre-line"
+                        >
+                          {getFallbackAnswer(message.content)}
+                        </ChatBubble>
+                      </>
+                    ) : (
+                      <ChatBubble
+                        align="left"
+                        className={`w-[605px] max-w-full whitespace-pre-line ${
+                          message.isLoading ? "text-zinc-500" : ""
+                        }`}
+                      >
+                        {getSourcedAnswer(
+                          message.content,
+                          Boolean(message.sources),
+                        )}
+                      </ChatBubble>
+                    )}
+
+                    {!message.isFallback && message.sources ? (
                       <div className="flex w-full justify-start pl-0 pr-[43%]">
                         <SourceList
                           sources={message.sources}
-                          onSourceClick={(location) => void copySourceLocation(location)}
+                          onSourceNameClick={(source) => void handleSourceNameClick(source)}
                         />
                       </div>
                     ) : null}
@@ -172,11 +694,11 @@ const ChatbotPage = () => {
           </div>
         ) : (
           <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-            <div className="flex h-[220px] w-[360px] shrink-0 items-center justify-center pb-[14px] ">
+            <div className="flex h-[120px] w-[250px] shrink-0 items-center justify-center pb-[14px] ">
               <img
-                src="/ChatbotEmpty.png"
+                src="/character/ConfidentTaka.svg"
                 alt="열공 티키"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </div>
 
@@ -193,22 +715,20 @@ const ChatbotPage = () => {
         {isCopyToastVisible ? (
           <Toast
             variant="chat"
-            message="✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요."
+            message={toastMessage}
           />
         ) : null}
 
         <form
           onSubmit={handleSubmit}
-          className="fixed bottom-6 left-1/2 flex w-full -translate-x-1/2 justify-center"
+          className="fixed bottom-[50px] left-1/2 flex w-full -translate-x-1/2 justify-center px-[170px]"
         >
           <label
   className="
-    flex
-    h-12
+    box-border
+    h-[50px]
     w-full
-    max-w-[976px]
-    items-center
-    justify-between
+    max-w-none
     rounded-[10px]
     border-[2px]
     border-[#917DEC]
@@ -216,23 +736,31 @@ const ChatbotPage = () => {
     py-2.5
     pl-5
     pr-3
-    shadow-[0_0_60px_0_rgba(145,125,236,0.7)]
+    shadow-[0_0_70px_10px_rgba(145,125,236,0.80)]
   "
 >
+            <div className="flex h-full w-full items-center justify-between">
             <input
               type="text"
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="궁금한 점을 물어보세요"
-              className="flex-1 bg-transparent font-['SUIT'] text-sm font-normal leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
+              className="flex-1 bg-transparent font-['SUIT'] text-[15px] font-medium leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
             />
             <button
               type="submit"
               aria-label="질문 보내기"
-              className="flex size-7 items-center justify-center rounded-full bg-[#917DEC] text-[#090713] transition hover:opacity-85"
+              disabled={isSubmitting}
+              className="flex size-9 items-center justify-center transition hover:opacity-85 disabled:opacity-50"
             >
-              <ArrowUp size={18} strokeWidth={2.6} />
+              <img
+                src="/icon/icon-shortcut.svg"
+                alt=""
+                aria-hidden="true"
+                className="size-9"
+              />
             </button>
+            </div>
           </label>
         </form>
       </main>

@@ -1,13 +1,53 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { logout } from "../../apis/auth";
+import { getMyProfile } from "../../apis/users";
 import MyPageMenuList from "../../components/myPage/MyPageMenuList";
 import MyPageProfile from "../../components/myPage/MyPageProfile";
+import { clearTokens } from "../../utils/authToken";
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
+  const [profileImageUrl, setProfileImageUrl] =
+    useState("");
+  const [isLoggingOut, setIsLoggingOut] =
+    useState(false);
 
-  const handleLogout = () => {
-    navigate("/login");
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getMyProfile();
+        setNickname(profile.nickname);
+        setProfileImageUrl(
+          profile.profileImageUrl,
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadProfile();
+  }, []);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      clearTokens();
+      navigate("/login", {
+        replace: true,
+      });
+      setIsLoggingOut(false);
+    }
   };
 
   const handleWithdrawal = () => {
@@ -21,7 +61,10 @@ const MyPage = () => {
       </h1>
 
       <section className="mt-[50px] flex flex-col items-center">
-        <MyPageProfile nickname="타카" />
+        <MyPageProfile
+          nickname={nickname}
+          imageUrl={profileImageUrl}
+        />
 
         <div className="mt-[40px]">
           <MyPageMenuList />
@@ -31,9 +74,12 @@ const MyPage = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex h-[60px] w-[352px] items-center justify-center rounded-[10px] bg-[#1F212A] px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#D0D0D2]"
+            disabled={isLoggingOut}
+            className="flex h-[60px] w-[352px] items-center justify-center rounded-[10px] bg-[#1F212A] px-[10px] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#D0D0D2] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            로그아웃
+            {isLoggingOut
+              ? "로그아웃 중"
+              : "로그아웃"}
           </button>
 
           <button

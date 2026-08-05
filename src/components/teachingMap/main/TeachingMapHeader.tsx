@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+const leftPointIcon = "/myPage/leftpoint.svg";
+
 const TeachingMapHeader = () => {
   const navigate = useNavigate();
 
@@ -8,18 +10,33 @@ const TeachingMapHeader = () => {
   };
 
   const handleTemporarySaveClick = () => {
-    // TODO: 임시저장 목록 페이지 경로 연결
-    console.log("임시저장 버튼 클릭");
+    navigate("/teaching-map/drafts");
   };
 
   return (
     <section className="mb-10 flex items-start justify-between">
       <div className="flex flex-col gap-1">
-        <h1 className="text-[36px] font-bold leading-[120%] tracking-[-1.08px] text-[#E8E8E8]">
-          티칭맵
-        </h1>
+        <div className="flex items-center gap-[5px]">
+          <button
+            type="button"
+            aria-label="홈으로 이동"
+            onClick={() => navigate("/")}
+            className="flex h-12 w-12 shrink-0 items-center justify-center"
+          >
+            <img
+              src={leftPointIcon}
+              alt=""
+              aria-hidden="true"
+              className="h-12 w-12"
+            />
+          </button>
 
-        <p className="text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#717379]">
+          <h1 className="text-[36px] font-bold leading-[120%] tracking-[-1.08px] text-[#E8E8E8]">
+            티칭맵
+          </h1>
+        </div>
+
+        <p className="ml-[53px] text-[20px] font-semibold leading-[150%] tracking-[-0.72px] text-[#717379]">
           학습 로드맵을 만들고 관리하세요.
         </p>
       </div>

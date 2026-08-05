@@ -1,15 +1,37 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ArchiveDataSummaryProps = {
   summary: string;
+  onUpdateSummary: (summary: string) => Promise<void>;
 };
 
 const ArchiveDataSummary = ({
   summary,
+  onUpdateSummary,
 }: ArchiveDataSummaryProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedSummary, setEditedSummary] =
-    useState(summary);
+
+  const [editedSummary, setEditedSummary] = useState(summary);
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const resizeTextarea = () => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  };
+
+  useEffect(() => {
+    if (isEditing) {
+      resizeTextarea();
+    }
+  }, [isEditing, editedSummary]);
 
   const handleEdit = () => {
     setEditedSummary(summary);
@@ -20,9 +42,14 @@ const ArchiveDataSummary = ({
     setEditedSummary(summary);
   };
 
-  const handleComplete = () => {
-    console.log("수정 완료:", editedSummary);
-    setIsEditing(false);
+  const handleComplete = async () => {
+    try {
+      await onUpdateSummary(editedSummary);
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("요약 수정 실패:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -36,7 +63,7 @@ const ArchiveDataSummary = ({
       <div className="mb-[30px] flex items-center justify-between">
         <div className="flex items-center gap-[8px]">
           <img
-            src="/AI.png"
+            src="/icon/AI.svg"
             alt="AI 요약"
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"
@@ -50,16 +77,16 @@ const ArchiveDataSummary = ({
         <button
           type="button"
           onClick={handleEdit}
-          className="group flex h-[40px] w-[120px] items-center gap-[5px] rounded-[5px] bg-[#24232D] px-[12px] transition-colors hover:bg-[#3A3847]"
+          className="group flex h-[40px] w-[120px] items-center justify-center gap-[5px] rounded-[5px] bg-[#24232D] px-[12px] transition-colors hover:bg-[#3A3847]"
         >
           <img
-            src="/edit-04.png"
+            src="/icon/edit2.png"
             alt=""
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"
           />
 
-          <span className="font-['ABeeZee'] text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#A1A1A5] transition-colors group-hover:text-white">
+          <span className="text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#A1A1A5] transition-colors group-hover:text-white">
             편집하기
           </span>
         </button>
@@ -67,7 +94,7 @@ const ArchiveDataSummary = ({
 
       {/* 기존 요약 */}
       <div className="border-l-[2px] border-[#D9CDFF] pl-[30px]">
-        <p className="font-['ABeeZee'] text-[20px] leading-[180%] tracking-[-0.4px] text-[#D9CDFF]">
+        <p className="text-[20px] font-medium leading-[160%] text-[#D9CDFF]">
           {summary}
         </p>
       </div>
@@ -80,7 +107,7 @@ const ArchiveDataSummary = ({
               직접 수정
             </span>
 
-            <div className="flex items-center rounded-full border border-[#917DEC] bg-[#13151F] px-[6px] gap-[4px]">
+            <div className="flex items-center gap-[4px] rounded-full border border-[#917DEC] bg-[#13151F] px-[6px]">
               <button
                 type="button"
                 onClick={handleReset}
@@ -88,7 +115,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/flip-left.png"
+                  src="/icon/flip-left.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"
@@ -102,7 +129,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/check.png"
+                  src="/icon/check.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"
@@ -116,7 +143,7 @@ const ArchiveDataSummary = ({
                 className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
               >
                 <img
-                  src="/cancel.png"
+                  src="/icon/cancel.png"
                   alt=""
                   aria-hidden="true"
                   className="h-[24px] w-[24px] object-contain"
@@ -126,13 +153,12 @@ const ArchiveDataSummary = ({
           </div>
 
           <textarea
+            ref={textareaRef}
             value={editedSummary}
-            onChange={(event) =>
-              setEditedSummary(event.target.value)
-            }
-            rows={3}
+            onChange={(event) => setEditedSummary(event.target.value)}
+            rows={1}
             autoFocus
-            className="w-full resize-none bg-transparent font-['ABeeZee'] text-[20px] italic font-normal leading-[160%] text-[#D9CDFF] outline-none"
+            className="w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"
           />
         </div>
       )}

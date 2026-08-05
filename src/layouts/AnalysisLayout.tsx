@@ -18,15 +18,22 @@ const AnalysisLayout = ({
 
   return (
     <div className="min-h-screen bg-[#090713]">
-      <Header
-        showRightIcons={showRightIcons}
-        insetMenu={insetMenu}
-        onMenuClick={() => setIsSidebarOpen(true)}
-      />
+      {/* PC 상단 고정 헤더 */}
+      <div className="fixed inset-x-0 top-0 z-50 hidden lg:block">
+        <Header
+          showRightIcons={showRightIcons}
+          insetMenu={insetMenu}
+          onMenuClick={() =>
+            setIsSidebarOpen(true)
+          }
+        />
+      </div>
 
       <Sidebar
         open={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        onClose={() =>
+          setIsSidebarOpen(false)
+        }
       />
 
       {/* 화면에 고정되는 그라데이션 배경 */}
@@ -37,14 +44,14 @@ const AnalysisLayout = ({
 
       {/* 화면 왼쪽 하단에 고정되는 별 */}
       <img
-        src="/Star3.png"
+        src="/character/Star3.png"
         alt=""
         aria-hidden="true"
         className="pointer-events-none fixed bottom-[10px] left-[60px] z-[1] w-[240px]"
       />
 
       {/* 실제 페이지 내용 */}
-      <main className="relative z-10 min-h-[calc(100vh-64px)]">
+      <main className="relative z-10 min-h-screen pt-16">
         <Outlet />
       </main>
     </div>
