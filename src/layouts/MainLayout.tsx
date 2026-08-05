@@ -9,6 +9,7 @@ type MainLayoutProps = {
   insetMenu?: boolean;
   showMenuIcon?: boolean;
   hideHeaderOnMobile?: boolean;
+  hideMobileNav?: boolean;
 };
 
 const MainLayout = ({
@@ -16,6 +17,7 @@ const MainLayout = ({
   insetMenu = false,
   showMenuIcon = true,
   hideHeaderOnMobile = false,
+  hideMobileNav = false,
 }: MainLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
@@ -43,6 +45,7 @@ const MainLayout = ({
       <Sidebar
         open={isSidebarOpen}
         onClose={handleCloseSidebar}
+        hideMobileNav={hideMobileNav}
       />
 
       {/* 헤더 아래부터 화면에 고정되는 그라데이션 */}

@@ -56,13 +56,6 @@ function App() {
           element={<OAuthCallbackPage />}
         />
 
-        <Route path="/signup/terms/service" element={<TermsServicePage />} />
-        <Route
-          path="/signup/terms/marketing"
-          element={<TermsMarketingPage />}
-        />
-        <Route path="/signup/terms/event" element={<TermsEventPage />} />
-
         <Route element={<RequireAuth />}>
           {/* 회원가입 완료 */}
           <Route path="/signup/complete" element={<SignupCompletePage />} />
@@ -213,10 +206,17 @@ function App() {
               showRightIcons={false}
               showMenuIcon={false}
               hideHeaderOnMobile
+              hideMobileNav
             />
           }
         >
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup/terms/service" element={<TermsServicePage />} />
+          <Route
+            path="/signup/terms/marketing"
+            element={<TermsMarketingPage />}
+          />
+          <Route path="/signup/terms/event" element={<TermsEventPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -4,7 +4,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useCallback } from "react";
-import { ChevronLeft } from "lucide-react";
 
 import {
   checkNickname,
@@ -43,20 +42,18 @@ const CheckIcon = ({
   checked: boolean;
   inverted?: boolean;
 }) => {
-  if (checked) {
-    return (
-      <img
-        src={inverted ? "/TermsCheckInverted.svg" : "/TermsCheck.svg"}
-        alt=""
-        className="size-6 shrink-0"
-      />
-    );
-  }
-
   return (
-    <span className="relative inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-zinc-700">
-      <span className="h-2 w-3 translate-y-[-2px] rotate-[-45deg] border-b-[1.5px] border-l-[1.5px] border-zinc-500" />
-    </span>
+    <img
+      src={
+        checked
+          ? inverted
+            ? "/TermsCheckInverted.svg"
+            : "/TermsCheck.svg"
+          : "/TermsCheckUnchecked.svg"
+      }
+      alt=""
+      className="size-6 shrink-0 max-md:size-[18px]"
+    />
   );
 };
 
@@ -84,6 +81,7 @@ const SignupPage = () => {
     nicknameErrorMessage,
     setNicknameErrorMessage,
   ] = useState("");
+
 
   const normalizedNickname = nickname.trim();
   const isNicknameTaken =
@@ -173,7 +171,6 @@ const SignupPage = () => {
         setNicknameErrorMessage(
           errorMessage,
         );
-        alert(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
@@ -276,16 +273,27 @@ const SignupPage = () => {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
        <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.8] px-20 max-md:left-0 max-md:top-[72px] max-md:h-[calc(100vh-72px)] max-md:w-full max-md:translate-x-0 max-md:scale-100 max-md:px-5">
-        <div className="mb-10 flex items-center gap-2.5 max-md:mb-[30px] max-md:gap-2">
+        <div className="mb-10 mt-[30px] flex items-center gap-2.5 max-md:mb-[30px] max-md:mt-0 max-md:gap-2">
           <button
             type="button"
             aria-label="이전으로"
             onClick={handleBack}
             className="flex size-12 items-center justify-center text-[#FAFAFA] max-md:size-6"
           >
-            <ChevronLeft className="size-9 max-md:size-6" strokeWidth={2} />
+            <img
+              src="/Chevron-down.svg"
+              alt=""
+              aria-hidden="true"
+              className="size-12 max-md:hidden"
+            />
+            <img
+              src="/Chevron-down-mobile.svg"
+              alt=""
+              aria-hidden="true"
+              className="hidden size-6 max-md:block"
+            />
           </button>
-          <h1 className="font-['SUIT'] text-[28px] font-normal leading-[150%] tracking-[-0.84px] text-[#FAFAFA] max-md:text-[16px] max-md:tracking-[-0.48px]">
+          <h1 className="font-['SUIT'] text-[28px] font-medium leading-[150%] tracking-[-0.84px] text-[#FAFAFA] max-md:text-[16px] max-md:font-normal max-md:tracking-[-0.48px]">
             {step === "nickname" ? "회원가입" : "약관 동의"}
           </h1>
         </div>
@@ -293,7 +301,7 @@ const SignupPage = () => {
         <div className="flex flex-1 flex-col justify-between">
           {step === "nickname" ? (
             <div className="flex flex-col gap-2.5">
-              <h2 className="font-['SUIT'] text-[28px] font-normal leading-[150%] tracking-[-0.84px] text-[#717379] max-md:text-[15px] max-md:tracking-[-0.45px]">
+              <h2 className="font-['SUIT'] text-[28px] font-medium leading-[150%] tracking-[-0.84px] text-[#717379] max-md:text-[15px] max-md:tracking-[-0.45px]">
                 닉네임
               </h2>
 
@@ -318,7 +326,7 @@ const SignupPage = () => {
                     className="flex-1 bg-transparent font-['SUIT_Variable'] text-xl font-normal leading-8 text-neutral-50 outline-none placeholder:text-[#42444C] max-md:font-['SUIT'] max-md:text-[16px] max-md:leading-[150%]"
                   />
                   <span
-                    className={`font-['SUIT'] text-base font-normal leading-6 ${
+                    className={`font-['SUIT'] text-[15px] font-normal leading-6 ${
                       isNicknameNextEnabled ? "text-neutral-50" : "text-zinc-700"
                     }`}
                   >
@@ -337,7 +345,7 @@ const SignupPage = () => {
                   </div>
                 ) : isNicknameNextEnabled ? (
                   <div className="inline-flex w-[1115px] items-start justify-start gap-2.5 max-md:w-[640px]">
-                    <p className="w-80 justify-center font-['SUIT'] text-base font-normal leading-6 text-[#917DEC] max-md:text-[14px] max-md:leading-[150%]">
+                    <p className="w-80 justify-center font-['SUIT_Variable'] text-base font-normal leading-6 text-[#917DEC] max-md:text-[14px] max-md:leading-[150%]">
                       사용 가능한 아이디입니다.
                     </p>
                   </div>
@@ -346,7 +354,7 @@ const SignupPage = () => {
                     <div className="flex h-12 items-start px-0.5 py-[3px]">
                       <img src="/SignupNoticeIcon.svg" alt="" className="size-5 max-md:size-3" />
                     </div>
-                    <p className="w-80 font-['SUIT'] text-base font-normal leading-6 text-[#717379] max-md:text-[14px] max-md:leading-[150%]">
+                    <p className="w-80 font-['SUIT_Variable'] text-base font-normal leading-6 text-[#717379] max-md:text-[14px] max-md:leading-[150%]">
                       다른 유저와 겹치지 않도록 입력해주세요.
                       <br />
                       닉네임은 나중에 변경할 수 있습니다.
@@ -356,18 +364,18 @@ const SignupPage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-[25px]">
+            <div className="flex flex-col gap-[25px] max-md:gap-[40.5px]">
               <div className="flex flex-col items-start gap-2.5">
                 <button
                   type="button"
                   onClick={toggleAllTerms}
-                  className={`inline-flex h-[60px] w-[640px] items-center justify-start gap-[8px] rounded-[5px] px-7 py-3.5 ${
+                  className={`inline-flex h-[60px] w-[640px] items-center justify-start gap-[8px] rounded-[5px] px-7 py-3.5 max-md:h-[54px] max-md:w-[346px] max-md:px-[20px] ${
                     isAllTermsChecked ? "bg-[#917DEC]" : "bg-[#1F212A]"
                   }`}
                 >
                   <CheckIcon checked={isAllTermsChecked} inverted />
                   <span
-                    className={`font-['SUIT'] text-xl font-medium leading-8 ${
+                    className={`font-['SUIT'] text-xl font-bold leading-8 max-md:text-[16px] max-md:font-normal max-md:leading-[150%] ${
                       isAllTermsChecked ? "text-violet-50" : "text-[#717379]"
                     }`}
                   >
@@ -376,34 +384,34 @@ const SignupPage = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col items-start gap-7">
-                <div className="flex w-[640px] flex-col items-start gap-[8px] py-3">
+              <div className="flex flex-col items-start gap-7 max-md:gap-0">
+                <div className="flex w-[640px] flex-col items-start gap-[8px] py-3 max-md:w-[346px] max-md:gap-[19px] max-md:py-0">
                   <button
                     type="button"
                     onClick={() => toggleTerm("age")}
-                    className="flex h-12 w-full items-center px-3.5 "
+                    className="flex h-12 w-full items-center px-3.5 max-md:h-auto max-md:px-0 "
                   >
-                    <div className="inline-flex w-48 items-center gap-[10px]">
+                    <div className="inline-flex w-48 items-center gap-[10px] max-md:w-auto max-md:gap-2">
                       <CheckIcon checked={terms.age} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.age ? "text-neutral-400 max-md:font-medium" : "text-[#42444C]"}`}>
                           [필수]
                         </span>
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.age ? "text-neutral-400" : "text-[#42444C]"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.age ? "text-neutral-400 max-md:font-medium" : "text-[#42444C]"}`}>
                           만 14세 이상입니다
                         </span>
                       </div>
                     </div>
                   </button>
 
-                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("service")} className="flex w-48 items-center gap-[10px]">
+                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5 max-md:h-auto max-md:px-0">
+                    <button type="button" onClick={() => toggleTerm("service")} className="flex w-48 items-center gap-[10px] max-md:w-auto max-md:gap-2">
                       <CheckIcon checked={terms.service} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.service ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           [필수]
                         </span>
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.service ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.service ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           약관 이용동의
                         </span>
                       </div>
@@ -419,20 +427,20 @@ const SignupPage = () => {
                           },
                         })
                       }
-                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline max-md:text-[10px]"
                     >
                       보기
                     </button>
                   </div>
 
-                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("marketing")} className="flex items-center gap-[10px]">
+                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5 max-md:h-auto max-md:px-0">
+                    <button type="button" onClick={() => toggleTerm("marketing")} className="flex items-center gap-[10px] max-md:gap-2">
                       <CheckIcon checked={terms.marketing} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.marketing ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           [선택]
                         </span>
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.marketing ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.marketing ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           개인정보 마케팅 활용 동의
                         </span>
                       </div>
@@ -448,20 +456,20 @@ const SignupPage = () => {
                           },
                         })
                       }
-                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline max-md:text-[10px]"
                     >
                       보기
                     </button>
                   </div>
 
-                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5">
-                    <button type="button" onClick={() => toggleTerm("event")} className="flex items-center gap-[10px]">
+                  <div className="inline-flex h-12 w-full items-center justify-between px-3.5 max-md:h-auto max-md:px-0">
+                    <button type="button" onClick={() => toggleTerm("event")} className="flex items-center gap-[10px] max-md:gap-2">
                       <CheckIcon checked={terms.event} />
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.event ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           [선택]
                         </span>
-                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] ${terms.event ? "text-neutral-400" : "text-zinc-700"}`}>
+                        <span className={`font-['SUIT'] text-[18px] font-normal leading-[150%] max-md:text-[13px] max-md:leading-[21px] ${terms.event ? "text-neutral-400 max-md:font-medium" : "text-zinc-700"}`}>
                           이벤트 및 혜택 안내 메일 및 SMS 수신
                         </span>
                       </div>
@@ -477,7 +485,7 @@ const SignupPage = () => {
                           },
                         })
                       }
-                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline"
+                      className="font-['SUIT'] text-[16px] font-normal leading-[150%] text-zinc-700 underline max-md:text-[10px]"
                     >
                       보기
                     </button>
@@ -495,7 +503,8 @@ const SignupPage = () => {
       !isNextEnabled || isSubmitting ? "!bg-[#1F212A]" : "!bg-[#917DEC]"
     } max-md:!h-[48px] max-md:!text-[16px] max-md:!tracking-[-0.48px]`}
   >
-    다음
+    <span className="max-md:hidden">다음</span>
+    <span className="hidden max-md:inline">{step === "terms" ? "동의하고 가입하기" : "다음"}</span>
   </PrimaryButton>
 </div>
         </div>

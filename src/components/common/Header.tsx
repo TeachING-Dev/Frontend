@@ -86,7 +86,7 @@ const Header = ({
         </button>
       ) : (
         <div
-          className="size-10"
+          className="w-[84px]"
           aria-hidden="true"
         />
       )}
@@ -95,7 +95,7 @@ const Header = ({
         type="button"
         aria-label="홈으로 이동"
         onClick={handleLogoClick}
-        className="absolute left-1/2 -translate-x-1/2 transition hover:opacity-80"
+        className="absolute left-[50vw] -translate-x-1/2 transition hover:opacity-80"
       >
         <img
           src="/logo/logo2.png"
