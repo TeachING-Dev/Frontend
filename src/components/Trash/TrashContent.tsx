@@ -285,17 +285,13 @@ const TrashContent = () => {
       const label =
         selectedCategory === "folder"
           ? "폴더"
-          : selectedCategory === "data"
-            ? "자료"
-            : "티칭맵";
+          : "티칭맵";
 
       showToast(
         result.failedIds.length > 0
           ? selectedCategory === "folder"
             ? `${result.restoredIds.length}개 폴더 복구 완료, 이름이 중복된 ${result.failedIds.length}개 폴더 복구 실패`
-            : selectedCategory === "data"
-              ? "자료가 있던 폴더를 먼저 복구해주세요."
-              : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
+            : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
           : selectedCategory === "folder"
             ? "해당 폴더가 복구되었습니다."
             : `선택한 ${label}이 복구되었습니다.`,

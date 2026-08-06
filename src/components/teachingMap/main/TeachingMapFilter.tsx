@@ -36,7 +36,7 @@ const TeachingMapFilter = ({
     <div
       role="tablist"
       aria-label="티칭맵 학습 유형"
-      className="flex h-[50px] w-[352px] items-center gap-[13px] rounded-[10px] bg-[#13151F] px-[10px] py-[5px]"
+      className="flex h-[40px] w-[230px] items-center gap-[5px] rounded-[5px] bg-[#13151F] p-[5px] lg:h-[50px] lg:w-[352px] lg:gap-[13px] lg:rounded-[10px] lg:px-[10px] lg:py-[5px]"
     >
       {FILTER_ITEMS.map((filterItem) => {
         const isActive =
@@ -52,11 +52,11 @@ const TeachingMapFilter = ({
               onFilterChange(filterItem.value)
             }
             className={[
-              "flex h-[40px] w-[102px] shrink-0 items-center justify-center",
-              "rounded-[5px] p-[10px]",
+              "flex h-[30px] w-[70px] shrink-0 items-center justify-center lg:h-[40px] lg:w-[102px]",
+              "rounded-[5px] px-[5px] lg:p-[10px]",
               "whitespace-nowrap",
-              "font-['SUIT'] text-[18px] font-medium not-italic",
-              "leading-[27px] tracking-[-0.54px]",
+              "font-['SUIT'] text-[14px] font-normal not-italic lg:text-[18px] lg:font-medium",
+              "leading-[150%] tracking-[-0.35px] lg:leading-[27px] lg:tracking-[-0.54px]",
               "transition-colors duration-150",
               isActive
                 ? "bg-[#917DEC] text-[#F5F2FF]"

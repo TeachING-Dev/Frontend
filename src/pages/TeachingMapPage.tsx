@@ -417,7 +417,7 @@ const TeachingMapPage = () => {
           </div>
 
           {filteredTeachingMaps.length > 0 && (
-            <div className="pb-[77px]">
+            <div className="fixed inset-x-0 bottom-[122px] z-40 [&_nav]:mt-0 lg:static lg:pb-[77px]">
               <Pagination
                 currentPage={activePage}
                 totalPages={totalPages}
