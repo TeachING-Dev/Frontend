@@ -22,15 +22,7 @@ const TermsMarketingPage = () => {
 
   return (
     <main className="min-h-screen overflow-y-auto bg-[#0B0A18] text-[#D0D0D2]">
-      <header className="sticky top-0 z-20 flex h-[64px] items-center justify-center bg-[#090713] shadow-[0_0_80px_rgba(145,125,236,0.1)]">
-        <img
-          src="/logo/logo2.png"
-          alt="TeachING"
-          className="h-auto w-[170px]"
-        />
-      </header>
-
-      <section className="mx-auto w-full max-w-[1440px] px-[120px] py-[7.5px]">
+      <section className="mx-auto w-full max-w-[1440px] px-[120px] py-0 max-md:px-4">
         <button
           type="button"
           onClick={() =>
@@ -43,25 +35,31 @@ const TermsMarketingPage = () => {
               },
             })
           }
-          className="mb-[25.5px] mt-[21px] flex items-center gap-[7.5px] font-['SUIT'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]"
+          className="mb-[25.5px] mt-[33px] flex items-center gap-[7.5px] font-['SUIT'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8] max-md:ml-1 max-md:mt-[72px] max-md:gap-2 max-md:text-[16px] max-md:font-normal max-md:tracking-[-0.48px]"
         >
           <img
             src="/Chevron-down.svg"
             alt=""
             aria-hidden="true"
-            className="size-12"
+            className="size-12 max-md:hidden"
+          />
+          <img
+            src="/Chevron-down-mobile.svg"
+            alt=""
+            aria-hidden="true"
+            className="hidden size-6 max-md:block"
           />
           <span>[TeachING] 개인정보 마케팅 활용 동의</span>
         </button>
 
-        <div className="inline-flex self-stretch items-center justify-start gap-[7.5px] px-0 py-[7.5px]">
-          <h1 className="font-['SUIT'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-neutral-300">
+        <div className="inline-flex self-stretch items-center justify-start gap-[7.5px] px-0 py-[7.5px] max-md:py-0">
+          <h1 className="font-['SUIT'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-neutral-300 max-md:text-[16px] max-md:font-normal max-md:tracking-[-0.48px]">
             회사는 회원에게 최적화된 맞춤형 서비스, 콘텐츠 추천 및 프로모션 정보를 제공하기 위해 아래와 같이 개인정보를 수집·이용하고자 합니다.
           </h1>
         </div>
 
-        <article className="mt-6 w-full pb-[72px]">
-          <p className="whitespace-pre-wrap font-['SUIT'] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-zinc-500">
+        <article className="mt-6 w-full pb-[72px] max-md:mt-5 max-md:pb-10">
+          <p className="whitespace-pre-wrap font-['SUIT'] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-zinc-500 max-md:text-[13px] max-md:font-normal max-md:leading-[150%] max-md:tracking-[-0.39px]">
             {marketingTermsContent}
           </p>
         </article>

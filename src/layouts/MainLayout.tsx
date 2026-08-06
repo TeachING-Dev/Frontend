@@ -8,12 +8,16 @@ type MainLayoutProps = {
   showRightIcons?: boolean;
   insetMenu?: boolean;
   showMenuIcon?: boolean;
+  hideHeaderOnMobile?: boolean;
+  hideMobileNav?: boolean;
 };
 
 const MainLayout = ({
   showRightIcons = true,
   insetMenu = false,
   showMenuIcon = true,
+  hideHeaderOnMobile = false,
+  hideMobileNav = false,
 }: MainLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
@@ -41,15 +45,18 @@ const MainLayout = ({
       <Sidebar
         open={isSidebarOpen}
         onClose={handleCloseSidebar}
+        hideMobileNav={hideMobileNav}
       />
 
       {/* 헤더 아래부터 화면에 고정되는 그라데이션 */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-0 top-[64px] z-0 bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)]"
+        className={`pointer-events-none fixed inset-x-0 bottom-0 z-0 bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)] ${
+          hideHeaderOnMobile ? "top-0 md:top-[64px]" : "top-[64px]"
+        }`}
       />
 
-      <main className="relative z-10 min-h-screen pt-16">
+      <main className={`relative z-10 min-h-screen ${hideHeaderOnMobile ? "lg:pt-16" : "pt-16"}`}>
         <Outlet />
       </main>
     </div>

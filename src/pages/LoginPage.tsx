@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import { reissue } from "../apis/auth";
+import AuthBrandLogo from "../components/auth/AuthBrandLogo";
 import AuthPageLayout from "../components/auth/AuthPageLayout";
 import {
   getStoredAccessToken,
@@ -67,7 +68,7 @@ const LoginPage = () => {
 
   return (
     <AuthPageLayout contentClassName="relative min-h-screen">
-      <div className="absolute left-1/2 top-0 h-[1019.6px] w-full origin-top -translate-x-1/2 scale-[0.8]">
+      <div className="absolute left-1/2 top-0 hidden h-[1019.6px] w-full origin-top -translate-x-1/2 scale-[0.8] md:block">
         {/* 로고: 원본 기준 상단 206px */}
         <div className="absolute left-1/2 top-[190px] -translate-x-1/2">
           <img
@@ -96,7 +97,7 @@ const LoginPage = () => {
                   <img
                     src="/KakaoLoginIcon.svg"
                     alt=""
-                    className="h-[30px] w-[30px] shrink-0"
+                    className="h-[30px] w-[30px] translate-y-[2px] shrink-0"
                   />
                 </span>
 
@@ -122,6 +123,52 @@ const LoginPage = () => {
               </span>
             </button>
           </div>
+        </div>
+      </div>
+
+      <div className="absolute inset-0 md:hidden">
+        <div className="absolute left-1/2 top-[193px] -translate-x-1/2 [&>div>div>svg]:h-[36.1px] [&>div>div>svg]:w-[214.54px] [&>div>img]:h-[47px] [&>div>img]:w-[42px]">
+          <AuthBrandLogo gapClassName="gap-7" />
+        </div>
+
+        <div className="absolute bottom-[75px] left-1/2 flex w-[361px] -translate-x-1/2 flex-col gap-[12px]">
+          <p className="mb-[8px] text-center font-['SUIT'] text-[14px] font-normal leading-[150%] tracking-[-0.42px] text-[#F5F2FF]">
+            간편 로그인으로
+            <br />
+            바로 학습을 시작해보세요!
+          </p>
+
+          <button
+            type="button"
+            onClick={handleKakaoLogin}
+            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
+          >
+            <span className="flex w-[30px] justify-center">
+              <img
+                src="/Kakao.svg"
+                alt=""
+                className="h-[30px] w-[30px] translate-y-[2px] shrink-0"
+              />
+            </span>
+
+            <span>카카오로 시작하기</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
+          >
+            <span className="flex w-[30px] justify-center">
+              <img
+                src="/Google.svg"
+                alt=""
+                className="h-[19.7px] w-[19.7px] shrink-0"
+              />
+            </span>
+
+            <span>Google로 시작하기</span>
+          </button>
         </div>
       </div>
     </AuthPageLayout>
