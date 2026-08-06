@@ -94,7 +94,7 @@ const LoginPage = () => {
               <span className="inline-flex -translate-x-[4px] items-center gap-[8px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center">
                   <img
-                    src="/Kakao.svg"
+                    src="/KakaoLoginIcon.svg"
                     alt=""
                     className="h-[30px] w-[30px] shrink-0"
                   />

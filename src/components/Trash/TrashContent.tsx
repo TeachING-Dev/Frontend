@@ -85,6 +85,7 @@ const TrashContent = () => {
             result.content.map((folder) => ({
               id: folder.folderId,
               name: folder.name,
+              itemCount: folder.materialCount,
               deletedAt: folder.deletedAt,
             })),
           );
@@ -258,36 +259,42 @@ const TrashContent = () => {
     if (selectedItemIds.length === 0) return;
 
     try {
-      const selectedDataTitles = dataList
-        .filter((item) => selectedItemIds.includes(item.id))
-        .map((item) => item.title);
+      if (selectedCategory === "data") {
+        const result = await restoreMaterials(selectedItemIds);
+        const restoredFolderNames = [
+          ...new Set(result.restored.map((item) => item.folderName)),
+        ];
+
+        showToast(
+          result.failedIds.length > 0
+            ? "자료가 있던 폴더를 먼저 복구해주세요."
+            : restoredFolderNames.length === 1
+              ? `자료가 ${restoredFolderNames[0]}(으)로 복구되었습니다.`
+              : `${result.restored.length}개 자료가 복구되었습니다.`,
+        );
+        setIsRestoreMode(false);
+        setSelectedItemIds([]);
+        reloadCurrentPage();
+        return;
+      }
+
       const result =
         selectedCategory === "folder"
           ? await restoreFolders(selectedItemIds)
-          : selectedCategory === "data"
-            ? await restoreMaterials(selectedItemIds)
-            : await restoreTeachingMaps(selectedItemIds);
+          : await restoreTeachingMaps(selectedItemIds);
       const label =
         selectedCategory === "folder"
           ? "폴더"
-          : selectedCategory === "data"
-            ? "자료"
-            : "티칭맵";
+          : "티칭맵";
 
       showToast(
         result.failedIds.length > 0
           ? selectedCategory === "folder"
             ? `${result.restoredIds.length}개 폴더 복구 완료, 이름이 중복된 ${result.failedIds.length}개 폴더 복구 실패`
-            : selectedCategory === "data"
-              ? "자료가 있던 폴더를 먼저 복구해주세요."
-              : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
+            : `${result.restoredIds.length}개 ${label} 복구 완료, ${result.failedIds.length}개 복구 실패`
           : selectedCategory === "folder"
             ? "해당 폴더가 복구되었습니다."
-            : selectedCategory === "data"
-              ? selectedDataTitles.length > 1
-                ? `‘${selectedDataTitles[0]}’ 외 ${selectedDataTitles.length - 1}개 자료가 복구되었습니다.`
-                : `‘${selectedDataTitles[0] ?? "선택한 자료"}’ 자료가 복구되었습니다.`
-              : `선택한 ${label}이 복구되었습니다.`,
+            : `선택한 ${label}이 복구되었습니다.`,
       );
       setIsRestoreMode(false);
       setSelectedItemIds([]);
@@ -315,7 +322,7 @@ const TrashContent = () => {
           isRestoreMode={isRestoreMode}
           selectedItemIds={selectedItemIds}
           onSelect={handleItemSelect}
-          onOpen={(folderId) => navigate(`/archive/folder/${folderId}`)}
+          onOpen={(folderId) => navigate(`/trash/folders/${folderId}`)}
         />
       );
     }

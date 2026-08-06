@@ -1,4 +1,9 @@
-﻿import { useCallback, useEffect, useState } from "react";
+﻿import axios from "axios";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import {
   createFolder,
@@ -12,50 +17,89 @@ import ArchiveFolderGrid from "../components/archive/ArchiveFolderGrid";
 import ArchiveFolderList from "../components/archive/ArchiveFolderList";
 import ArchiveHeader from "../components/archive/ArchiveHeader";
 import EmptyArchiveSearch from "../components/archive/EmptyFolderSearch";
+import CreateErrorModal from "../components/archive/modal/CreateErrorModal";
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
 import PageContainer from "../components/common/PageContainer";
 import Pagination from "../components/common/Pagination";
 
+type FolderErrorResponse = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: null;
+};
+
 const ArchivePage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
   const FOLDERS_PER_PAGE = 9;
-  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
 
-  const [sort, setSort] = useState<FolderSort>("recent");
+  const [viewMode, setViewMode] =
+    useState<"list" | "grid">("grid");
 
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [sort, setSort] =
+    useState<FolderSort>("recent");
 
-  const [searchInput, setSearchInput] = useState("");
+  const [folders, setFolders] =
+    useState<Folder[]>([]);
 
-  const [keyword, setKeyword] = useState("");
+  const [searchInput, setSearchInput] =
+    useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [keyword, setKeyword] =
+    useState("");
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] =
+    useState(true);
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
-  const [toastMessage, setToastMessage] = useState("");
+  const [
+    isCreateModalOpen,
+    setIsCreateModalOpen,
+  ] = useState(false);
 
-  const [trashedFolderId, setTrashedFolderId] = useState<number | null>(null);
+  const [
+    isCreateErrorModalOpen,
+    setIsCreateErrorModalOpen,
+  ] = useState(false);
 
-  const fetchFolders = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage("");
+  const [toastMessage, setToastMessage] =
+    useState("");
 
-      const folderList = await getFolders(sort);
+  const [
+    trashedFolderId,
+    setTrashedFolderId,
+  ] = useState<number | null>(null);
 
-      setFolders(folderList);
-    } catch (error) {
-      console.error("폴더 목록 조회 실패:", error);
+  const fetchFolders = useCallback(
+    async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage("");
 
-      setErrorMessage("폴더 목록을 불러오지 못했어요.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sort]);
+        const folderList =
+          await getFolders(sort);
+
+        setFolders(folderList);
+      } catch (error) {
+        console.error(
+          "폴더 목록 조회 실패:",
+          error,
+        );
+
+        setErrorMessage(
+          "폴더 목록을 불러오지 못했어요.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [sort],
+  );
 
   useEffect(() => {
     const initializeFolders = async () => {
@@ -65,7 +109,9 @@ const ArchivePage = () => {
     void initializeFolders();
   }, [fetchFolders]);
 
-  const handleSearchKeywordChange = (value: string) => {
+  const handleSearchKeywordChange = (
+    value: string,
+  ) => {
     setSearchInput(value);
 
     if (!value.trim()) {
@@ -77,48 +123,118 @@ const ArchivePage = () => {
     setKeyword(searchInput.trim());
   };
 
-  const filteredFolders = folders.filter((folder) =>
-    folder.folderName.toLowerCase().includes(keyword.toLowerCase()),
+  const filteredFolders = folders.filter(
+    (folder) =>
+      folder.folderName
+        .toLowerCase()
+        .includes(keyword.toLowerCase()),
   );
+
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredFolders.length / FOLDERS_PER_PAGE),
-  );
-  const activePage = Math.min(currentPage, totalPages);
-  const visibleFolders = filteredFolders.slice(
-    (activePage - 1) * FOLDERS_PER_PAGE,
-    activePage * FOLDERS_PER_PAGE,
+    Math.ceil(
+      filteredFolders.length /
+        FOLDERS_PER_PAGE,
+    ),
   );
 
-  const handleCreateFolder = async (folderName: string) => {
-    await createFolder(folderName);
+  const activePage = Math.min(
+    currentPage,
+    totalPages,
+  );
 
-    await fetchFolders();
+  const visibleFolders =
+    filteredFolders.slice(
+      (activePage - 1) *
+        FOLDERS_PER_PAGE,
+      activePage * FOLDERS_PER_PAGE,
+    );
 
-    setToastMessage("새로운 폴더가 생성되었습니다");
+  const handleCreateFolder = async (
+    folderName: string,
+  ) => {
+    try {
+      await createFolder(folderName);
+
+      await fetchFolders();
+
+      setToastMessage(
+        "새로운 폴더가 생성되었습니다",
+      );
+    } catch (error) {
+      console.error(
+        "폴더 생성 실패:",
+        error,
+      );
+
+      if (
+        axios.isAxiosError<FolderErrorResponse>(
+          error,
+        )
+      ) {
+        const code =
+          error.response?.data?.code;
+
+        const serverMessage =
+          error.response?.data?.message;
+
+        if (code === "FOLDER4004") {
+          setIsCreateModalOpen(false);
+          setIsCreateErrorModalOpen(true);
+          return;
+        }
+
+        throw new Error(
+          typeof serverMessage === "string"
+            ? serverMessage
+            : "폴더를 생성하지 못했습니다.",
+          { cause: error },
+        );
+      }
+
+      throw new Error(
+        "폴더를 생성하지 못했습니다.",
+        { cause: error },
+      );
+    }
   };
 
-  const handleMoveToTrash = async (folderId: number) => {
+  const handleMoveToTrash = async (
+    folderId: number,
+  ) => {
     try {
-      const result = await moveFolderToTrash(folderId);
+      const result =
+        await moveFolderToTrash(folderId);
 
       if (!result.isDeleted) {
-        setToastMessage("폴더를 휴지통으로 이동하지 못했습니다.");
+        setToastMessage(
+          "폴더를 휴지통으로 이동하지 못했습니다.",
+        );
         return;
       }
 
       setFolders((prev) =>
-        prev.filter((folder) => folder.folderId !== folderId),
+        prev.filter(
+          (folder) =>
+            folder.folderId !== folderId,
+        ),
       );
 
       // 실행취소를 위해 마지막으로 삭제한 폴더 ID 저장
       setTrashedFolderId(folderId);
 
-      setToastMessage("폴더가 휴지통으로 이동되었습니다");
+      setToastMessage(
+        "폴더가 휴지통으로 이동되었습니다",
+      );
     } catch (error) {
-      console.error("폴더 휴지통 이동 실패:", error);
+      console.error(
+        "폴더 휴지통 이동 실패:",
+        error,
+      );
 
-      setToastMessage("폴더를 휴지통으로 이동하지 못했습니다.");
+      setToastMessage(
+        "폴더를 휴지통으로 이동하지 못했습니다.",
+      );
     }
   };
 
@@ -126,18 +242,27 @@ const ArchivePage = () => {
     if (trashedFolderId === null) return;
 
     try {
-      await restoreFolder(trashedFolderId);
+      await restoreFolder(
+        trashedFolderId,
+      );
 
       // 복구 성공 후 서버에서 목록 다시 조회
       await fetchFolders();
 
       setTrashedFolderId(null);
 
-      setToastMessage("폴더가 복구되었습니다.");
+      setToastMessage(
+        "폴더가 복구되었습니다.",
+      );
     } catch (error) {
-      console.error("폴더 복구 실패:", error);
+      console.error(
+        "폴더 복구 실패:",
+        error,
+      );
 
-      setToastMessage("폴더를 복구하지 못했습니다.");
+      setToastMessage(
+        "폴더를 복구하지 못했습니다.",
+      );
     }
   };
 
@@ -159,36 +284,55 @@ const ArchivePage = () => {
         <PageContainer>
           <ArchiveHeader
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
+            onViewModeChange={
+              setViewMode
+            }
             sort={sort}
             onSortChange={setSort}
             searchKeyword={searchInput}
-            onSearchKeywordChange={handleSearchKeywordChange}
+            onSearchKeywordChange={
+              handleSearchKeywordChange
+            }
             onSearch={handleSearch}
           />
 
           <div className="min-h-[540px]">
             {isLoading ? (
               <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
-                폴더 목록을 불러오는 중이에요.
+                폴더 목록을 불러오는
+                중이에요.
               </div>
             ) : errorMessage ? (
               <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
                 {errorMessage}
               </div>
-            ) : keyword && filteredFolders.length === 0 ? (
+            ) : keyword &&
+              filteredFolders.length ===
+                0 ? (
               <EmptyArchiveSearch />
             ) : viewMode === "list" ? (
               <ArchiveFolderList
                 folders={visibleFolders}
-                onAddFolder={() => setIsCreateModalOpen(true)}
-                onMoveToTrash={handleMoveToTrash}
+                onAddFolder={() =>
+                  setIsCreateModalOpen(
+                    true,
+                  )
+                }
+                onMoveToTrash={
+                  handleMoveToTrash
+                }
               />
             ) : (
               <ArchiveFolderGrid
                 folders={visibleFolders}
-                onAddFolder={() => setIsCreateModalOpen(true)}
-                onMoveToTrash={handleMoveToTrash}
+                onAddFolder={() =>
+                  setIsCreateModalOpen(
+                    true,
+                  )
+                }
+                onMoveToTrash={
+                  handleMoveToTrash
+                }
               />
             )}
           </div>
@@ -205,16 +349,34 @@ const ArchivePage = () => {
 
       {isCreateModalOpen && (
         <CreateFolderModal
-          onClose={() => setIsCreateModalOpen(false)}
+          onClose={() =>
+            setIsCreateModalOpen(false)
+          }
           onCreate={handleCreateFolder}
+        />
+      )}
+
+      {isCreateErrorModalOpen && (
+        <CreateErrorModal
+          onClose={() =>
+            setIsCreateErrorModalOpen(false)
+          }
         />
       )}
 
       {toastMessage && (
         <Toast
           message={toastMessage}
-          actionText={trashedFolderId !== null ? "실행취소" : undefined}
-          onAction={trashedFolderId !== null ? handleUndoTrash : undefined}
+          actionText={
+            trashedFolderId !== null
+              ? "실행취소"
+              : undefined
+          }
+          onAction={
+            trashedFolderId !== null
+              ? handleUndoTrash
+              : undefined
+          }
         />
       )}
     </>

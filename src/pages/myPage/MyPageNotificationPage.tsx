@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
 
-import {
-  getMyProfile,
-  updateNotifications,
-} from "../../apis/users";
+import { getMyProfile, updateNotifications } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import NotificationToggle from "../../components/myPage/NotificationToggle";
 
 const MyPageNotificationPage = () => {
-  const [isTeachingMapNotificationEnabled, setIsTeachingMapNotificationEnabled] =
-    useState(true);
-  const [isSaving, setIsSaving] =
-    useState(false);
+  const [
+    isTeachingMapNotificationEnabled,
+    setIsTeachingMapNotificationEnabled,
+  ] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const loadNotificationSetting = async () => {
       try {
         const profile = await getMyProfile();
-        setIsTeachingMapNotificationEnabled(
-          profile.notificationEnabled,
-        );
+        setIsTeachingMapNotificationEnabled(profile.notificationEnabled);
       } catch (error) {
         console.error(error);
       }
@@ -28,15 +24,12 @@ const MyPageNotificationPage = () => {
     void loadNotificationSetting();
   }, []);
 
-  const handleNotificationChange = async (
-    enabled: boolean,
-  ) => {
+  const handleNotificationChange = async (enabled: boolean) => {
     if (isSaving) {
       return;
     }
 
-    const previousValue =
-      isTeachingMapNotificationEnabled;
+    const previousValue = isTeachingMapNotificationEnabled;
 
     setIsTeachingMapNotificationEnabled(enabled);
 
@@ -44,16 +37,11 @@ const MyPageNotificationPage = () => {
       setIsSaving(true);
       await updateNotifications(enabled);
 
-      const savedProfile =
-        await getMyProfile();
+      const savedProfile = await getMyProfile();
 
-      setIsTeachingMapNotificationEnabled(
-        savedProfile.notificationEnabled,
-      );
+      setIsTeachingMapNotificationEnabled(savedProfile.notificationEnabled);
     } catch (error) {
-      setIsTeachingMapNotificationEnabled(
-        previousValue,
-      );
+      setIsTeachingMapNotificationEnabled(previousValue);
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -61,7 +49,7 @@ const MyPageNotificationPage = () => {
   };
 
   return (
-    <main className="min-h-full px-[160px] pb-[120px] pt-[40px]">
+    <main className="min-h-full px-[220px] pb-[120px] pt-[40px]">
       <MyPageBackHeader title="알림 설정" />
 
       <section className="mt-[50px] flex h-[60px] w-[640px] items-center justify-between rounded-[5px] bg-[#1F212A] px-[20px]">

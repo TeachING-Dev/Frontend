@@ -1,36 +1,22 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ArchiveDataSummaryProps = {
   summary: string;
-  onUpdateSummary: (
-    summary: string,
-  ) => Promise<void>;
+  onUpdateSummary: (summary: string) => Promise<void>;
 };
 
 const ArchiveDataSummary = ({
   summary,
   onUpdateSummary,
 }: ArchiveDataSummaryProps) => {
-  const [isEditing, setIsEditing] =
-    useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const [
-    editedSummary,
-    setEditedSummary,
-  ] = useState(summary);
+  const [editedSummary, setEditedSummary] = useState(summary);
 
-  const textareaRef =
-    useRef<HTMLTextAreaElement | null>(
-      null,
-    );
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const resizeTextarea = () => {
-    const textarea =
-      textareaRef.current;
+    const textarea = textareaRef.current;
 
     if (!textarea) {
       return;
@@ -38,8 +24,7 @@ const ArchiveDataSummary = ({
 
     textarea.style.height = "auto";
 
-    textarea.style.height =
-      `${textarea.scrollHeight}px`;
+    textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
   useEffect(() => {
@@ -57,21 +42,15 @@ const ArchiveDataSummary = ({
     setEditedSummary(summary);
   };
 
-  const handleComplete =
-    async () => {
-      try {
-        await onUpdateSummary(
-          editedSummary,
-        );
+  const handleComplete = async () => {
+    try {
+      await onUpdateSummary(editedSummary);
 
-        setIsEditing(false);
-      } catch (error) {
-        console.error(
-          "요약 수정 실패:",
-          error,
-        );
-      }
-    };
+      setIsEditing(false);
+    } catch (error) {
+      console.error("요약 수정 실패:", error);
+    }
+  };
 
   const handleCancel = () => {
     setEditedSummary(summary);
@@ -84,7 +63,7 @@ const ArchiveDataSummary = ({
       <div className="mb-[30px] flex items-center justify-between">
         <div className="flex items-center gap-[8px]">
           <img
-            src="/icon/AI.png"
+            src="/icon/AI.svg"
             alt="AI 요약"
             aria-hidden="true"
             className="h-[24px] w-[24px] object-contain"
@@ -176,11 +155,7 @@ const ArchiveDataSummary = ({
           <textarea
             ref={textareaRef}
             value={editedSummary}
-            onChange={(event) =>
-              setEditedSummary(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setEditedSummary(event.target.value)}
             rows={1}
             autoFocus
             className="w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#D9CDFF] outline-none"
