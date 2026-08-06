@@ -921,8 +921,8 @@ const ArchiveFolderPage = () => {
 
   return (
     <>
-      <main className="py-10">
-        <div className="mx-auto w-[1120px]">
+      <main className="px-[20px] py-[10px] pb-[140px] lg:px-0 lg:py-10 lg:pb-10">
+        <div className="mx-auto w-full lg:w-[1120px]">
           <ArchiveFolderHeader
             folderName={
               folder.folderName

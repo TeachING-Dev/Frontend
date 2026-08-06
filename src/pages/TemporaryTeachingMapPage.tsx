@@ -14,6 +14,7 @@ import TemporaryTeachingMapHeader from "../components/teachingMap/drafts/Tempora
 import TemporaryTeachingMapList from "../components/teachingMap/drafts/TemporaryTeachingMapList";
 import TeachingMapDeleteModal from "../components/teachingMap/main/TeachingMapDeleteModal";
 import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
+import TeachingMapEmpty from "../components/teachingMap/main/TeachingMapEmpty";
 import TeachingMapFilter, {
   type TeachingMapFilterType,
 } from "../components/teachingMap/main/TeachingMapFilter";
@@ -310,7 +311,7 @@ const TemporaryTeachingMapPage = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 py-10">
+      <PageContainer className="relative z-10 flex min-h-[calc(100dvh-64px)] flex-col pb-[122px] pt-10 lg:block lg:min-h-0 lg:py-10">
         <TemporaryTeachingMapHeader />
 
         <div className="mt-5">
@@ -353,23 +354,15 @@ const TemporaryTeachingMapPage = () => {
               onTeachingMapSelect={handleTeachingMapSelect}
             />
           ) : (
-            <div className="flex h-[360px] w-full flex-col items-center justify-center lg:h-[480px]">
-              <img
-                src="/character/NotFound.png"
-                alt=""
-                aria-hidden="true"
-                draggable={false}
-                className="h-[120px] w-[126px] select-none object-contain lg:h-[224px] lg:w-[235px]"
-              />
-              <p className="mt-[10px] font-['SUIT'] text-[14px] font-medium leading-[21px] tracking-[-0.35px] text-[#42444C] lg:mt-0 lg:text-[24px] lg:font-semibold lg:leading-7 lg:tracking-[-0.6px]">
-                임시저장한 티칭맵이 없습니다.
-              </p>
-            </div>
+            <TeachingMapEmpty
+              imageAlt="임시보관함 빈 상태"
+              message="임시저장한 티칭맵이 없습니다."
+            />
           )}
         </div>
 
         {filteredTeachingMaps.length > 0 && (
-          <div className="pb-[77px]">
+          <div className="mt-auto pt-[70px] [&_nav]:mt-0 lg:mt-0 lg:pb-[77px] lg:pt-0">
             <Pagination
               currentPage={activePage}
               totalPages={totalPages}

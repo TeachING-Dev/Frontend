@@ -156,19 +156,21 @@ function App() {
               path="/mypage/withdrawal-complete"
               element={<MyPageWithdrawalCompletePage />}
             />
-          </Route>
 
-          {/* 티칭맵 화면: 모바일 하단 내비게이션 미노출 */}
-          <Route element={<MainLayout hideMobileNav />}>
+            {/* 티칭맵: 콘텐츠 상세를 제외하면 모바일 하단 내비게이션 노출 */}
             <Route path="/teaching-map" element={<TeachingMapPage />} />
             <Route path="/teaching-map/create" element={<TeachingMapCreatePage />} />
             <Route path="/teaching-map/drafts" element={<TemporaryTeachingMapPage />} />
             <Route path="/teaching-map/drafts/:draftId/edit" element={<TeachingMapCreatePage />} />
+            <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
+          </Route>
+
+          {/* 티칭맵 콘텐츠 상세에서만 모바일 하단 내비게이션 미노출 */}
+          <Route element={<MainLayout hideMobileNav />}>
             <Route
               path="/teaching-map/:teachingMapId/:contentId"
               element={<TeachingMapContentPage />}
             />
-            <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
           </Route>
 
           {/* 챗봇 전용 레이아웃 */}

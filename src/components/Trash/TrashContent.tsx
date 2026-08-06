@@ -85,7 +85,7 @@ const TrashContent = () => {
             result.content.map((folder) => ({
               id: folder.folderId,
               name: folder.name,
-              itemCount: Number(folder.materialCount ?? 0),
+              itemCount: folder.materialCount,
               deletedAt: folder.deletedAt,
             })),
           );
@@ -353,17 +353,17 @@ const TrashContent = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[296px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 pb-[120px] pt-10">
+      <PageContainer className="relative z-10 flex min-h-[calc(100dvh-64px)] flex-col pb-[122px] pt-10 lg:block lg:min-h-0 lg:pb-[120px]">
         <TrashHeader />
 
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-between gap-[6px] lg:gap-0">
           <TrashCategoryTabs
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
 
           {!isRestoreMode && (
-            <div className="flex items-center gap-[10px]">
+            <div className="flex min-w-0 shrink-0 items-center gap-[10px]">
               <TrashSortDropdown
                 sortType={sortType}
                 onSortChange={handleSortChange}
@@ -372,19 +372,20 @@ const TrashContent = () => {
               {!isEmpty && !loadError && (
                 <button
                   type="button"
+                  aria-label="복구하기"
                   onClick={() => {
                     setIsRestoreMode(true);
                     setSelectedItemIds([]);
                   }}
-                  className="flex h-10 w-[147px] items-center justify-center gap-2 rounded-[5px] px-2 py-1 font-suit text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] hover:bg-white/5"
+                  className="flex h-[35px] w-[35px] shrink-0 items-center justify-center rounded-[5px] font-suit text-[#D0D0D2] hover:bg-white/5 lg:h-10 lg:w-[147px] lg:gap-2 lg:px-2 lg:py-1 lg:text-[20px] lg:font-medium lg:leading-[30px] lg:tracking-[-0.6px]"
                 >
                   <img
                     src="/icon/flip-left.svg"
                     alt=""
                     aria-hidden="true"
-                    className="h-6 w-6 shrink-0"
+                    className="h-4 w-4 shrink-0 lg:h-6 lg:w-6"
                   />
-                  복구하기
+                  <span className="sr-only lg:not-sr-only">복구하기</span>
                 </button>
               )}
             </div>
@@ -408,21 +409,23 @@ const TrashContent = () => {
         <section
           className={
             isEmpty
-              ? "mt-[180px]"
+              ? "mt-5"
               : isRestoreMode
-                ? "mt-5 min-h-[540px]"
-                : "mt-10 min-h-[540px]"
+                ? "mt-5 lg:min-h-[540px]"
+                : "mt-10 lg:min-h-[540px]"
           }
         >
           {renderContent()}
         </section>
 
         {showPagination && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.max(1, pageState.totalPages)}
-            onPageChange={handlePageChange}
-          />
+          <div className="mt-auto pt-[70px] [&_nav]:mt-0 lg:mt-0 lg:pt-0">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.max(1, pageState.totalPages)}
+              onPageChange={handlePageChange}
+            />
+          </div>
         )}
       </PageContainer>
 

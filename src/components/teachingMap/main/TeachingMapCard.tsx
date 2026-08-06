@@ -145,7 +145,7 @@ const TeachingMapCard = ({
             </h2>
 
             {deletedAtLabel && (
-              <span className="shrink-0 font-['Montserrat'] text-[16px] font-normal italic leading-6 tracking-[-0.4px] text-[#F5F2FF]">
+              <span className="shrink-0 font-['Montserrat'] text-[8.5px] font-normal italic leading-[135%] tracking-[-0.2125px] text-[#F5F2FF] lg:text-[16px] lg:leading-[135%] lg:tracking-[-0.4px]">
                 {deletedAtLabel}
               </span>
             )}

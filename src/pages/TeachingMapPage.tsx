@@ -230,12 +230,14 @@ const TeachingMapPage = () => {
     (teachingMap) => teachingMap.id,
   );
 
-  const hasSelectedTeachingMaps = selectedTeachingMapIds.length > 0;
+  const isCurrentPageAllSelected =
+    visibleTeachingMapIds.length > 0 &&
+    visibleTeachingMapIds.every((id) => selectedTeachingMapIds.includes(id));
 
   const handleToggleSelectAll = () => {
     setSelectedTeachingMapIds((previousIds) => {
-      if (previousIds.length > 0) {
-        return [];
+      if (isCurrentPageAllSelected) {
+        return previousIds.filter((id) => !visibleTeachingMapIds.includes(id));
       }
 
       return Array.from(new Set([...previousIds, ...visibleTeachingMapIds]));
@@ -361,7 +363,7 @@ const TeachingMapPage = () => {
         ].join(" ")}
       />
 
-      <PageContainer className="relative z-10 py-10">
+      <PageContainer className="relative z-10 flex min-h-[calc(100dvh-64px)] flex-col pb-[122px] pt-10 lg:block lg:min-h-0 lg:py-10">
         <TeachingMapHeader />
 
         <TeachingMapTab
@@ -370,11 +372,11 @@ const TeachingMapPage = () => {
         />
 
         <>
-          <div className="mt-5 lg:mt-[55px]">
+          <div className="mt-[55px]">
             {isDeleteMode ? (
               <TeachingMapDeleteToolbar
                 selectedCount={selectedTeachingMapIds.length}
-                isAllSelected={hasSelectedTeachingMaps}
+                isAllSelected={isCurrentPageAllSelected}
                 actionLabel="휴지통으로 이동"
                 onToggleSelectAll={handleToggleSelectAll}
                 onDeleteClick={handleDeleteButtonClick}
@@ -396,7 +398,7 @@ const TeachingMapPage = () => {
             )}
           </div>
 
-          <div className="mt-5 flex min-h-[540px] flex-col">
+          <div className="mt-5 flex flex-col lg:min-h-[540px]">
             {loadError ? (
               <div className="flex h-[300px] items-center justify-center text-[18px] text-[#F07A7A]">
                 {loadError}
@@ -415,7 +417,7 @@ const TeachingMapPage = () => {
           </div>
 
           {filteredTeachingMaps.length > 0 && (
-            <div className="fixed inset-x-0 bottom-[122px] z-40 [&_nav]:mt-0 lg:static lg:pb-[77px]">
+            <div className="mt-auto pt-[70px] [&_nav]:mt-0 lg:static lg:mt-0 lg:pb-[77px] lg:pt-0">
               <Pagination
                 currentPage={activePage}
                 totalPages={totalPages}
