@@ -14,14 +14,28 @@ const TeachingMapHeader = () => {
   };
 
   return (
-    <section className="mb-10 flex items-start justify-between">
+    <section className="relative mb-[10px] flex items-start justify-between lg:mb-10">
+      <button
+        type="button"
+        aria-label="알림으로 이동"
+        onClick={() => navigate("/notifications")}
+        className="absolute right-0 top-[-44px] flex h-6 w-6 items-center justify-center lg:hidden"
+      >
+        <img
+          src="/icon/Alarm.svg"
+          alt=""
+          aria-hidden="true"
+          className="h-6 w-6 object-contain"
+        />
+      </button>
+
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-[5px]">
           <button
             type="button"
             aria-label="홈으로 이동"
             onClick={() => navigate("/")}
-            className="flex h-12 w-12 shrink-0 items-center justify-center"
+            className="hidden h-12 w-12 shrink-0 items-center justify-center lg:flex"
           >
             <img
               src={leftPointIcon}
@@ -31,27 +45,27 @@ const TeachingMapHeader = () => {
             />
           </button>
 
-          <h1 className="text-[36px] font-bold leading-[120%] tracking-[-1.08px] text-[#E8E8E8]">
+          <h1 className="text-[24px] font-medium leading-[150%] tracking-[-0.6px] text-[#FAFAFA] capitalize lg:text-[36px] lg:font-bold lg:leading-[120%] lg:tracking-[-1.08px] lg:text-[#E8E8E8]">
             티칭맵
           </h1>
         </div>
 
-        <p className="ml-[53px] text-[20px] font-semibold leading-[150%] tracking-[-0.72px] text-[#717379]">
+        <p className="whitespace-nowrap text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#A1A1A5] lg:ml-[53px] lg:text-[20px] lg:font-semibold lg:tracking-[-0.72px] lg:text-[#717379]">
           학습 로드맵을 만들고 관리하세요.
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="mt-[2px] flex items-center gap-1 lg:mt-0 lg:gap-3">
         <button
           type="button"
           onClick={handleCreateClick}
-          className="flex h-10 w-[147px] items-center justify-center gap-1 rounded-[5px] bg-[#917DEC] px-2 py-1 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#F5F2FF] transition hover:bg-[#8068E2]"
+          className="flex h-8 w-auto items-center justify-center gap-0 rounded-[5px] bg-[#917DEC] px-[5px] py-1 font-['SUIT'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#FAFAFA] transition hover:bg-[#8068E2] lg:h-10 lg:w-[147px] lg:gap-1 lg:px-2 lg:text-[18px] lg:leading-[27px] lg:tracking-[-0.54px] lg:text-[#F5F2FF]"
         >
           <img
             src="/add.svg"
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 shrink-0 object-contain"
+            className="h-4 w-4 shrink-0 object-contain lg:h-6 lg:w-6"
           />
 
           <span>새 티칭맵</span>
@@ -60,13 +74,13 @@ const TeachingMapHeader = () => {
         <button
           type="button"
           onClick={handleTemporarySaveClick}
-          className="flex h-10 w-[147px] items-center justify-center gap-1 rounded-[5px] bg-[#2B2C35] px-2 py-1 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#8D8E94] transition hover:bg-[#35363F]"
+          className="flex h-8 w-auto items-center justify-center gap-0 rounded-[5px] bg-[#2B2C35] px-[5px] py-1 font-['SUIT'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#717379] transition hover:bg-[#35363F] lg:h-10 lg:w-[147px] lg:gap-1 lg:px-2 lg:text-[18px] lg:leading-[27px] lg:tracking-[-0.54px] lg:text-[#8D8E94]"
         >
           <img
             src="/bookmark.svg"
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 shrink-0 object-contain"
+            className="h-4 w-4 shrink-0 object-contain lg:h-6 lg:w-6"
           />
 
           <span>임시저장</span>

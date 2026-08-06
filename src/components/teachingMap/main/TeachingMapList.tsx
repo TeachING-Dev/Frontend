@@ -16,7 +16,10 @@ const TeachingMapList = ({
   onTeachingMapSelect,
 }: TeachingMapListProps) => {
   return (
-    <section className="flex w-full flex-col gap-10" aria-label="티칭맵 목록">
+    <section
+      className="flex w-full flex-col gap-[10px] lg:gap-10"
+      aria-label="티칭맵 목록"
+    >
       {teachingMaps.map((teachingMap) => (
         <TeachingMapCard
           key={teachingMap.id}

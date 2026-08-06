@@ -11,6 +11,8 @@ interface SortDropdownProps<T extends string> {
   options: SortOption<T>[];
   onChange: (value: T) => void;
   widthClassName?: string;
+  triggerClassName?: string;
+  iconClassName?: string;
 }
 
 const SortDropdown = <T extends string>({
@@ -19,6 +21,8 @@ const SortDropdown = <T extends string>({
   options,
   onChange,
   widthClassName = "w-fit",
+  triggerClassName = "",
+  iconClassName = "",
 }: SortDropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -36,25 +40,19 @@ const SortDropdown = <T extends string>({
     document.addEventListener("pointerdown", handleOutsideClick);
 
     return () => {
-      document.removeEventListener(
-        "pointerdown",
-        handleOutsideClick,
-      );
+      document.removeEventListener("pointerdown", handleOutsideClick);
     };
   }, []);
 
   return (
-    <div
-      ref={dropdownRef}
-      className={`relative shrink-0 ${widthClassName}`}
-    >
+    <div ref={dropdownRef} className={`relative shrink-0 ${widthClassName}`}>
       <button
         type="button"
         aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
-        className="flex h-[30px] w-full items-center justify-center gap-[4px] bg-transparent font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2]"
+        className={`flex h-[30px] w-full items-center justify-center gap-[4px] bg-transparent font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] ${triggerClassName}`}
       >
         <span className="min-w-0 whitespace-nowrap">
           {selectedOption.label}
@@ -64,7 +62,7 @@ const SortDropdown = <T extends string>({
           src="/dropdown.svg"
           alt=""
           aria-hidden="true"
-          className={`h-5 w-5 shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
+          className={`h-5 w-5 shrink-0 ${iconClassName} ${isOpen ? "scale-[-1]" : ""}`}
         />
       </button>
 
