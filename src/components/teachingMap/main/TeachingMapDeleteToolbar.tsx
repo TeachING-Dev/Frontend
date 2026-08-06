@@ -20,7 +20,7 @@ const TeachingMapDeleteToolbar = ({
   return (
     <section
       aria-label="티칭맵 삭제 선택 도구"
-      className="flex w-full items-center justify-between py-[10px]"
+      className="flex w-full items-center justify-between py-[5px] lg:py-[10px]"
     >
       <div className="flex items-center gap-[10px]">
         <button
@@ -34,7 +34,7 @@ const TeachingMapDeleteToolbar = ({
           }
           onClick={onToggleSelectAll}
           className={[
-            "flex h-9 w-9 items-center justify-center rounded-[5px] border transition-colors",
+            "flex h-[25px] w-[25px] items-center justify-center rounded-[5px] border transition-colors lg:h-9 lg:w-9",
             isAllSelected
               ? "border-[#917DEC] bg-[#917DEC]"
               : "border-[#717379] bg-transparent hover:border-[#917DEC]",
@@ -42,8 +42,8 @@ const TeachingMapDeleteToolbar = ({
         >
           {isAllSelected && (
             <svg
-              width="36"
-              height="36"
+              width="25"
+              height="25"
               viewBox="0 0 36 36"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -63,20 +63,20 @@ const TeachingMapDeleteToolbar = ({
 
         <p
           aria-live="polite"
-          className="font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#C1AEFF]"
+          className="font-['SUIT'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#C1AEFF] lg:text-[20px] lg:leading-[30px] lg:tracking-[-0.6px]"
         >
           {selectedCount}개 선택됨
         </p>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-[10px] lg:gap-2">
         <button
           type="button"
           disabled={isDeleteDisabled}
           onClick={onDeleteClick}
           className={[
-            "flex h-[40px] w-[147px] flex-col items-start",
-            "gap-2 rounded-[5px] px-2 py-1",
+            "flex h-[26px] w-[95px] flex-col items-start lg:h-[40px] lg:w-[147px]",
+            "rounded-[5px] p-[5px] lg:gap-2 lg:px-2 lg:py-1",
             "transition-colors",
             isDeleteDisabled
               ? "cursor-not-allowed bg-[#2B2C35]"
@@ -86,8 +86,8 @@ const TeachingMapDeleteToolbar = ({
           <span
             className={[
               "flex flex-1 self-stretch items-center justify-center gap-2",
-              "text-center font-['SUIT'] text-[20px] font-medium",
-              "leading-[30px] tracking-[-0.6px]",
+              "whitespace-nowrap text-center font-['SUIT'] text-[12px] font-medium",
+              "leading-[16px] tracking-[-0.3px] lg:text-[20px] lg:leading-[30px] lg:tracking-[-0.6px]",
               isDeleteDisabled ? "text-[#717379]" : "text-white",
             ].join(" ")}
           >
@@ -98,9 +98,9 @@ const TeachingMapDeleteToolbar = ({
         <button
           type="button"
           onClick={onCancelClick}
-          className="flex h-[40px] w-[147px] flex-col items-start gap-2 rounded-[5px] bg-[#2B2C35] px-2 py-1 transition-colors hover:bg-[#353641]"
+          className="flex h-[26px] w-[95px] flex-col items-start rounded-[5px] bg-[#2B2C35] p-[5px] transition-colors hover:bg-[#353641] lg:h-[40px] lg:w-[147px] lg:gap-2 lg:px-2 lg:py-1"
         >
-          <span className="flex flex-1 self-stretch items-center justify-center gap-2 text-center font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-white">
+          <span className="flex flex-1 self-stretch items-center justify-center gap-2 whitespace-nowrap text-center font-['SUIT'] text-[12px] font-medium leading-[16px] tracking-[-0.3px] text-white lg:text-[20px] lg:leading-[30px] lg:tracking-[-0.6px]">
             취소
           </span>
         </button>

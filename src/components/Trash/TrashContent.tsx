@@ -85,7 +85,7 @@ const TrashContent = () => {
             result.content.map((folder) => ({
               id: folder.folderId,
               name: folder.name,
-              itemCount: folder.materialCount,
+              itemCount: Number(folder.materialCount ?? 0),
               deletedAt: folder.deletedAt,
             })),
           );

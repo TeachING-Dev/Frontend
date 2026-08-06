@@ -85,13 +85,13 @@ const TeachingMapFolderSelect = ({
 
   return (
     <section>
-      <h2 className="font-['SUIT'] text-[28px] font-bold leading-[42px] tracking-[-0.84px] text-[#E8E8E8]">
+      <h2 className="font-['SUIT'] text-[18px] font-semibold leading-[27px] tracking-[-0.45px] text-[#F5F2FF] lg:text-[28px] lg:font-bold lg:leading-[42px] lg:tracking-[-0.84px] lg:text-[#E8E8E8]">
         폴더
       </h2>
 
       <div
         ref={selectRef}
-        className="relative mt-4 w-full"
+        className="relative mt-[10px] w-full lg:mt-4"
       >
         <button
           type="button"
@@ -102,16 +102,16 @@ const TeachingMapFolderSelect = ({
               (previous) => !previous,
             )
           }
-          className="flex h-[64px] w-full items-center rounded-[4px] border border-[#D0D0D2] bg-[#F5F2FF] px-5 text-left outline-none"
+          className="flex h-[42px] w-full items-center rounded-[4px] border border-[#D0D0D2] bg-[#F5F2FF] px-[10px] text-left outline-none lg:h-[64px] lg:px-5"
         >
           <img
             src="/folder/folder1.png"
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 shrink-0 object-contain"
+            className="h-5 w-5 shrink-0 object-contain lg:h-6 lg:w-6"
           />
 
-          <span className="ml-2 flex-1 truncate font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#5D5D5D]">
+          <span className="ml-2 flex-1 truncate font-['SUIT'] text-[14px] font-normal leading-[21px] tracking-[-0.35px] text-[#5D5D5D] lg:text-[16px] lg:font-medium lg:leading-6 lg:tracking-[-0.48px]">
             {selectedFolder?.name ??
               "폴더를 선택해주세요."}
           </span>
@@ -120,7 +120,7 @@ const TeachingMapFolderSelect = ({
             src="/dropdown.svg"
             alt=""
             aria-hidden="true"
-            className={`h-6 w-6 shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
+            className={`h-5 w-5 shrink-0 lg:h-6 lg:w-6 ${isOpen ? "scale-[-1]" : ""}`}
           />
         </button>
 
@@ -128,7 +128,7 @@ const TeachingMapFolderSelect = ({
           <div
             role="listbox"
             aria-label="티칭맵 폴더 선택"
-            className="absolute left-0 top-[72px] z-50 w-full overflow-hidden rounded-[5px] bg-[#F5F2FF] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+            className="absolute left-0 top-[48px] z-50 w-full overflow-hidden rounded-[5px] bg-[#F5F2FF] shadow-[0_10px_30px_rgba(0,0,0,0.25)] lg:top-[72px]"
           >
             {folders.length === 0 ? (
               <div className="flex h-9 items-center px-2 font-['SUIT'] text-[16px] font-medium text-[#8D8E94]">

@@ -197,14 +197,12 @@ const TemporaryTeachingMapPage = () => {
   const visibleTeachingMapIds = visibleTeachingMaps.map(
     (teachingMap) => teachingMap.id,
   );
-  const isCurrentPageAllSelected =
-    visibleTeachingMapIds.length > 0 &&
-    visibleTeachingMapIds.every((id) => selectedTeachingMapIds.includes(id));
+  const hasSelectedTeachingMaps = selectedTeachingMapIds.length > 0;
 
   const handleToggleSelectAll = () => {
     setSelectedTeachingMapIds((previousIds) => {
-      if (isCurrentPageAllSelected) {
-        return previousIds.filter((id) => !visibleTeachingMapIds.includes(id));
+      if (previousIds.length > 0) {
+        return [];
       }
 
       return Array.from(new Set([...previousIds, ...visibleTeachingMapIds]));
@@ -319,7 +317,7 @@ const TemporaryTeachingMapPage = () => {
           {isDeleteMode ? (
             <TeachingMapDeleteToolbar
               selectedCount={selectedTeachingMapIds.length}
-              isAllSelected={isCurrentPageAllSelected}
+              isAllSelected={hasSelectedTeachingMaps}
               onToggleSelectAll={handleToggleSelectAll}
               actionLabel="휴지통으로 이동"
               onDeleteClick={handleDeleteButtonClick}
@@ -355,15 +353,15 @@ const TemporaryTeachingMapPage = () => {
               onTeachingMapSelect={handleTeachingMapSelect}
             />
           ) : (
-            <div className="flex h-[480px] w-full flex-col items-center justify-center gap-10">
+            <div className="flex h-[360px] w-full flex-col items-center justify-center lg:h-[480px]">
               <img
-                src="/TempCharacter.svg"
+                src="/character/NotFound.png"
                 alt=""
                 aria-hidden="true"
                 draggable={false}
-                className="h-[224px] w-[235px] select-none object-contain"
+                className="h-[120px] w-[126px] select-none object-contain lg:h-[224px] lg:w-[235px]"
               />
-              <p className="font-['SUIT'] text-[20px] font-semibold leading-7 tracking-[-0.6px] text-[#42444C]">
+              <p className="mt-[10px] font-['SUIT'] text-[14px] font-medium leading-[21px] tracking-[-0.35px] text-[#42444C] lg:mt-0 lg:text-[24px] lg:font-semibold lg:leading-7 lg:tracking-[-0.6px]">
                 임시저장한 티칭맵이 없습니다.
               </p>
             </div>

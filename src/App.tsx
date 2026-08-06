@@ -101,39 +101,6 @@ function App() {
               element={<ArchiveDataPage />}
             />
 
-            {/* 티칭맵 목록 */}
-            <Route path="/teaching-map" element={<TeachingMapPage />} />
-
-            {/* 티칭맵 생성 */}
-            <Route
-              path="/teaching-map/create"
-              element={<TeachingMapCreatePage />}
-            />
-
-            {/* 임시 티칭맵 보관함 */}
-            <Route
-              path="/teaching-map/drafts"
-              element={<TemporaryTeachingMapPage />}
-            />
-
-            {/* 임시 티칭맵 수정 */}
-            <Route
-              path="/teaching-map/drafts/:draftId/edit"
-              element={<TeachingMapCreatePage />}
-            />
-
-            {/* 티칭맵 콘텐츠 상세 */}
-            <Route
-              path="/teaching-map/:teachingMapId/:contentId"
-              element={<TeachingMapContentPage />}
-            />
-
-            {/* 티칭맵 상세 */}
-            <Route
-              path="/teaching-map/:teachingMapId"
-              element={<TeachingMapDetailPage />}
-            />
-
             {/* 휴지통 */}
             <Route path="/trash" element={<TrashPage />} />
 
@@ -189,6 +156,19 @@ function App() {
               path="/mypage/withdrawal-complete"
               element={<MyPageWithdrawalCompletePage />}
             />
+          </Route>
+
+          {/* 티칭맵 화면: 모바일 하단 내비게이션 미노출 */}
+          <Route element={<MainLayout hideMobileNav />}>
+            <Route path="/teaching-map" element={<TeachingMapPage />} />
+            <Route path="/teaching-map/create" element={<TeachingMapCreatePage />} />
+            <Route path="/teaching-map/drafts" element={<TemporaryTeachingMapPage />} />
+            <Route path="/teaching-map/drafts/:draftId/edit" element={<TeachingMapCreatePage />} />
+            <Route
+              path="/teaching-map/:teachingMapId/:contentId"
+              element={<TeachingMapContentPage />}
+            />
+            <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
           </Route>
 
           {/* 챗봇 전용 레이아웃 */}

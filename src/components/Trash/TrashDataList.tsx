@@ -29,7 +29,6 @@ const TrashDataList = ({
         extraMeta={formatDeletedAt(data.deletedAt)}
         selectable={isRestoreMode}
         selected={selectedItemIds.includes(data.id)}
-        showAiButton
         onSelect={() => onSelect(data.id)}
         onOpenOriginal={
           data.originalUrl

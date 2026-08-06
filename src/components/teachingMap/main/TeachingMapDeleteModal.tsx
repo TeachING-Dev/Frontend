@@ -151,46 +151,46 @@ const TeachingMapDeleteModal = ({
           handleModalKeyDown
         }
         className={[
-          "flex w-[449px] flex-col items-start gap-[10px]",
-          "rounded-[10px] bg-[#0B0A18] px-5 pb-5 pt-[30px]",
+          "flex w-[315px] flex-col items-start gap-[10px] lg:w-[449px]",
+          "rounded-[10px] bg-[#0B0A18] px-[10px] py-5 lg:px-5 lg:pb-5 lg:pt-[30px]",
           "shadow-[0_0_50px_0_rgba(145,125,236,0.5)]",
         ].join(" ")}
       >
         <div className="flex w-full flex-col items-center">
           <h2
             id="teaching-map-delete-modal-title"
-            className="w-full text-center font-['SUIT'] text-[24px] font-semibold leading-9 tracking-[-0.72px] text-[#FAFAFA]"
+            className="w-full text-center font-['SUIT'] text-[16px] font-semibold leading-[150%] tracking-[-0.4px] text-[#FAFAFA] lg:text-[24px] lg:leading-9 lg:tracking-[-0.72px]"
           >
             티칭맵을 삭제할까요?
           </h2>
 
           <p
             id="teaching-map-delete-modal-description"
-            className="w-full text-center font-['SUIT'] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#717379]"
+            className="w-full text-center font-['SUIT'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#717379] lg:text-[16px] lg:leading-6 lg:tracking-[-0.48px]"
           >
             삭제한 티칭맵은 휴지통에서
             30일간 보관됩니다.
           </p>
         </div>
 
-        <div className="flex min-h-[179px] w-full flex-1 items-center justify-center">
+        <div className="flex min-h-[112px] w-full flex-1 items-center justify-center lg:min-h-[179px]">
           <img
             src="/DeleteStar.svg"
             alt=""
             aria-hidden="true"
-            className="h-[160px] w-[160px] object-contain"
+            className="h-[112px] w-[112px] object-contain lg:h-[160px] lg:w-[160px]"
           />
         </div>
 
-        <div className="flex h-11 w-full gap-[10px]">
+        <div className="flex h-[35px] w-full gap-[10px] lg:h-11">
           <button
             ref={cancelButtonRef}
             type="button"
             onClick={onClose}
             className={[
-              "flex h-11 flex-1 items-center justify-center",
+              "flex h-[35px] flex-1 items-center justify-center lg:h-11",
               "rounded-[5px] bg-[#42444C] p-[10px]",
-              "font-['SUIT'] text-[16px] font-medium leading-6",
+              "font-['SUIT'] text-[14px] font-medium leading-[21px] lg:text-[16px] lg:leading-6",
               "tracking-[-0.48px] text-[#FAFAFA]",
               "transition-colors hover:bg-[#4E5058]",
             ].join(" ")}
@@ -204,9 +204,9 @@ const TeachingMapDeleteModal = ({
               onDeleteConfirm
             }
             className={[
-              "flex h-11 flex-1 items-center justify-center",
+              "flex h-[35px] flex-1 items-center justify-center lg:h-11",
               "rounded-[5px] bg-[#917DEC] p-[10px]",
-              "font-['SUIT'] text-[16px] font-medium leading-6",
+              "font-['SUIT'] text-[14px] font-medium leading-[21px] lg:text-[16px] lg:leading-6",
               "tracking-[-0.48px] text-[#FAFAFA]",
               "transition-colors hover:bg-[#856FE5]",
             ].join(" ")}

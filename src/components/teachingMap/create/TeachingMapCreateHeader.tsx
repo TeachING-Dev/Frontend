@@ -1,4 +1,3 @@
-import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export type TeachingMapType =
@@ -25,13 +24,9 @@ const TeachingMapCreateHeader = ({
       <button
         type="button"
         onClick={handleBackClick}
-        className="flex items-center gap-1 font-['SUIT'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] text-[#5D5D5D] transition-colors hover:text-[#8D8E94]"
+        className="flex items-center gap-1 font-['SUIT'] text-[10px] font-normal leading-[14px] tracking-[-0.2px] text-[#A1A1A5] transition-colors hover:text-[#8D8E94] lg:text-[18px] lg:font-medium lg:leading-[27px] lg:tracking-[-0.54px] lg:text-[#5D5D5D]"
       >
-        <ArrowLeft
-          size={20}
-          strokeWidth={1.5}
-          aria-hidden="true"
-        />
+        <img src="/return-button.svg" alt="" aria-hidden="true" className="h-[14px] w-[14px] lg:h-5 lg:w-5" />
 
         <span>{backLabel}</span>
       </button>

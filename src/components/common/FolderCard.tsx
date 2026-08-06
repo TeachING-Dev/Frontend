@@ -44,7 +44,7 @@ const FolderCard = ({
             {menu}
           </div>
           <div className="flex items-center gap-4 text-[16px] text-[#FAFAFA]">
-            {itemCount !== undefined && <span>{itemCount}개 항목</span>}
+            <span>{itemCount ?? 0}개 항목</span>
             <span>{meta}</span>
           </div>
         </div>
@@ -73,7 +73,7 @@ const FolderCard = ({
           {name}
         </h2>
         <div className="flex items-center gap-3 font-suit text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#F5F2FF]">
-          {itemCount !== undefined && <span>{itemCount}개 항목</span>}
+          <span>{itemCount ?? 0}개 항목</span>
           <span>{meta}</span>
         </div>
       </div>

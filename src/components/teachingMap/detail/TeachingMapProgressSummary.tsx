@@ -8,7 +8,7 @@ const TeachingMapProgressSummary = ({
   totalCount,
 }: TeachingMapProgressSummaryProps) => {
   return (
-    <p className="absolute right-0 top-[-44px] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-[#C1AEFF]">
+    <p className="absolute right-0 top-[-38px] text-[14px] font-normal leading-[21px] tracking-[-0.35px] text-[#C1AEFF] lg:top-[-44px] lg:text-[20px] lg:font-semibold lg:leading-[28px] lg:tracking-[-0.6px]">
       완료 ({completedCount}/{totalCount})
     </p>
   );

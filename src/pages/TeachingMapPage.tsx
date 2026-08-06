@@ -230,14 +230,12 @@ const TeachingMapPage = () => {
     (teachingMap) => teachingMap.id,
   );
 
-  const isCurrentPageAllSelected =
-    visibleTeachingMapIds.length > 0 &&
-    visibleTeachingMapIds.every((id) => selectedTeachingMapIds.includes(id));
+  const hasSelectedTeachingMaps = selectedTeachingMapIds.length > 0;
 
   const handleToggleSelectAll = () => {
     setSelectedTeachingMapIds((previousIds) => {
-      if (isCurrentPageAllSelected) {
-        return previousIds.filter((id) => !visibleTeachingMapIds.includes(id));
+      if (previousIds.length > 0) {
+        return [];
       }
 
       return Array.from(new Set([...previousIds, ...visibleTeachingMapIds]));
@@ -372,11 +370,11 @@ const TeachingMapPage = () => {
         />
 
         <>
-          <div className="mt-[55px]">
+          <div className="mt-5 lg:mt-[55px]">
             {isDeleteMode ? (
               <TeachingMapDeleteToolbar
                 selectedCount={selectedTeachingMapIds.length}
-                isAllSelected={isCurrentPageAllSelected}
+                isAllSelected={hasSelectedTeachingMaps}
                 actionLabel="휴지통으로 이동"
                 onToggleSelectAll={handleToggleSelectAll}
                 onDeleteClick={handleDeleteButtonClick}

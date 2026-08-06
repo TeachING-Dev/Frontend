@@ -106,9 +106,7 @@ const MaterialCard = ({
             {date}
           </span>
           {extraMeta && (
-            <span
-              className={isArchiveVariant ? undefined : "truncate"}
-            >
+            <span className="shrink-0 whitespace-nowrap">
               {extraMeta}
             </span>
           )}
