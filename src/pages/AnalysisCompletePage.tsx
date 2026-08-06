@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   useEffect,
   useState,
@@ -28,6 +29,13 @@ import AnalysisSummary from "../components/home/AnalysisSummary";
 type FolderOption = {
   id: number;
   name: string;
+};
+
+type FolderErrorResponse = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: null;
 };
 
 type AnalysisLocationState = {
@@ -207,35 +215,78 @@ const AnalysisCompletePage = () => {
   const handleCreateFolder = async (
     folderName: string,
   ) => {
-    const createdFolder =
-      await createFolder(folderName);
+    try {
+      const createdFolder =
+        await createFolder(folderName);
 
-    const newFolder: FolderOption = {
-      id: createdFolder.folderId,
-      name: createdFolder.folderName,
-    };
+      const newFolder: FolderOption = {
+        id: createdFolder.folderId,
+        name: createdFolder.folderName,
+      };
 
-    /*
-     * 새 폴더를 목록에 바로 추가
-     */
-    setFolders((prev) => [
-      newFolder,
-      ...prev,
-    ]);
+      /*
+       * 새 폴더를 목록에 바로 추가
+       */
+      setFolders((prev) => [
+        newFolder,
+        ...prev,
+      ]);
 
-    /*
-     * 생성한 폴더 자동 선택
-     */
-    setSelectedFolderId(
-      createdFolder.folderId,
-    );
+      /*
+       * 생성한 폴더 자동 선택
+       */
+      setSelectedFolderId(
+        createdFolder.folderId,
+      );
 
-    /*
-     * 생성 성공 후 모달 닫기
-     */
-    setIsCreateFolderModalOpen(
-      false,
-    );
+      /*
+       * 생성 성공 후 모달 닫기
+       */
+      setIsCreateFolderModalOpen(
+        false,
+      );
+    } catch (error) {
+      console.error(
+        "폴더 생성 실패:",
+        error,
+      );
+
+      if (
+        axios.isAxiosError<FolderErrorResponse>(
+          error,
+        )
+      ) {
+        const code =
+          error.response?.data?.code;
+
+        const serverMessage =
+          error.response?.data?.message;
+
+        if (code === "FOLDER4004") {
+          setIsCreateFolderModalOpen(
+            false,
+          );
+
+          setIsFolderLimitModalOpen(
+            true,
+          );
+
+          return;
+        }
+
+        throw new Error(
+          typeof serverMessage === "string"
+            ? serverMessage
+            : "폴더를 생성하지 못했습니다.",
+          { cause: error },
+        );
+      }
+
+      throw new Error(
+        "폴더를 생성하지 못했습니다.",
+        { cause: error },
+      );
+    }
   };
 
   /* ==============================
