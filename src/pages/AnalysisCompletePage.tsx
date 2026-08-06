@@ -20,10 +20,10 @@ import {
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import FolderLimitModal from "../components/archive/modal/CreateErrorModal";
 
+import AnalysisData from "../components/home/AnalysisData";
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
 import AnalysisSummary from "../components/home/AnalysisSummary";
-import AnalysisUrl from "../components/home/AnalysisUrl";
 
 type FolderOption = {
   id: number;
@@ -332,6 +332,7 @@ const AnalysisCompletePage = () => {
                     ?.title ??
                   "분석된 콘텐츠"
                 }
+                originUrl={originalUrl}
                 tags={
                   analysisResult
                     ?.tags ?? []
@@ -343,13 +344,12 @@ const AnalysisCompletePage = () => {
             </div>
 
             <div className="mt-[20px] flex flex-col gap-[20px]">
-              <AnalysisUrl
-                url={originalUrl}
-              />
-
               <AnalysisSummary
                 summary={summary}
-                onSummaryChange={() => {}}
+              />
+
+              <AnalysisData
+                content={summary}
               />
 
               <button
