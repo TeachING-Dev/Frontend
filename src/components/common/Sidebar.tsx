@@ -269,7 +269,7 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
                     className="h-[32px] w-[32px] object-contain"
                   />
 
-                  <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#42444C]">
+                  <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#717379]">
                     로그아웃
                   </span>
                 </div>
