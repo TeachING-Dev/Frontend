@@ -69,10 +69,6 @@ const AnalysisCompletePage = () => {
     analysisResult?.summary ??
     "AI가 분석한 내용을 요약해드릴게요.";
 
-  /* ==============================
-     폴더
-  ============================== */
-
   const [folders, setFolders] =
     useState<FolderOption[]>([]);
 
@@ -89,10 +85,6 @@ const AnalysisCompletePage = () => {
     setIsFolderLoading,
   ] = useState(true);
 
-  /* ==============================
-     폴더 생성 모달
-  ============================== */
-
   const [
     isCreateFolderModalOpen,
     setIsCreateFolderModalOpen,
@@ -103,10 +95,6 @@ const AnalysisCompletePage = () => {
     setIsFolderLimitModalOpen,
   ] = useState(false);
 
-  /* ==============================
-     태그
-  ============================== */
-
   const [
     selectedTags,
     setSelectedTags,
@@ -114,16 +102,8 @@ const AnalysisCompletePage = () => {
     analysisResult?.tags ?? [],
   );
 
-  /* ==============================
-     저장
-  ============================== */
-
   const [isSaving, setIsSaving] =
     useState(false);
-
-  /* ==============================
-     폴더 목록 조회
-  ============================== */
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -143,10 +123,6 @@ const AnalysisCompletePage = () => {
 
         setFolders(mappedFolders);
 
-        /*
-         * 사이드바 기본 선택은
-         * 기존처럼 추천 폴더만 사용
-         */
         const recommendedFolderId =
           analysisResult
             ?.recommendedFolderId;
@@ -189,10 +165,6 @@ const AnalysisCompletePage = () => {
       ?.recommendedFolderId,
   ]);
 
-  /* ==============================
-     새 폴더 만들기 버튼
-  ============================== */
-
   const handleOpenCreateFolder =
     () => {
       if (folders.length >= 6) {
@@ -208,10 +180,6 @@ const AnalysisCompletePage = () => {
       );
     };
 
-  /* ==============================
-     폴더 생성
-  ============================== */
-
   const handleCreateFolder = async (
     folderName: string,
   ) => {
@@ -224,24 +192,15 @@ const AnalysisCompletePage = () => {
         name: createdFolder.folderName,
       };
 
-      /*
-       * 새 폴더를 목록에 바로 추가
-       */
       setFolders((prev) => [
         newFolder,
         ...prev,
       ]);
 
-      /*
-       * 생성한 폴더 자동 선택
-       */
       setSelectedFolderId(
         createdFolder.folderId,
       );
 
-      /*
-       * 생성 성공 후 모달 닫기
-       */
       setIsCreateFolderModalOpen(
         false,
       );
@@ -288,10 +247,6 @@ const AnalysisCompletePage = () => {
       );
     }
   };
-
-  /* ==============================
-     저장
-  ============================== */
 
   const handleSave = async () => {
     if (materialId == null) {
@@ -375,24 +330,22 @@ const AnalysisCompletePage = () => {
 
         <section className="mx-auto w-[1100px]">
           <div className="ml-[350px]">
-            <div className="ml-[30px]">
-              <AnalysisHeader
-                date="2026-05-10"
-                title={
-                  analysisResult
-                    ?.title ??
-                  "분석된 콘텐츠"
-                }
-                originUrl={originalUrl}
-                tags={
-                  analysisResult
-                    ?.tags ?? []
-                }
-                onSelectedTagsChange={
-                  setSelectedTags
-                }
-              />
-            </div>
+            <AnalysisHeader
+              date="2026-05-10"
+              title={
+                analysisResult
+                  ?.title ??
+                "분석된 콘텐츠"
+              }
+              originUrl={originalUrl}
+              tags={
+                analysisResult
+                  ?.tags ?? []
+              }
+              onSelectedTagsChange={
+                setSelectedTags
+              }
+            />
 
             <div className="mt-[20px] flex flex-col gap-[20px]">
               <AnalysisSummary
