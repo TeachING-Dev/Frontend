@@ -65,6 +65,10 @@ function App() {
             path="/subscription/complete"
             element={<SubscriptionCompletePage />}
           />
+          <Route
+            path="/subscribe/complete"
+            element={<SubscriptionCompletePage />}
+          />
 
           {/* 홈 전용 레이아웃 */}
           <Route element={<HomeLayout />}>
@@ -143,7 +147,6 @@ function App() {
             />
 
             {/* 구독 */}
-            <Route path="/subscription" element={<SubscriptionPage />} />
 
             {/* 마이페이지 */}
             <Route path="/mypage" element={<MyPage />} />
@@ -196,6 +199,12 @@ function App() {
             <Route path="/chatbot" element={<ChatbotPage />} />
 
             <Route path="/chatbot/:chatRoomId" element={<ChatbotPage />} />
+          </Route>
+
+          {/* 구독 */}
+          <Route element={<MainLayout hideMobileNav />}>
+            <Route path="/subscription" element={<SubscriptionPage />} />
+            <Route path="/subscribe" element={<SubscriptionPage />} />
           </Route>
         </Route>
 
