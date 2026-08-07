@@ -13,9 +13,9 @@ import {
   updateMaterialSummary,
   type MaterialAnalysis,
 } from "../apis/material";
-import ArchiveDataAnalysis from "../components/archive/ArchiveDataAnalysis";
-import ArchiveDataHeader from "../components/archive/ArchiveDataHeader";
-import ArchiveDataSummary from "../components/archive/ArchiveDataSummary";
+import ArchiveDataAnalysis from "../components/archive/detail/ArchiveDataAnalysis";
+import ArchiveDataHeader from "../components/archive/detail/ArchiveDataHeader";
+import ArchiveDataSummary from "../components/archive/detail/ArchiveDataSummary";
 
 const ArchiveDataPage = () => {
   const navigate = useNavigate();

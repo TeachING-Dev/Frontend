@@ -23,7 +23,7 @@ const TeachingMapList = ({
   }
 
   return (
-    <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col md:gap-[20px]">
       {teachingMaps.map((teachingMap) => (
         <TeachingMapItem
           key={teachingMap.teachingMapId}

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
-import type { FolderSort } from "../../apis/folder";
-import SortDropdown from "../common/SortDropdown";
+import type { FolderSort } from "../../../apis/folder";
+import SortDropdown from "../../common/SortDropdown";
 
 type ArchiveHeaderProps = {
   viewMode: "list" | "grid";
