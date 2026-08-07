@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   getNotifications,
+  readNotification,
   type Notification,
 } from "../apis/notification";
 import NotificationPageList from "../components/notification/NotificationPageList";
 
 const NotificationPage = () => {
+  const navigate = useNavigate();
+
   const [notifications, setNotifications] =
     useState<Notification[]>([]);
 
@@ -26,6 +30,53 @@ const NotificationPage = () => {
     fetchNotifications();
   }, []);
 
+  const handleNotificationClick = async (
+    notificationId: number,
+  ) => {
+    const notification =
+      notifications.find(
+        (item) =>
+          item.notificationId ===
+          notificationId,
+      );
+
+    if (!notification) {
+      return;
+    }
+
+    if (
+      notification.targetType ===
+      "TEACHING_MAP"
+    ) {
+      navigate(
+        `/teaching-map/${notification.targetId}`,
+      );
+    }
+
+    try {
+      await readNotification(
+        notificationId,
+      );
+
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item.notificationId ===
+          notificationId
+            ? {
+                ...item,
+                isRead: true,
+              }
+            : item,
+        ),
+      );
+    } catch (error) {
+      console.error(
+        "알림 읽음 처리 실패:",
+        error,
+      );
+    }
+  };
+
   return (
     <section className="mx-auto w-full max-w-[1120px] py-[40px]">
       <h1 className="mb-[30px] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#E8E8E8]">
@@ -34,6 +85,7 @@ const NotificationPage = () => {
 
       <NotificationPageList
         notifications={notifications}
+        onItemClick={handleNotificationClick}
       />
     </section>
   );
