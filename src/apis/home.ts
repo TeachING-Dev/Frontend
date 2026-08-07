@@ -11,6 +11,11 @@ export type RecentMaterial = {
   createdAt: string;
 };
 
+export type SourcePlatform = {
+  type: string;
+  imageUrl: string;
+};
+
 export type ActiveTeachingMap = {
   teachingMapId: number;
   title: string;
@@ -19,6 +24,7 @@ export type ActiveTeachingMap = {
   status: string;
   currentSteps: number;
   totalSteps: number;
+  sourcePlatforms: SourcePlatform[];
   createdAt: string;
 };
 

@@ -25,9 +25,9 @@ import {
 
 import ArchiveDataList, {
   type ArchiveData,
-} from "../components/archive/ArchiveDataList";
-import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
-import EmptyArchiveData from "../components/archive/EmptyArchiveData";
+} from "../components/archive/folder/ArchiveDataList";
+import ArchiveFolderHeader from "../components/archive/folder/ArchiveFolderHeader";
+import EmptyArchiveData from "../components/archive/folder/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import Toast from "../components/common/Toast";
 import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";

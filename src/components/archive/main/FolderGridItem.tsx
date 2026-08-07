@@ -1,8 +1,8 @@
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import FolderCard from "../common/FolderCard";
-import FolderPopover from "./popover/FolderPopover";
+import FolderCard from "../../common/FolderCard";
+import FolderPopover from "../popover/FolderPopover";
 
 type FolderGridItemProps = {
   id: number;
