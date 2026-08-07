@@ -74,6 +74,7 @@ const TeachingMapCreatePage = () => {
   const [toastTitle, setToastTitle] = useState("티칭맵 생성에 실패했습니다.");
   const [isTemporarySaveSuccess, setIsTemporarySaveSuccess] = useState(false);
   const generationTimerRef = useRef<number | null>(null);
+  const generationAbortControllerRef = useRef<AbortController | null>(null);
   const defaultFolderId =
     temporaryTeachingMap?.folderId ?? folders[0]?.id ?? null;
 
@@ -82,6 +83,7 @@ const TeachingMapCreatePage = () => {
       if (generationTimerRef.current !== null) {
         window.clearTimeout(generationTimerRef.current);
       }
+      generationAbortControllerRef.current?.abort();
     };
   }, []);
 
@@ -243,6 +245,8 @@ const TeachingMapCreatePage = () => {
     }
 
     setIsLoadingModalOpen(true);
+    const abortController = new AbortController();
+    generationAbortControllerRef.current = abortController;
 
     try {
       const createdTeachingMap = await createTeachingMap({
@@ -250,11 +254,16 @@ const TeachingMapCreatePage = () => {
         description: description.trim(),
         folderId: selectedFolder.id,
         type: selectedType === "deepDive" ? "DEEPDIVE" : "SHORTCUT",
-      });
+      }, abortController.signal);
 
+      generationAbortControllerRef.current = null;
       setIsLoadingModalOpen(false);
       navigate(`/teaching-map/${createdTeachingMap.teachingMapId}`);
     } catch (error) {
+      if (abortController.signal.aborted) {
+        return;
+      }
+      generationAbortControllerRef.current = null;
       setIsLoadingModalOpen(false);
       showFailureToast(
         error instanceof Error
@@ -265,6 +274,8 @@ const TeachingMapCreatePage = () => {
   };
 
   const handleLoadingModalClose = () => {
+    generationAbortControllerRef.current?.abort();
+    generationAbortControllerRef.current = null;
     if (generationTimerRef.current !== null) {
       window.clearTimeout(generationTimerRef.current);
       generationTimerRef.current = null;
@@ -288,8 +299,8 @@ const TeachingMapCreatePage = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 pb-[52px] pt-10">
-        <div className="w-[810px]">
+      <PageContainer className="relative z-10 pb-[52px] pt-5 lg:pt-10">
+        <div className="w-full lg:w-[810px]">
           <TeachingMapCreateHeader
             backPath={
               isTemporaryEditMode ? "/teaching-map/drafts" : "/teaching-map"
@@ -301,7 +312,7 @@ const TeachingMapCreatePage = () => {
             }
           />
 
-          <div className="mt-[30px] flex flex-col gap-10">
+          <div className="mt-[30px] flex flex-col gap-[20px] lg:gap-10">
             <TeachingMapTitleInput value={title} onChange={setTitle} />
 
             <TeachingMapDescriptionInput
@@ -322,7 +333,7 @@ const TeachingMapCreatePage = () => {
           </div>
         </div>
 
-        <div className="mt-10 w-full">
+        <div className="mt-10 w-full lg:mt-10">
           <TeachingMapCreateButton
             isSaveDisabled={!canTemporarySave}
             isCreateDisabled={!isFormCompleted}

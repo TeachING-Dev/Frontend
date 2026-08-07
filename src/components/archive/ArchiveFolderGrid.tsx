@@ -26,7 +26,7 @@ const ArchiveFolderGrid = ({
   onMoveToTrash,
 }: ArchiveFolderGridProps) => {
   return (
-    <section className="grid grid-cols-3 gap-7">
+    <section className="grid grid-cols-2 gap-x-4 gap-y-[10px] lg:grid-cols-3 lg:gap-7">
       {/* 새 채팅 추가 */}
       <AddFolderGrid onClick={onAddFolder} />
 

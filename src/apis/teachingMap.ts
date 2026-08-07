@@ -155,10 +155,12 @@ export const getTemporaryTeachingMaps = async (
 
 export const createTeachingMap = async (
   request: CreateTeachingMapRequest,
+  signal?: AbortSignal,
 ): Promise<CreateTeachingMapResult> => {
   const { data } = await api.post<ApiResponse<CreateTeachingMapResult>>(
     "/api/v1/teaching-maps",
     request,
+    { signal },
   );
 
   return data.result;

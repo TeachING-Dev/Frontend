@@ -16,7 +16,7 @@ const TrashDataList = ({
   selectedItemIds,
   onSelect,
 }: TrashDataListProps) => (
-  <div className="flex flex-col gap-5">
+  <div className="flex flex-col gap-[20px]">
     {dataList.map((data) => (
       <MaterialCard
         key={data.id}
@@ -29,7 +29,6 @@ const TrashDataList = ({
         extraMeta={formatDeletedAt(data.deletedAt)}
         selectable={isRestoreMode}
         selected={selectedItemIds.includes(data.id)}
-        showAiButton
         onSelect={() => onSelect(data.id)}
         onOpenOriginal={
           data.originalUrl

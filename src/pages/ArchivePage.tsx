@@ -280,8 +280,8 @@ const ArchivePage = () => {
 
   return (
     <>
-      <main className="py-10">
-        <PageContainer>
+      <main className="min-h-[calc(100dvh-64px)] py-5 lg:py-10">
+        <PageContainer className="flex min-h-[calc(100dvh-84px)] flex-col pb-[162px] lg:block lg:min-h-0 lg:pb-0">
           <ArchiveHeader
             viewMode={viewMode}
             onViewModeChange={
@@ -294,16 +294,19 @@ const ArchivePage = () => {
               handleSearchKeywordChange
             }
             onSearch={handleSearch}
+            onAddFolder={() =>
+              setIsCreateModalOpen(true)
+            }
           />
 
-          <div className="min-h-[540px]">
+          <div className="mt-[30px] lg:mt-0 lg:min-h-[540px]">
             {isLoading ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
+              <div className="flex min-h-[300px] items-center justify-center text-[#D0D0D2] lg:min-h-[540px]">
                 폴더 목록을 불러오는
                 중이에요.
               </div>
             ) : errorMessage ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
+              <div className="flex min-h-[300px] items-center justify-center text-[#D0D0D2] lg:min-h-[540px]">
                 {errorMessage}
               </div>
             ) : keyword &&
@@ -338,11 +341,13 @@ const ArchivePage = () => {
           </div>
 
           {filteredFolders.length > 0 && (
-            <Pagination
-              currentPage={activePage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <div className="fixed inset-x-0 bottom-[122px] z-20 [&>nav]:mt-0 lg:static lg:mt-0 lg:[&>nav]:mt-10">
+              <Pagination
+                currentPage={activePage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           )}
         </PageContainer>
       </main>

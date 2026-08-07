@@ -13,16 +13,16 @@ const MyPageMenuItem = ({
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[60px] w-full items-center justify-between rounded-[10px] bg-[#13151F] px-[30px] py-[20px]"
+      className="flex h-[50px] w-full items-center justify-between rounded-[10px] bg-[#13151F] px-[10px] lg:h-[60px] lg:px-[30px] lg:py-[20px]"
     >
-      <span className="text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#D0D0D2]">
+      <span className="text-[16px] font-normal leading-[150%] tracking-[-0.4px] text-[#D0D0D2] lg:text-[24px] lg:font-semibold lg:tracking-[-0.72px]">
         {label}
       </span>
 
       <img
         src={rightPointIcon}
         alt=""
-        className="h-[24px] w-[24px]"
+        className="h-[20px] w-[20px] lg:h-[24px] lg:w-[24px]"
       />
     </button>
   );

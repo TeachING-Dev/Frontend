@@ -38,15 +38,15 @@ const Pagination = ({
   return (
     <nav
       aria-label="페이지 이동"
-      className="mt-10 flex items-center justify-center gap-5"
+      className="mt-10 flex items-center justify-center gap-[10px] lg:gap-5"
     >
       <button
         type="button"
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="flex items-center gap-2 text-[16px] text-[#917DEC] transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-[#917DEC]"
+        className="flex items-center gap-1 text-[12.6px] text-[#917DEC] transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-[#917DEC] lg:gap-2 lg:text-[16px]"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft className="h-4 w-4 lg:h-5 lg:w-5" />
         Previous
       </button>
 
@@ -61,13 +61,13 @@ const Pagination = ({
               : undefined
           }
           onClick={() => onPageChange(page)}
-          className={`flex h-10 w-10 items-center justify-center rounded-full transition ${
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 transition lg:h-10 lg:w-10 ${
             currentPage === page
               ? "bg-[#917DEC] text-white"
               : "text-[#917DEC] hover:bg-[#917DEC]/15"
           }`}
         >
-          <span className="-translate-x-[2px] font-['Poppins'] text-[18px] font-normal italic leading-none tracking-[-0.54px]">
+          <span className="flex h-full w-full items-center justify-center font-['Poppins'] text-[12.6px] font-normal italic leading-none tracking-[-0.378px] lg:text-[18px] lg:tracking-[-0.54px]">
             {page}
           </span>
         </button>
@@ -91,13 +91,13 @@ const Pagination = ({
           onClick={() =>
             onPageChange(pageCount)
           }
-          className={`flex h-10 w-10 items-center justify-center rounded-full transition ${
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 transition lg:h-10 lg:w-10 ${
             currentPage === pageCount
               ? "bg-[#917DEC] text-white"
               : "text-[#917DEC] hover:bg-[#917DEC]/15"
           }`}
         >
-          <span className="-translate-x-[2px] font-['Poppins'] text-[18px] font-normal italic leading-none tracking-[-0.54px]">
+          <span className="flex h-full w-full items-center justify-center font-['Poppins'] text-[12.6px] font-normal italic leading-none tracking-[-0.378px] lg:text-[18px] lg:tracking-[-0.54px]">
             {pageCount}
           </span>
         </button>
@@ -107,10 +107,10 @@ const Pagination = ({
         type="button"
         onClick={handleNext}
         disabled={currentPage === pageCount}
-        className="flex items-center gap-2 text-[16px] text-[#917DEC] transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-[#917DEC]"
+        className="flex items-center gap-1 text-[12.6px] text-[#917DEC] transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-[#917DEC] lg:gap-2 lg:text-[16px]"
       >
         Next
-        <ChevronRight size={20} />
+        <ChevronRight className="h-4 w-4 lg:h-5 lg:w-5" />
       </button>
     </nav>
   );

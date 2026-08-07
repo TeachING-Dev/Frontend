@@ -43,16 +43,16 @@ const FolderLimitModal = ({
       aria-labelledby="teaching-map-limit-title"
       className="fixed inset-0 z-[400] flex items-center justify-center bg-[rgba(11,10,24,0.9)]"
     >
-      <div className="flex h-[379px] w-[450px] flex-col items-start justify-center rounded-[10px] bg-[#0B0A18] px-5 py-[30px] shadow-[0_0_50px_rgba(145,125,236,0.5)]">
+      <div className="flex w-[315px] flex-col items-start justify-center rounded-[10px] bg-[#0B0A18] px-[10px] py-5 shadow-[0_0_50px_rgba(145,125,236,0.5)] lg:h-[379px] lg:w-[449px] lg:px-5 lg:py-[30px]">
         <div className="flex w-full flex-1 flex-col items-center">
           <h2
             id="teaching-map-limit-title"
-            className="whitespace-nowrap text-center font-['SUIT_Variable'] text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#E8E8E8]"
+            className="whitespace-nowrap text-center font-['SUIT_Variable'] text-[16px] font-semibold leading-[150%] tracking-[-0.4px] text-[#E8E8E8] lg:text-[28px] lg:font-bold lg:tracking-[-0.84px]"
           >
             티칭맵 생성 한도에 도달했어요
           </h2>
 
-          <p className="mt-[10px] whitespace-pre-line text-center font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379]">
+          <p className="mt-[5px] whitespace-pre-line text-center font-['SUIT_Variable'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#717379] lg:mt-[10px] lg:text-[16px] lg:leading-[150%] lg:tracking-[-0.48px]">
             {"요금제를 업그레이드하고\n무제한으로 티칭맵을 만들어 보세요!"}
           </p>
 
@@ -60,15 +60,15 @@ const FolderLimitModal = ({
             src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
-            className="mt-5 h-[140px] w-[140px] object-contain"
+            className="mt-[10px] h-[112px] w-[112px] object-contain lg:mt-5 lg:h-[140px] lg:w-[140px]"
           />
         </div>
 
-        <div className="mt-5 flex w-full gap-[10px]">
+        <div className="mt-[10px] flex w-full gap-[10px] lg:mt-5">
           <button
             type="button"
             onClick={onClose}
-            className="flex h-11 flex-1 items-center justify-center rounded-[5px] bg-[#42444C] p-[10px] font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#E8E8E8] transition hover:bg-[#4B4D56]"
+            className="flex h-[32px] flex-1 items-center justify-center rounded-[5px] bg-[#42444C] p-[5px] font-['SUIT_Variable'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#E8E8E8] transition hover:bg-[#4B4D56] lg:h-11 lg:p-[10px] lg:text-[16px] lg:leading-[150%] lg:tracking-[-0.48px]"
           >
             돌아가기
           </button>
@@ -76,7 +76,7 @@ const FolderLimitModal = ({
           <button
             type="button"
             onClick={onSubscribe}
-            className="flex h-11 flex-1 items-center justify-center rounded-[5px] bg-[#917DEC] p-[10px] font-['SUIT_Variable'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-white transition hover:bg-[#8068E2]"
+            className="flex h-[32px] flex-1 items-center justify-center rounded-[5px] bg-[#917DEC] p-[5px] font-['SUIT_Variable'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-white transition hover:bg-[#8068E2] lg:h-11 lg:p-[10px] lg:text-[16px] lg:leading-[150%] lg:tracking-[-0.48px]"
           >
             구독하러 가기
           </button>

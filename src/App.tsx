@@ -56,13 +56,6 @@ function App() {
           element={<OAuthCallbackPage />}
         />
 
-        <Route path="/signup/terms/service" element={<TermsServicePage />} />
-        <Route
-          path="/signup/terms/marketing"
-          element={<TermsMarketingPage />}
-        />
-        <Route path="/signup/terms/event" element={<TermsEventPage />} />
-
         <Route element={<RequireAuth />}>
           {/* 회원가입 완료 */}
           <Route path="/signup/complete" element={<SignupCompletePage />} />
@@ -108,39 +101,6 @@ function App() {
               element={<ArchiveDataPage />}
             />
 
-            {/* 티칭맵 목록 */}
-            <Route path="/teaching-map" element={<TeachingMapPage />} />
-
-            {/* 티칭맵 생성 */}
-            <Route
-              path="/teaching-map/create"
-              element={<TeachingMapCreatePage />}
-            />
-
-            {/* 임시 티칭맵 보관함 */}
-            <Route
-              path="/teaching-map/drafts"
-              element={<TemporaryTeachingMapPage />}
-            />
-
-            {/* 임시 티칭맵 수정 */}
-            <Route
-              path="/teaching-map/drafts/:draftId/edit"
-              element={<TeachingMapCreatePage />}
-            />
-
-            {/* 티칭맵 콘텐츠 상세 */}
-            <Route
-              path="/teaching-map/:teachingMapId/:contentId"
-              element={<TeachingMapContentPage />}
-            />
-
-            {/* 티칭맵 상세 */}
-            <Route
-              path="/teaching-map/:teachingMapId"
-              element={<TeachingMapDetailPage />}
-            />
-
             {/* 휴지통 */}
             <Route path="/trash" element={<TrashPage />} />
 
@@ -179,22 +139,35 @@ function App() {
             {/* 1:1 문의 */}
             <Route path="/mypage/inquiry" element={<MyPageInquiryPage />} />
 
-            {/* 탈퇴 사유 */}
+            {/* 티칭맵: 콘텐츠 상세를 제외하면 모바일 하단 내비게이션 노출 */}
+            <Route path="/teaching-map" element={<TeachingMapPage />} />
+            <Route path="/teaching-map/create" element={<TeachingMapCreatePage />} />
+            <Route path="/teaching-map/drafts" element={<TemporaryTeachingMapPage />} />
+            <Route path="/teaching-map/drafts/:draftId/edit" element={<TeachingMapCreatePage />} />
+            <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
+          </Route>
+
+          {/* 탈퇴 절차에서는 모바일 하단 내비게이션 미노출 */}
+          <Route element={<MainLayout hideMobileNav />}>
             <Route
               path="/mypage/withdrawal-reason"
               element={<MyPageWithdrawalReasonPage />}
             />
-
-            {/* 탈퇴 확인 */}
             <Route
               path="/mypage/withdrawal-confirm"
               element={<MyPageWithdrawalConfirmPage />}
             />
-
-            {/* 탈퇴 완료 */}
             <Route
               path="/mypage/withdrawal-complete"
               element={<MyPageWithdrawalCompletePage />}
+            />
+          </Route>
+
+          {/* 티칭맵 콘텐츠 상세에서만 모바일 하단 내비게이션 미노출 */}
+          <Route element={<MainLayout hideMobileNav />}>
+            <Route
+              path="/teaching-map/:teachingMapId/:contentId"
+              element={<TeachingMapContentPage />}
             />
           </Route>
 
@@ -208,9 +181,22 @@ function App() {
 
         {/* 회원가입 전용 레이아웃 */}
         <Route
-          element={<MainLayout showRightIcons={false} showMenuIcon={false} />}
+          element={
+            <MainLayout
+              showRightIcons={false}
+              showMenuIcon={false}
+              hideHeaderOnMobile
+              hideMobileNav
+            />
+          }
         >
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup/terms/service" element={<TermsServicePage />} />
+          <Route
+            path="/signup/terms/marketing"
+            element={<TermsMarketingPage />}
+          />
+          <Route path="/signup/terms/event" element={<TermsEventPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -8,6 +8,7 @@ interface TeachingMapAnalysisPanelProps {
   openAnalysisIds: number[];
   originalUrl: string;
   onToggleAnalysis: (sectionId: number) => void;
+  mobile?: boolean;
 }
 
 const TeachingMapAnalysisPanel = ({
@@ -15,6 +16,7 @@ const TeachingMapAnalysisPanel = ({
   openAnalysisIds,
   originalUrl,
   onToggleAnalysis,
+  mobile = false,
 }: TeachingMapAnalysisPanelProps) => {
   const mainSections = sections.filter(
     (section) => section.highlightType === "MAIN",
@@ -67,26 +69,28 @@ const TeachingMapAnalysisPanel = ({
   };
 
   return (
-    <aside className="flex h-full w-[535px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]">
-      <div className="flex min-h-full flex-col px-[24px] pb-[32px] pt-[20px]">
-        <div className="flex items-center justify-between">
+    <aside className={mobile ? "w-full bg-[#090713]" : "flex h-full w-[535px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]"}>
+      <div className={mobile ? "px-[16px] pb-[40px] pt-[20px]" : "flex min-h-full flex-col px-[24px] pb-[32px] pt-[20px]"}>
+        <div className={mobile ? "hidden" : "flex items-center justify-between"}>
           <h2 className="text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#F5F2FF]">
             타카의 분석
           </h2>
           <TeachingMapOriginalButton originalUrl={originalUrl} />
         </div>
 
-        <div className="mt-[51px] flex flex-col gap-[40px]">
+        <div className={mobile ? "flex flex-col gap-[20px]" : "mt-[51px] flex flex-col gap-[40px]"}>
           {renderSectionGroup("핵심:", mainSections)}
           {renderSectionGroup("주의할 점:", cautionSections)}
         </div>
 
-        <div className="min-h-[40px] flex-1" />
+        {!mobile && <div className="min-h-[40px] flex-1" />}
+        {!mobile && (
         <img
           src="/character/teachingTIKI.svg"
           alt="티칭맵 안내 캐릭터"
           className="mr-[24px] h-[200px] w-[200px] shrink-0 self-end object-contain"
         />
+        )}
       </div>
     </aside>
   );

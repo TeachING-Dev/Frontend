@@ -213,10 +213,10 @@ const MyPageEditPage = () => {
   };
 
   return (
-    <main className="min-h-full px-[160px] pb-[120px] pt-[40px]">
+    <main className="min-h-full px-[20px] pb-[150px] pt-[20px] lg:px-[160px] lg:pb-[120px] lg:pt-[40px]">
       <MyPageBackHeader title="회원 정보 수정" />
 
-      <section className="mt-[50px] flex flex-col items-center">
+      <section className="mt-[30px] flex flex-col items-center lg:mt-[50px]">
         <ProfileImageEditor
           nickname={
             originalNickname ||
@@ -240,7 +240,7 @@ const MyPageEditPage = () => {
           className="hidden"
         />
 
-        <div className="mt-[30px] flex flex-col gap-[34px]">
+        <div className="mt-[20px] flex w-full flex-col gap-[10px] lg:mt-[30px] lg:w-auto lg:gap-[34px]">
           <NicknameField
             value={nickname}
             errorMessage={
@@ -269,8 +269,8 @@ const MyPageEditPage = () => {
           }
           onClick={handleSubmit}
           className={[
-            "mt-[40px] flex h-[60px] w-[736px] items-center justify-center rounded-[10px]",
-            "px-[10px] font-['SUIT'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px]",
+            "mt-[30px] flex h-[48px] w-full items-center justify-center rounded-[5px] lg:mt-[40px] lg:h-[60px] lg:w-[736px] lg:rounded-[10px]",
+            "px-[10px] font-['SUIT'] text-[16px] font-semibold leading-[150%] tracking-[-0.4px] lg:text-[24px] lg:tracking-[-0.72px]",
             isSubmitDisabled ||
             isSubmitting
               ? "cursor-not-allowed bg-[#2B2C35] text-[#717379]"

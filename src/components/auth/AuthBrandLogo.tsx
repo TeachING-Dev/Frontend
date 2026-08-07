@@ -1,11 +1,19 @@
 ﻿type AuthBrandLogoProps = {
   gapClassName?: string;
+  className?: string;
+  starClassName?: string;
+  textClassName?: string;
 };
 
-const AuthBrandLogo = ({ gapClassName = "gap-10" }: AuthBrandLogoProps) => {
+const AuthBrandLogo = ({
+  gapClassName = "gap-10",
+  className = "",
+  starClassName = "",
+  textClassName = "",
+}: AuthBrandLogoProps) => {
   return (
-    <div className={`flex w-full flex-col items-center ${gapClassName}`}>
-      <img src="/character/Star17.svg" alt="" className="h-[78px] w-[70px]" />
+    <div className={`flex w-full flex-col items-center ${gapClassName} ${className}`}>
+      <img src="/character/Star17.svg" alt="" className={`h-[78px] w-[70px] ${starClassName}`} />
       <div className="self-stretch inline-flex items-center justify-center gap-1.5">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +21,7 @@ const AuthBrandLogo = ({ gapClassName = "gap-10" }: AuthBrandLogoProps) => {
           height="72.258"
           viewBox="0 0 430 73"
           fill="none"
-          className="h-auto w-[min(429.095px,70vw)]"
+          className={`h-auto w-[min(429.095px,70vw)] ${textClassName}`}
           aria-label="TeachING"
           role="img"
         >

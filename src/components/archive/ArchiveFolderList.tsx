@@ -26,7 +26,7 @@ const ArchiveFolderList = ({
   onMoveToTrash,
 }: ArchiveFolderListProps) => {
   return (
-    <section className="w-full">
+    <section className="w-full space-y-0 lg:space-y-0">
       {/* 새 폴더 추가 */}
       <AddFolderList onClick={onAddFolder} />
 

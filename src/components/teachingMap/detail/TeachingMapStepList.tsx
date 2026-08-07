@@ -11,7 +11,7 @@ const TeachingMapStepList = ({
   onToggleCompletion,
 }: TeachingMapStepListProps) => {
   return (
-    <div className="flex flex-col gap-[80.69px]">
+    <div className="flex flex-col gap-[20px] lg:gap-[80.69px]">
       {steps.map((step, index) => (
         <TeachingMapStepItem
           key={step.id}

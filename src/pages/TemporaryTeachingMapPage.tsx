@@ -14,6 +14,7 @@ import TemporaryTeachingMapHeader from "../components/teachingMap/drafts/Tempora
 import TemporaryTeachingMapList from "../components/teachingMap/drafts/TemporaryTeachingMapList";
 import TeachingMapDeleteModal from "../components/teachingMap/main/TeachingMapDeleteModal";
 import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
+import TeachingMapEmpty from "../components/teachingMap/main/TeachingMapEmpty";
 import TeachingMapFilter, {
   type TeachingMapFilterType,
 } from "../components/teachingMap/main/TeachingMapFilter";
@@ -197,14 +198,12 @@ const TemporaryTeachingMapPage = () => {
   const visibleTeachingMapIds = visibleTeachingMaps.map(
     (teachingMap) => teachingMap.id,
   );
-  const isCurrentPageAllSelected =
-    visibleTeachingMapIds.length > 0 &&
-    visibleTeachingMapIds.every((id) => selectedTeachingMapIds.includes(id));
+  const hasSelectedTeachingMaps = selectedTeachingMapIds.length > 0;
 
   const handleToggleSelectAll = () => {
     setSelectedTeachingMapIds((previousIds) => {
-      if (isCurrentPageAllSelected) {
-        return previousIds.filter((id) => !visibleTeachingMapIds.includes(id));
+      if (previousIds.length > 0) {
+        return [];
       }
 
       return Array.from(new Set([...previousIds, ...visibleTeachingMapIds]));
@@ -312,21 +311,21 @@ const TemporaryTeachingMapPage = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 py-10">
+      <PageContainer className="relative z-10 flex min-h-[calc(100dvh-64px)] flex-col pb-[122px] pt-10 lg:block lg:min-h-0 lg:py-10">
         <TemporaryTeachingMapHeader />
 
         <div className="mt-5">
           {isDeleteMode ? (
             <TeachingMapDeleteToolbar
               selectedCount={selectedTeachingMapIds.length}
-              isAllSelected={isCurrentPageAllSelected}
+              isAllSelected={hasSelectedTeachingMaps}
               onToggleSelectAll={handleToggleSelectAll}
               actionLabel="휴지통으로 이동"
               onDeleteClick={handleDeleteButtonClick}
               onCancelClick={handleDeleteModeCancel}
             />
           ) : (
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full items-center gap-[16px] lg:justify-between lg:gap-0">
               <TeachingMapFilter
                 selectedFilter={selectedFilter}
                 onFilterChange={handleFilterChange}
@@ -355,23 +354,15 @@ const TemporaryTeachingMapPage = () => {
               onTeachingMapSelect={handleTeachingMapSelect}
             />
           ) : (
-            <div className="flex h-[480px] w-full flex-col items-center justify-center gap-10">
-              <img
-                src="/TempCharacter.svg"
-                alt=""
-                aria-hidden="true"
-                draggable={false}
-                className="h-[224px] w-[235px] select-none object-contain"
-              />
-              <p className="font-['SUIT'] text-[20px] font-semibold leading-7 tracking-[-0.6px] text-[#42444C]">
-                임시저장한 티칭맵이 없습니다.
-              </p>
-            </div>
+            <TeachingMapEmpty
+              imageAlt="임시보관함 빈 상태"
+              message="임시저장한 티칭맵이 없습니다."
+            />
           )}
         </div>
 
         {filteredTeachingMaps.length > 0 && (
-          <div className="pb-[77px]">
+          <div className="mt-auto pt-[70px] [&_nav]:mt-0 lg:mt-0 lg:pb-[77px] lg:pt-0">
             <Pagination
               currentPage={activePage}
               totalPages={totalPages}

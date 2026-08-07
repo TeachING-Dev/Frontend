@@ -7,6 +7,7 @@ type SidebarProps = {
   open: boolean;
   onClose: () => void;
   onLogout?: () => void;
+  hideMobileNav?: boolean;
 };
 
 const desktopMenuItems = [
@@ -70,7 +71,12 @@ const mobileMenuItems = [
   },
 ];
 
-const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
+const Sidebar = ({
+  open,
+  onClose,
+  onLogout,
+  hideMobileNav = false,
+}: SidebarProps) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -93,6 +99,7 @@ const Sidebar = ({ open, onClose, onLogout }: SidebarProps) => {
       {/* 모바일 하단 내비게이션 */}
       <nav
         aria-label="모바일 주요 메뉴"
+        hidden={hideMobileNav}
         className="
           fixed
           bottom-[30px]

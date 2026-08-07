@@ -38,7 +38,7 @@ const WithdrawalReasonList = ({
   ];
 
   return (
-    <div className="flex w-[1120px] flex-col items-start gap-[17px]">
+    <div className="flex w-full flex-col items-start gap-[10px] lg:w-[1120px] lg:gap-[17px]">
       {reasons.map((reason) => (
         <WithdrawalReasonItem
           key={reason.value}

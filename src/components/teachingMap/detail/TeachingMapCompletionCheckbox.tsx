@@ -14,7 +14,7 @@ const TeachingMapCompletionCheckbox = ({
       aria-checked={isCompleted}
       aria-label={isCompleted ? "완료 취소" : "완료 처리"}
       onClick={onToggle}
-      className="flex h-[48px] w-[48px] shrink-0 items-center justify-center"
+      className="flex h-6 w-6 shrink-0 items-center justify-center lg:h-[48px] lg:w-[48px]"
     >
       <img
         src={
@@ -23,7 +23,7 @@ const TeachingMapCompletionCheckbox = ({
             : "/emptySelfCheck.svg"
         }
         alt=""
-        className="h-[42px] w-[42px] object-contain"
+        className="h-6 w-6 object-contain lg:h-[42px] lg:w-[42px]"
       />
     </button>
   );
