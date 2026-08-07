@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -10,17 +11,38 @@ const ArchiveDataAnalysis = ({
   fullAnalysis,
   onEdit,
 }: ArchiveDataAnalysisProps) => {
+  const [isEditing, setIsEditing] =
+    useState(false);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    onEdit?.();
+  };
+
+  const handleReset = () => {
+    // 추후 되돌리기 기능 연결
+  };
+
+  const handleComplete = () => {
+    // 추후 저장 기능 연결
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
   return (
     <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
       {/* 상단 제목 영역 */}
-      <div className="flex h-[60px] items-center justify-between px-[20px]">
+      <div className="flex h-[60px] items-center justify-between bg-[#1F212A] px-[20px]">
         <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#FAFAFA]">
           AI 상세 분석
         </h2>
 
         <button
           type="button"
-          onClick={onEdit}
+          onClick={handleEdit}
           className="group flex h-[40px] w-[120px] items-center justify-center gap-[5px] rounded-[5px] bg-[#13151F] px-[12px] transition-colors hover:bg-[#3A3847]"
         >
           <img
@@ -38,6 +60,62 @@ const ArchiveDataAnalysis = ({
 
       {/* 상세 분석 내용 */}
       <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[30px]">
+        {/* 편집하기 클릭 시 추가되는 부분 */}
+        {isEditing && (
+          <div className="mb-[20px] flex items-center justify-between">
+            <span className="rounded-[4px] bg-[#31323C] px-[10px] py-[5px] font-['ABeeZee'] text-[18px] font-normal leading-[150%] tracking-[-0.54px] text-[#717379]">
+              직접 수정
+            </span>
+
+            <div className="flex items-center gap-[4px] rounded-full border border-[#917DEC] bg-[#13151F] px-[6px]">
+              {/* 되돌리기 */}
+              <button
+                type="button"
+                onClick={handleReset}
+                aria-label="원래 내용으로 되돌리기"
+                className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
+              >
+                <img
+                  src="/icon/flip-left.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-[24px] w-[24px] object-contain"
+                />
+              </button>
+
+              {/* 완료 */}
+              <button
+                type="button"
+                onClick={handleComplete}
+                aria-label="수정 완료"
+                className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
+              >
+                <img
+                  src="/icon/check.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-[24px] w-[24px] object-contain"
+                />
+              </button>
+
+              {/* 취소 */}
+              <button
+                type="button"
+                onClick={handleCancel}
+                aria-label="수정 취소"
+                className="flex h-[35px] w-[35px] items-center justify-center rounded-full transition-colors hover:bg-[#917DEC]/20"
+              >
+                <img
+                  src="/icon/cancel.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-[24px] w-[24px] object-contain"
+                />
+              </button>
+            </div>
+          </div>
+        )}
+
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
