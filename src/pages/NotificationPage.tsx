@@ -1,20 +1,38 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   getNotifications,
+  readNotification,
   type Notification,
 } from "../apis/notification";
 import NotificationPageList from "../components/notification/NotificationPageList";
 
+const sortNotifications = (
+  notifications: Notification[],
+) => {
+  return [...notifications].sort(
+    (a, b) =>
+      Number(a.isRead) -
+      Number(b.isRead),
+  );
+};
+
 const NotificationPage = () => {
+  const navigate = useNavigate();
+
   const [notifications, setNotifications] =
     useState<Notification[]>([]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const data = await getNotifications(20);
-        setNotifications(data);
+        const data =
+          await getNotifications(20);
+
+        setNotifications(
+          sortNotifications(data),
+        );
       } catch (error) {
         console.error(
           "알림 목록 조회 실패:",
@@ -26,6 +44,55 @@ const NotificationPage = () => {
     fetchNotifications();
   }, []);
 
+  const handleNotificationClick = async (
+    notificationId: number,
+  ) => {
+    const notification =
+      notifications.find(
+        (item) =>
+          item.notificationId ===
+          notificationId,
+      );
+
+    if (!notification) {
+      return;
+    }
+
+    if (
+      notification.targetType ===
+      "TEACHING_MAP"
+    ) {
+      navigate(
+        `/teaching-map/${notification.targetId}`,
+      );
+    }
+
+    try {
+      await readNotification(
+        notificationId,
+      );
+
+      setNotifications((prev) =>
+        sortNotifications(
+          prev.map((item) =>
+            item.notificationId ===
+            notificationId
+              ? {
+                  ...item,
+                  isRead: true,
+                }
+              : item,
+          ),
+        ),
+      );
+    } catch (error) {
+      console.error(
+        "알림 읽음 처리 실패:",
+        error,
+      );
+    }
+  };
+
   return (
     <section className="mx-auto w-full max-w-[1120px] py-[40px]">
       <h1 className="mb-[30px] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#E8E8E8]">
@@ -34,6 +101,7 @@ const NotificationPage = () => {
 
       <NotificationPageList
         notifications={notifications}
+        onItemClick={handleNotificationClick}
       />
     </section>
   );

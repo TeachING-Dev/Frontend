@@ -147,7 +147,8 @@ const ArchivePage = () => {
     filteredFolders.slice(
       (activePage - 1) *
         FOLDERS_PER_PAGE,
-      activePage * FOLDERS_PER_PAGE,
+      activePage *
+        FOLDERS_PER_PAGE,
     );
 
   const handleCreateFolder = async (
@@ -280,8 +281,8 @@ const ArchivePage = () => {
 
   return (
     <>
-      <main className="min-h-[calc(100dvh-64px)] py-5 lg:py-10">
-        <PageContainer className="flex min-h-[calc(100dvh-84px)] flex-col pb-[162px] lg:block lg:min-h-0 lg:pb-0">
+      <main>
+        <PageContainer>
           <ArchiveHeader
             viewMode={viewMode}
             onViewModeChange={
@@ -289,13 +290,17 @@ const ArchivePage = () => {
             }
             sort={sort}
             onSortChange={setSort}
-            searchKeyword={searchInput}
+            searchKeyword={
+              searchInput
+            }
             onSearchKeywordChange={
               handleSearchKeywordChange
             }
             onSearch={handleSearch}
             onAddFolder={() =>
-              setIsCreateModalOpen(true)
+              setIsCreateModalOpen(
+                true,
+              )
             }
           />
 
@@ -336,16 +341,22 @@ const ArchivePage = () => {
                 onMoveToTrash={
                   handleMoveToTrash
                 }
+                isSearching={
+                  keyword.length > 0
+                }
               />
             )}
           </div>
 
-          {filteredFolders.length > 0 && (
+          {filteredFolders.length >
+            0 && (
             <div className="fixed inset-x-0 bottom-[122px] z-20 [&>nav]:mt-0 lg:static lg:mt-0 lg:[&>nav]:mt-10">
               <Pagination
                 currentPage={activePage}
                 totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                onPageChange={
+                  setCurrentPage
+                }
               />
             </div>
           )}
@@ -357,14 +368,18 @@ const ArchivePage = () => {
           onClose={() =>
             setIsCreateModalOpen(false)
           }
-          onCreate={handleCreateFolder}
+          onCreate={
+            handleCreateFolder
+          }
         />
       )}
 
       {isCreateErrorModalOpen && (
         <CreateErrorModal
           onClose={() =>
-            setIsCreateErrorModalOpen(false)
+            setIsCreateErrorModalOpen(
+              false,
+            )
           }
         />
       )}

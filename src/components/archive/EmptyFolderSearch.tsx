@@ -3,7 +3,7 @@ import EmptyState from "../common/EmptyState";
 const EmptyArchiveSearch = () => {
   return (
     <EmptyState
-      imageSrc="/NotFound.png"
+      imageSrc="/character/NotFound.png"
       imageAlt="검색 결과 없음"
       message="검색결과가 존재하지 않습니다."
       containerClassName="flex flex-col items-center pt-[180px]"

@@ -23,7 +23,21 @@ const ArchiveDataHeader = ({
     platformType.toUpperCase() === "YOUTUBE"
       ? "/icon/youtube-app-icon.png"
       : "/icons.svg";
-  const platformIconSrc = platformImageUrl || fallbackPlatformIcon;
+  const normalizePlatformImageUrl = (
+    url: string,
+  ) => {
+    const markdownLinkMatch =
+      url.match(/\((https?:\/\/[^)]+)\)/);
+
+    return markdownLinkMatch
+      ? markdownLinkMatch[1]
+      : url;
+  };
+
+  const platformIconSrc =
+    normalizePlatformImageUrl(
+      platformImageUrl,
+    ) || fallbackPlatformIcon;
   const handleOpenOriginal = () => {
     window.open(originalUrl, "_blank", "noopener,noreferrer");
   };
@@ -57,7 +71,7 @@ const ArchiveDataHeader = ({
       <div className="mb-[24px] flex items-start justify-between">
         <div className="flex min-w-0 items-start gap-[15px]">
           {/* 플랫폼 아이콘 */}
-          <div className="mt-2 flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
+          <div className="mt-2 flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full">
             <img
               src={platformIconSrc}
               alt={platformType}
