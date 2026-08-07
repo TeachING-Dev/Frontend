@@ -9,7 +9,7 @@ const AddFolderList = ({ onClick }: AddFolderItemProps) => {
       className="hidden h-[88px] w-full items-center border-b border-[#2A2737] hover:bg-white/5 lg:flex"
     >
       <img
-        src="/folder-add.png"
+        src="/folder/folder-add.png"
         alt="새 폴더"
         className="h-[64px] w-[64px]"
       />
