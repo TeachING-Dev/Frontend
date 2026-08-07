@@ -58,7 +58,7 @@ const MyPageEmailModal = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="email-modal-title"
-        className="flex w-[355px] flex-col items-start gap-[10px] rounded-[10px] bg-[#0B0A18] p-5 shadow-[0_0_50px_0_rgba(145,125,236,0.5)]"
+        className="flex w-[calc(100%-32px)] max-w-[361px] flex-col items-start gap-[10px] rounded-[10px] bg-[#0B0A18] p-[20px] shadow-[0_0_50px_0_rgba(145,125,236,0.5)] lg:w-[355px]"
       >
         <h2
           id="email-modal-title"
@@ -67,8 +67,8 @@ const MyPageEmailModal = ({
           이메일
         </h2>
 
-        <div className="flex h-[56px] w-full items-center justify-between rounded-[5px] bg-[#1F212A] p-[10px]">
-          <span className="truncate font-['SUIT'] text-[20px] font-semibold leading-[28px] tracking-[-0.6px] text-white">
+        <div className="flex h-[44px] w-full items-center justify-between rounded-[5px] bg-[#1F212A] p-[10px] lg:h-[56px]">
+          <span className="truncate font-['SUIT'] text-[16px] font-medium leading-[24px] tracking-[-0.48px] text-white lg:text-[20px] lg:font-semibold lg:leading-[28px] lg:tracking-[-0.6px]">
             {email}
           </span>
 
@@ -76,7 +76,7 @@ const MyPageEmailModal = ({
             type="button"
             onClick={handleCopy}
             aria-label={isCopied ? "이메일 복사 완료" : "이메일 주소 복사"}
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-[#8D8E94] transition hover:text-white"
+            className="flex h-6 w-6 shrink-0 items-center justify-center text-[#8D8E94] transition hover:text-white lg:h-9 lg:w-9"
           >
             <img
               src="/icon/icon_copy.svg"
@@ -90,7 +90,7 @@ const MyPageEmailModal = ({
         <button
           type="button"
           onClick={handleClose}
-          className="mt-[10px] flex h-[44px] w-full items-center justify-center rounded-[5px] bg-[#917DEC] p-[10px] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#D0D0D2] transition hover:bg-[#856FE5]"
+          className="flex h-[40px] w-full items-center justify-center rounded-[5px] bg-[#917DEC] p-[10px] text-[16px] font-medium leading-6 tracking-[-0.48px] text-[#D0D0D2] transition hover:bg-[#856FE5] lg:mt-[10px] lg:h-[44px]"
         >
           돌아가기
         </button>

@@ -6,9 +6,9 @@ const TeachingMapTagList = ({ tags }: TeachingMapTagListProps) => {
   return (
     <section className="px-[30px] max-lg:px-[16px]">
       <div className="flex items-center gap-[5px]">
-        <img src="/mdi_tag.svg" alt="" className="h-[20px] w-[20px] shrink-0" />
+        <img src="/mdi_tag.svg" alt="" className="h-[16px] w-[16px] md:h-[20px] md:w-[20px] shrink-0" />
 
-        <span className="text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
+        <span className="text-[14px] md:text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
           태그
         </span>
       </div>

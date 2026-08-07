@@ -115,10 +115,19 @@ const MyPageTeachingStylePage = () => {
   };
 
   return (
-    <main className="flex min-h-[calc(100vh-80px)] flex-col px-[160px] pb-[40px] pt-[40px]">
+    <main className="flex min-h-[calc(100dvh-80px)] flex-col px-[20px] pb-[36px] pt-[20px] lg:min-h-[calc(100vh-80px)] lg:px-[160px] lg:pb-[40px] lg:pt-[40px]">
       <MyPageBackHeader title="티칭맵 설정" />
 
-      <section className="flex min-h-0 flex-1 items-center justify-center">
+      <div className="mt-[20px] lg:hidden">
+        <h2 className="text-[18px] font-semibold leading-[150%] tracking-[-0.45px] text-[#F5F2FF]">
+          나와 함께할 선생님을 선택해 주세요
+        </h2>
+        <p className="mt-[4px] text-[13px] font-medium leading-[150%] tracking-[-0.325px] text-[#717379]">
+          학습 방식에 맞는 선생님을 선택할 수 있어요.
+        </p>
+      </div>
+
+      <section className="mt-[36px] flex min-h-0 flex-1 items-start justify-center lg:mt-0 lg:items-center">
         <TeachingStyleSelector
           selectedStyle={selectedStyle}
           onChange={handleTeachingStyleChange}

@@ -48,8 +48,10 @@ const MaterialCard = ({
   sourceImageAlt = "",
   selectable = false,
   selected = false,
+  showAiButton = false,
   showOriginalButton = true,
   onSelect,
+  onAiAnalysis,
   onOpenOriginal,
 }: MaterialCardProps) => {
   const isArchiveVariant = variant === "archive";
@@ -112,10 +114,28 @@ const MaterialCard = ({
           )}
         </div>
 
-        {!selectable && showOriginalButton && (
+        {!selectable && (showAiButton || showOriginalButton) && (
           <div
             className={`${isArchiveVariant ? "" : "ml-[20px]"} flex shrink-0 items-center gap-[10px]`}
           >
+            {showAiButton && (
+              <button
+                type="button"
+                disabled={!onAiAnalysis}
+                onClick={(event) => handleAction(event, onAiAnalysis)}
+                className="flex h-[25px] w-[96px] items-center justify-center gap-[4px] rounded-[4px] bg-[#917DEC] transition-colors hover:bg-[#806BDB] disabled:cursor-not-allowed disabled:opacity-40 lg:h-[40px] lg:w-[164px] lg:gap-[8px] lg:rounded-[8px]"
+              >
+                <img
+                  src="/icon/AI.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-[10px] w-[10px] shrink-0 object-contain lg:h-[18px] lg:w-[18px]"
+                />
+                <span className="font-['SUIT'] text-[10px] font-normal leading-[14px] tracking-[-0.2px] text-[#FAFAFA] lg:text-[20px] lg:font-medium lg:leading-[150%] lg:tracking-[-0.6px]">
+                  AI 분석 결과
+                </span>
+              </button>
+            )}
             {showOriginalButton && (
               <button
                 type="button"

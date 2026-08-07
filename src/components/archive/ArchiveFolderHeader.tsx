@@ -143,25 +143,25 @@ const ArchiveFolderHeader = ({
       folderName;
 
   return (
-    <section className="relative mb-[30px] lg:mb-[60px]">
+    <section className="mb-[30px] lg:mb-[60px]">
       <button
         type="button"
         onClick={onBack}
-        className="group absolute left-0 top-0 flex h-[36px] w-[24px] items-center justify-center rounded transition hover:bg-white/10 lg:static lg:mb-1 lg:h-auto lg:w-auto lg:gap-2 lg:px-1 lg:py-1"
+        className="group mb-[10px] flex h-[24px] items-center gap-[4px] rounded transition hover:bg-white/10 lg:mb-1 lg:h-auto lg:w-auto lg:gap-2 lg:px-1 lg:py-1"
       >
         <span
           aria-hidden="true"
-          className="text-[24px] font-light leading-none text-white transition-colors duration-200 lg:text-[20px] lg:text-[#9B9AA0] group-hover:text-white"
+          className="text-[18px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 lg:text-[20px] group-hover:text-white"
         >
           &lt;
         </span>
 
-        <span className="hidden text-[16px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white lg:inline">
+        <span className="text-[13px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white lg:text-[16px]">
           보관함으로 돌아가기
         </span>
       </button>
 
-      <div className="mb-[5px] flex min-h-[36px] items-center gap-[10px] pl-[40px] lg:mb-3 lg:min-h-[54px] lg:gap-[17px] lg:pl-0">
+      <div className="mb-[5px] flex min-h-[36px] items-center gap-[10px] lg:mb-3 lg:min-h-[54px] lg:gap-[17px]">
         {isEditingFolderName ? (
           <>
             <label className="grid shrink-0">
@@ -244,7 +244,7 @@ const ArchiveFolderHeader = ({
         )}
       </div>
 
-      <p className="mb-[20px] pl-[40px] text-[14px] text-[#A1A1A5] lg:mb-6 lg:pl-0 lg:text-[20px]">
+      <p className="mb-[20px] text-[14px] text-[#A1A1A5] lg:mb-6 lg:text-[20px]">
         {savedItemCount}개의 저장된 자료
       </p>
 
@@ -289,7 +289,7 @@ const ArchiveFolderHeader = ({
                   (prev) => !prev,
                 )
               }
-              className="flex h-[30px] w-auto items-center justify-center gap-[4px] rounded bg-transparent px-[6px] text-[13px] font-semibold leading-[140%] tracking-[-0.33px] text-[#F5F2FF] lg:h-[40px] lg:w-[147px] lg:gap-2 lg:px-3 lg:text-[20px] lg:tracking-[-0.6px]"
+              className="flex h-[30px] w-[73.5px] items-center justify-center gap-[4px] rounded bg-transparent text-[13px] font-normal leading-[135%] tracking-[-0.325px] text-[#F5F2FF] lg:h-[40px] lg:w-[147px] lg:gap-2 lg:px-3 lg:text-[20px] lg:font-semibold lg:leading-[140%] lg:tracking-[-0.6px]"
             >
               <span>
                 {

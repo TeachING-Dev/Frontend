@@ -353,7 +353,7 @@ const TrashContent = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[296px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"
       />
 
-      <PageContainer className="relative z-10 flex min-h-[calc(100dvh-64px)] flex-col pb-[122px] pt-10 lg:block lg:min-h-0 lg:pb-[120px]">
+      <PageContainer className="relative z-10 pb-[120px] pt-10">
         <TrashHeader />
 
         <div className="mt-5 flex items-center justify-between gap-[6px] lg:gap-0">
@@ -393,7 +393,7 @@ const TrashContent = () => {
         </div>
 
         {isRestoreMode && (
-          <div className="mt-10">
+          <div className="mt-[20px] lg:mt-10">
             <TrashRestoreToolbar
               selectedCount={selectedItemIds.length}
               onToggleSelection={handleToggleSelection}
@@ -410,16 +410,14 @@ const TrashContent = () => {
           className={
             isEmpty
               ? "mt-5"
-              : isRestoreMode
-                ? "mt-5 lg:min-h-[540px]"
-                : "mt-10 lg:min-h-[540px]"
+              : "mt-5 min-h-[540px]"
           }
         >
           {renderContent()}
         </section>
 
         {showPagination && (
-          <div className="mt-auto pt-[70px] [&_nav]:mt-0 lg:mt-0 lg:pt-0">
+          <div className="fixed inset-x-0 bottom-[122px] z-20 [&>nav]:mt-0 lg:static lg:[&>nav]:mt-10">
             <Pagination
               currentPage={currentPage}
               totalPages={Math.max(1, pageState.totalPages)}

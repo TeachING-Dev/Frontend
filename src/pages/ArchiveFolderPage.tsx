@@ -30,6 +30,7 @@ import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
 import EmptyArchiveData from "../components/archive/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import Toast from "../components/common/Toast";
+import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
 
 type SelectMode =
   | "move"
@@ -959,69 +960,15 @@ const ArchiveFolderPage = () => {
 
           {isSelectMode &&
             materials.length > 0 && (
-              <div className="mb-5 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={
-                    handleToggleAll
-                  }
-                  className="flex items-center gap-[17px]"
-                >
-                  <span
-                    className={`flex h-7 w-7 items-center justify-center rounded border transition ${
-                      isAllSelected
-                        ? "border-[#917DEC] bg-[#917DEC]"
-                        : "border-[#777482] bg-[#24232D]"
-                    }`}
-                  >
-                    {isAllSelected && (
-                      <span className="text-[18px] leading-none text-white">
-                        ✓
-                      </span>
-                    )}
-                  </span>
-
-                  <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
-                    {
-                      selectedItemIds.length
-                    }
-                    개 선택됨
-                  </span>
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={
-                      handleSelectAction
-                    }
-                    disabled={
-                      selectedItemIds.length ===
-                      0
-                    }
-                    className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
-                      selectedItemIds.length >
-                      0
-                        ? "bg-[#917DEC] hover:bg-[#8068E2]"
-                        : "cursor-not-allowed bg-[#42444C]"
-                    }`}
-                  >
-                    {selectMode ===
-                    "trash"
-                      ? "휴지통으로 이동"
-                      : "이동하기"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={
-                      handleCancelSelectMode
-                    }
-                    className="flex h-[40px] w-[147px] items-center justify-center rounded bg-[#42444C] font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition hover:bg-[#50505A]"
-                  >
-                    취소
-                  </button>
-                </div>
+              <div className="mb-5">
+                <TeachingMapDeleteToolbar
+                  selectedCount={selectedItemIds.length}
+                  isAllSelected={isAllSelected}
+                  actionLabel={selectMode === "trash" ? "휴지통으로 이동" : "이동하기"}
+                  onToggleSelectAll={handleToggleAll}
+                  onDeleteClick={handleSelectAction}
+                  onCancelClick={handleCancelSelectMode}
+                />
               </div>
             )}
 
@@ -1052,6 +999,11 @@ const ArchiveFolderPage = () => {
           </div>
         </div>
       </main>
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[94px] bg-[linear-gradient(0deg,#0B0A18_0%,rgba(11,10,24,0)_100%)] lg:hidden"
+      />
 
       {isMoveModalOpen && (
         <MoveDataModal

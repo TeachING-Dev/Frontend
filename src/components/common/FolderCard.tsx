@@ -34,16 +34,16 @@ const FolderCard = ({
         tabIndex={0}
         onClick={onClick}
         onKeyDown={handleKeyDown}
-        className="flex h-[128px] w-[352px] cursor-pointer rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[26px] pt-[56px] pb-[12px] transition hover:border-[#8B6DFF]"
+        className="flex h-[64px] w-full cursor-pointer rounded-[5px] border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] px-[13px] py-[10px] transition hover:border-[#8B6DFF] lg:h-[128px] lg:w-[352px] lg:rounded-md lg:px-[26px] lg:pb-[12px] lg:pt-[56px]"
       >
         <div className="flex w-full flex-col justify-between">
           <div className="flex items-center justify-between">
-            <h3 className="truncate text-[24px] font-semibold leading-[140%] text-white">
+            <h3 className="truncate text-[13px] font-normal leading-[18px] tracking-[-0.325px] text-white lg:text-[24px] lg:font-semibold lg:leading-[140%] lg:tracking-normal">
               {name}
             </h3>
             {menu}
           </div>
-          <div className="flex items-center gap-4 text-[16px] text-[#FAFAFA]">
+          <div className="flex items-center gap-[6px] text-[10px] leading-[14px] tracking-[-0.2px] text-[#FAFAFA] lg:gap-4 lg:text-[16px] lg:leading-normal lg:tracking-normal">
             {itemCount !== undefined && <span>{itemCount}개 항목</span>}
             <span>{meta}</span>
           </div>

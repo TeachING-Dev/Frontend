@@ -53,7 +53,7 @@ const SortDropdown = <T extends string>({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
-        className={`flex h-[30px] w-full items-center justify-center gap-[4px] bg-transparent font-['SUIT'] text-[20px] font-medium leading-[30px] tracking-[-0.6px] text-[#D0D0D2] ${triggerClassName}`}
+        className={`flex h-[30px] w-full items-center justify-center gap-[4px] bg-transparent font-['SUIT'] text-[13px] font-normal leading-[135%] tracking-[-0.325px] text-[#D0D0D2] lg:text-[20px] lg:font-medium lg:leading-[30px] lg:tracking-[-0.6px] ${triggerClassName}`}
       >
         <span className="min-w-0 whitespace-nowrap">
           {selectedOption.label}
@@ -83,7 +83,7 @@ const SortDropdown = <T extends string>({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className="flex w-full items-center whitespace-nowrap px-5 py-3 text-left font-['SUIT'] text-[18px] font-medium leading-[25px] tracking-[-0.54px] text-[#F5F2FF] hover:bg-[#3A3847]"
+              className="flex w-full items-center whitespace-nowrap px-4 py-2 text-left font-['SUIT'] text-[13px] font-normal leading-[135%] tracking-[-0.325px] text-[#F5F2FF] hover:bg-[#3A3847] lg:px-5 lg:py-3 lg:text-[18px] lg:font-medium lg:leading-[25px] lg:tracking-[-0.54px]"
             >
               {option.label}
             </button>

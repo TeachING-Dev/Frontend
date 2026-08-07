@@ -17,20 +17,24 @@ const TrashFolderPage = () => {
   const [sort, setSort] = useState<TrashSort>("latest");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [fetchError, setFetchError] = useState("");
+
+  // 1. folderId 유효성 검사를 렌더링 도중 파생 상태로 계산
+  const numericFolderId = Number(folderId);
+  const isInvalidFolder = !Number.isFinite(numericFolderId);
+  const errorMessage = isInvalidFolder
+    ? "올바르지 않은 폴더입니다."
+    : fetchError;
 
   useEffect(() => {
-    const numericFolderId = Number(folderId);
-    if (!Number.isFinite(numericFolderId)) {
-      setErrorMessage("올바르지 않은 폴더입니다.");
-      return;
-    }
+    // 2. folderId가 유효하지 않으면 API 요청을 보내지 않고 종료
+    if (isInvalidFolder) return;
 
     let isCancelled = false;
 
     const loadMaterials = async () => {
       try {
-        setErrorMessage("");
+        setFetchError("");
         const result = await getTrashFolderMaterials(
           numericFolderId,
           sort,
@@ -55,7 +59,7 @@ const TrashFolderPage = () => {
         setTotalPages(result.totalPages);
       } catch (error) {
         if (!isCancelled) {
-          setErrorMessage(
+          setFetchError(
             error instanceof Error
               ? error.message
               : "폴더 안의 자료를 불러오지 못했습니다.",
@@ -68,7 +72,7 @@ const TrashFolderPage = () => {
     return () => {
       isCancelled = true;
     };
-  }, [folderId, page, sort]);
+  }, [numericFolderId, isInvalidFolder, page, sort]);
 
   return (
     <main className="min-h-[calc(100vh-80px)] bg-[#0B0A18]">
@@ -120,11 +124,13 @@ const TrashFolderPage = () => {
         </section>
 
         {materials.length > 0 && (
-          <Pagination
-            currentPage={page}
-            totalPages={Math.max(1, totalPages)}
-            onPageChange={setPage}
-          />
+          <div className="fixed inset-x-0 bottom-[122px] z-20 [&>nav]:mt-0 lg:static lg:[&>nav]:mt-10">
+            <Pagination
+              currentPage={page}
+              totalPages={Math.max(1, totalPages)}
+              onPageChange={setPage}
+            />
+          </div>
         )}
       </PageContainer>
     </main>
