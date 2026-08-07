@@ -101,9 +101,22 @@ export type AskChatRoomMessageResult = {
 export const getChatRoomMessages = async (
   chatRoomId: number,
 ) => {
-  const response = await api.get<
-    ApiResponse<ChatRoomHistory>
-  >(`/chatrooms/${chatRoomId}/messages`);
+  const response = await api
+    .get<ApiResponse<ChatRoomHistory>>(
+      `/chatrooms/${chatRoomId}/messages`,
+    )
+    .catch((error: unknown) => {
+      if (isAxiosError<ApiResponse<null>>(error)) {
+        throw new ChatApiError(
+          error.response?.data.message ||
+            error.message,
+          error.response?.status,
+          error.response?.data.code,
+        );
+      }
+
+      throw error;
+    });
   const data = response.data;
 
   if (!data.isSuccess) {

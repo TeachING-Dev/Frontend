@@ -248,7 +248,7 @@ const ArchiveFolderHeader = ({
         {savedItemCount}개의 저장된 자료
       </p>
 
-      <div className="flex flex-col gap-[10px] lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+      <div className="flex flex-col gap-[10px] lg:flex-row lg:items-end lg:justify-between lg:gap-0">
         <form
           onSubmit={
             handleSearchSubmit

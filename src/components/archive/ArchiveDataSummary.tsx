@@ -69,7 +69,7 @@ const ArchiveDataSummary = ({
             className="h-[24px] w-[24px] object-contain"
           />
 
-          <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D0D0D2]">
+          <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#FAFAFA]">
             AI 요약
           </h2>
         </div>
