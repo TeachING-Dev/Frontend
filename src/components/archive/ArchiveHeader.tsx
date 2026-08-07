@@ -31,7 +31,7 @@ const ArchiveHeader = ({
 
   return (
     <section className="mb-0 lg:mb-[60px]">
-      <h1 className="mb-[10px] text-[24px] font-medium leading-[36px] tracking-[-0.6px] text-white lg:mb-3 lg:text-[36px] lg:font-bold lg:leading-normal lg:tracking-normal">보관함</h1>
+      <h1 className="mb-[10px] text-[24px] font-medium leading-[36px] tracking-[-0.6px] text-white lg:mb-1 lg:text-[36px] lg:font-bold lg:leading-normal lg:tracking-normal">보관함</h1>
 
       <p className="mb-[10px] whitespace-nowrap text-[14px] font-normal leading-[21px] tracking-[-0.35px] text-gray-400 lg:mb-6 lg:text-[20px] lg:leading-normal lg:tracking-normal">
         저장된 모든 자료를 폴더 별로 관리할 수 있습니다.

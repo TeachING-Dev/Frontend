@@ -1,8 +1,10 @@
+﻿import { useState } from "react";
 import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
 
+import Toast from "../components/common/Toast";
 import { activateSubscription } from "../utils/subscription";
 
 type Feature = {
@@ -37,7 +39,7 @@ const plans: Plan[] = [
       { label: "폴더 생성", value: "무제한 제공" },
       {
         label: "폴더 내 자료 보관",
-        value: "무제한 제공 (대용량 URL 아카이빙)",
+        value: "무제한 제공 (대량의 URL 아카이빙)",
       },
       { label: "티칭맵 생성", value: "무제한 제공" },
       { label: "AI 챗봇", value: "채팅 목록 무제한 저장" },
@@ -48,41 +50,178 @@ const plans: Plan[] = [
 const SubscriptionPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedMobilePlan, setSelectedMobilePlan] =
+    useState<"free" | "plus">("free");
+  const [isPaymentCancelToastOpen, setIsPaymentCancelToastOpen] =
+    useState(false);
+  const selectedMobilePlanData =
+    selectedMobilePlan === "plus" ? plans[1] : plans[0];
   const locationState = location.state as
     | { showMyPageBack?: boolean }
     | null;
   const showMyPageBack = locationState?.showMyPageBack === true;
 
+  const showPaymentCancelToast = () => {
+    setIsPaymentCancelToastOpen(true);
+    window.setTimeout(() => {
+      setIsPaymentCancelToastOpen(false);
+    }, 2000);
+  };
+
   const handlePayment = () => {
-    activateSubscription();
-    navigate("/subscription/complete");
+    try {
+      activateSubscription();
+      navigate("/subscription/complete");
+    } catch (error) {
+      console.error(error);
+      showPaymentCancelToast();
+    }
   };
 
   return (
     <section className="relative h-[calc(100vh-64px)] overflow-hidden px-6 text-violet-50">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-52 bg-gradient-to-b from-[#917DEC00] to-[#30265F]" />
 
-      {showMyPageBack && (
       <button
         type="button"
-        onClick={() => navigate("/mypage")}
-          className="absolute left-[138px] top-[20px] z-10 flex origin-top-left scale-[0.75] items-center gap-[8px] text-[#E8E8E8]"
+        onClick={() => {
+          if (showMyPageBack) {
+            navigate("/mypage");
+            return;
+          }
+
+          navigate(-1);
+        }}
+        className={`absolute left-[138px] top-[20px] z-10 flex origin-top-left scale-[0.75] items-center gap-[8px] text-[#E8E8E8] max-md:left-5 max-md:top-2 max-md:scale-100 ${
+          showMyPageBack ? "" : "md:hidden"
+        }`}
       >
         <img
           src="/Chevron-down.svg"
           alt=""
-          className="size-12"
+          className="size-12 max-md:hidden"
+        />
+        <img
+          src="/Chevron-down-mobile.svg"
+          alt=""
+          className="hidden size-6 max-md:block"
         />
         <span className="hidden font-['SUIT'] text-[36px] font-medium leading-[150%] tracking-[-1.08px]">
           구독하기
         </span>
-        <span className="font-['SUIT'] text-[36px] font-medium leading-[150%] tracking-[-1.08px]">
+        <span className="font-['SUIT'] text-[36px] font-medium leading-[150%] tracking-[-1.08px] max-md:text-[16px] max-md:font-normal max-md:tracking-normal">
           구독하기
         </span>
       </button>
-      )}
 
-      <div className="relative flex h-full origin-top justify-center pt-[130px]">
+      <div className="hidden max-md:absolute max-md:left-4 max-md:top-[53px] max-md:block max-md:w-[calc(100%-32px)] max-md:text-left">
+        <h1 className="font-['SUIT'] text-[18px] font-normal leading-[150%] text-white">
+          학습의 한계를 없애보세요
+        </h1>
+        <p className="mt-1 font-['SUIT'] text-[13px] font-normal leading-[150%] text-[#A1A1A5]">
+          정리부터 분석까지, 더 자유롭게 이용하세요.
+        </p>
+      </div>
+
+      <div className="hidden max-md:absolute max-md:left-2.5 max-md:top-[147.5px] max-md:flex max-md:w-[calc(100%-20px)] max-md:gap-2.5">
+        <button
+          type="button"
+          onClick={() => setSelectedMobilePlan("free")}
+          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal text-[#F4F1FF] ${
+            selectedMobilePlan === "free"
+              ? "border-[0.7px] border-[#917DEC] bg-[#13151F] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.60)]"
+              : "bg-[#1F212A]"
+          }`}
+        >
+          TeachING Free (무료플랜)
+        </button>
+        <button
+          type="button"
+          onClick={() => setSelectedMobilePlan("plus")}
+          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal text-[#F4F1FF] ${
+            selectedMobilePlan === "plus"
+              ? "border-[0.7px] border-[#917DEC] bg-[#13151F] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.60)]"
+              : "bg-[#1F212A]"
+          }`}
+        >
+          TeachING Plus (구독형)
+        </button>
+      </div>
+
+      <p className="hidden max-md:absolute max-md:left-4 max-md:top-[229.5px] max-md:block max-md:w-[calc(100%-32px)] max-md:font-['SUIT'] max-md:text-[13px] max-md:font-normal max-md:leading-[150%] max-md:text-[#D9CDFF]">
+        {selectedMobilePlanData.subtitle}
+      </p>
+
+      <ul className="hidden max-md:absolute max-md:left-6 max-md:top-[268px] max-md:block max-md:w-[calc(100%-48px)] max-md:space-y-1 max-md:font-['SUIT'] max-md:text-[16px] max-md:font-medium max-md:leading-[200%] max-md:tracking-[-0.48px]">
+        {selectedMobilePlanData.features.map((feature) => (
+          <li key={`${feature.label}-${feature.value}`}>
+            <span className="mr-2 text-[#917DEC]">
+              •
+            </span>
+            {feature.value ? (
+              <>
+                <span className="text-[#917DEC]">
+                  {feature.label}
+                </span>
+                <span className="text-[#D9CDFF]">
+                  {" "}
+                  : {feature.value}
+                </span>
+              </>
+            ) : (
+              <span className="text-[#D9CDFF]">
+                {feature.label}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {selectedMobilePlan === "plus" ? (
+        <div className="hidden max-md:absolute max-md:bottom-[171px] max-md:left-4 max-md:flex max-md:h-[70px] max-md:w-[361px] max-md:items-center max-md:rounded-[5px] max-md:border-[1.25px] max-md:border-[#917DEC] max-md:bg-[#0B0A18]">
+          <img
+            src="/TermsCheck.svg"
+            alt=""
+            className="ml-[14px] size-7"
+          />
+          <div className="ml-3 font-['SUIT']">
+            <p className="text-[16px] font-normal leading-[150%] text-white">
+              월간 구독
+            </p>
+            <p className="text-[13px] font-normal leading-[150%] text-[#717379]">
+              매월 자동 갱신
+            </p>
+          </div>
+          <p className="ml-auto mr-[14px] font-['SUIT'] text-[20px] font-normal leading-[150%] text-[#917DEC]">
+            ₩10,900 / 월
+          </p>
+        </div>
+      ) : null}
+
+      <div className="hidden max-md:absolute max-md:bottom-[95px] max-md:left-4 max-md:block max-md:w-[361px] max-md:text-center">
+        <button
+          type="button"
+          onClick={handlePayment}
+          className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)]"
+        >
+          TeachING Plus로 시작하기
+        </button>
+      </div>
+
+      <div className="hidden max-md:absolute max-md:bottom-[56px] max-md:left-4 max-md:block max-md:w-[361px] max-md:text-center">
+        <p className="font-['SUIT'] text-[10px] font-normal leading-[150%] text-[#8F91A3]">
+          언제든지 취소할 수 있어요
+        </p>
+        <p className="font-['SUIT'] text-[10px] font-normal leading-[150%] text-[#6B6E80] underline">
+          이용약관  ·  개인정보 처리방침
+        </p>
+      </div>
+
+      {isPaymentCancelToastOpen ? (
+        <Toast message="결제가 취소되었습니다" />
+      ) : null}
+
+      <div className="relative flex h-full origin-top justify-center pt-[130px] max-md:hidden">
         <div className="w-[125%] max-w-[1406px] origin-top scale-[0.8]">
           <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
             <div className="grid w-full grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-[210px]">

@@ -109,9 +109,6 @@ function App() {
               element={<TrashFolderPage />}
             />
 
-            {/* 구독 */}
-            <Route path="/subscription" element={<SubscriptionPage />} />
-
             {/* 마이페이지 */}
             <Route path="/mypage" element={<MyPage />} />
 
@@ -145,6 +142,11 @@ function App() {
             <Route path="/teaching-map/drafts" element={<TemporaryTeachingMapPage />} />
             <Route path="/teaching-map/drafts/:draftId/edit" element={<TeachingMapCreatePage />} />
             <Route path="/teaching-map/:teachingMapId" element={<TeachingMapDetailPage />} />
+          </Route>
+
+          {/* 구독 화면에서는 모바일 하단 내비게이션 미노출 */}
+          <Route element={<MainLayout hideMobileNav />}>
+            <Route path="/subscription" element={<SubscriptionPage />} />
           </Route>
 
           {/* 탈퇴 절차에서는 모바일 하단 내비게이션 미노출 */}

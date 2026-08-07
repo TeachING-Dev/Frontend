@@ -138,13 +138,18 @@ export type FolderMaterialSort =
   | "oldest"
   | "title";
 
+export type FolderMaterialTag = {
+  tagId: number;
+  tagName: string;
+};
+
 export type FolderMaterial = {
   materialId: number;
   title: string;
   summary: string;
   originalUrl: string;
   platformType: string;
-  tags: string[];
+  tags: FolderMaterialTag[];
   statusAi: string;
   createdAt: string;
   updatedAt: string;

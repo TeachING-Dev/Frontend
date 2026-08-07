@@ -15,6 +15,33 @@ const NotificationPageItem = ({
   isRead = false,
   onClick,
 }: NotificationPageItemProps) => {
+  const formatCreatedAt = (date: string) => {
+    const createdDate = new Date(date);
+    const now = new Date();
+
+    const difference =
+      now.getTime() - createdDate.getTime();
+
+    const hours = Math.floor(
+      difference / (1000 * 60 * 60),
+    );
+
+    const days = Math.floor(
+      difference /
+        (1000 * 60 * 60 * 24),
+    );
+
+    if (hours < 1) {
+      return "방금 전";
+    }
+
+    if (hours < 24) {
+      return `${hours}시간 전`;
+    }
+
+    return `${days}일 전`;
+  };
+
   return (
     <div
       className={`relative flex h-[90px] w-full overflow-hidden items-start gap-[20px] px-[10px] transition hover:bg-[#171722] ${
@@ -22,13 +49,12 @@ const NotificationPageItem = ({
       }`}
     >
       {/* 왼쪽 별 아이콘 */}
-      <img
+	<img
         src="/logo/logo.png"
         alt=""
         aria-hidden="true"
         className="mt-[10px] size-[70px] shrink-0 object-contain"
       />
-
       {/* 오른쪽 알림 정보 */}
       <div className="min-w-0 flex-1">
         {/* 상단: 제목 + 화살표 */}
@@ -59,7 +85,7 @@ const NotificationPageItem = ({
           </p>
 
           <span className="shrink-0 text-center font-[Poppins] text-[16px] font-normal leading-[150%] tracking-[-0.4px] text-[#717379]">
-            {createdAt}
+            {formatCreatedAt(createdAt)}
           </span>
         </div>
       </div>
