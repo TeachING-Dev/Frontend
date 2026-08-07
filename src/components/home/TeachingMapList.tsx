@@ -29,7 +29,9 @@ const TeachingMapList = ({
           key={teachingMap.teachingMapId}
           title={teachingMap.title}
           description={teachingMap.description}
-          thumbnailSrc="/icon/Frame2147239594.png"
+          sourcePlatforms={
+            teachingMap.sourcePlatforms
+          }
           onClick={() =>
             navigate(
               `/teaching-map/${teachingMap.teachingMapId}`,

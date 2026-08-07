@@ -1,6 +1,6 @@
 import type { Folder } from "../../../apis/folder";
-import AddFolderList from "../main/AddFolderList";
-import FolderListItem from "../main/FolderListItem";
+import AddFolderList from "./AddFolderList";
+import FolderListItem from "./FolderListItem";
 
 type ArchiveFolderListProps = {
   folders: Folder[];

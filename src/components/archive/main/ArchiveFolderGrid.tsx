@@ -1,6 +1,6 @@
 import type { Folder } from "../../../apis/folder";
-import AddFolderGrid from "../main/AddFolderGrid";
-import FolderGridItem from "../main/FolderGridItem";
+import AddFolderGrid from "./AddFolderGrid";
+import FolderGridItem from "./FolderGridItem";
 
 type ArchiveFolderGridProps = {
   folders: Folder[];

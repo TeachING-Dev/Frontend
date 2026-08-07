@@ -1,7 +1,12 @@
+type SourcePlatform = {
+  type: string;
+  imageUrl: string;
+};
+
 type TeachingMapItemProps = {
   title: string;
   description: string;
-  thumbnailSrc: string;
+  sourcePlatforms: SourcePlatform[];
   onClick?: () => void;
   onShortcutClick?: () => void;
 };
@@ -9,7 +14,7 @@ type TeachingMapItemProps = {
 const TeachingMapItem = ({
   title,
   description,
-  thumbnailSrc,
+  sourcePlatforms,
   onClick,
   onShortcutClick,
 }: TeachingMapItemProps) => {
@@ -26,12 +31,17 @@ const TeachingMapItem = ({
       className="group flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] px-[23px] py-[8px] transition-colors hover:bg-white/5 md:gap-[15px] md:px-5 md:py-[10px]"
     >
       {/* 썸네일 */}
-      <div className="flex h-[38px] w-[60px] shrink-0 flex-col items-start justify-center rounded-[6px] bg-[#1F212A] p-[6px] md:h-[60px] md:w-[98px] md:gap-[10px] md:rounded-[10px] md:p-[10px]">
-        <img
-          src={thumbnailSrc}
-          alt=""
-          className="h-full w-full object-contain"
-        />
+      <div className="flex h-[38px] w-[60px] shrink-0 items-center justify-center gap-[4px] rounded-[6px] bg-[#1F212A] p-[6px] md:h-[60px] md:w-[98px] md:gap-[6px] md:rounded-[10px] md:p-[10px]">
+        {sourcePlatforms.map(
+          (platform) => (
+            <img
+              key={platform.type}
+              src={platform.imageUrl}
+              alt={platform.type}
+              className="min-w-0 flex-1 object-contain"
+            />
+          ),
+        )}
       </div>
 
       {/* 제목 + 설명 */}

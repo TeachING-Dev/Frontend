@@ -25,7 +25,7 @@ import {
 
 import ArchiveDataList, {
   type ArchiveData,
-} from "../components/archive/detail/ArchiveDataList";
+} from "../components/archive/folder/ArchiveDataList";
 import ArchiveFolderHeader from "../components/archive/folder/ArchiveFolderHeader";
 import EmptyArchiveData from "../components/archive/folder/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";

@@ -9,7 +9,7 @@ const AnalysisDetail = ({
   content,
 }: AnalysisDetailProps) => {
   return (
-    <section className="w-full rounded-[10px] border border-[#3A3946] bg-[#13151F] px-[20px] py-[10px]">
+    <section className="w-full rounded-[10px] bg-[#13151F] px-[20px] py-[10px]">
       {/* 제목 */}
       <h2 className="mb-[10px] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#F5F2FF]">
         AI 상세 분석

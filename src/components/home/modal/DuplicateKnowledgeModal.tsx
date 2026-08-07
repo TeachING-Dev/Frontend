@@ -37,7 +37,7 @@ const DuplicateKnowledgeModal = ({
         aria-modal="true"
         aria-labelledby="duplicate-knowledge-title"
         onClick={(e) => e.stopPropagation()}
-        className="flex h-[430px] w-[449px] flex-col rounded-[12px] bg-[#090713] px-5 pb-5 pt-[10px] shadow-[0_0_80px_rgba(134,111,241,0.35)]"
+        className="flex h-[411px] w-[451px] flex-col rounded-[12px] bg-[#090713] px-5 pb-5 pt-[10px] shadow-[0_0_80px_rgba(134,111,241,0.35)]"
       >
         {/* 닫기 버튼 */}
         <div className="mb-[10px] flex justify-end">

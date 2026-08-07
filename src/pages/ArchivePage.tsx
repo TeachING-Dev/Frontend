@@ -13,8 +13,8 @@ import {
   type Folder,
   type FolderSort,
 } from "../apis/folder";
-import ArchiveFolderGrid from "../components/archive/folder/ArchiveFolderGrid";
-import ArchiveFolderList from "../components/archive/folder/ArchiveFolderList";
+import ArchiveFolderGrid from "../components/archive/main/ArchiveFolderGrid";
+import ArchiveFolderList from "../components/archive/main/ArchiveFolderList";
 import ArchiveHeader from "../components/archive/main/ArchiveHeader";
 import EmptyArchiveSearch from "../components/archive/main/EmptyFolderSearch";
 import CreateErrorModal from "../components/archive/modal/CreateErrorModal";
