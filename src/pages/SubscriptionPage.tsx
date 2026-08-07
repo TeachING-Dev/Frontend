@@ -1,11 +1,12 @@
-﻿import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 
+import { readyKakaoPay } from "../apis/payments";
 import Toast from "../components/common/Toast";
-import { activateSubscription } from "../utils/subscription";
 
 type Feature = {
   label: string;
@@ -47,34 +48,68 @@ const plans: Plan[] = [
   },
 ];
 
+const getPaymentToastMessage = (toast: string | null) => {
+  if (toast === "canceled" || toast === "failed") {
+    return "결제가 취소되었습니다.";
+  }
+
+  return "";
+};
+
 const SubscriptionPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedMobilePlan, setSelectedMobilePlan] =
     useState<"free" | "plus">("free");
-  const [isPaymentCancelToastOpen, setIsPaymentCancelToastOpen] =
-    useState(false);
+  const [toastMessage, setToastMessage] = useState(() =>
+    getPaymentToastMessage(
+      new URLSearchParams(location.search).get("toast"),
+    ),
+  );
+  const [isPaymentReadyLoading, setIsPaymentReadyLoading] = useState(false);
   const selectedMobilePlanData =
     selectedMobilePlan === "plus" ? plans[1] : plans[0];
   const locationState = location.state as
-    | { showMyPageBack?: boolean }
+    | { showMyPageBack?: boolean; backTarget?: "mypage" | "chatbot" }
     | null;
-  const showMyPageBack = locationState?.showMyPageBack === true;
+  const backTarget =
+    locationState?.backTarget ??
+    (locationState?.showMyPageBack === true ? "mypage" : null);
+  const shouldShowBackButton = backTarget !== null;
 
-  const showPaymentCancelToast = () => {
-    setIsPaymentCancelToastOpen(true);
-    window.setTimeout(() => {
-      setIsPaymentCancelToastOpen(false);
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+
+    if (searchParams.has("toast")) {
+      setSearchParams({}, { replace: true });
+    }
+
+    const toastTimer = window.setTimeout(() => {
+      setToastMessage("");
     }, 2000);
-  };
 
-  const handlePayment = () => {
+    return () => {
+      window.clearTimeout(toastTimer);
+    };
+  }, [searchParams, setSearchParams, toastMessage]);
+
+  const handlePayment = async () => {
+    if (isPaymentReadyLoading) {
+      return;
+    }
+
     try {
-      activateSubscription();
-      navigate("/subscription/complete");
+      setIsPaymentReadyLoading(true);
+      const redirectUrl = await readyKakaoPay();
+      window.location.href = redirectUrl;
     } catch (error) {
       console.error(error);
-      showPaymentCancelToast();
+      setToastMessage("결제가 취소되었습니다.");
+    } finally {
+      setIsPaymentReadyLoading(false);
     }
   };
 
@@ -85,15 +120,20 @@ const SubscriptionPage = () => {
       <button
         type="button"
         onClick={() => {
-          if (showMyPageBack) {
+          if (backTarget === "mypage") {
             navigate("/mypage");
+            return;
+          }
+
+          if (backTarget === "chatbot") {
+            navigate("/chatbot");
             return;
           }
 
           navigate(-1);
         }}
         className={`absolute left-[138px] top-[20px] z-10 flex origin-top-left scale-[0.75] items-center gap-[8px] text-[#E8E8E8] max-md:left-5 max-md:top-2 max-md:scale-100 ${
-          showMyPageBack ? "" : "md:hidden"
+          shouldShowBackButton ? "" : "md:hidden"
         }`}
       >
         <img
@@ -127,18 +167,18 @@ const SubscriptionPage = () => {
         <button
           type="button"
           onClick={() => setSelectedMobilePlan("free")}
-          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal text-[#F4F1FF] ${
+          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal leading-[150%] text-[#F4F1FF] ${
             selectedMobilePlan === "free"
               ? "border-[0.7px] border-[#917DEC] bg-[#13151F] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.60)]"
               : "bg-[#1F212A]"
           }`}
         >
-          TeachING Free (무료플랜)
+          현재 플랜
         </button>
         <button
           type="button"
           onClick={() => setSelectedMobilePlan("plus")}
-          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal text-[#F4F1FF] ${
+          className={`h-[41px] w-[181.5px] rounded-[5px] font-['SUIT'] text-[14px] font-normal leading-[150%] text-[#F4F1FF] ${
             selectedMobilePlan === "plus"
               ? "border-[0.7px] border-[#917DEC] bg-[#13151F] shadow-[inset_0_0_20px_0_rgba(145,125,236,0.60)]"
               : "bg-[#1F212A]"
@@ -201,8 +241,9 @@ const SubscriptionPage = () => {
       <div className="hidden max-md:absolute max-md:bottom-[95px] max-md:left-4 max-md:block max-md:w-[361px] max-md:text-center">
         <button
           type="button"
-          onClick={handlePayment}
-          className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)]"
+          onClick={() => void handlePayment()}
+          disabled={isPaymentReadyLoading}
+          className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)] disabled:opacity-60"
         >
           TeachING Plus로 시작하기
         </button>
@@ -217,8 +258,8 @@ const SubscriptionPage = () => {
         </p>
       </div>
 
-      {isPaymentCancelToastOpen ? (
-        <Toast message="결제가 취소되었습니다" />
+      {toastMessage ? (
+        <Toast message={toastMessage} variant="compact" />
       ) : null}
 
       <div className="relative flex h-full origin-top justify-center pt-[130px] max-md:hidden">
@@ -284,8 +325,9 @@ const SubscriptionPage = () => {
 
             <button
               type="button"
-              onClick={handlePayment}
-              className="mt-[82px] h-14 w-full max-w-[640px] rounded-[5px] border border-[rgba(145,125,236,0)] bg-[#917DEC] font-['SUIT'] text-xl font-normal leading-8 tracking-normal text-violet-50 shadow-[0_0_30px_0_#917DEC] transition hover:bg-[#9b87f0] focus:outline-none"
+              onClick={() => void handlePayment()}
+              disabled={isPaymentReadyLoading}
+              className="mt-[82px] h-14 w-full max-w-[640px] rounded-[5px] border border-[rgba(145,125,236,0)] bg-[#917DEC] font-['SUIT'] text-xl font-normal leading-8 tracking-normal text-violet-50 shadow-[0_0_30px_0_#917DEC] transition hover:bg-[#9b87f0] focus:outline-none disabled:opacity-60"
             >
               TeachING Plus 로 시작하기
             </button>
