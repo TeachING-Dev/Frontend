@@ -97,7 +97,7 @@ const MaterialCard = ({
         className={`flex h-[75px] shrink-0 items-center justify-between px-[29px] ${isArchiveVariant ? "" : "py-[10px]"}`}
       >
         <div
-          className={`flex items-center gap-[32px] text-center font-['Montserrat'] text-[16px] font-medium italic leading-[150%] tracking-[-0.48px] text-[#F5F2FF] ${isArchiveVariant ? "" : "min-w-0"}`}
+          className={`flex items-center gap-[32px] text-center font-['Montserrat'] text-[20px] font-medium italic leading-[150%] tracking-[-0.48px] text-[#F5F2FF] ${isArchiveVariant ? "" : "min-w-0"}`}
         >
           <span className={isArchiveVariant ? undefined : "shrink-0"}>
             #{tag}

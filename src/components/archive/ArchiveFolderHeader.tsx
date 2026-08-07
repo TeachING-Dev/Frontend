@@ -248,7 +248,7 @@ const ArchiveFolderHeader = ({
         {savedItemCount}개의 저장된 자료
       </p>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <form
           onSubmit={
             handleSearchSubmit
@@ -308,7 +308,7 @@ const ArchiveFolderHeader = ({
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-[46px] z-10 w-[147px] overflow-hidden rounded bg-[#24232D] shadow-lg">
+              <div className="absolute top-[46px] z-10 w-[147px] overflow-hidden rounded bg-[#1F212A] shadow-lg">
                 <button
                   type="button"
                   onClick={() =>

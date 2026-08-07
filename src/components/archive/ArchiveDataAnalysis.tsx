@@ -3,18 +3,37 @@ import remarkGfm from "remark-gfm";
 
 type ArchiveDataAnalysisProps = {
   fullAnalysis: string;
+  onEdit?: () => void;
 };
 
 const ArchiveDataAnalysis = ({
   fullAnalysis,
+  onEdit,
 }: ArchiveDataAnalysisProps) => {
   return (
     <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
       {/* 상단 제목 영역 */}
-      <div className="flex h-[60px] items-center px-[20px]">
-        <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
+      <div className="flex h-[60px] items-center justify-between px-[20px]">
+        <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#FAFAFA]">
           AI 상세 분석
         </h2>
+
+        <button
+          type="button"
+          onClick={onEdit}
+          className="group flex h-[40px] w-[120px] items-center justify-center gap-[5px] rounded-[5px] bg-[#13151F] px-[12px] transition-colors hover:bg-[#3A3847]"
+        >
+          <img
+            src="/icon/edit2.png"
+            alt=""
+            aria-hidden="true"
+            className="h-[24px] w-[24px] object-contain"
+          />
+
+          <span className="text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#A1A1A5] transition-colors group-hover:text-white">
+            편집하기
+          </span>
+        </button>
       </div>
 
       {/* 상세 분석 내용 */}
