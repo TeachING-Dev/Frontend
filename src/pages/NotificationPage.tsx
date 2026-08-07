@@ -8,6 +8,16 @@ import {
 } from "../apis/notification";
 import NotificationPageList from "../components/notification/NotificationPageList";
 
+const sortNotifications = (
+  notifications: Notification[],
+) => {
+  return [...notifications].sort(
+    (a, b) =>
+      Number(a.isRead) -
+      Number(b.isRead),
+  );
+};
+
 const NotificationPage = () => {
   const navigate = useNavigate();
 
@@ -17,8 +27,12 @@ const NotificationPage = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const data = await getNotifications(20);
-        setNotifications(data);
+        const data =
+          await getNotifications(20);
+
+        setNotifications(
+          sortNotifications(data),
+        );
       } catch (error) {
         console.error(
           "알림 목록 조회 실패:",
@@ -59,14 +73,16 @@ const NotificationPage = () => {
       );
 
       setNotifications((prev) =>
-        prev.map((item) =>
-          item.notificationId ===
-          notificationId
-            ? {
-                ...item,
-                isRead: true,
-              }
-            : item,
+        sortNotifications(
+          prev.map((item) =>
+            item.notificationId ===
+            notificationId
+              ? {
+                  ...item,
+                  isRead: true,
+                }
+              : item,
+          ),
         ),
       );
     } catch (error) {

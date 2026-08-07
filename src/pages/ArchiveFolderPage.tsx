@@ -42,15 +42,6 @@ type FolderOption = {
   name: string;
 };
 
-/**
- * 마지막으로 수행한 자료 작업
- *
- * move:
- * 다른 폴더로 이동
- *
- * trash:
- * 휴지통으로 이동
- */
 type LastAction =
   | {
       type: "move";
@@ -77,9 +68,6 @@ const ArchiveFolderPage = () => {
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
 
-  /**
-   * 현재 폴더의 전체 저장 자료 수
-   */
   const [
     totalMaterialCount,
     setTotalMaterialCount,
@@ -123,9 +111,6 @@ const ArchiveFolderPage = () => {
   const [toastMessage, setToastMessage] =
     useState<string | null>(null);
 
-  /**
-   * 실행취소를 위한 마지막 작업
-   */
   const [lastAction, setLastAction] =
     useState<LastAction | null>(null);
 
@@ -137,9 +122,6 @@ const ArchiveFolderPage = () => {
     selectedItemIds.length ===
       materials.length;
 
-  /**
-   * URL folderId 숫자 변환
-   */
   const getParsedFolderId =
     useCallback(() => {
       if (!folderId) {
@@ -165,9 +147,6 @@ const ArchiveFolderPage = () => {
       return parsedFolderId;
     }, [folderId]);
 
-  /**
-   * 폴더 상세 조회
-   */
   const fetchFolder = useCallback(
     async () => {
       const parsedFolderId =
@@ -180,9 +159,6 @@ const ArchiveFolderPage = () => {
     [getParsedFolderId],
   );
 
-  /**
-   * 폴더 자료 목록 조회
-   */
   const fetchFolderMaterials =
     useCallback(async () => {
       const parsedFolderId =
@@ -204,12 +180,6 @@ const ArchiveFolderPage = () => {
       sort,
     ]);
 
-  /**
-   * 화면 데이터 재조회
-   *
-   * 실행취소 후 서버 데이터와
-   * 화면을 다시 맞출 때 사용
-   */
   const refetchFolderPageData =
     useCallback(async () => {
       const [
@@ -226,7 +196,8 @@ const ArchiveFolderPage = () => {
           (material) => ({
             id: material.materialId,
             tag:
-              material.tags[0] ??
+              material.tags[0]
+                ?.tagName ??
               "기타",
             date:
               material.createdAt.split(
@@ -248,10 +219,6 @@ const ArchiveFolderPage = () => {
         convertedMaterials,
       );
 
-      /**
-       * 검색 중이 아닐 때만
-       * 폴더 전체 자료 수 갱신
-       */
       if (!keyword) {
         setTotalMaterialCount(
           materialsResult.totalElements,
@@ -263,9 +230,6 @@ const ArchiveFolderPage = () => {
       keyword,
     ]);
 
-  /**
-   * 최초 폴더 데이터 조회
-   */
   useEffect(() => {
     let isCancelled = false;
 
@@ -296,7 +260,8 @@ const ArchiveFolderPage = () => {
                 id:
                   material.materialId,
                 tag:
-                  material.tags[0] ??
+                  material.tags[0]
+                    ?.tagName ??
                   "기타",
                 date:
                   material.createdAt.split(
@@ -317,10 +282,6 @@ const ArchiveFolderPage = () => {
             convertedMaterials,
           );
 
-          /**
-           * 검색 중이 아닐 때만
-           * 폴더 전체 자료 수 저장
-           */
           if (!keyword) {
             setTotalMaterialCount(
               materialsResult.totalElements,
@@ -365,12 +326,6 @@ const ArchiveFolderPage = () => {
     keyword,
   ]);
 
-  /**
-   * 토스트 4초 후 닫기
-   *
-   * 실행취소 가능 시간도
-   * 토스트 표시 시간과 동일하게 4초
-   */
   useEffect(() => {
     if (!toastMessage) {
       return;
@@ -727,7 +682,7 @@ const ArchiveFolderPage = () => {
               0,
               prev -
                 trashedMaterialIds.length,
-          ),
+            ),
         );
 
         setSelectMode(null);
@@ -962,12 +917,26 @@ const ArchiveFolderPage = () => {
             materials.length > 0 && (
               <div className="mb-5">
                 <TeachingMapDeleteToolbar
-                  selectedCount={selectedItemIds.length}
-                  isAllSelected={isAllSelected}
-                  actionLabel={selectMode === "trash" ? "휴지통으로 이동" : "이동하기"}
-                  onToggleSelectAll={handleToggleAll}
-                  onDeleteClick={handleSelectAction}
-                  onCancelClick={handleCancelSelectMode}
+                  selectedCount={
+                    selectedItemIds.length
+                  }
+                  isAllSelected={
+                    isAllSelected
+                  }
+                  actionLabel={
+                    selectMode === "trash"
+                      ? "휴지통으로 이동"
+                      : "이동하기"
+                  }
+                  onToggleSelectAll={
+                    handleToggleAll
+                  }
+                  onDeleteClick={
+                    handleSelectAction
+                  }
+                  onCancelClick={
+                    handleCancelSelectMode
+                  }
                 />
               </div>
             )}

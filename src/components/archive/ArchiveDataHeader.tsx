@@ -23,7 +23,21 @@ const ArchiveDataHeader = ({
     platformType.toUpperCase() === "YOUTUBE"
       ? "/icon/youtube-app-icon.png"
       : "/icons.svg";
-  const platformIconSrc = platformImageUrl || fallbackPlatformIcon;
+  const normalizePlatformImageUrl = (
+    url: string,
+  ) => {
+    const markdownLinkMatch =
+      url.match(/\((https?:\/\/[^)]+)\)/);
+
+    return markdownLinkMatch
+      ? markdownLinkMatch[1]
+      : url;
+  };
+
+  const platformIconSrc =
+    normalizePlatformImageUrl(
+      platformImageUrl,
+    ) || fallbackPlatformIcon;
   const handleOpenOriginal = () => {
     window.open(originalUrl, "_blank", "noopener,noreferrer");
   };

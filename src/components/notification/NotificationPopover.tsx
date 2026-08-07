@@ -22,6 +22,14 @@ const NotificationPopover = ({
   onViewAll,
   onItemClick,
 }: NotificationPopoverProps) => {
+  const sortedNotifications = [
+    ...notifications,
+  ].sort(
+    (a, b) =>
+      Number(a.isRead) -
+      Number(b.isRead),
+  );
+
   return (
     <Popover.Root
       open={open}
@@ -37,7 +45,9 @@ const NotificationPopover = ({
           align="end"
           sideOffset={6}
           collisionPadding={20}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event) =>
+            event.stopPropagation()
+          }
           className="z-50 min-h-[503px] w-[384px] rounded-[5px] bg-[#13151F] shadow-[0_0_40px_rgba(134,111,241,0.35)] outline-none"
         >
           <div className="flex min-h-[503px] w-[384px] flex-col px-[20px] pb-[20px] pt-[10px]">
@@ -71,7 +81,9 @@ const NotificationPopover = ({
             {/* 알림 목록 */}
             <div className="min-h-0 flex-1 overflow-y-auto">
               <NotificationList
-                notifications={notifications}
+                notifications={
+                  sortedNotifications
+                }
                 onItemClick={onItemClick}
               />
             </div>
