@@ -19,7 +19,7 @@ const ChatSidebar = ({
 
   return (
     <aside
-      className={`absolute left-0 top-0 z-10 h-full overflow-hidden bg-[#090713] shadow-[0_0_50px_rgba(145,125,236,0.5)] transition-[width] duration-200 ${navWidthClass}`}
+      className={`absolute left-0 top-0 z-10 h-full overflow-hidden bg-[#090713] shadow-[0_0_50px_rgba(145,125,236,0.5)] transition-[width] duration-200 max-md:hidden ${navWidthClass}`}
     >
       <div className="flex h-full flex-col px-5 pb-5 pt-[25px]">
         <div className={`flex items-center gap-3 ${isOpen ? "justify-between" : "justify-center"}`}>

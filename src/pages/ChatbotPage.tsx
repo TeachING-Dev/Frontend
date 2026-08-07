@@ -27,8 +27,9 @@ import ChatSidebar from "../components/chatbot/ChatSidebar";
 import SourceList from "../components/chatbot/SourceList";
 import Toast from "../components/common/Toast";
 import type { SourceItem } from "../components/chatbot/SourceList";
+import { renderFormattedText } from "../utils/renderFormattedText";
 
-const limitDescription = "요금제를 업그레이드하고 무제한으로 티칭잉을 만들어 보세요!";
+const limitDescription = "요금제를 업그레이드하고 무제한으로 질문해 보세요!";
 const dailyQuestionLimit = 5;
 const chatRoomLimit = 10;
 const chatRoomListSize = 10;
@@ -117,6 +118,11 @@ const isRoomLimitError = (error: unknown) =>
     error.message.includes("대화방") ||
     error.message.includes("채팅방") ||
     error.message.includes("10"));
+
+const isForbiddenChatError = (error: unknown) =>
+  error instanceof ChatApiError &&
+  (error.status === 403 ||
+    error.code === "COMMON403_1");
 
 const getSourceLabel = (
   source: ChatSource,
@@ -221,6 +227,7 @@ const ChatbotPage = () => {
   const [searchParams] = useSearchParams();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [question, setQuestion] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatRooms, setChatRooms] = useState<ChatRoomSummary[]>([]);
   const [isRoomLimitModalOpen, setIsRoomLimitModalOpen] = useState(false);
@@ -234,7 +241,7 @@ const ChatbotPage = () => {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
-  const contentMarginClass = isNavOpen ? "ml-[204px]" : "ml-20";
+  const contentMarginClass = isNavOpen ? "ml-[204px] max-md:ml-0" : "ml-20 max-md:ml-0";
   const hasConversation = messages.length > 0;
   const locationState =
     location.state as ChatbotLocationState;
@@ -251,6 +258,17 @@ const ChatbotPage = () => {
     chatRoomId !== null &&
     !Number.isNaN(chatRoomId);
 
+  useEffect(() => {
+    document.body.classList.toggle(
+      "chatbot-search-focused",
+      isSearchFocused,
+    );
+
+    return () => {
+      document.body.classList.remove("chatbot-search-focused");
+    };
+  }, [isSearchFocused]);
+
   const loadChatRooms = useCallback(async () => {
     try {
       const chatRoomList = await getChatRooms({
@@ -266,22 +284,11 @@ const ChatbotPage = () => {
 
   useEffect(() => {
     const loadInitialChatRooms = async () => {
-      const loadedChatRooms =
-        await loadChatRooms();
-
-      if (
-        !hasValidChatRoomId &&
-        loadedChatRooms.length > 0
-      ) {
-        navigate(
-          `/chatbot/${loadedChatRooms[0].chatroomId}`,
-          { replace: true },
-        );
-      }
+      await loadChatRooms();
     };
 
     void loadInitialChatRooms();
-  }, [hasValidChatRoomId, loadChatRooms, navigate]);
+  }, [loadChatRooms]);
 
   useEffect(() => {
     if (!hasValidChatRoomId) {
@@ -300,11 +307,16 @@ const ChatbotPage = () => {
         );
       } catch (error) {
         console.error(error);
+
+        if (isForbiddenChatError(error)) {
+          setMessages([]);
+          navigate("/chatbot", { replace: true });
+        }
       }
     };
 
     void loadChatMessages();
-  }, [chatRoomId, hasValidChatRoomId]);
+  }, [chatRoomId, hasValidChatRoomId, navigate]);
 
   useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
@@ -366,6 +378,10 @@ const ChatbotPage = () => {
 
     setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
     setQuestion("");
+    setIsSearchFocused(false);
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setIsSubmitting(true);
     let createdChatRoomId: number | null = null;
 
@@ -481,6 +497,19 @@ const ChatbotPage = () => {
         return;
       }
 
+      if (isForbiddenChatError(error)) {
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        navigate("/chatbot", { replace: true });
+        return;
+      }
+
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -555,6 +584,19 @@ const ChatbotPage = () => {
     return trimmedContent;
   };
 
+  const isSingleLineText = (content: string) => {
+    const trimmedContent = content.trim();
+
+    return trimmedContent.length > 0 && !trimmedContent.includes("\n");
+  };
+
+  const getSourcedAnswerBody = (content: string) =>
+    removeInlineSourceText(content)
+      .replace(fallbackSourceMessage, "")
+      .replace(/^,\s*/, "")
+      .replace(/^관련 자료를 찾았습니다\.?\s*/, "")
+      .trim();
+
   const getSourcedAnswer = (
     content: string,
     hasSources: boolean,
@@ -563,10 +605,7 @@ const ChatbotPage = () => {
       return content;
     }
 
-    const sourcedContent = removeInlineSourceText(content)
-      .replace(fallbackSourceMessage, "")
-      .replace(/^,\s*/, "")
-      .trim();
+    const sourcedContent = getSourcedAnswerBody(content);
 
     if (
       sourcedContent.startsWith(
@@ -616,7 +655,7 @@ const ChatbotPage = () => {
   };
 
   return (
-    <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713]">
+    <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:-mt-16 max-md:h-screen">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
       <ChatSidebar
@@ -629,58 +668,137 @@ const ChatbotPage = () => {
       />
 
       <main
-        className={`relative z-0 flex h-[calc(100vh-64px)] min-h-0 flex-col items-center overflow-hidden px-14 pb-6 pt-16 transition-[margin] duration-200 ${contentMarginClass}`}
+        className={`relative z-0 flex h-[calc(100vh-64px)] min-h-0 flex-col items-center overflow-hidden px-14 pb-6 pt-16 transition-[margin] duration-200 max-md:h-screen max-md:px-0 max-md:pt-0 ${contentMarginClass}`}
       >
         {hasConversation ? (
-          <div ref={chatScrollRef} className="scrollbar-hide min-h-0 w-full flex-1 overflow-y-auto pb-28 pt-[70px]">
-            <div className="flex w-full flex-col gap-8">
+          <div
+            ref={chatScrollRef}
+            className={`scrollbar-hide min-h-0 w-full flex-1 overflow-y-auto pb-28 pt-[70px] max-md:pt-[87px] ${
+              isSearchFocused
+                ? "max-md:pb-[370px]"
+                : "max-md:pb-[190px]"
+            }`}
+          >
+            <div className="flex w-full flex-col gap-8 max-md:gap-[80px]">
               {messages.map((message) =>
                 message.role === "user" ? (
-                  <ChatBubble key={message.id} align="right">
+                  <ChatBubble
+                    key={message.id}
+                    align="right"
+                    className={
+                      isSingleLineText(message.content)
+                        ? "max-md:w-fit max-md:max-w-[300px]"
+                        : "max-md:w-[300px] max-md:max-w-[300px]"
+                    }
+                  >
                     {message.content}
                   </ChatBubble>
                 ) : (
-                  <div key={message.id} className="flex w-full flex-col gap-3">
+                  <div
+                    key={message.id}
+                    className={`flex w-full flex-col gap-3 ${
+                      message.isLoading ? "max-md:mt-[23px]" : ""
+                    }`}
+                  >
                     {message.isFallback && !message.isLoading ? (
                       <>
                         <ChatBubble
                           align="left"
-                          className="w-[605px] max-w-full whitespace-pre-line"
+                          className="w-[605px] max-w-full whitespace-pre-line max-md:hidden"
                         >
                           {fallbackNoticeMessage}
                         </ChatBubble>
 
-                        <div className="flex w-full justify-start pl-0 pr-[43%]">
+                        <p className="hidden px-5 font-['SUIT'] text-[14px] font-normal text-[#A1A1A5] max-md:block">
+                          죄송합니다. 현재 보관하신 자료 중에서는
+                          <br />
+                          관련 답변을 찾지 못했습니다.
+                        </p>
+
+                        <div className="flex w-full justify-start pl-0 pr-[43%] max-md:mt-2 max-md:px-5">
                           <div className="inline-block rounded-[20px] bg-gradient-to-r from-[#917DEC]/60 to-[#FFFFFF]/30 p-[1px]">
-                            <div className="flex h-[42px] items-center rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 font-['SUIT'] text-[15px] font-normal leading-[160%] text-white">
+                            <div className="flex h-[42px] items-center rounded-[19px] bg-gradient-to-b from-[#0B0A18] to-[#453c71] px-4 font-['SUIT'] text-[15px] font-normal leading-[160%] text-white max-md:h-[31px] max-md:justify-center max-md:px-4 max-md:text-center max-md:text-[14px] max-md:font-normal max-md:leading-[150%]">
                               {fallbackSourceMessage}
                             </div>
                           </div>
                         </div>
 
+                        <div className="max-md:mt-[5px]">
+                          <ChatBubble
+                            align="left"
+                            className={`w-[605px] max-w-full whitespace-pre-line ${
+                              isSingleLineText(getFallbackAnswer(message.content))
+                                ? "max-md:w-fit max-md:max-w-[353px]"
+                                : "max-md:w-[353px] max-md:max-w-[353px]"
+                            }`}
+                          >
+                            {getFallbackAnswer(message.content)}
+                          </ChatBubble>
+                        </div>
+                      </>
+                    ) : message.isLoading ? (
+                      <>
+                        <div className="hidden w-full items-center px-5 max-md:flex">
+                          <img
+                            src="/logo/logo.png"
+                            alt=""
+                            aria-hidden="true"
+                            className="h-10 w-9"
+                          />
+                          <div className="ml-[15px] flex items-center gap-[6.4px]">
+                            {[0, 1, 2].map((dotIndex) => (
+                              <img
+                                key={dotIndex}
+                                src="/icon/loading-dot.svg"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-[5px]"
+                              />
+                            ))}
+                          </div>
+                        </div>
+
                         <ChatBubble
                           align="left"
-                          className="w-[605px] max-w-full whitespace-pre-line"
+                          className="w-[605px] max-w-full whitespace-pre-line text-zinc-500 max-md:hidden"
                         >
-                          {getFallbackAnswer(message.content)}
+                          {getSourcedAnswer(
+                            message.content,
+                            Boolean(message.sources),
+                          )}
                         </ChatBubble>
                       </>
                     ) : (
-                      <ChatBubble
-                        align="left"
-                        className={`w-[605px] max-w-full whitespace-pre-line ${
-                          message.isLoading ? "text-zinc-500" : ""
-                        }`}
-                      >
-                        {getSourcedAnswer(
-                          message.content,
-                          Boolean(message.sources),
-                        )}
-                      </ChatBubble>
+                      <>
+                        <ChatBubble
+                          align="left"
+                          className={`w-[605px] max-w-full whitespace-pre-line ${
+                            message.sources
+                              ? "max-md:hidden"
+                              : "max-md:w-[353px] max-md:max-w-[353px]"
+                          }`}
+                        >
+                          {getSourcedAnswer(
+                            message.content,
+                            Boolean(message.sources),
+                          )}
+                        </ChatBubble>
+
+                        {message.sources ? (
+                          <>
+                            <p className="hidden px-5 font-['SUIT'] text-[14px] font-normal text-[#A1A1A5] max-md:block">
+                              관련 자료를 찾았습니다.
+                            </p>
+                            <p className="hidden whitespace-pre-line px-5 font-['SUIT'] text-[14px] font-normal text-white max-md:block">
+                              {renderFormattedText(getSourcedAnswerBody(message.content))}
+                            </p>
+                          </>
+                        ) : null}
+                      </>
                     )}
 
                     {!message.isFallback && message.sources ? (
-                      <div className="flex w-full justify-start pl-0 pr-[43%]">
+                      <div className="flex w-full justify-start pl-0 pr-[43%] max-md:mt-[26px] max-md:px-5">
                         <SourceList
                           sources={message.sources}
                           onSourceNameClick={(source) => void handleSourceNameClick(source)}
@@ -693,22 +811,24 @@ const ChatbotPage = () => {
             </div>
           </div>
         ) : (
-          <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-            <div className="flex h-[120px] w-[250px] shrink-0 items-center justify-center pb-[14px] ">
+          <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center max-md:justify-start">
+            <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:mt-[286.49px] max-md:h-[100px] max-md:w-[120px]">
               <img
                 src="/character/ConfidentTaka.svg"
                 alt="열공 티키"
-                className="h-full w-full object-contain"
+                className="h-[130px] w-[150px] object-contain max-md:h-full max-md:w-full"
               />
             </div>
 
-            <h1 className="text-center font-['SUIT'] text-[18px] font-normal leading-[180%] tracking-normal text-white">
+            <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-[13.51px] max-md:leading-[150%]">
               내 자료에서 답을 찾아드립니다.
             </h1>
-            <p className="mt-2 text-center font-['SUIT'] text-[12px] font-normal leading-4 text-[#717379]">
+            <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-[7.43px] max-md:leading-[150%]">
               정확한 키워드를 몰라도 괜찮아요 !
               <br />
-              대략적인 상황이나 기억나는 단서만 입력하면, 관련 자료를 찾아 답변해 드립니다.
+              대략적인 상황이나 기억나는 단서만 입력하면,
+              <br className="md:hidden" />
+              타카가 관련 자료를 찾아 답변해 드립니다.
             </p>
           </div>
         )}
@@ -721,14 +841,18 @@ const ChatbotPage = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="fixed bottom-[50px] left-1/2 flex w-full -translate-x-1/2 justify-center px-[170px]"
+          className={`fixed bottom-[50px] left-1/2 flex w-full -translate-x-1/2 justify-center px-10 max-md:px-4 ${
+            isSearchFocused
+              ? "max-md:bottom-auto max-md:top-[502.99px]"
+              : "max-md:bottom-[110px]"
+          }`}
         >
           <label
   className="
     box-border
     h-[50px]
-    w-full
-    max-w-none
+    w-[min(800px,calc(100vw-80px))]
+    max-w-[800px]
     rounded-[10px]
     border-[2px]
     border-[#917DEC]
@@ -736,7 +860,10 @@ const ChatbotPage = () => {
     py-2.5
     pl-5
     pr-3
-    shadow-[0_0_70px_10px_rgba(145,125,236,0.80)]
+    shadow-[0_0_50px_0_rgba(145,125,236,0.50)]
+    max-md:w-full
+    max-md:pl-[14px]
+    max-md:pr-[12px]
   "
 >
             <div className="flex h-full w-full items-center justify-between">
@@ -744,20 +871,25 @@ const ChatbotPage = () => {
               type="text"
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
               placeholder="궁금한 점을 물어보세요"
-              className="flex-1 bg-transparent font-['SUIT'] text-[15px] font-medium leading-5 text-violet-50 outline-none placeholder:text-[#42444C]"
+              className="flex-1 bg-transparent font-['SUIT'] text-[15px] font-medium leading-5 text-violet-50 outline-none placeholder:text-[#42444C] max-md:text-[14px] max-md:font-normal max-md:placeholder:font-normal"
             />
             <button
               type="submit"
               aria-label="질문 보내기"
               disabled={isSubmitting}
-              className="flex size-9 items-center justify-center transition hover:opacity-85 disabled:opacity-50"
+              onPointerDown={(event) => {
+                event.preventDefault();
+              }}
+              className="flex size-9 items-center justify-center transition hover:opacity-85 disabled:opacity-50 max-md:size-6"
             >
               <img
-                src="/icon/icon-shortcut.svg"
+                src="/icon/chat-send.svg"
                 alt=""
                 aria-hidden="true"
-                className="size-9"
+                className="size-6"
               />
             </button>
             </div>
@@ -767,14 +899,14 @@ const ChatbotPage = () => {
 
       <ChatLimitModal
         isOpen={isQuestionLimitModalOpen}
-        title="무료 요금제는 하루에 5개까지 질문할 수 있어요."
+        title="오늘의 질문을 모두 사용했어요"
         description={limitDescription}
         onClose={() => setIsQuestionLimitModalOpen(false)}
         onSubscribe={handleSubscribeClick}
       />
       <ChatLimitModal
         isOpen={isRoomLimitModalOpen}
-        title="무료 요금제는 대화방을 10개까지 만들 수 있어요."
+        title="대화방 생성 한도에 도달했어요"
         description={limitDescription}
         onClose={() => setIsRoomLimitModalOpen(false)}
         onSubscribe={handleSubscribeClick}

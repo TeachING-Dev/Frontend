@@ -99,6 +99,7 @@ const Sidebar = ({
       {/* 모바일 하단 내비게이션 */}
       <nav
         aria-label="모바일 주요 메뉴"
+        data-mobile-nav="true"
         hidden={hideMobileNav}
         className="
           fixed
