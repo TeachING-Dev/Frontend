@@ -13,6 +13,7 @@ import TeachingMapTagList from "../components/teachingMap/content/TeachingMapTag
 import type { TeachingMapContentSection } from "../components/teachingMap/content/teachingMapContentTypes";
 
 const TeachingMapContentPage = () => {
+  const [mobileTab, setMobileTab] = useState<"content" | "analysis">("content");
   const { teachingMapId, contentId } = useParams<{
     teachingMapId: string;
     contentId: string;
@@ -143,22 +144,38 @@ const TeachingMapContentPage = () => {
   }
 
   return (
-    <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_535px] bg-[#13151F]">
-      <section className="min-w-0 overflow-y-auto bg-[#13151F]">
-        <div className="w-full pb-[70px] pt-[40px]">
-          <TeachingMapContentHeader title={title} createdAt={createdAt} />
+    <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_535px] bg-[#13151F] max-lg:block max-lg:h-auto max-lg:min-h-screen max-lg:bg-[#090713]">
+      <section className="min-w-0 overflow-y-auto bg-[#13151F] max-lg:overflow-visible max-lg:bg-[#090713]">
+        <div className="w-full pb-[70px] pt-[40px] max-lg:pb-[40px] max-lg:pt-[24px]">
+          <TeachingMapContentHeader title={title} createdAt={createdAt} originalUrl={originalUrl} />
 
           <div className="mt-[24px]">
             <TeachingMapTagList tags={tags} />
           </div>
 
-          <div className="mt-[20px] h-px w-full bg-[#42444C]" />
+          <div className="mt-[20px] h-px w-full bg-[#42444C] max-lg:hidden" />
 
-          <div className="mt-[33px] px-[30px]">
+          <div className="mx-[16px] mt-[32px] hidden h-[35px] max-lg:flex">
+            {(["content", "analysis"] as const).map((tab) => {
+              const selected = mobileTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setMobileTab(tab)}
+                  className={`flex-1 rounded-[5px] text-[14px] leading-[21px] ${selected ? "border border-[#917DEC] bg-[#13151F] text-[#F5F2FF] shadow-[inset_0_0_20px_rgba(145,125,236,0.60)]" : "bg-[#1F212A] text-[#717379]"}`}
+                >
+                  {tab === "content" ? "학습 내용" : "타카의 분석"}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className={`mt-[54px] px-[30px] max-lg:mt-[20px] max-lg:px-0 ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
             <TeachingMapContentLegend />
           </div>
 
-          <div className="mt-[33px]">
+          <div className={`mt-[20px] ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
             <TeachingMapContentSectionList
               title={title}
               summary={detailAnalysis}
@@ -166,15 +183,27 @@ const TeachingMapContentPage = () => {
               onHighlightClick={handleToggleAnalysis}
             />
           </div>
+
+          <div className={mobileTab === "analysis" ? "hidden max-lg:block" : "hidden"}>
+            <TeachingMapAnalysisPanel
+              mobile
+              sections={sections}
+              openAnalysisIds={openAnalysisIds}
+              originalUrl={originalUrl}
+              onToggleAnalysis={handleToggleAnalysis}
+            />
+          </div>
         </div>
       </section>
 
-      <TeachingMapAnalysisPanel
-        sections={sections}
-        openAnalysisIds={openAnalysisIds}
-        originalUrl={originalUrl}
-        onToggleAnalysis={handleToggleAnalysis}
-      />
+      <div className="max-lg:hidden">
+        <TeachingMapAnalysisPanel
+          sections={sections}
+          openAnalysisIds={openAnalysisIds}
+          originalUrl={originalUrl}
+          onToggleAnalysis={handleToggleAnalysis}
+        />
+      </div>
     </main>
   );
 };

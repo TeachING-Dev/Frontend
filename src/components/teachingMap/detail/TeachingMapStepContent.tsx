@@ -16,8 +16,8 @@ const TeachingMapStepContent = ({
   isSourceAvailable,
 }: TeachingMapStepContentProps) => {
   return (
-    <div className="flex h-[100px] items-center justify-between gap-[20px] rounded-b-[10px] bg-[#13151F] px-[29px] py-[10px]">
-      <p className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[20px] font-medium leading-[160%] text-[#D0D0D2]">
+    <div className="flex h-[48px] items-center justify-between gap-[10px] rounded-b-[5px] bg-[#13151F] px-[10px] py-[5px] lg:h-[100px] lg:gap-[20px] lg:rounded-b-[10px] lg:px-[29px]">
+      <p className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[12px] font-semibold leading-[18px] tracking-[-0.3px] text-[#D0D0D2] lg:text-[20px] lg:font-medium lg:leading-[160%] lg:tracking-normal">
         {title}
       </p>
 

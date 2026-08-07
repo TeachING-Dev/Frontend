@@ -112,13 +112,13 @@ const BirthDateDropdown = ({
         aria-expanded={isOpen}
         onClick={() => setIsOpen((previous) => !previous)}
         className={[
-          "flex h-[60px] w-full items-center gap-[10px] rounded-[5px] border bg-[#1F212A] px-5 py-[14px] text-left",
+          "flex h-[50px] w-full items-center gap-[5px] rounded-[5px] border bg-[#1F212A] px-[10px] py-[5px] text-left lg:h-[60px] lg:gap-[10px] lg:px-5 lg:py-[14px]",
           isOpen ? "border-[#F5F2FF]" : "border-transparent",
         ].join(" ")}
       >
         <span
           className={[
-            "min-w-0 flex-1 font-['SUIT'] text-[28px] font-semibold leading-[42px] tracking-[-0.84px]",
+            "min-w-0 flex-1 font-['SUIT'] text-[13px] font-medium leading-[150%] tracking-[-0.325px] lg:text-[28px] lg:font-semibold lg:leading-[42px] lg:tracking-[-0.84px]",
             value ? "text-[#D0D0D2]" : "text-[#42444C]",
           ].join(" ")}
         >
@@ -128,7 +128,7 @@ const BirthDateDropdown = ({
           src="/icon/purple_dropdown.svg"
           alt=""
           aria-hidden="true"
-          className={`h-7 w-7 shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
+          className={`h-[28px] w-[28px] shrink-0 ${isOpen ? "scale-[-1]" : ""}`}
         />
       </button>
 
@@ -136,7 +136,7 @@ const BirthDateDropdown = ({
         <div
           role="listbox"
           aria-label={`${label} 목록`}
-          className="absolute left-0 top-[68px] z-50 max-h-[220px] w-full overflow-y-auto rounded-[5px] bg-[#1F212A] py-2 shadow-[0_0_30px_rgba(145,125,236,0.35)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="absolute left-0 top-[54px] z-50 max-h-[220px] w-full overflow-y-auto rounded-[5px] bg-[#1F212A] py-2 shadow-[0_0_30px_rgba(145,125,236,0.35)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:top-[68px]"
         >
           {options.map((option) => (
             <button
@@ -149,7 +149,7 @@ const BirthDateDropdown = ({
                 setIsOpen(false);
               }}
               className={[
-                "flex h-11 w-full items-center px-5 text-left text-[20px] font-semibold transition-colors",
+                "flex h-10 w-full items-center px-[10px] text-left text-[13px] font-medium transition-colors lg:h-11 lg:px-5 lg:text-[20px] lg:font-semibold",
                 value === option
                   ? "bg-[#917DEC] text-white"
                   : "text-[#D0D0D2] hover:bg-[#2B2C35]",
@@ -231,18 +231,18 @@ const BirthDateField = ({
   };
 
   return (
-    <div className="flex w-[736px] flex-col">
-      <h2 className="mb-[10px] text-[28px] font-bold leading-[42px] tracking-[-0.84px] text-[#717379]">
+    <div className="flex w-full flex-col lg:w-[736px]">
+      <h2 className="mb-[10px] text-[16px] font-semibold leading-[24px] tracking-[-0.4px] text-[#717379] lg:text-[28px] lg:font-bold lg:leading-[42px] lg:tracking-[-0.84px]">
         생년월일
       </h2>
 
-      <div className="flex items-start gap-5">
+      <div className="flex items-start gap-[10px] lg:gap-5">
         <BirthDateDropdown
           label="연도"
           placeholder="YYYY"
           value={dateParts.year}
           options={yearOptions}
-          widthClassName="w-[332px]"
+          widthClassName="min-w-0 flex-1 lg:w-[332px] lg:flex-none"
           onChange={(year) => updateDatePart("year", year)}
         />
         <BirthDateDropdown
@@ -250,7 +250,7 @@ const BirthDateField = ({
           placeholder="MM"
           value={dateParts.month}
           options={monthOptions}
-          widthClassName="w-[182px]"
+          widthClassName="w-[87px] shrink-0 lg:w-[182px]"
           onChange={(month) => updateDatePart("month", month)}
         />
         <BirthDateDropdown
@@ -258,7 +258,7 @@ const BirthDateField = ({
           placeholder="DD"
           value={dateParts.day}
           options={dayOptions}
-          widthClassName="w-[182px]"
+          widthClassName="w-[87px] shrink-0 lg:w-[182px]"
           onChange={(day) => updateDatePart("day", day)}
         />
       </div>

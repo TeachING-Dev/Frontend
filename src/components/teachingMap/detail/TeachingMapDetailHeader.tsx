@@ -53,22 +53,14 @@ const TeachingMapDetailHeader = ({
       <button
         type="button"
         onClick={handleBack}
-        className="flex items-center gap-[4px] text-[16px] font-normal leading-[24px] tracking-[-0.48px] text-[#9B9AA0]"
+        className="flex items-center gap-1 font-['SUIT'] text-[10px] font-normal leading-[14px] tracking-[-0.2px] text-[#A1A1A5] lg:text-[16px] lg:leading-[24px] lg:tracking-[-0.48px] lg:text-[#9B9AA0]"
       >
-        <svg
+        <img
+          src="/return-button.svg"
+          alt=""
           aria-hidden="true"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            d="M13.3333 8H2.66667M2.66667 8L6.66667 4M2.66667 8L6.66667 12"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+          className="h-[14px] w-[14px] shrink-0 lg:h-5 lg:w-5"
+        />
 
         <span>
           티칭맵 목록으로 이동

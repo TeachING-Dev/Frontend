@@ -11,11 +11,11 @@ const WithdrawalConfirmField = ({
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      className="flex h-[40px] w-[672px] items-center gap-[10px] text-left"
+      className="flex h-[32px] w-full items-center gap-[10px] text-left lg:h-[40px] lg:w-[672px]"
     >
       <span
         className={[
-          "flex h-[32px] w-[32px] items-center justify-center rounded-[5px] border",
+          "flex h-[25px] w-[25px] shrink-0 items-center justify-center rounded-[5px] border lg:h-[32px] lg:w-[32px]",
           checked
             ? "border-[#917DEC] bg-[#917DEC]"
             : "border-[#5D5F67] bg-[#2B2C35]",
@@ -40,7 +40,7 @@ const WithdrawalConfirmField = ({
         )}
       </span>
 
-      <span className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#717379]">
+      <span className="text-[13px] font-normal leading-[135%] tracking-[-0.325px] text-[#717379] lg:text-[20px] lg:font-semibold lg:leading-[140%] lg:tracking-[-0.6px]">
         네, 탈퇴할게요.
       </span>
     </button>

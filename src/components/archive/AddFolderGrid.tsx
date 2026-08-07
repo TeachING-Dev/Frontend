@@ -7,7 +7,7 @@ const AddFolderGrid = ({ onClick }: AddFolderGridProps) => {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[128px] w-[352px] cursor-pointer flex-col items-center justify-center rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] transition hover:border-[#8B6DFF]"
+      className="hidden h-[128px] w-[352px] cursor-pointer flex-col items-center justify-center rounded-md border border-[#5F4A9B] bg-gradient-to-b from-[#111021] to-[#30275A] transition hover:border-[#8B6DFF] lg:flex"
     >
       <img
         src="/folder/folder-add.png"

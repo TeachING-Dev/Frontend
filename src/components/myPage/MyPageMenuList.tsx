@@ -40,7 +40,7 @@ const MyPageMenuList = () => {
   };
 
   return (
-    <div className="flex w-[736px] flex-col gap-[10px]">
+    <div className="flex w-full flex-col gap-[10px] lg:w-[736px]">
       {menuItems.map((menuItem) => (
         <MyPageMenuItem
           key={menuItem.label}

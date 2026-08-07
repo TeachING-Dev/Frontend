@@ -17,7 +17,7 @@ const TrashTeachingMapList = ({
   onSelect,
 }: TrashTeachingMapListProps) => {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-2.5 lg:gap-10">
       {teachingMaps.map(
         (teachingMap) => (
           <TrashTeachingMapCard
