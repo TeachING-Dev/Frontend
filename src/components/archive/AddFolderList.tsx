@@ -6,7 +6,7 @@ const AddFolderList = ({ onClick }: AddFolderItemProps) => {
   return (
     <button
       onClick={onClick}
-      className="hidden h-[88px] w-full items-center border-b border-[#2A2737] hover:bg-white/5 lg:flex"
+      className="flex h-[88px] w-full items-center border-b border-[#2A2737] hover:bg-white/5"
     >
       <img
         src="/folder-add.png"
