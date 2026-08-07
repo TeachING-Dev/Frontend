@@ -10,7 +10,7 @@ import {
   Search,
 } from "lucide-react";
 
-import DataPopover from "./popover/DataPopover";
+import DataPopover from "../popover/DataPopover";
 
 export type FolderSortOption =
   | "recent"

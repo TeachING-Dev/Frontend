@@ -42,9 +42,7 @@ type AnalysisLocationState = {
   originalUrl?: string;
   materialId?: number;
   materialAnalysisId?: number;
-  result?: AnalyzeMaterialResult & {
-    summary?: string;
-  };
+  result?: AnalyzeMaterialResult;
 };
 
 const AnalysisCompletePage = () => {
@@ -69,13 +67,17 @@ const AnalysisCompletePage = () => {
     analysisResult?.summary ??
     "AI가 분석한 내용을 요약해드릴게요.";
 
+  const fullAnalysis =
+    analysisResult?.fullAnalysis ??
+    "";
+
   const [folders, setFolders] =
     useState<FolderOption[]>([]);
 
   const [
     selectedFolderId,
     setSelectedFolderId,
-  ] = useState<number>(
+  ] = useState(
     analysisResult?.recommendedFolderId ??
       0,
   );
@@ -353,7 +355,7 @@ const AnalysisCompletePage = () => {
               />
 
               <AnalysisData
-                content={summary}
+                content={fullAnalysis}
               />
 
               <button

@@ -117,7 +117,7 @@ const ArchiveDataHeader = ({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
+            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-semibold italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
           >
             #{tag}
           </span>

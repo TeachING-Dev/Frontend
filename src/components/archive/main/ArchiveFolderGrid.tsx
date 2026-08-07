@@ -1,5 +1,4 @@
-import type { Folder } from "../../apis/folder";
-
+import type { Folder } from "../../../apis/folder";
 import AddFolderGrid from "./AddFolderGrid";
 import FolderGridItem from "./FolderGridItem";
 

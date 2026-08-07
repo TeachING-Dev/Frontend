@@ -119,7 +119,7 @@ const AnalysisFailModal = ({
         className="
           relative
           flex
-          h-[387px]
+          h-[379px]
           w-[450px]
           flex-col
           rounded-[10px]
@@ -172,7 +172,7 @@ const AnalysisFailModal = ({
         </div>
 
         {/* 버튼 */}
-        <div className="mt-[40px] flex gap-3">
+        <div className="mt-[30px] flex gap-3">
           <button
             type="button"
             onClick={

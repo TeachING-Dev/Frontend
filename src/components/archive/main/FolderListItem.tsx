@@ -2,7 +2,7 @@ import type { KeyboardEvent } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import FolderPopover from "./popover/FolderPopover";
+import FolderPopover from "../popover/FolderPopover";
 
 type FolderListItemProps = {
   id: number;

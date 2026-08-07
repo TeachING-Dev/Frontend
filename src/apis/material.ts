@@ -284,22 +284,18 @@ export type AnalyzeResultType =
 export type AnalyzeMaterialResult = {
   materialAnalysisId: number;
   resultType: AnalyzeResultType;
-
   materialId: number | null;
   existingMaterialId: number | null;
   existingFolderId: number | null;
-
   summary: string;
-
+  fullAnalysis: string;
   originalUrl: string;
   title: string;
   platformType: string;
   status: string;
   chunkCount: number;
-
   recommendedFolderId: number | null;
   recommendedFolderName: string | null;
-
   tags: MaterialTag[];
 };
 
