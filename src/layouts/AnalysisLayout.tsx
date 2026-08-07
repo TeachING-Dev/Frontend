@@ -44,10 +44,10 @@ const AnalysisLayout = ({
 
       {/* 화면 왼쪽 하단에 고정되는 별 */}
       <img
-        src="/character/Star3.png"
+        src="/character/Star4.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none fixed bottom-[10px] left-[60px] z-[1] w-[240px]"
+        className="pointer-events-none fixed bottom-[60px] left-[60px] z-[1] w-[240px]"
       />
 
       {/* 실제 페이지 내용 */}

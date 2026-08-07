@@ -54,10 +54,10 @@ const ArchiveDataHeader = ({
       </p>
 
       {/* 제목과 원문 버튼 */}
-      <div className="mb-[24px] flex items-center justify-between">
-        <div className="flex min-w-0 items-center gap-[15px]">
+      <div className="mb-[24px] flex items-start justify-between">
+        <div className="flex min-w-0 items-start gap-[15px]">
           {/* 플랫폼 아이콘 */}
-          <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
+          <div className="mt-2 flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
             <img
               src={platformIconSrc}
               alt={platformType}

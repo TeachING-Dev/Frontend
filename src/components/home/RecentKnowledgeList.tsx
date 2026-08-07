@@ -82,7 +82,7 @@ const RecentKnowledgeList = ({
           )}
           iconSrc={
             material.platformImageUrl
-              ? `/icon/${material.platformImageUrl}`
+              ? material.platformImageUrl
               : "/icon/최근에 저장한 지식3.png"
           }
           onClick={() =>

@@ -154,7 +154,7 @@ const CreateFolderModal = ({
                 className="shrink-0"
               />
 
-              <span className="whitespace-nowrap">
+              <span className="text-[#717379] whitespace-nowrap">
                 한글, 영문만 입력 가능합니다. (최대
                 10자)
               </span>
@@ -170,7 +170,7 @@ const CreateFolderModal = ({
           disabled={
             !isValid || isSubmitting
           }
-          className="mt-auto h-[40px] w-full shrink-0 rounded-[5px] bg-[#917DEC] text-[16px] font-medium text-white transition hover:bg-[#866FF1] disabled:cursor-not-allowed disabled:bg-[#42444C] disabled:hover:bg-[#42444C]"
+          className="mt-auto h-[40px] w-full shrink-0 rounded-[5px] bg-[#917DEC] text-[16px] font-medium text-white transition hover:bg-[#866FF1] disabled:cursor-not-allowed disabled:text-[#42444C] disabled:bg-[#1F212A]"
         >
           {isSubmitting
             ? "생성 중..."
