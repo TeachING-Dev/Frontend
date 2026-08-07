@@ -15,8 +15,8 @@ const ProfileImageEditor = ({
   const trimmedNickname = nickname.trim();
 
   return (
-    <div className="flex min-w-[200px] w-fit flex-col items-center gap-[15px]">
-      <div className="relative h-[200px] w-[200px]">
+    <div className="flex w-fit min-w-[88px] flex-col items-center gap-[7px] lg:min-w-[200px] lg:gap-[15px]">
+      <div className="relative h-[88px] w-[88px] lg:h-[200px] lg:w-[200px]">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -43,19 +43,19 @@ const ProfileImageEditor = ({
           type="button"
           aria-label="프로필 이미지 변경"
           onClick={onImageClick}
-          className="absolute bottom-0 right-[13px] flex h-[40px] w-[40px] items-center justify-center rounded-full"
+          className="absolute bottom-0 right-[4px] flex h-[24px] w-[24px] items-center justify-center rounded-full lg:right-[13px] lg:h-[40px] lg:w-[40px]"
         >
           <img
             src={cameraIcon}
             alt=""
             draggable={false}
-            className="h-[40px] w-[40px] select-none"
+            className="h-[24px] w-[24px] select-none lg:h-[40px] lg:w-[40px]"
           />
         </button>
       </div>
 
       {trimmedNickname && (
-        <strong className="whitespace-nowrap text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#917DEC]">
+        <strong className="whitespace-nowrap text-[16px] font-medium leading-[150%] tracking-[-0.4px] text-[#917DEC] lg:text-[36px] lg:font-bold lg:tracking-[-1.08px]">
           {trimmedNickname}
         </strong>
       )}

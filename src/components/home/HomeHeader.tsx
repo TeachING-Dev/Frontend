@@ -11,11 +11,13 @@ import {
   moveMaterialsToTrash,
   type AnalyzeMaterialResult,
 } from "../../apis/material";
+
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
 import AnalysisFailModal, {
   type AnalysisFailType,
 } from "./modal/AnalysisFailModal";
+import DuplicateKnowledgeModal from "./modal/DuplicateKnowledgeModal";
 
 const HomeHeader = () => {
   const navigate = useNavigate();
@@ -31,6 +33,11 @@ const HomeHeader = () => {
   const [
     isAnalysisModalOpen,
     setIsAnalysisModalOpen,
+  ] = useState(false);
+
+  const [
+    isDuplicateModalOpen,
+    setIsDuplicateModalOpen,
   ] = useState(false);
 
   const [
@@ -120,6 +127,7 @@ const HomeHeader = () => {
     setShowToast(false);
     setAnalysisFailType(null);
     setExistingAnalysisResult(null);
+    setIsDuplicateModalOpen(false);
 
     setIsAnalysisModalOpen(true);
     setIsAnalyzing(true);
@@ -142,9 +150,7 @@ const HomeHeader = () => {
 
       /*
        * 이미 분석된 자료인 경우
-       *
-       * 기존 분석 보기 /
-       * 새로 분석하기 모달 표시
+       * → DuplicateKnowledgeModal 표시
        */
       if (
         result.resultType ===
@@ -154,8 +160,8 @@ const HomeHeader = () => {
           result,
         );
 
-        setAnalysisFailType(
-          "alreadyAnalyzed",
+        setIsDuplicateModalOpen(
+          true,
         );
 
         return;
@@ -245,6 +251,10 @@ const HomeHeader = () => {
           "기존 자료의 materialId 또는 folderId가 없습니다.",
         );
 
+        setIsDuplicateModalOpen(
+          false,
+        );
+
         setAnalysisFailType(
           "analysisFailed",
         );
@@ -252,7 +262,10 @@ const HomeHeader = () => {
         return;
       }
 
-      setAnalysisFailType(null);
+      setIsDuplicateModalOpen(
+        false,
+      );
+
       setExistingAnalysisResult(
         null,
       );
@@ -275,8 +288,8 @@ const HomeHeader = () => {
       if (
         !isValidUrl(trimmedUrl)
       ) {
-        setAnalysisFailType(
-          null,
+        setIsDuplicateModalOpen(
+          false,
         );
 
         showInvalidUrlToast();
@@ -293,6 +306,10 @@ const HomeHeader = () => {
       ) {
         console.error(
           "기존 분석 결과가 없습니다.",
+        );
+
+        setIsDuplicateModalOpen(
+          false,
         );
 
         setAnalysisFailType(
@@ -318,6 +335,10 @@ const HomeHeader = () => {
           "기존 자료의 materialId 또는 folderId가 없습니다.",
         );
 
+        setIsDuplicateModalOpen(
+          false,
+        );
+
         setAnalysisFailType(
           "analysisFailed",
         );
@@ -325,8 +346,8 @@ const HomeHeader = () => {
         return;
       }
 
-      setAnalysisFailType(
-        null,
+      setIsDuplicateModalOpen(
+        false,
       );
 
       setIsAnalysisModalOpen(
@@ -627,6 +648,24 @@ const HomeHeader = () => {
         />
       )}
 
+      {isDuplicateModalOpen && (
+  <DuplicateKnowledgeModal
+    onClose={() => {
+      setIsDuplicateModalOpen(false);
+
+      setExistingAnalysisResult(
+        null,
+      );
+    }}
+    onViewKnowledge={
+      handleViewExisting
+    }
+    onAnalyzeAgain={() => {
+      void handleForceAnalyze();
+    }}
+  />
+)}
+
       {analysisFailType && (
         <AnalysisFailModal
           type={
@@ -636,33 +675,13 @@ const HomeHeader = () => {
             setAnalysisFailType(
               null,
             );
-
-            setExistingAnalysisResult(
-              null,
-            );
           }}
           onSecondaryAction={() => {
-            if (
-              analysisFailType ===
-              "alreadyAnalyzed"
-            ) {
-              handleViewExisting();
-              return;
-            }
-
             setAnalysisFailType(
               null,
             );
           }}
           onPrimaryAction={() => {
-            if (
-              analysisFailType ===
-              "alreadyAnalyzed"
-            ) {
-              void handleForceAnalyze();
-              return;
-            }
-
             if (
               analysisFailType ===
               "loginRequired"

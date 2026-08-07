@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   useEffect,
   useState,
@@ -20,23 +21,28 @@ import {
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import FolderLimitModal from "../components/archive/modal/CreateErrorModal";
 
+import AnalysisData from "../components/home/AnalysisData";
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
 import AnalysisSummary from "../components/home/AnalysisSummary";
-import AnalysisUrl from "../components/home/AnalysisUrl";
 
 type FolderOption = {
   id: number;
   name: string;
 };
 
+type FolderErrorResponse = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: null;
+};
+
 type AnalysisLocationState = {
   originalUrl?: string;
   materialId?: number;
   materialAnalysisId?: number;
-  result?: AnalyzeMaterialResult & {
-    summary?: string;
-  };
+  result?: AnalyzeMaterialResult;
 };
 
 const AnalysisCompletePage = () => {
@@ -61,9 +67,9 @@ const AnalysisCompletePage = () => {
     analysisResult?.summary ??
     "AI가 분석한 내용을 요약해드릴게요.";
 
-  /* ==============================
-     폴더
-  ============================== */
+  const fullAnalysis =
+    analysisResult?.fullAnalysis ??
+    "";
 
   const [folders, setFolders] =
     useState<FolderOption[]>([]);
@@ -71,7 +77,7 @@ const AnalysisCompletePage = () => {
   const [
     selectedFolderId,
     setSelectedFolderId,
-  ] = useState<number>(
+  ] = useState(
     analysisResult?.recommendedFolderId ??
       0,
   );
@@ -80,10 +86,6 @@ const AnalysisCompletePage = () => {
     isFolderLoading,
     setIsFolderLoading,
   ] = useState(true);
-
-  /* ==============================
-     폴더 생성 모달
-  ============================== */
 
   const [
     isCreateFolderModalOpen,
@@ -95,10 +97,6 @@ const AnalysisCompletePage = () => {
     setIsFolderLimitModalOpen,
   ] = useState(false);
 
-  /* ==============================
-     태그
-  ============================== */
-
   const [
     selectedTags,
     setSelectedTags,
@@ -106,16 +104,8 @@ const AnalysisCompletePage = () => {
     analysisResult?.tags ?? [],
   );
 
-  /* ==============================
-     저장
-  ============================== */
-
   const [isSaving, setIsSaving] =
     useState(false);
-
-  /* ==============================
-     폴더 목록 조회
-  ============================== */
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -135,10 +125,6 @@ const AnalysisCompletePage = () => {
 
         setFolders(mappedFolders);
 
-        /*
-         * 사이드바 기본 선택은
-         * 기존처럼 추천 폴더만 사용
-         */
         const recommendedFolderId =
           analysisResult
             ?.recommendedFolderId;
@@ -181,10 +167,6 @@ const AnalysisCompletePage = () => {
       ?.recommendedFolderId,
   ]);
 
-  /* ==============================
-     새 폴더 만들기 버튼
-  ============================== */
-
   const handleOpenCreateFolder =
     () => {
       if (folders.length >= 6) {
@@ -200,47 +182,73 @@ const AnalysisCompletePage = () => {
       );
     };
 
-  /* ==============================
-     폴더 생성
-  ============================== */
-
   const handleCreateFolder = async (
     folderName: string,
   ) => {
-    const createdFolder =
-      await createFolder(folderName);
+    try {
+      const createdFolder =
+        await createFolder(folderName);
 
-    const newFolder: FolderOption = {
-      id: createdFolder.folderId,
-      name: createdFolder.folderName,
-    };
+      const newFolder: FolderOption = {
+        id: createdFolder.folderId,
+        name: createdFolder.folderName,
+      };
 
-    /*
-     * 새 폴더를 목록에 바로 추가
-     */
-    setFolders((prev) => [
-      newFolder,
-      ...prev,
-    ]);
+      setFolders((prev) => [
+        newFolder,
+        ...prev,
+      ]);
 
-    /*
-     * 생성한 폴더 자동 선택
-     */
-    setSelectedFolderId(
-      createdFolder.folderId,
-    );
+      setSelectedFolderId(
+        createdFolder.folderId,
+      );
 
-    /*
-     * 생성 성공 후 모달 닫기
-     */
-    setIsCreateFolderModalOpen(
-      false,
-    );
+      setIsCreateFolderModalOpen(
+        false,
+      );
+    } catch (error) {
+      console.error(
+        "폴더 생성 실패:",
+        error,
+      );
+
+      if (
+        axios.isAxiosError<FolderErrorResponse>(
+          error,
+        )
+      ) {
+        const code =
+          error.response?.data?.code;
+
+        const serverMessage =
+          error.response?.data?.message;
+
+        if (code === "FOLDER4004") {
+          setIsCreateFolderModalOpen(
+            false,
+          );
+
+          setIsFolderLimitModalOpen(
+            true,
+          );
+
+          return;
+        }
+
+        throw new Error(
+          typeof serverMessage === "string"
+            ? serverMessage
+            : "폴더를 생성하지 못했습니다.",
+          { cause: error },
+        );
+      }
+
+      throw new Error(
+        "폴더를 생성하지 못했습니다.",
+        { cause: error },
+      );
+    }
   };
-
-  /* ==============================
-     저장
-  ============================== */
 
   const handleSave = async () => {
     if (materialId == null) {
@@ -324,32 +332,30 @@ const AnalysisCompletePage = () => {
 
         <section className="mx-auto w-[1100px]">
           <div className="ml-[350px]">
-            <div className="ml-[30px]">
-              <AnalysisHeader
-                date="2026-05-10"
-                title={
-                  analysisResult
-                    ?.title ??
-                  "분석된 콘텐츠"
-                }
-                tags={
-                  analysisResult
-                    ?.tags ?? []
-                }
-                onSelectedTagsChange={
-                  setSelectedTags
-                }
-              />
-            </div>
+            <AnalysisHeader
+              date="2026-05-10"
+              title={
+                analysisResult
+                  ?.title ??
+                "분석된 콘텐츠"
+              }
+              originUrl={originalUrl}
+              tags={
+                analysisResult
+                  ?.tags ?? []
+              }
+              onSelectedTagsChange={
+                setSelectedTags
+              }
+            />
 
             <div className="mt-[20px] flex flex-col gap-[20px]">
-              <AnalysisUrl
-                url={originalUrl}
-              />
-
               <AnalysisSummary
                 summary={summary}
-                onSummaryChange={() => {}}
+              />
+
+              <AnalysisData
+                content={fullAnalysis}
               />
 
               <button

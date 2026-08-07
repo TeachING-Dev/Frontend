@@ -1,8 +1,8 @@
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import FolderCard from "../common/FolderCard";
-import FolderPopover from "./popover/FolderPopover";
+import FolderCard from "../../common/FolderCard";
+import FolderPopover from "../popover/FolderPopover";
 
 type FolderGridItemProps = {
   id: number;
@@ -38,10 +38,10 @@ const FolderGridItem = ({
             <button
               type="button"
               onClick={(event) => event.stopPropagation()}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
+              className="flex h-5 w-5 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF] lg:h-8 lg:w-8"
               aria-label={`${name} 폴더 메뉴`}
             >
-              <EllipsisVertical size={20} strokeWidth={4} />
+              <EllipsisVertical className="h-4 w-4 lg:h-5 lg:w-5" strokeWidth={4} />
             </button>
           }
           onMoveToTrash={() => onMoveToTrash?.(id)}

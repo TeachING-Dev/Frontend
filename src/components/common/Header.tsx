@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 import {
   getNotifications,
+  getNotificationSummary,
+  readNotification,
   type Notification,
 } from "../../apis/notification";
 import NotificationPopover from "../notification/NotificationPopover";
@@ -28,12 +30,27 @@ const Header = ({
   const [notifications, setNotifications] =
     useState<Notification[]>([]);
 
+  const [hasUnread, setHasUnread] =
+    useState(false);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const data = await getNotifications(5);
+        const [
+          notificationData,
+          summaryData,
+        ] = await Promise.all([
+          getNotifications(5),
+          getNotificationSummary(),
+        ]);
 
-        setNotifications(data);
+        setNotifications(
+          notificationData,
+        );
+
+        setHasUnread(
+          summaryData.hasUnread,
+        );
       } catch (error) {
         console.error(
           "알림 목록 조회 실패:",
@@ -45,14 +62,59 @@ const Header = ({
     fetchNotifications();
   }, []);
 
-  const handleNotificationClick = (
-    notificationId: number,
-  ) => {
-    console.log(
-      "선택한 알림:",
+const handleNotificationClick = async (
+  notificationId: number,
+) => {
+  try {
+    const notification =
+      notifications.find(
+        (item) =>
+          item.notificationId ===
+          notificationId,
+      );
+
+    if (!notification) {
+      return;
+    }
+
+    await readNotification(
       notificationId,
     );
-  };
+
+    setNotifications((prev) =>
+      prev.map((item) =>
+        item.notificationId ===
+        notificationId
+          ? {
+              ...item,
+              isRead: true,
+            }
+          : item,
+      ),
+    );
+
+    const summary =
+      await getNotificationSummary();
+
+    setHasUnread(
+      summary.hasUnread,
+    );
+
+    if (
+      notification.targetType ===
+      "TEACHING_MAP"
+    ) {
+      navigate(
+        `/teaching-map/${notification.targetId}`,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "알림 읽음 처리 실패:",
+      error,
+    );
+  }
+};
 
   const handleViewAll = () => {
     navigate("/notifications");
@@ -119,9 +181,13 @@ const Header = ({
                 className="flex size-10 items-center justify-center overflow-hidden hover:opacity-80"
               >
                 <img
-                  src="/icon/Alarm.svg"
+                  src={
+                    hasUnread
+                      ? "/icon/Alarm2.svg"
+                      : "/icon/Alarm.svg"
+                  }
                   alt=""
-                  className="size-6 object-contain"
+                  className="size-[40px] object-contain"
                 />
               </button>
             }

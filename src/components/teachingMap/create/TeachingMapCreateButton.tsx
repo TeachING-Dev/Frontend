@@ -18,10 +18,10 @@ const TeachingMapCreateButton = ({
         disabled={isSaveDisabled}
         onClick={onSave}
         className={[
-          "flex h-[64px] flex-1 items-center justify-center",
+          "flex h-[42px] flex-1 items-center justify-center lg:h-[64px]",
           "rounded-[4px] px-5 py-[10px]",
-          "font-['SUIT'] text-[20px] font-semibold leading-[28px]",
-          "tracking-[-0.6px] transition-colors",
+          "font-['SUIT'] text-[14px] font-normal leading-[21px] lg:text-[20px] lg:font-semibold lg:leading-[28px]",
+          "tracking-[-0.35px] transition-colors lg:tracking-[-0.6px]",
           isSaveDisabled
             ? [
                 "cursor-not-allowed",
@@ -43,10 +43,10 @@ const TeachingMapCreateButton = ({
         disabled={isCreateDisabled}
         onClick={onCreate}
         className={[
-          "flex h-[64px] flex-1 items-center justify-center",
+          "flex h-[42px] flex-1 items-center justify-center lg:h-[64px]",
           "rounded-[4px] px-5 py-[10px]",
-          "font-['SUIT'] text-[20px] font-semibold leading-[28px]",
-          "tracking-[-0.6px] transition-colors",
+          "font-['SUIT'] text-[14px] font-normal leading-[21px] lg:text-[20px] lg:font-semibold lg:leading-[28px]",
+          "tracking-[-0.35px] transition-colors lg:tracking-[-0.6px]",
           isCreateDisabled
             ? [
                 "cursor-not-allowed",

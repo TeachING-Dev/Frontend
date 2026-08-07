@@ -35,7 +35,6 @@ const TrashDataCard = ({
       sourceImageClassName="h-[36px] w-[36px] shrink-0 object-contain"
       selectable={isRestoreMode}
       selected={isSelected}
-      showAiButton
       showOriginalButton
       onSelect={() => onSelect(data.id)}
       onOpenOriginal={handleOpenOriginal}

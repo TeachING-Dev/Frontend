@@ -23,7 +23,21 @@ const ArchiveDataHeader = ({
     platformType.toUpperCase() === "YOUTUBE"
       ? "/icon/youtube-app-icon.png"
       : "/icons.svg";
-  const platformIconSrc = platformImageUrl || fallbackPlatformIcon;
+  const normalizePlatformImageUrl = (
+    url: string,
+  ) => {
+    const markdownLinkMatch =
+      url.match(/\((https?:\/\/[^)]+)\)/);
+
+    return markdownLinkMatch
+      ? markdownLinkMatch[1]
+      : url;
+  };
+
+  const platformIconSrc =
+    normalizePlatformImageUrl(
+      platformImageUrl,
+    ) || fallbackPlatformIcon;
   const handleOpenOriginal = () => {
     window.open(originalUrl, "_blank", "noopener,noreferrer");
   };
@@ -54,10 +68,10 @@ const ArchiveDataHeader = ({
       </p>
 
       {/* 제목과 원문 버튼 */}
-      <div className="mb-[24px] flex items-center justify-between">
-        <div className="flex min-w-0 items-center gap-[15px]">
+      <div className="mb-[24px] flex items-start justify-between">
+        <div className="flex min-w-0 items-start gap-[15px]">
           {/* 플랫폼 아이콘 */}
-          <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#FAFAFA]">
+          <div className="mt-2 flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full">
             <img
               src={platformIconSrc}
               alt={platformType}
@@ -103,7 +117,7 @@ const ArchiveDataHeader = ({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-normal italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
+            className="flex h-[36px] items-center justify-center rounded-full border border-[#917DEC] px-[12px] text-center font-['Montserrat'] text-[12px] font-semibold italic leading-[150%] tracking-[-0.36px] text-[#917DEC]"
           >
             #{tag}
           </span>

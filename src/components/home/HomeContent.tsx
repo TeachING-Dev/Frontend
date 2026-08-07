@@ -22,15 +22,15 @@ const HomeContent = ({
   activeTeachingMaps,
   isLoading = false,
 }: HomeContentProps) => {
-  const [selectedTab, setSelectedTab] =
-    useState<HomeTab>("knowledge");
+  const [selectedTab, setSelectedTab] = useState<HomeTab>("knowledge");
 
   const navigate = useNavigate();
 
   const tabButtonClass =
-    "flex h-[30px] w-[130px] items-center justify-center gap-[4px] rounded-[5px] border px-[10px] py-[5px] text-[10px] transition-colors md:min-h-[40px] md:h-auto md:w-auto md:gap-[10px] md:text-[16px]";  const handleViewAll = () => {
-    
-      if (selectedTab === "knowledge") {
+    "flex h-[30px] w-full min-w-0 items-center justify-center gap-[4px] rounded-[5px] border px-[10px] py-[5px] text-[10px] transition-colors md:min-h-[40px] md:h-auto md:w-auto md:gap-[10px] md:text-[16px]";
+
+  const handleViewAll = () => {
+    if (selectedTab === "knowledge") {
       navigate("/archive");
       return;
     }
@@ -52,7 +52,8 @@ const HomeContent = ({
       <div
         className="
           flex
-          flex-col
+          flex-row
+          items-center
           gap-[12px]
           px-[15px]
           pt-[15px]
@@ -68,9 +69,9 @@ const HomeContent = ({
         <div
           className="
             grid
-            w-full
+            min-w-0
+            flex-1
             grid-cols-2
-            gap-[8px]
             md:gap-[12px]
             lg:flex
             lg:w-auto
@@ -79,9 +80,7 @@ const HomeContent = ({
         >
           <button
             type="button"
-            onClick={() =>
-              setSelectedTab("knowledge")
-            }
+            onClick={() => setSelectedTab("knowledge")}
             className={`${tabButtonClass} ${
               selectedTab === "knowledge"
                 ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
@@ -95,16 +94,12 @@ const HomeContent = ({
               className="h-5 w-5 shrink-0"
             />
 
-            <span className="break-keep">
-              최근에 저장한 지식
-            </span>
+            <span className="break-keep">최근에 저장한 지식</span>
           </button>
 
           <button
             type="button"
-            onClick={() =>
-              setSelectedTab("teachingMap")
-            }
+            onClick={() => setSelectedTab("teachingMap")}
             className={`${tabButtonClass} ${
               selectedTab === "teachingMap"
                 ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
@@ -118,9 +113,7 @@ const HomeContent = ({
               className="h-5 w-5 shrink-0"
             />
 
-            <span className="break-keep">
-              학습 중인 티칭맵
-            </span>
+            <span className="break-keep">학습 중인 티칭맵</span>
           </button>
         </div>
 
@@ -144,7 +137,8 @@ const HomeContent = ({
             md:tracking-[-0.48px]
           "
         >
-          전체보기
+          <span className="md:hidden">전체</span>
+          <span className="hidden md:inline">전체보기</span>
 
           <ChevronRight
             size={20}
@@ -163,13 +157,9 @@ const HomeContent = ({
             </p>
           </div>
         ) : selectedTab === "knowledge" ? (
-          <RecentKnowledgeList
-            materials={recentMaterials.slice(0, 5)}
-          />
+          <RecentKnowledgeList materials={recentMaterials.slice(0, 5)} />
         ) : (
-          <TeachingMapList
-            teachingMaps={activeTeachingMaps}
-          />
+          <TeachingMapList teachingMaps={activeTeachingMaps} />
         )}
       </div>
     </section>

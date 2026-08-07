@@ -284,22 +284,18 @@ export type AnalyzeResultType =
 export type AnalyzeMaterialResult = {
   materialAnalysisId: number;
   resultType: AnalyzeResultType;
-
   materialId: number | null;
   existingMaterialId: number | null;
   existingFolderId: number | null;
-
   summary: string;
-
+  fullAnalysis: string;
   originalUrl: string;
   title: string;
   platformType: string;
   status: string;
   chunkCount: number;
-
   recommendedFolderId: number | null;
   recommendedFolderName: string | null;
-
   tags: MaterialTag[];
 };
 
@@ -392,6 +388,42 @@ export const getMaterials = async (
             ? { size }
             : undefined,
       },
+    );
+
+  return response.data.result;
+};
+
+/* ==============================
+   AI 상세 분석 수정
+============================== */
+
+export type UpdateMaterialAnalysisDetailRequest = {
+  fullAnalysis: string;
+};
+
+export type UpdateMaterialAnalysisDetailResult = {
+  materialId: number;
+  fullAnalysis: string;
+  isUserEdited: boolean;
+  updatedAt: string;
+};
+
+type UpdateMaterialAnalysisDetailResponse = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: UpdateMaterialAnalysisDetailResult;
+};
+
+export const updateMaterialAnalysisDetail = async (
+  folderId: number,
+  materialId: number,
+  data: UpdateMaterialAnalysisDetailRequest,
+): Promise<UpdateMaterialAnalysisDetailResult> => {
+  const response =
+    await api.patch<UpdateMaterialAnalysisDetailResponse>(
+      `/api/folders/${folderId}/materials/${materialId}/analysis/detail`,
+      data,
     );
 
   return response.data.result;

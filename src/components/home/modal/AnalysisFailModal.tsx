@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { X } from "lucide-react";
 
 export type AnalysisFailType =
   | "loginRequired"
@@ -120,47 +119,21 @@ const AnalysisFailModal = ({
         className="
           relative
           flex
-          h-[447px]
+          h-[379px]
           w-[450px]
           flex-col
           rounded-[10px]
           bg-[#090713]
           px-5
-          pb-6
-          pt-[20px]
+          py-[30px]
           shadow-[0_0_80px_rgba(134,111,241,0.35)]
         "
       >
-        {/* 닫기 버튼 */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="모달 닫기"
-          className="
-            absolute
-            right-[20px]
-            top-[20px]
-            flex
-            h-[36px]
-            w-[36px]
-            items-center
-            justify-center
-            text-[#FAFAFA]
-            transition
-            hover:opacity-70
-          "
-        >
-          <X
-            size={36}
-            strokeWidth={2}
-          />
-        </button>
 
         {/* 제목 */}
         <p
           id="analysis-fail-title"
           className="
-            mt-[46px]
             text-center
             text-[24px]
             font-semibold
@@ -199,7 +172,7 @@ const AnalysisFailModal = ({
         </div>
 
         {/* 버튼 */}
-        <div className="mt-[40px] flex gap-3">
+        <div className="mt-[30px] flex gap-3">
           <button
             type="button"
             onClick={

@@ -5,6 +5,7 @@ import type { MaterialTag } from "../../apis/material";
 type AnalysisHeaderProps = {
   date: string;
   title: string;
+  originUrl: string;
   tags: MaterialTag[];
   onSelectedTagsChange?: (
     tags: MaterialTag[],
@@ -14,6 +15,7 @@ type AnalysisHeaderProps = {
 const AnalysisHeader = ({
   date,
   title,
+  originUrl,
   tags,
   onSelectedTagsChange,
 }: AnalysisHeaderProps) => {
@@ -71,7 +73,7 @@ const AnalysisHeader = ({
       </div>
 
       {/* 태그 목록 */}
-      <div className="flex flex-wrap items-center gap-[12px]">
+      <div className="mb-[20px] flex flex-wrap items-center gap-[12px]">
         {tags.map((tag) => {
           const isRemoved =
             removedTagIds.includes(
@@ -96,7 +98,7 @@ const AnalysisHeader = ({
                 className={`
                   font-['Montserrat']
                   text-[12px]
-                  font-normal
+                  font-semibold
                   leading-[150%]
                   tracking-[-0.36px]
                   ${
@@ -144,6 +146,27 @@ const AnalysisHeader = ({
           );
         })}
       </div>
+
+      {/* URL */}
+      {originUrl && (
+        <a
+          href={originUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex min-w-0 items-center gap-[8px] text-[#717379] transition-opacity hover:opacity-80"
+        >
+          <img
+            src="/icon/링크.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-[24px] w-[24px] shrink-0 object-contain"
+          />
+
+          <span className="truncate font-['Montserrat'] text-[14px] font-medium italic leading-[150%] tracking-[-0.42px] text-[#42444C]">
+            {originUrl}
+          </span>
+        </a>
+      )}
     </header>
   );
 };

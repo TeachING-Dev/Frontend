@@ -91,19 +91,19 @@ const MyPageWithdrawalConfirmPage = () => {
   };
 
   return (
-    <main className="min-h-full px-[160px] pb-[100px] pt-[40px]">
+    <main className="flex min-h-[calc(100dvh-64px)] flex-col px-[20px] pb-[32px] pt-[20px] lg:block lg:min-h-0 lg:px-[160px] lg:pb-[100px] lg:pt-[40px]">
       <MyPageBackHeader title="탈퇴하기" />
 
-      <section className="mt-[50px]">
-        <h2 className="text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#FAFAFA]">
+      <section className="mt-[20px] lg:mt-[50px]">
+        <h2 className="text-[18px] font-semibold leading-[150%] tracking-[-0.54px] text-[#FAFAFA] lg:text-[24px] lg:tracking-[-0.72px]">
           회원탈퇴를 진행하시겠습니까?
         </h2>
 
-        <p className="mt-[4px] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#717379]">
+        <p className="mt-[4px] text-[13px] font-medium leading-[150%] tracking-[-0.33px] text-[#717379] lg:text-[18px] lg:tracking-[-0.54px]">
           탈퇴 시, 가입된 회원 정보가 모두 삭제됩니다.
         </p>
 
-        <div className="mt-[40px]">
+        <div className="mt-[30px] lg:mt-[40px]">
           <WithdrawalConfirmField
             checked={isConfirmed}
             onChange={setIsConfirmed}
@@ -125,8 +125,8 @@ const MyPageWithdrawalConfirmPage = () => {
         disabled={!isConfirmed || isSubmitting}
         onClick={handleNextClick}
         className={[
-          "mx-auto mt-[590px] flex h-[60px] w-[640px] items-center justify-center rounded-[5px] px-[50px] py-[20px]",
-          "text-[20px] font-medium leading-[150%] tracking-[-0.6px]",
+          "mx-auto mt-auto flex h-[48px] w-full items-center justify-center rounded-[5px] px-[50px] py-[6px] lg:mt-[590px] lg:h-[60px] lg:w-[640px] lg:py-[20px]",
+          "text-[16px] font-medium leading-[150%] tracking-[-0.4px] lg:text-[20px] lg:tracking-[-0.6px]",
           isConfirmed && !isSubmitting
             ? "bg-[#917DEC] text-[#FAFAFA]"
             : "cursor-default bg-[#1F212A] text-[#717379]",

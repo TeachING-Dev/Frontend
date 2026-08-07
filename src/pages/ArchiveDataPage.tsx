@@ -9,14 +9,13 @@ import {
 
 import {
   getMaterialAnalysis,
-  getMaterialDetail,
+  updateMaterialAnalysisDetail,
   updateMaterialSummary,
   type MaterialAnalysis,
-  type MaterialDetail,
 } from "../apis/material";
-import ArchiveDataAnalysis from "../components/archive/ArchiveDataAnalysis";
-import ArchiveDataHeader from "../components/archive/ArchiveDataHeader";
-import ArchiveDataSummary from "../components/archive/ArchiveDataSummary";
+import ArchiveDataAnalysis from "../components/archive/detail/ArchiveDataAnalysis";
+import ArchiveDataHeader from "../components/archive/detail/ArchiveDataHeader";
+import ArchiveDataSummary from "../components/archive/detail/ArchiveDataSummary";
 
 const ArchiveDataPage = () => {
   const navigate = useNavigate();
@@ -26,9 +25,6 @@ const ArchiveDataPage = () => {
       folderId: string;
       materialId: string;
     }>();
-
-  const [material, setMaterial] =
-    useState<MaterialDetail | null>(null);
 
   const [
     materialAnalysis,
@@ -66,14 +62,20 @@ const ArchiveDataPage = () => {
         return;
       }
 
-      const parsedFolderId = Number(folderId);
+      const parsedFolderId =
+        Number(folderId);
+
       const parsedMaterialId =
         Number(materialId);
 
       if (
-        !Number.isInteger(parsedFolderId) ||
+        !Number.isInteger(
+          parsedFolderId,
+        ) ||
         parsedFolderId <= 0 ||
-        !Number.isInteger(parsedMaterialId) ||
+        !Number.isInteger(
+          parsedMaterialId,
+        ) ||
         parsedMaterialId <= 0
       ) {
         setErrorMessage(
@@ -90,39 +92,6 @@ const ArchiveDataPage = () => {
       setAnalysisErrorMessage("");
 
       try {
-        const materialDetail =
-          await getMaterialDetail(
-            parsedFolderId,
-            parsedMaterialId,
-          );
-
-        if (isCancelled) {
-          return;
-        }
-
-        setMaterial(materialDetail);
-      } catch (error) {
-        if (isCancelled) {
-          return;
-        }
-
-        console.error(
-          "자료 기본 정보 조회 실패:",
-          error,
-        );
-
-        setMaterial(null);
-
-        setErrorMessage(
-          "자료를 불러오지 못했습니다.",
-        );
-      } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
-      }
-
-      try {
         const analysisData =
           await getMaterialAnalysis(
             parsedFolderId,
@@ -133,7 +102,9 @@ const ArchiveDataPage = () => {
           return;
         }
 
-        setMaterialAnalysis(analysisData);
+        setMaterialAnalysis(
+          analysisData,
+        );
       } catch (error) {
         if (isCancelled) {
           return;
@@ -145,11 +116,17 @@ const ArchiveDataPage = () => {
         );
 
         setMaterialAnalysis(null);
+
+        setErrorMessage(
+          "자료를 불러오지 못했습니다.",
+        );
+
         setAnalysisErrorMessage(
           "아직 생성된 AI 분석이 없습니다.",
         );
       } finally {
         if (!isCancelled) {
+          setIsLoading(false);
           setIsAnalysisLoading(false);
         }
       }
@@ -163,7 +140,9 @@ const ArchiveDataPage = () => {
   }, [folderId, materialId]);
 
   const handleBack = () => {
-    navigate(`/archive/folder/${folderId}`);
+    navigate(
+      `/archive/folder/${folderId}`,
+    );
   };
 
   const handleUpdateSummary = async (
@@ -175,7 +154,9 @@ const ArchiveDataPage = () => {
       );
     }
 
-    const parsedFolderId = Number(folderId);
+    const parsedFolderId =
+      Number(folderId);
+
     const parsedMaterialId =
       Number(materialId);
 
@@ -185,19 +166,10 @@ const ArchiveDataPage = () => {
           parsedFolderId,
           parsedMaterialId,
           {
-            shortSummary: newSummary,
+            shortSummary:
+              newSummary,
           },
         );
-
-      setMaterial((prev) =>
-        prev
-          ? {
-              ...prev,
-              summary: result.shortSummary,
-              updatedAt: result.updatedAt,
-            }
-          : prev,
-      );
 
       setMaterialAnalysis((prev) =>
         prev
@@ -222,20 +194,72 @@ const ArchiveDataPage = () => {
     }
   };
 
+  const handleUpdateAnalysis = async (
+    newFullAnalysis: string,
+  ) => {
+    if (!folderId || !materialId) {
+      throw new Error(
+        "자료 정보를 확인할 수 없습니다.",
+      );
+    }
+
+    const parsedFolderId =
+      Number(folderId);
+
+    const parsedMaterialId =
+      Number(materialId);
+
+    try {
+      const result =
+        await updateMaterialAnalysisDetail(
+          parsedFolderId,
+          parsedMaterialId,
+          {
+            fullAnalysis:
+              newFullAnalysis,
+          },
+        );
+
+      setMaterialAnalysis((prev) =>
+        prev
+          ? {
+              ...prev,
+              fullAnalysis:
+                result.fullAnalysis,
+              isUserEdited:
+                result.isUserEdited,
+              updatedAt:
+                result.updatedAt,
+            }
+          : prev,
+      );
+    } catch (error) {
+      console.error(
+        "AI 상세 분석 수정 실패:",
+        error,
+      );
+
+      throw error;
+    }
+  };
+
   if (isLoading) {
     return (
       <main className="py-10">
-        <div className="mx-auto w-[1120px] py-[100px] text-center text-[18px] text-[#B8B9BC]">
+        <div className="mx-auto w-[1120px]">
           자료를 불러오는 중입니다.
         </div>
       </main>
     );
   }
 
-  if (errorMessage || !material) {
+  if (
+    errorMessage ||
+    !materialAnalysis
+  ) {
     return (
       <main className="py-10">
-        <div className="mx-auto w-[1120px] py-[100px] text-center text-[18px] text-[#B8B9BC]">
+        <div className="mx-auto w-[1120px]">
           {errorMessage ||
             "자료 정보가 없습니다."}
         </div>
@@ -247,21 +271,31 @@ const ArchiveDataPage = () => {
     <main className="py-10">
       <div className="mx-auto w-[1120px]">
         <ArchiveDataHeader
-          date={material.createdAt}
-          title={material.title}
-          originalUrl={material.originUrl}
-          platformType={material.platformType}
-          platformImageUrl={
-            material.platformImageUrl
+          date={
+            materialAnalysis.generatedAt
           }
-          tags={material.tags.map(
+          title={
+            materialAnalysis.title
+          }
+          originalUrl={
+            materialAnalysis.originUrl
+          }
+          platformType={
+            materialAnalysis.platformType
+          }
+          platformImageUrl={
+            materialAnalysis.platformImageUrl
+          }
+          tags={materialAnalysis.tags.map(
             (tag) => tag.tagName,
           )}
           onBack={handleBack}
         />
 
         <ArchiveDataSummary
-          summary={material.summary}
+          summary={
+            materialAnalysis.shortSummary
+          }
           onUpdateSummary={
             handleUpdateSummary
           }
@@ -276,13 +310,17 @@ const ArchiveDataPage = () => {
             </div>
 
             <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[40px] text-center text-[18px] text-[#A1A1A5]">
-              AI 분석을 불러오는 중입니다.
+              AI 분석을 불러오는
+              중입니다.
             </div>
           </section>
         ) : materialAnalysis ? (
           <ArchiveDataAnalysis
             fullAnalysis={
               materialAnalysis.fullAnalysis
+            }
+            onUpdateAnalysis={
+              handleUpdateAnalysis
             }
           />
         ) : (
@@ -294,7 +332,9 @@ const ArchiveDataPage = () => {
             </div>
 
             <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[40px] text-center text-[18px] text-[#A1A1A5]">
-              {analysisErrorMessage}
+              {
+                analysisErrorMessage
+              }
             </div>
           </section>
         )}

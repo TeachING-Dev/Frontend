@@ -1,12 +1,14 @@
-import type { Folder } from "../../apis/folder";
-
+import type { Folder } from "../../../apis/folder";
 import AddFolderGrid from "./AddFolderGrid";
 import FolderGridItem from "./FolderGridItem";
 
 type ArchiveFolderGridProps = {
   folders: Folder[];
   onAddFolder: () => void;
-  onMoveToTrash?: (folderId: number) => void;
+  onMoveToTrash?: (
+    folderId: number,
+  ) => void;
+  isSearching?: boolean;
 };
 
 const formatDate = (date: string) => {
@@ -16,19 +18,24 @@ const formatDate = (date: string) => {
       month: "2-digit",
       day: "2-digit",
     })
-    .replace(/\. /g, ".")
-    .replace(/\.$/, "");
+    .replace(/. /g, ".")
+    .replace(/.$/, "");
 };
 
 const ArchiveFolderGrid = ({
   folders,
   onAddFolder,
   onMoveToTrash,
+  isSearching = false,
 }: ArchiveFolderGridProps) => {
   return (
-    <section className="grid grid-cols-3 gap-7">
-      {/* 새 채팅 추가 */}
-      <AddFolderGrid onClick={onAddFolder} />
+    <section className="grid grid-cols-2 gap-x-4 gap-y-[10px] lg:grid-cols-3 lg:gap-7">
+      {/* 새 폴더 추가 */}
+      {!isSearching && (
+        <AddFolderGrid
+          onClick={onAddFolder}
+        />
+      )}
 
       {/* 기존 폴더 목록 */}
       {folders.map((folder) => (
@@ -37,8 +44,12 @@ const ArchiveFolderGrid = ({
           id={folder.folderId}
           name={folder.folderName}
           count={folder.materialCount}
-          date={formatDate(folder.updatedAt)}
-          onMoveToTrash={onMoveToTrash}
+          date={formatDate(
+            folder.updatedAt,
+          )}
+          onMoveToTrash={
+            onMoveToTrash
+          }
         />
       ))}
     </section>

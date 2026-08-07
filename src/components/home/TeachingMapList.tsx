@@ -23,13 +23,15 @@ const TeachingMapList = ({
   }
 
   return (
-    <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col md:gap-[20px]">
       {teachingMaps.map((teachingMap) => (
         <TeachingMapItem
           key={teachingMap.teachingMapId}
           title={teachingMap.title}
           description={teachingMap.description}
-          thumbnailSrc="/icon/Frame2147239594.png"
+          sourcePlatforms={
+            teachingMap.sourcePlatforms
+          }
           onClick={() =>
             navigate(
               `/teaching-map/${teachingMap.teachingMapId}`,

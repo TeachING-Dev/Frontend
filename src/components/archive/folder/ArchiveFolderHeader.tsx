@@ -10,7 +10,7 @@ import {
   Search,
 } from "lucide-react";
 
-import DataPopover from "./popover/DataPopover";
+import DataPopover from "../popover/DataPopover";
 
 export type FolderSortOption =
   | "recent"
@@ -143,25 +143,25 @@ const ArchiveFolderHeader = ({
       folderName;
 
   return (
-    <section className="mb-[60px]">
+    <section className="mb-[30px] lg:mb-[60px]">
       <button
         type="button"
         onClick={onBack}
-        className="group mb-1 flex items-center gap-2 rounded px-1 py-1 transition hover:bg-white/10"
+        className="group mb-[10px] flex h-[24px] items-center gap-[4px] rounded transition hover:bg-white/10 lg:mb-1 lg:h-auto lg:w-auto lg:gap-2 lg:px-1 lg:py-1"
       >
         <span
           aria-hidden="true"
-          className="text-[20px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 group-hover:text-white"
+          className="text-[18px] font-light leading-none text-[#9B9AA0] transition-colors duration-200 lg:text-[20px] group-hover:text-white"
         >
           &lt;
         </span>
 
-        <span className="text-[16px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white">
+        <span className="text-[13px] text-[#9B9AA0] transition-colors duration-200 group-hover:text-white lg:text-[16px]">
           보관함으로 돌아가기
         </span>
       </button>
 
-      <div className="mb-3 flex min-h-[54px] items-center gap-[17px]">
+      <div className="mb-[5px] flex min-h-[36px] items-center gap-[10px] lg:mb-3 lg:min-h-[54px] lg:gap-[17px]">
         {isEditingFolderName ? (
           <>
             <label className="grid shrink-0">
@@ -171,7 +171,7 @@ const ArchiveFolderHeader = ({
 
               <span
                 aria-hidden="true"
-                className="invisible col-start-1 row-start-1 whitespace-pre text-[36px] font-bold"
+                className="invisible col-start-1 row-start-1 whitespace-pre text-[24px] font-bold lg:text-[36px]"
               >
                 {editedFolderName ||
                   " "}
@@ -196,7 +196,7 @@ const ArchiveFolderHeader = ({
                 }
                 maxLength={10}
                 aria-label="수정할 폴더 이름"
-                className="col-start-1 row-start-1 h-[54px] w-full min-w-0 max-w-[500px] bg-transparent text-[36px] font-bold text-white outline-none"
+                className="col-start-1 row-start-1 h-[36px] w-full min-w-0 max-w-[500px] bg-transparent text-[24px] font-bold text-white outline-none lg:h-[54px] lg:text-[36px]"
               />
             </label>
 
@@ -221,7 +221,7 @@ const ArchiveFolderHeader = ({
           </>
         ) : (
           <>
-            <h1 className="text-[36px] font-bold text-white">
+            <h1 className="text-[24px] font-bold leading-[150%] tracking-[-0.6px] text-white lg:text-[36px] lg:tracking-normal">
               {folderName}
             </h1>
 
@@ -231,29 +231,29 @@ const ArchiveFolderHeader = ({
                 handleStartEdit
               }
               aria-label="폴더 이름 수정"
-              className="flex h-8 w-8 items-center justify-center rounded transition hover:bg-white/10"
+              className="flex h-[24px] w-[24px] items-center justify-center rounded transition hover:bg-white/10 lg:h-8 lg:w-8"
             >
               <img
                 src="/icon/edit.png"
                 alt=""
                 aria-hidden="true"
-                className="h-[34px] w-[36px]"
+                className="h-[22px] w-[22px] lg:h-[34px] lg:w-[36px]"
               />
             </button>
           </>
         )}
       </div>
 
-      <p className="mb-6 text-[20px] text-[#A1A1A5]">
+      <p className="mb-[20px] text-[14px] text-[#A1A1A5] lg:mb-6 lg:text-[20px]">
         {savedItemCount}개의 저장된 자료
       </p>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-[10px] lg:flex-row lg:items-end lg:justify-between lg:gap-0">
         <form
           onSubmit={
             handleSearchSubmit
           }
-          className="flex h-[60px] w-[640px] items-center rounded bg-[#F1EEFF] px-5"
+          className="flex h-[40px] w-full items-center rounded bg-[#F1EEFF] px-[10px] lg:h-[60px] lg:w-[640px] lg:px-5"
         >
           <input
             type="search"
@@ -265,22 +265,22 @@ const ArchiveFolderHeader = ({
             }
             placeholder="자료 검색"
             aria-label="자료 검색"
-            className="flex-1 bg-transparent text-[24px] font-semibold text-[#5D5D5D] outline-none placeholder:text-gray-500 leading-[150%] tracking-[-0.72px]"
+            className="min-w-0 flex-1 bg-transparent text-[14px] font-semibold leading-[150%] tracking-[-0.35px] text-[#5D5D5D] outline-none placeholder:text-gray-500 lg:text-[24px] lg:tracking-[-0.72px]"
           />
 
           <button
             type="submit"
             aria-label="검색"
-            className="flex h-10 w-10 items-center justify-center rounded transition hover:bg-[#DDD6FF]"
+            className="flex h-[30px] w-[30px] items-center justify-center rounded transition hover:bg-[#DDD6FF] lg:h-10 lg:w-10"
           >
             <Search
-              size={24}
+              size={20}
               className="text-[#8B6DFF]"
             />
           </button>
         </form>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-end gap-[10px] lg:gap-6">
           <div className="relative">
             <button
               type="button"
@@ -289,7 +289,7 @@ const ArchiveFolderHeader = ({
                   (prev) => !prev,
                 )
               }
-              className="flex h-[40px] w-[147px] items-center justify-center gap-2 rounded bg-transparent px-3 text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#F5F2FF]"
+              className="flex h-[30px] w-[73.5px] items-center justify-center gap-[4px] rounded bg-transparent text-[13px] font-normal leading-[135%] tracking-[-0.325px] text-[#F5F2FF] lg:h-[40px] lg:w-[147px] lg:gap-2 lg:px-3 lg:text-[20px] lg:font-semibold lg:leading-[140%] lg:tracking-[-0.6px]"
             >
               <span>
                 {
@@ -303,12 +303,12 @@ const ArchiveFolderHeader = ({
                 src="/dropdown.svg"
                 alt=""
                 aria-hidden="true"
-                className={`h-5 w-5 shrink-0 ${isSortOpen ? "scale-[-1]" : ""}`}
+                className={`h-4 w-4 shrink-0 lg:h-5 lg:w-5 ${isSortOpen ? "scale-[-1]" : ""}`}
               />
             </button>
 
             {isSortOpen && (
-              <div className="absolute top-[46px] z-10 w-[147px] overflow-hidden rounded bg-[#24232D] shadow-lg">
+              <div className="absolute right-0 top-[34px] z-10 w-[110px] overflow-hidden rounded bg-[#24232D] shadow-lg lg:left-0 lg:right-auto lg:top-[46px] lg:w-[147px]">
                 <button
                   type="button"
                   onClick={() =>
@@ -316,7 +316,7 @@ const ArchiveFolderHeader = ({
                       "recent",
                     )
                   }
-                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-[10px] py-[8px] text-[13px] text-white transition hover:bg-[#3A3847] lg:px-5 lg:py-3 lg:text-[18px]"
                 >
                   최신순
                 </button>
@@ -328,7 +328,7 @@ const ArchiveFolderHeader = ({
                       "title",
                     )
                   }
-                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-[10px] py-[8px] text-[13px] text-white transition hover:bg-[#3A3847] lg:px-5 lg:py-3 lg:text-[18px]"
                 >
                   이름순
                 </button>
@@ -340,7 +340,7 @@ const ArchiveFolderHeader = ({
                       "oldest",
                     )
                   }
-                  className="w-full px-5 py-3 text-[18px] text-white transition hover:bg-[#3A3847]"
+                  className="w-full px-[10px] py-[8px] text-[13px] text-white transition hover:bg-[#3A3847] lg:px-5 lg:py-3 lg:text-[18px]"
                 >
                   오래된순
                 </button>

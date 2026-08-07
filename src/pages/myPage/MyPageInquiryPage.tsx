@@ -44,10 +44,10 @@ const MyPageInquiryPage = () => {
     contact?.email || DEFAULT_INQUIRY_EMAIL;
 
   return (
-    <main className="min-h-full px-[220px] pb-[120px] pt-[40px]">
+    <main className="min-h-full px-[20px] pb-[150px] pt-[20px] lg:px-[160px] lg:pb-[120px] lg:pt-[40px]">
       <MyPageBackHeader title="1:1 문의" />
 
-      <section className="mt-[50px] flex w-[1000px] max-w-full flex-col gap-[10px] py-[10px]">
+      <section className="mt-[50px] flex w-full flex-col gap-[10px] lg:ml-[53px] lg:w-[640px] lg:gap-[20px]">
         <button
           type="button"
           onClick={handleKakaoClick}

@@ -39,9 +39,9 @@ const Toast = ({
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-[36px] left-1/2 z-[200] box-border flex min-h-[62px] w-max min-w-[768px] -translate-x-1/2 items-center justify-between gap-[10px] whitespace-nowrap rounded-[10px] border border-[#917DEC] bg-[#F5F2FF] px-5 py-4 font-['SUIT'] shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
+      className="fixed bottom-[114px] left-1/2 z-[200] box-border flex min-h-[41px] w-[calc(100%-32px)] max-w-[361px] -translate-x-1/2 items-center justify-between gap-[10px] whitespace-nowrap rounded-[5px] bg-[#F5F2FF] p-[10px] font-['SUIT'] shadow-[0_8px_30px_rgba(0,0,0,0.3)] lg:bottom-[36px] lg:min-h-[62px] lg:w-max lg:max-w-none lg:min-w-[768px] lg:rounded-[10px] lg:border lg:border-[#917DEC] lg:px-5 lg:py-4"
     >
-      <p className="whitespace-nowrap text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#2B2C35]">
+      <p className="min-w-0 truncate whitespace-nowrap text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#2B2C35] lg:text-[20px] lg:font-medium lg:tracking-[-0.6px]">
         {message}
       </p>
 
@@ -49,7 +49,7 @@ const Toast = ({
         <button
           type="button"
           onClick={onAction}
-          className="shrink-0 text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#917DEC] underline transition hover:text-[#8068E2]"
+          className="shrink-0 text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#917DEC] underline transition hover:text-[#8068E2] lg:text-[20px] lg:font-medium lg:tracking-[-0.6px]"
         >
           {actionText}
         </button>

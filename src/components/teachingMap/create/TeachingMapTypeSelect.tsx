@@ -33,7 +33,7 @@ const TeachingMapTypeSelect = ({
   onChange,
 }: TeachingMapTypeSelectProps) => {
   return (
-    <fieldset className="flex flex-col gap-3">
+    <fieldset className="flex flex-col gap-[10px] lg:gap-3">
       <legend className="sr-only">티칭맵 학습 유형</legend>
 
       {TYPE_OPTIONS.map((option) => {
@@ -49,7 +49,7 @@ const TeachingMapTypeSelect = ({
             className="flex items-center text-left"
           >
             <span
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[5px] border transition ${
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-[5px] border p-[5px] transition lg:h-9 lg:w-9 lg:p-0 ${
                 isSelected
                   ? "border-[#917DEC] bg-[#917DEC]"
                   : "border-[#5D5D5D] bg-transparent"
@@ -57,7 +57,7 @@ const TeachingMapTypeSelect = ({
             >
               {isSelected && (
                 <Check
-                  size={26}
+                  size={24}
                   strokeWidth={1.5}
                   className="text-white"
                   aria-hidden="true"
@@ -66,7 +66,7 @@ const TeachingMapTypeSelect = ({
             </span>
 
             <span
-              className={`ml-4 flex h-9 min-w-[110px] items-center justify-center rounded-[5px] px-4 font-['SUIT_Variable'] text-[18px] font-medium leading-[27px] tracking-[-0.54px] ${
+              className={`ml-[5px] flex h-[25px] w-[70px] shrink-0 items-center justify-center rounded-[5px] px-[10px] py-[5px] font-['SUIT_Variable'] text-[10px] font-normal leading-[14px] tracking-[-0.2px] lg:ml-4 lg:h-9 lg:w-auto lg:min-w-[110px] lg:px-4 lg:text-[18px] lg:font-medium lg:leading-[27px] lg:tracking-[-0.54px] ${
                 isSelected
                   ? "bg-[#917DEC] text-white"
                   : "bg-[#917DEC] text-white"
@@ -75,7 +75,7 @@ const TeachingMapTypeSelect = ({
               {option.label}
             </span>
 
-            <span className="ml-3 font-['SUIT_Variable'] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#E8E8E8]">
+            <span className="ml-[5px] whitespace-nowrap font-['SUIT_Variable'] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#F5F2FF] lg:ml-3 lg:text-[18px] lg:leading-[150%] lg:tracking-[-0.54px] lg:text-[#E8E8E8]">
               {option.description}
             </span>
           </button>

@@ -17,7 +17,7 @@ const TrashFolderList = ({
   onOpen,
 }: TrashFolderListProps) => {
   return (
-    <div className="grid grid-cols-3 gap-x-6 gap-y-6">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-6">
       {folders.map((folder) => (
         <TrashFolderCard
           key={folder.id}

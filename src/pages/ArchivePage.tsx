@@ -13,10 +13,10 @@ import {
   type Folder,
   type FolderSort,
 } from "../apis/folder";
-import ArchiveFolderGrid from "../components/archive/ArchiveFolderGrid";
-import ArchiveFolderList from "../components/archive/ArchiveFolderList";
-import ArchiveHeader from "../components/archive/ArchiveHeader";
-import EmptyArchiveSearch from "../components/archive/EmptyFolderSearch";
+import ArchiveFolderGrid from "../components/archive/main/ArchiveFolderGrid";
+import ArchiveFolderList from "../components/archive/main/ArchiveFolderList";
+import ArchiveHeader from "../components/archive/main/ArchiveHeader";
+import EmptyArchiveSearch from "../components/archive/main/EmptyFolderSearch";
 import CreateErrorModal from "../components/archive/modal/CreateErrorModal";
 import CreateFolderModal from "../components/archive/modal/CreateFolderModal";
 import Toast from "../components/common/Toast";
@@ -147,7 +147,8 @@ const ArchivePage = () => {
     filteredFolders.slice(
       (activePage - 1) *
         FOLDERS_PER_PAGE,
-      activePage * FOLDERS_PER_PAGE,
+      activePage *
+        FOLDERS_PER_PAGE,
     );
 
   const handleCreateFolder = async (
@@ -280,7 +281,7 @@ const ArchivePage = () => {
 
   return (
     <>
-      <main className="py-10">
+      <main>
         <PageContainer>
           <ArchiveHeader
             viewMode={viewMode}
@@ -289,21 +290,28 @@ const ArchivePage = () => {
             }
             sort={sort}
             onSortChange={setSort}
-            searchKeyword={searchInput}
+            searchKeyword={
+              searchInput
+            }
             onSearchKeywordChange={
               handleSearchKeywordChange
             }
             onSearch={handleSearch}
+            onAddFolder={() =>
+              setIsCreateModalOpen(
+                true,
+              )
+            }
           />
 
-          <div className="min-h-[540px]">
+          <div className="mt-[30px] lg:mt-0 lg:min-h-[540px]">
             {isLoading ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
+              <div className="flex min-h-[300px] items-center justify-center text-[#D0D0D2] lg:min-h-[540px]">
                 폴더 목록을 불러오는
                 중이에요.
               </div>
             ) : errorMessage ? (
-              <div className="flex min-h-[540px] items-center justify-center text-[#D0D0D2]">
+              <div className="flex min-h-[300px] items-center justify-center text-[#D0D0D2] lg:min-h-[540px]">
                 {errorMessage}
               </div>
             ) : keyword &&
@@ -333,16 +341,24 @@ const ArchivePage = () => {
                 onMoveToTrash={
                   handleMoveToTrash
                 }
+                isSearching={
+                  keyword.length > 0
+                }
               />
             )}
           </div>
 
-          {filteredFolders.length > 0 && (
-            <Pagination
-              currentPage={activePage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+          {filteredFolders.length >
+            0 && (
+            <div className="fixed inset-x-0 bottom-[122px] z-20 [&>nav]:mt-0 lg:static lg:mt-0 lg:[&>nav]:mt-10">
+              <Pagination
+                currentPage={activePage}
+                totalPages={totalPages}
+                onPageChange={
+                  setCurrentPage
+                }
+              />
+            </div>
           )}
         </PageContainer>
       </main>
@@ -352,14 +368,18 @@ const ArchivePage = () => {
           onClose={() =>
             setIsCreateModalOpen(false)
           }
-          onCreate={handleCreateFolder}
+          onCreate={
+            handleCreateFolder
+          }
         />
       )}
 
       {isCreateErrorModalOpen && (
         <CreateErrorModal
           onClose={() =>
-            setIsCreateErrorModalOpen(false)
+            setIsCreateErrorModalOpen(
+              false,
+            )
           }
         />
       )}

@@ -2,7 +2,7 @@ import type { KeyboardEvent } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import FolderPopover from "./popover/FolderPopover";
+import FolderPopover from "../popover/FolderPopover";
 
 type FolderListItemProps = {
   id: number;
@@ -43,24 +43,24 @@ const FolderListItem = ({
       tabIndex={0}
       onClick={handleFolderClick}
       onKeyDown={handleKeyDown}
-      className="flex h-[88px] w-full cursor-pointer items-center border-b border-[#252131] transition hover:bg-white/5"
+      className="flex h-[76px] w-full cursor-pointer items-center border-b border-[#252131] px-0 transition hover:bg-white/5 lg:h-[88px]"
     >
       <img
         src="/folder/folder1.png"
         alt=""
         aria-hidden="true"
-        className="h-[64px] w-[64px]"
+        className="h-[34px] w-[34px] lg:h-[64px] lg:w-[64px]"
       />
 
-      <p className="ml-[22px] w-[360px] truncate text-[24px] font-semibold text-[#BCA7FF]">
+      <p className="ml-5 min-w-0 flex-1 truncate text-[14px] font-normal leading-[21px] tracking-[-0.35px] text-[#BCA7FF] lg:ml-[22px] lg:w-[360px] lg:flex-none lg:text-[24px] lg:font-semibold lg:leading-normal lg:tracking-normal">
         {name}
       </p>
 
-      <p className="ml-[40px] w-[240px] text-[16px] text-white">
+      <p className="ml-3 w-[64px] shrink-0 text-[12px] font-medium leading-[16px] tracking-[-0.3px] text-white lg:ml-[40px] lg:w-[240px] lg:text-[16px] lg:font-normal lg:leading-normal lg:tracking-normal">
         {count}개 항목
       </p>
 
-      <p className="ml-[60px] w-[220px] text-[16px] text-white">
+      <p className="ml-3 w-[75px] shrink-0 text-[12px] font-medium leading-[16px] tracking-[-0.3px] text-white lg:ml-[60px] lg:w-[220px] lg:text-[16px] lg:font-normal lg:leading-normal lg:tracking-normal">
         {date}
       </p>
 
@@ -72,10 +72,10 @@ const FolderListItem = ({
               event.stopPropagation();
             }}
             aria-label={`${name} 폴더 메뉴`}
-            className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF]"
+            className="ml-auto flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 hover:text-[#B79CFF] lg:h-8 lg:w-8"
           >
             <EllipsisVertical
-              size={20}
+              className="h-5 w-5 lg:h-5 lg:w-5"
               strokeWidth={4}
             />
           </button>

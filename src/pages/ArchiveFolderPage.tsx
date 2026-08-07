@@ -25,11 +25,12 @@ import {
 
 import ArchiveDataList, {
   type ArchiveData,
-} from "../components/archive/ArchiveDataList";
-import ArchiveFolderHeader from "../components/archive/ArchiveFolderHeader";
-import EmptyArchiveData from "../components/archive/EmptyArchiveData";
+} from "../components/archive/folder/ArchiveDataList";
+import ArchiveFolderHeader from "../components/archive/folder/ArchiveFolderHeader";
+import EmptyArchiveData from "../components/archive/folder/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import Toast from "../components/common/Toast";
+import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
 
 type SelectMode =
   | "move"
@@ -41,15 +42,6 @@ type FolderOption = {
   name: string;
 };
 
-/**
- * 마지막으로 수행한 자료 작업
- *
- * move:
- * 다른 폴더로 이동
- *
- * trash:
- * 휴지통으로 이동
- */
 type LastAction =
   | {
       type: "move";
@@ -76,9 +68,6 @@ const ArchiveFolderPage = () => {
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
 
-  /**
-   * 현재 폴더의 전체 저장 자료 수
-   */
   const [
     totalMaterialCount,
     setTotalMaterialCount,
@@ -122,9 +111,6 @@ const ArchiveFolderPage = () => {
   const [toastMessage, setToastMessage] =
     useState<string | null>(null);
 
-  /**
-   * 실행취소를 위한 마지막 작업
-   */
   const [lastAction, setLastAction] =
     useState<LastAction | null>(null);
 
@@ -136,9 +122,6 @@ const ArchiveFolderPage = () => {
     selectedItemIds.length ===
       materials.length;
 
-  /**
-   * URL folderId 숫자 변환
-   */
   const getParsedFolderId =
     useCallback(() => {
       if (!folderId) {
@@ -164,9 +147,6 @@ const ArchiveFolderPage = () => {
       return parsedFolderId;
     }, [folderId]);
 
-  /**
-   * 폴더 상세 조회
-   */
   const fetchFolder = useCallback(
     async () => {
       const parsedFolderId =
@@ -179,9 +159,6 @@ const ArchiveFolderPage = () => {
     [getParsedFolderId],
   );
 
-  /**
-   * 폴더 자료 목록 조회
-   */
   const fetchFolderMaterials =
     useCallback(async () => {
       const parsedFolderId =
@@ -203,12 +180,6 @@ const ArchiveFolderPage = () => {
       sort,
     ]);
 
-  /**
-   * 화면 데이터 재조회
-   *
-   * 실행취소 후 서버 데이터와
-   * 화면을 다시 맞출 때 사용
-   */
   const refetchFolderPageData =
     useCallback(async () => {
       const [
@@ -225,7 +196,8 @@ const ArchiveFolderPage = () => {
           (material) => ({
             id: material.materialId,
             tag:
-              material.tags[0] ??
+              material.tags[0]
+                ?.tagName ??
               "기타",
             date:
               material.createdAt.split(
@@ -247,10 +219,6 @@ const ArchiveFolderPage = () => {
         convertedMaterials,
       );
 
-      /**
-       * 검색 중이 아닐 때만
-       * 폴더 전체 자료 수 갱신
-       */
       if (!keyword) {
         setTotalMaterialCount(
           materialsResult.totalElements,
@@ -262,9 +230,6 @@ const ArchiveFolderPage = () => {
       keyword,
     ]);
 
-  /**
-   * 최초 폴더 데이터 조회
-   */
   useEffect(() => {
     let isCancelled = false;
 
@@ -295,7 +260,8 @@ const ArchiveFolderPage = () => {
                 id:
                   material.materialId,
                 tag:
-                  material.tags[0] ??
+                  material.tags[0]
+                    ?.tagName ??
                   "기타",
                 date:
                   material.createdAt.split(
@@ -316,10 +282,6 @@ const ArchiveFolderPage = () => {
             convertedMaterials,
           );
 
-          /**
-           * 검색 중이 아닐 때만
-           * 폴더 전체 자료 수 저장
-           */
           if (!keyword) {
             setTotalMaterialCount(
               materialsResult.totalElements,
@@ -364,12 +326,6 @@ const ArchiveFolderPage = () => {
     keyword,
   ]);
 
-  /**
-   * 토스트 4초 후 닫기
-   *
-   * 실행취소 가능 시간도
-   * 토스트 표시 시간과 동일하게 4초
-   */
   useEffect(() => {
     if (!toastMessage) {
       return;
@@ -726,7 +682,7 @@ const ArchiveFolderPage = () => {
               0,
               prev -
                 trashedMaterialIds.length,
-          ),
+            ),
         );
 
         setSelectMode(null);
@@ -921,8 +877,8 @@ const ArchiveFolderPage = () => {
 
   return (
     <>
-      <main className="py-10">
-        <div className="mx-auto w-[1120px]">
+      <main className="px-[20px] py-[10px] pb-[140px] lg:px-0 lg:py-10 lg:pb-10">
+        <div className="mx-auto w-full lg:w-[1120px]">
           <ArchiveFolderHeader
             folderName={
               folder.folderName
@@ -959,69 +915,29 @@ const ArchiveFolderPage = () => {
 
           {isSelectMode &&
             materials.length > 0 && (
-              <div className="mb-5 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={
+              <div className="mb-5">
+                <TeachingMapDeleteToolbar
+                  selectedCount={
+                    selectedItemIds.length
+                  }
+                  isAllSelected={
+                    isAllSelected
+                  }
+                  actionLabel={
+                    selectMode === "trash"
+                      ? "휴지통으로 이동"
+                      : "이동하기"
+                  }
+                  onToggleSelectAll={
                     handleToggleAll
                   }
-                  className="flex items-center gap-[17px]"
-                >
-                  <span
-                    className={`flex h-7 w-7 items-center justify-center rounded border transition ${
-                      isAllSelected
-                        ? "border-[#917DEC] bg-[#917DEC]"
-                        : "border-[#777482] bg-[#24232D]"
-                    }`}
-                  >
-                    {isAllSelected && (
-                      <span className="text-[18px] leading-none text-white">
-                        ✓
-                      </span>
-                    )}
-                  </span>
-
-                  <span className="font-['42dot_Sans'] text-[20px] font-semibold leading-[150%] tracking-[-0.6px] text-[#917DEC]">
-                    {
-                      selectedItemIds.length
-                    }
-                    개 선택됨
-                  </span>
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={
-                      handleSelectAction
-                    }
-                    disabled={
-                      selectedItemIds.length ===
-                      0
-                    }
-                    className={`flex h-[40px] w-[147px] items-center justify-center rounded font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition ${
-                      selectedItemIds.length >
-                      0
-                        ? "bg-[#917DEC] hover:bg-[#8068E2]"
-                        : "cursor-not-allowed bg-[#42444C]"
-                    }`}
-                  >
-                    {selectMode ===
-                    "trash"
-                      ? "휴지통으로 이동"
-                      : "이동하기"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={
-                      handleCancelSelectMode
-                    }
-                    className="flex h-[40px] w-[147px] items-center justify-center rounded bg-[#42444C] font-['42dot_Sans'] text-[18px] font-semibold leading-[150%] tracking-[-0.6px] text-[#FAFAFA] transition hover:bg-[#50505A]"
-                  >
-                    취소
-                  </button>
-                </div>
+                  onDeleteClick={
+                    handleSelectAction
+                  }
+                  onCancelClick={
+                    handleCancelSelectMode
+                  }
+                />
               </div>
             )}
 
@@ -1052,6 +968,11 @@ const ArchiveFolderPage = () => {
           </div>
         </div>
       </main>
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[94px] bg-[linear-gradient(0deg,#0B0A18_0%,rgba(11,10,24,0)_100%)] lg:hidden"
+      />
 
       {isMoveModalOpen && (
         <MoveDataModal

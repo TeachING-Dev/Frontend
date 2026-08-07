@@ -45,20 +45,20 @@ const MyPageWithdrawalReasonPage = () => {
   };
 
   return (
-    <main className="min-h-full px-[160px] pb-[100px] pt-[40px]">
-      <MyPageBackHeader
-        title="회원 정보 수정"
-        description="탈퇴 사유를 선택해주세요."
-      />
+    <main className="flex min-h-[calc(100dvh-64px)] flex-col px-[20px] pb-[32px] pt-[20px] lg:block lg:min-h-0 lg:px-[160px] lg:pb-[100px] lg:pt-[40px]">
+      <MyPageBackHeader title="탈퇴하기" />
 
-      <section className="mt-[50px]">
+      <section className="mt-[16px] lg:mt-[50px]">
+        <h2 className="mb-[18px] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#D0D0D2] lg:mb-[50px] lg:ml-[53px] lg:text-[24px] lg:font-semibold lg:tracking-[-0.72px] lg:text-[#717379]">
+          탈퇴 사유를 선택해주세요. <span aria-hidden="true">*</span>
+        </h2>
         <WithdrawalReasonList
           selectedReason={selectedReason}
           onChange={handleReasonChange}
         />
 
         {isOtherReasonSelected && (
-          <div className="ml-[54.7px] mt-[27px]">
+          <div className="ml-[35px] mt-[10px] lg:ml-[54.7px] lg:mt-[27px]">
             <WithdrawalOtherInput
               value={otherReason}
               onChange={setOtherReason}
@@ -72,9 +72,9 @@ const MyPageWithdrawalReasonPage = () => {
         disabled={!isNextEnabled}
         onClick={handleNextClick}
         className={[
-          "mx-auto flex h-[60px] w-[640px] items-center justify-center rounded-[5px] p-[10px]",
-          "text-[20px] font-medium leading-[150%] tracking-[-0.6px]",
-          isOtherReasonSelected ? "mt-[262px]" : "mt-[185px]",
+          "mx-auto mt-auto flex h-[48px] w-full items-center justify-center rounded-[5px] p-[10px] lg:h-[60px] lg:w-[640px]",
+          "text-[16px] font-medium leading-[150%] tracking-[-0.4px] lg:text-[20px] lg:tracking-[-0.6px]",
+          isOtherReasonSelected ? "lg:mt-[262px]" : "lg:mt-[185px]",
           isNextEnabled
             ? "bg-[#917DEC] text-[#FAFAFA]"
             : "cursor-default bg-[#1F212A] text-[#717379]",
