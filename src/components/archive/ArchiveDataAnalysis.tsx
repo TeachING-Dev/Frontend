@@ -154,12 +154,18 @@ const ArchiveDataAnalysis = ({
         {isEditing ? (
           <textarea
             value={editedFullAnalysis}
-            onChange={(event) =>
+            onChange={(event) => {
               setEditedFullAnalysis(
                 event.target.value,
-              )
-            }
-            className="min-h-[400px] w-full resize-none bg-transparent text-[20px] font-medium leading-[160%] text-[#A1A1A5] outline-none"
+              );
+
+              event.target.style.height =
+                "auto";
+
+              event.target.style.height =
+                `${event.target.scrollHeight}px`;
+            }}
+            className="min-h-[400px] w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#A1A1A5] outline-none"
           />
         ) : (
           <ReactMarkdown

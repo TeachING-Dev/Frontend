@@ -98,7 +98,7 @@ const AnalysisHeader = ({
                 className={`
                   font-['Montserrat']
                   text-[12px]
-                  font-normal
+                  font-semibold
                   leading-[150%]
                   tracking-[-0.36px]
                   ${

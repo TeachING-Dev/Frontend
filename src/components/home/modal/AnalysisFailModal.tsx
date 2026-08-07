@@ -172,7 +172,7 @@ const AnalysisFailModal = ({
         </div>
 
         {/* 버튼 */}
-        <div className="mt-[40px] flex gap-3">
+        <div className="mt-auto flex gap-3">
           <button
             type="button"
             onClick={
