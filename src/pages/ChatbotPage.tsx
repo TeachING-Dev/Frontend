@@ -624,6 +624,7 @@ const ChatbotPage = () => {
 
   const handleCreateRoomClick = async () => {
     if (chatRooms.length >= chatRoomLimit) {
+      setIsNavOpen(false);
       setIsRoomLimitModalOpen(true);
       return;
     }
@@ -639,6 +640,7 @@ const ChatbotPage = () => {
       setIsNavOpen(false);
     } catch (error) {
       console.error(error);
+      setIsNavOpen(false);
       setIsRoomLimitModalOpen(true);
     }
   };
@@ -657,6 +659,27 @@ const ChatbotPage = () => {
   return (
     <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:-mt-16 max-md:h-screen">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
+
+      {isNavOpen ? (
+        <div
+          aria-hidden="true"
+          className="fixed inset-x-0 bottom-0 z-[110] hidden h-[120px] bg-[#090713] max-md:block"
+        />
+      ) : null}
+
+      <button
+        type="button"
+        aria-label="챗봇 사이드바 열기"
+        onClick={() => setIsNavOpen(true)}
+        className="absolute left-4 top-[70px] z-10 hidden h-9 w-8 max-md:block"
+      >
+        <img
+          src="/logo/logo.png"
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+        />
+      </button>
 
       <ChatSidebar
         isOpen={isNavOpen}

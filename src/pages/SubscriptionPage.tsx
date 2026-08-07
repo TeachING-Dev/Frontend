@@ -5,10 +5,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import {
-  PaymentApiError,
-  readyKakaoPay,
-} from "../apis/payments";
+import { readyKakaoPay } from "../apis/payments";
 import Toast from "../components/common/Toast";
 
 type Feature = {
@@ -52,12 +49,8 @@ const plans: Plan[] = [
 ];
 
 const getPaymentToastMessage = (toast: string | null) => {
-  if (toast === "canceled") {
-    return "결제가 취소되었습니다";
-  }
-
-  if (toast === "failed") {
-    return "결제에 실패했습니다";
+  if (toast === "canceled" || toast === "failed") {
+    return "결제가 취소되었습니다.";
   }
 
   return "";
@@ -103,13 +96,6 @@ const SubscriptionPage = () => {
     };
   }, [searchParams, setSearchParams, toastMessage]);
 
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    window.setTimeout(() => {
-      setToastMessage("");
-    }, 2000);
-  };
-
   const handlePayment = async () => {
     if (isPaymentReadyLoading) {
       return;
@@ -121,21 +107,7 @@ const SubscriptionPage = () => {
       window.location.href = redirectUrl;
     } catch (error) {
       console.error(error);
-
-      if (
-        error instanceof PaymentApiError &&
-        error.status === 409
-      ) {
-        showToast(error.message || "이미 진행 중인 결제가 있습니다");
-        return;
-      }
-
-      if (error instanceof PaymentApiError) {
-        showToast(error.message || "결제에 실패했습니다");
-        return;
-      }
-
-      showToast("결제에 실패했습니다");
+      setToastMessage("결제가 취소되었습니다.");
     } finally {
       setIsPaymentReadyLoading(false);
     }
