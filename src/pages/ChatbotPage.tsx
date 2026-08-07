@@ -663,7 +663,7 @@ const ChatbotPage = () => {
       {isNavOpen ? (
         <div
           aria-hidden="true"
-          className="fixed inset-x-0 bottom-0 z-[110] hidden h-[120px] bg-[#090713] max-md:block"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-[60] hidden h-[120px] bg-[#090713] max-md:block"
         />
       ) : null}
 
@@ -865,7 +865,9 @@ const ChatbotPage = () => {
         <form
           onSubmit={handleSubmit}
           className={`fixed bottom-[50px] left-1/2 flex w-full -translate-x-1/2 justify-center px-[170px] max-md:px-4 ${
-            isSearchFocused
+            isNavOpen
+              ? "max-md:hidden"
+              : isSearchFocused
               ? "max-md:bottom-auto max-md:top-[502.99px]"
               : "max-md:bottom-[110px]"
           }`}
