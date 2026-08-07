@@ -37,7 +37,7 @@ const ArchiveDataAnalysis = ({
       </div>
 
       {/* 상세 분석 내용 */}
-      <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[20px]">
+      <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[30px]">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
