@@ -184,7 +184,7 @@ const handleNotificationClick = async (
                   src={
                     hasUnread
                       ? "/icon/Alarm2.svg"
-                      : "/icon/Alarm.svg"
+                      : "/icon/Alarm3.png"
                   }
                   alt=""
                   className="size-[40px] object-contain"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { ChevronLeft } from "lucide-react";
 import {
   getNotifications,
   readNotification,
@@ -95,9 +95,25 @@ const NotificationPage = () => {
 
   return (
     <section className="mx-auto w-full max-w-[1120px] py-[40px]">
-      <h1 className="mb-[30px] text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#E8E8E8]">
-        알림
-      </h1>
+      {/* 제목 + 뒤로가기 */}
+      <div className="mb-[30px] flex items-center gap-[5px]">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="뒤로가기"
+          className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded transition hover:bg-white/10"
+        >
+          <ChevronLeft
+            size={40}
+            strokeWidth={1}
+            className="text-[#E8E8E8]"
+          />
+        </button>
+
+        <h1 className="text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#E8E8E8]">
+          알림
+        </h1>
+      </div>
 
       <NotificationPageList
         notifications={notifications}
