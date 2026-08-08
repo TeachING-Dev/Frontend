@@ -49,7 +49,7 @@ const AnalysisHeader = ({
   return (
     <header className="mb-[46px] min-w-0">
       {/* 날짜 */}
-      <p className="mb-[6px] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
+      <p className="mb-[6px] text-[18px] font-medium italic leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
         {date}
       </p>
 
@@ -108,7 +108,7 @@ const AnalysisHeader = ({
                   }
                 `}
               >
-                {tag.tagName}
+                #{tag.tagName}
               </span>
 
               <button

@@ -79,7 +79,7 @@ const ArchiveDataHeader = ({
                 event.currentTarget.onerror = null;
                 event.currentTarget.src = fallbackPlatformIcon;
               }}
-              className="h-[32px] w-[32px] rounded-full object-contain"
+              className="h-[40px] w-[40px] rounded-full object-contain"
             />
           </div>
 
