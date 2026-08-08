@@ -269,6 +269,17 @@ const ChatbotPage = () => {
     };
   }, [isSearchFocused]);
 
+  useEffect(() => {
+    document.body.classList.toggle(
+      "chatbot-sidebar-open",
+      isNavOpen,
+    );
+
+    return () => {
+      document.body.classList.remove("chatbot-sidebar-open");
+    };
+  }, [isNavOpen]);
+
   const loadChatRooms = useCallback(async () => {
     try {
       const chatRoomList = await getChatRooms({
