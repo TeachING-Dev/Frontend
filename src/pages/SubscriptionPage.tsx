@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import { readyKakaoPay } from "../apis/payments";
+import { getMyProfile } from "../apis/users";
 import Toast from "../components/common/Toast";
 
 type Feature = {
@@ -68,8 +69,12 @@ const SubscriptionPage = () => {
     ),
   );
   const [isPaymentReadyLoading, setIsPaymentReadyLoading] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
   const selectedMobilePlanData =
     selectedMobilePlan === "plus" ? plans[1] : plans[0];
+  const paymentButtonText = isPremiumUser
+    ? "Teaching Plus 구독 중"
+    : "TeachING Plus로 시작하기";
   const locationState = location.state as
     | { showMyPageBack?: boolean; backTarget?: "mypage" | "chatbot" }
     | null;
@@ -96,8 +101,21 @@ const SubscriptionPage = () => {
     };
   }, [searchParams, setSearchParams, toastMessage]);
 
+  useEffect(() => {
+    const loadSubscriptionStatus = async () => {
+      try {
+        const profile = await getMyProfile();
+        setIsPremiumUser(profile.membershipType === "PREMIUM");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadSubscriptionStatus();
+  }, []);
+
   const handlePayment = async () => {
-    if (isPaymentReadyLoading) {
+    if (isPremiumUser || isPaymentReadyLoading) {
       return;
     }
 
@@ -242,10 +260,10 @@ const SubscriptionPage = () => {
         <button
           type="button"
           onClick={() => void handlePayment()}
-          disabled={isPaymentReadyLoading}
+          disabled={isPremiumUser || isPaymentReadyLoading}
           className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)] disabled:opacity-60"
         >
-          TeachING Plus로 시작하기
+          {paymentButtonText}
         </button>
       </div>
 
@@ -332,10 +350,10 @@ const SubscriptionPage = () => {
             <button
               type="button"
               onClick={() => void handlePayment()}
-              disabled={isPaymentReadyLoading}
+              disabled={isPremiumUser || isPaymentReadyLoading}
               className="mt-[82px] h-14 w-full max-w-[640px] rounded-[5px] border border-[rgba(145,125,236,0)] bg-[#917DEC] font-['SUIT'] text-xl font-normal leading-8 tracking-normal text-violet-50 shadow-[0_0_30px_0_#917DEC] transition hover:bg-[#9b87f0] focus:outline-none disabled:opacity-60"
             >
-              TeachING Plus 로 시작하기
+              {paymentButtonText}
             </button>
           </div>
         </div>
