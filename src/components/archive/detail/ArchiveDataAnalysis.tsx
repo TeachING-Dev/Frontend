@@ -70,7 +70,7 @@ const ArchiveDataAnalysis = ({
     <section className="w-full overflow-hidden rounded-[12px] bg-[#1F212A]">
       {/* 상단 제목 영역 */}
       <div className="flex h-[60px] items-center justify-between px-[20px]">
-        <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
+        <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#FAFAFA]">
           AI 상세 분석
         </h2>
 
@@ -155,17 +155,9 @@ const ArchiveDataAnalysis = ({
           <textarea
             value={editedFullAnalysis}
             onChange={(event) => {
-              setEditedFullAnalysis(
-                event.target.value,
-              );
-
-              event.target.style.height =
-                "auto";
-
-              event.target.style.height =
-                `${event.target.scrollHeight}px`;
+              setEditedFullAnalysis(event.target.value);
             }}
-            className="min-h-[400px] w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#A1A1A5] outline-none"
+            className="field-sizing-content w-full resize-none overflow-hidden bg-transparent text-[20px] font-medium leading-[160%] text-[#A1A1A5] outline-none"
           />
         ) : (
           <ReactMarkdown

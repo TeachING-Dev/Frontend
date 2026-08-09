@@ -1,13 +1,21 @@
-import { useEffect } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 import { X } from "lucide-react";
 
 type AiAnalysisLoadingModalProps = {
   onClose: () => void;
+  isComplete?: boolean;
 };
 
 const AiAnalysisLoadingModal = ({
   onClose,
+  isComplete = false,
 }: AiAnalysisLoadingModalProps) => {
+  const [progress, setProgress] =
+    useState(0);
+
   useEffect(() => {
     const handleKeyDown = (
       event: KeyboardEvent,
@@ -29,6 +37,34 @@ const AiAnalysisLoadingModal = ({
       );
     };
   }, [onClose]);
+  
+  useEffect(() => {
+  const timer = setInterval(() => {
+    setProgress((prev) => {
+      if (isComplete) {
+        return 100;
+      }
+
+      if (prev >= 99) {
+        return 99;
+      }
+
+      if (prev < 50) {
+        return Math.min(prev + 3, 99);
+      }
+
+      if (prev < 80) {
+        return Math.min(prev + 2, 99);
+      }
+
+      return Math.min(prev + 1, 99);
+    });
+  }, 300);
+
+  return () => {
+    clearInterval(timer);
+  };
+}, [isComplete]);
 
   return (
     <div
@@ -97,14 +133,13 @@ const AiAnalysisLoadingModal = ({
 
         {/* 별 + 로딩 바 */}
         <div className="relative mt-[24px] pt-[65px]">
-          {/* 움직이는 별 */}
+          {/* 진행률을 따라가는 별 */}
           <div
             className="
               absolute
               inset-x-[15px]
               top-0
-              h-[52px]
-              overflow-hidden
+              h-[54px]
             "
           >
             <img
@@ -113,13 +148,19 @@ const AiAnalysisLoadingModal = ({
               aria-hidden="true"
               className="
                 absolute
-                left-0
                 top-0
                 h-[54px]
                 w-[54px]
                 object-contain
-                animate-[analysis-star_2s_ease-in-out_infinite_alternate]
+                transition-[left]
+                duration-300
+                ease-out
               "
+              style={{
+                left: `calc(${progress}% - ${
+                  progress * 0.54
+                }px)`,
+              }}
             />
           </div>
 
@@ -137,12 +178,16 @@ const AiAnalysisLoadingModal = ({
             <div
               className="
                 h-full
-                w-1/3
                 rounded-full
                 bg-[#917DEC]
                 shadow-[0_0_8px_rgba(145,125,236,0.8)]
-                animate-[analysis-progress_1.5s_ease-in-out_infinite]
+                transition-[width]
+                duration-300
+                ease-out
               "
+              style={{
+                width: `${progress}%`,
+              }}
             />
           </div>
         </div>
@@ -164,32 +209,6 @@ const AiAnalysisLoadingModal = ({
           잠시만 기다려주세요.
         </p>
       </div>
-
-      <style>
-        {`
-          @keyframes analysis-star {
-            0% {
-              left: 0%;
-              transform: translateX(0);
-            }
-
-            100% {
-              left: 100%;
-              transform: translateX(-100%);
-            }
-          }
-
-          @keyframes analysis-progress {
-            0% {
-              transform: translateX(-100%);
-            }
-
-            100% {
-              transform: translateX(300%);
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };

@@ -79,7 +79,7 @@ const MoveDataModal = ({
         <div className="mb-[20px] flex items-center justify-between">
           <h2
             id="move-data-modal-title"
-            className="px-[8px] font-['42dot_Sans'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#E8E8E8]"
+            className="font-['42dot_Sans'] text-[24px] font-semibold leading-[150%] tracking-[-0.72px] text-[#E8E8E8]"
           >
             폴더 이동
           </h2>
@@ -88,7 +88,7 @@ const MoveDataModal = ({
             type="button"
             onClick={onClose}
             aria-label="모달 닫기"
-            className="mr-[8px] flex h-9 w-9 items-center justify-center rounded text-white transition hover:bg-white/10"
+            className="flex h-9 w-9 items-center justify-center rounded text-white transition hover:bg-white/10"
           >
             <X size={30} strokeWidth={2.4} />
           </button>
@@ -112,14 +112,16 @@ const MoveDataModal = ({
                 className="h-[18px] w-[18px] shrink-0 object-contain"
               />
 
-              <span className="font-['ABeeZee'] text-[18px] italic text-[#66666D]">
+              <span className="font-['ABeeZee'] text-[18px] text-[#66666D]">
                 {selectedFolder.name}
               </span>
             </span>
 
-            <span
+            <img
+              src="/icon/dropdown.png"
+              alt=""
               aria-hidden="true"
-              className={`h-0 w-0 shrink-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-[#66666D] ${
+              className={`h-[24px] w-[24px] shrink-0 object-contain transition-transform ${
                 isDropdownOpen ? "rotate-180" : ""
               }`}
             />
@@ -151,7 +153,7 @@ const MoveDataModal = ({
                       className="h-[18px] w-[18px] shrink-0 object-contain"
                     />
 
-                    <span className="font-['ABeeZee'] text-[18px] italic text-[#66666D]">
+                    <span className="font-['ABeeZee'] text-[18px] text-[#66666D]">
                       {folder.name}
                     </span>
                   </button>
@@ -166,10 +168,10 @@ const MoveDataModal = ({
           type="button"
           onClick={handleMove}
           disabled={selectedFolderId === currentFolderId}
-          className={`flex h-[36px] w-full items-center justify-center font-['ABeeZee'] text-[16px] font-normal leading-[150%] tracking-[-0.48px] text-[#FFF] transition ${
+          className={`flex h-[36px] w-full items-center justify-center text-[16px] font-normal leading-[150%] tracking-[-0.48px] transition ${
             selectedFolderId === currentFolderId
-              ? "cursor-not-allowed rounded-[8px] bg-[#42444C]"
-              : "rounded-[8px] bg-[#917DEC] hover:bg-[#917DEC]"
+              ? "cursor-not-allowed rounded-[8px] bg-[#2B2C35] text-[#42444C]"
+              : "rounded-[8px] bg-[#917DEC] hover:bg-[#917DEC] text-[#FFF]"
           }`}
         >
           이동

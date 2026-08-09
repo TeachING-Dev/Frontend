@@ -11,7 +11,6 @@ import {
   moveMaterialsToTrash,
   type AnalyzeMaterialResult,
 } from "../../apis/material";
-
 import Toast from "../common/Toast";
 import AiAnalysisModal from "./modal/AiAnalysisModal";
 import AnalysisFailModal, {
@@ -33,6 +32,11 @@ const HomeHeader = () => {
   const [
     isAnalysisModalOpen,
     setIsAnalysisModalOpen,
+  ] = useState(false);
+
+  const [
+    isAnalysisComplete,
+    setIsAnalysisComplete,
   ] = useState(false);
 
   const [
@@ -129,6 +133,7 @@ const HomeHeader = () => {
     setExistingAnalysisResult(null);
     setIsDuplicateModalOpen(false);
 
+    setIsAnalysisComplete(false);
     setIsAnalysisModalOpen(true);
     setIsAnalyzing(true);
 
@@ -144,13 +149,20 @@ const HomeHeader = () => {
         result,
       );
 
+      setIsAnalysisComplete(true);
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 400),
+      );
+
       setIsAnalysisModalOpen(
         false,
       );
 
       /*
        * 이미 분석된 자료인 경우
-       * → DuplicateKnowledgeModal 표시
+       *
+       * DuplicateKnowledgeModal 표시
        */
       if (
         result.resultType ===
@@ -266,6 +278,8 @@ const HomeHeader = () => {
         false,
       );
 
+      setAnalysisFailType(null);
+
       setExistingAnalysisResult(
         null,
       );
@@ -277,8 +291,8 @@ const HomeHeader = () => {
 
   /*
    * 이미 분석된 자료
-   * → 기존 자료 휴지통 이동
    * → 같은 URL 새로 분석
+   * → 재분석 성공 후 기존 자료 휴지통 이동
    */
   const handleForceAnalyze =
     async () => {
@@ -290,6 +304,10 @@ const HomeHeader = () => {
       ) {
         setIsDuplicateModalOpen(
           false,
+        );
+
+        setAnalysisFailType(
+          null,
         );
 
         showInvalidUrlToast();
@@ -350,6 +368,12 @@ const HomeHeader = () => {
         false,
       );
 
+      setAnalysisFailType(
+        null,
+      );
+
+      setIsAnalysisComplete(false);
+
       setIsAnalysisModalOpen(
         true,
       );
@@ -397,10 +421,6 @@ const HomeHeader = () => {
           result,
         );
 
-        setIsAnalysisModalOpen(
-          false,
-        );
-
         /*
          * 강제 재분석 결과의
          * materialId 확인
@@ -410,6 +430,11 @@ const HomeHeader = () => {
         ) {
           console.error(
             "강제 재분석 결과의 materialId가 없습니다.",
+            result,
+          );
+
+          setIsAnalysisModalOpen(
+            false,
           );
 
           setAnalysisFailType(
@@ -418,6 +443,16 @@ const HomeHeader = () => {
 
           return;
         }
+
+        setIsAnalysisComplete(true);
+
+        await new Promise((resolve) =>
+          setTimeout(resolve, 400),
+        );
+
+        setIsAnalysisModalOpen(
+          false,
+        );
 
         setExistingAnalysisResult(
           null,
@@ -443,7 +478,7 @@ const HomeHeader = () => {
         );
       } catch (error) {
         console.error(
-          "기존 자료 휴지통 이동 또는 URL 재분석 실패:",
+          "URL 재분석 또는 기존 자료 휴지통 이동 실패:",
           error,
         );
 
@@ -640,6 +675,9 @@ const HomeHeader = () => {
 
       {isAnalysisModalOpen && (
         <AiAnalysisModal
+          isComplete={
+            isAnalysisComplete
+          }
           onClose={() =>
             setIsAnalysisModalOpen(
               false,
@@ -649,22 +687,24 @@ const HomeHeader = () => {
       )}
 
       {isDuplicateModalOpen && (
-  <DuplicateKnowledgeModal
-    onClose={() => {
-      setIsDuplicateModalOpen(false);
+        <DuplicateKnowledgeModal
+          onClose={() => {
+            setIsDuplicateModalOpen(
+              false,
+            );
 
-      setExistingAnalysisResult(
-        null,
-      );
-    }}
-    onViewKnowledge={
-      handleViewExisting
-    }
-    onAnalyzeAgain={() => {
-      void handleForceAnalyze();
-    }}
-  />
-)}
+            setExistingAnalysisResult(
+              null,
+            );
+          }}
+          onViewKnowledge={
+            handleViewExisting
+          }
+          onAnalyzeAgain={() => {
+            void handleForceAnalyze();
+          }}
+        />
+      )}
 
       {analysisFailType && (
         <AnalysisFailModal
@@ -673,6 +713,10 @@ const HomeHeader = () => {
           }
           onClose={() => {
             setAnalysisFailType(
+              null,
+            );
+
+            setExistingAnalysisResult(
               null,
             );
           }}

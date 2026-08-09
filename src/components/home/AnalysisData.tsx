@@ -20,52 +20,64 @@ const AnalysisDetail = ({
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            p: ({ children }) => (
-              <p className="whitespace-pre-wrap break-words text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
-                {children}
-              </p>
-            ),
-
             h1: ({ children }) => (
-              <h1 className="whitespace-pre-wrap break-words text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <h1 className="mb-[16px] mt-[24px] font-['SUIT_Variable'] text-[24px] font-bold leading-[160%] text-[#D0D0D2] first:mt-0">
                 {children}
               </h1>
             ),
 
             h2: ({ children }) => (
-              <h2 className="whitespace-pre-wrap break-words text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <h2 className="mb-[12px] mt-[24px] font-['SUIT_Variable'] text-[22px] font-bold leading-[160%] text-[#D0D0D2] first:mt-0">
                 {children}
               </h2>
             ),
 
             h3: ({ children }) => (
-              <h3 className="whitespace-pre-wrap break-words text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <h3 className="mb-[10px] mt-[20px] font-['SUIT_Variable'] text-[20px] font-semibold leading-[160%] text-[#D0D0D2] first:mt-0">
                 {children}
               </h3>
             ),
 
+            p: ({ children }) => (
+              <p className="mb-[12px] text-[20px] font-medium leading-[160%] text-[#A1A1A5] last:mb-0">
+                {children}
+              </p>
+            ),
+
+            strong: ({ children }) => (
+              <strong className="font-bold text-[#D0D0D2]">
+                {children}
+              </strong>
+            ),
+
             ul: ({ children }) => (
-              <ul className="list-disc pl-[20px] text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <ul className="mb-[16px] list-disc space-y-[8px] pl-[28px] text-[#A1A1A5]">
                 {children}
               </ul>
             ),
 
             ol: ({ children }) => (
-              <ol className="list-decimal pl-[20px] text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <ol className="mb-[16px] list-decimal space-y-[8px] pl-[28px] text-[#A1A1A5]">
                 {children}
               </ol>
             ),
 
             li: ({ children }) => (
-              <li className="text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#717379]">
+              <li className="text-[20px] font-medium leading-[160%]">
                 {children}
               </li>
             ),
 
-            strong: ({ children }) => (
-              <strong className="font-semibold">
+            blockquote: ({ children }) => (
+              <blockquote className="my-[16px] border-l-[3px] border-[#917DEC] pl-[16px] text-[#A1A1A5]">
                 {children}
-              </strong>
+              </blockquote>
+            ),
+
+            code: ({ children }) => (
+              <code className="rounded-[4px] bg-[#2B2C35] px-[6px] py-[2px] text-[18px] text-[#D9CDFF]">
+                {children}
+              </code>
             ),
           }}
         >
