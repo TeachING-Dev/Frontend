@@ -22,6 +22,7 @@ export interface MyProfile {
   userId: number;
   email: string;
   nickname: string;
+  membershipType?: string;
   birthDate: string | null;
   profileImageUrl: string;
   notificationEnabled: boolean;
