@@ -281,7 +281,13 @@ const SubscriptionPage = () => {
                     </p>
                   </div>
 
-                  <div className="relative w-[540px] rounded-[10px] bg-gradient-to-r from-[#FFFFFF]/20 to-[#4E4E4E]/30 p-[1px]">
+                  <div
+                    className={`relative w-[540px] rounded-[10px] ${
+                      plan.price
+                        ? "border-2 border-[#917DEC]"
+                        : "bg-gradient-to-r from-[#FFFFFF]/20 to-[#4E4E4E]/30 p-[1px]"
+                    }`}
+                  >
                     <div className="relative flex h-72 w-full flex-col rounded-[9px] bg-[#13151F] p-5 text-left">
                       <h2 className="mb-10 text-center font-['SUIT'] text-[18px] font-normal leading-7 tracking-normal text-violet-200">
                         {plan.price ? "추천 플랜" : "현재 플랜"}

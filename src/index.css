@@ -83,7 +83,8 @@ body,
 }
 
 @media (max-width: 767px) {
-  body.chatbot-search-focused [data-mobile-nav="true"] {
+  body.chatbot-search-focused [data-mobile-nav="true"],
+  body.chatbot-sidebar-open [data-mobile-nav="true"] {
     display: none;
   }
 }
