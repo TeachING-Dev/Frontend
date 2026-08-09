@@ -23,6 +23,7 @@ import MyPageWithdrawalConfirmPage from "./pages/myPage/MyPageWithdrawalConfirmP
 import MyPageWithdrawalReasonPage from "./pages/myPage/MyPageWithdrawalReasonPage";
 import NotificationPage from "./pages/NotificationPage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
+import PaymentCallbackPage from "./pages/PaymentCallbackPage";
 import SignupCompletePage from "./pages/SignupCompletePage";
 import SignupPage from "./pages/SignupPage";
 import SubscriptionCompletePage from "./pages/SubscriptionCompletePage";
@@ -54,6 +55,22 @@ function App() {
         <Route
           path="/login/oauth2/code/:provider"
           element={<OAuthCallbackPage />}
+        />
+
+        <Route path="/success" element={<PaymentCallbackPage />} />
+        <Route path="/cancel" element={<PaymentCallbackPage />} />
+        <Route path="/fail" element={<PaymentCallbackPage />} />
+        <Route
+          path="/api/v1/payments/success"
+          element={<PaymentCallbackPage />}
+        />
+        <Route
+          path="/api/v1/payments/cancel"
+          element={<PaymentCallbackPage />}
+        />
+        <Route
+          path="/api/v1/payments/fail"
+          element={<PaymentCallbackPage />}
         />
 
         <Route element={<RequireAuth />}>
