@@ -8,6 +8,7 @@ import {
 import { readyKakaoPay } from "../apis/payments";
 import { getMyProfile } from "../apis/users";
 import Toast from "../components/common/Toast";
+import { isSubscriptionActive } from "../utils/subscription";
 
 type Feature = {
   label: string;
@@ -69,7 +70,7 @@ const SubscriptionPage = () => {
     ),
   );
   const [isPaymentReadyLoading, setIsPaymentReadyLoading] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(isSubscriptionActive);
   const selectedMobilePlanData =
     selectedMobilePlan === "plus" ? plans[1] : plans[0];
   const paymentButtonText = isPremiumUser
@@ -105,7 +106,10 @@ const SubscriptionPage = () => {
     const loadSubscriptionStatus = async () => {
       try {
         const profile = await getMyProfile();
-        setIsPremiumUser(profile.membershipType === "PREMIUM");
+        setIsPremiumUser(
+          isSubscriptionActive() ||
+            profile.membershipType === "PREMIUM",
+        );
       } catch (error) {
         console.error(error);
       }
@@ -261,7 +265,7 @@ const SubscriptionPage = () => {
           type="button"
           onClick={() => void handlePayment()}
           disabled={isPremiumUser || isPaymentReadyLoading}
-          className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)] disabled:opacity-60"
+          className="h-12 w-[361px] rounded-[5px] bg-[#917DEC] font-['SUIT'] text-[16px] font-normal leading-[150%] text-[#F4F1FF] shadow-[0_0_50px_0_rgba(145,125,236,0.50)] disabled:cursor-default"
         >
           {paymentButtonText}
         </button>
@@ -351,7 +355,7 @@ const SubscriptionPage = () => {
               type="button"
               onClick={() => void handlePayment()}
               disabled={isPremiumUser || isPaymentReadyLoading}
-              className="mt-[82px] h-14 w-full max-w-[640px] rounded-[5px] border border-[rgba(145,125,236,0)] bg-[#917DEC] font-['SUIT'] text-xl font-normal leading-8 tracking-normal text-violet-50 shadow-[0_0_30px_0_#917DEC] transition hover:bg-[#9b87f0] focus:outline-none disabled:opacity-60"
+              className="mt-[82px] h-14 w-full max-w-[640px] rounded-[5px] border border-[rgba(145,125,236,0)] bg-[#917DEC] font-['SUIT'] text-xl font-normal leading-8 tracking-normal text-violet-50 shadow-[0_0_30px_0_#917DEC] transition hover:bg-[#9b87f0] focus:outline-none disabled:cursor-default"
             >
               {paymentButtonText}
             </button>
