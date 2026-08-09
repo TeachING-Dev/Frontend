@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AuthPageLayout from "../components/auth/AuthPageLayout";
 import PrimaryButton from "../components/common/PrimaryButton";
+import { activateSubscription } from "../utils/subscription";
 
 const SubscriptionCompletePage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    activateSubscription();
+  }, []);
 
   return (
     <AuthPageLayout contentClassName="items-center">
