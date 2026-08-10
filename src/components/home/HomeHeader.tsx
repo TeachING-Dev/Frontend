@@ -70,6 +70,9 @@ const HomeHeader = () => {
       ReturnType<typeof setTimeout> | null
     >(null);
 
+  const analysisFormRef =
+    useRef<HTMLFormElement | null>(null);
+
   const isValidUrl = (
     value: string,
   ) => {
@@ -545,6 +548,7 @@ const HomeHeader = () => {
         </p>
 
         <form
+          ref={analysisFormRef}
           onSubmit={
             handleSubmit
           }
@@ -734,9 +738,13 @@ const HomeHeader = () => {
                 "로그인",
               );
             } else {
-              console.log(
-                "다시 시도하기",
+              setAnalysisFailType(
+                null,
               );
+
+              analysisFormRef.current?.requestSubmit();
+
+              return;
             }
 
             setAnalysisFailType(

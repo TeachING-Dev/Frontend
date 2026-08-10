@@ -31,8 +31,15 @@ const platformIconMap: Record<string, string> = {
 
 const normalizeImageUrl = (imageUrl?: string) => {
   if (!imageUrl) return undefined;
-  if (imageUrl.startsWith("http") || imageUrl.startsWith("/")) return imageUrl;
-  return `/icon/${imageUrl}`;
+
+  const markdownLinkMatch = imageUrl.match(/\((https?:\/\/[^)]+)\)/);
+  const normalizedUrl = markdownLinkMatch?.[1] ?? imageUrl;
+
+  if (normalizedUrl.startsWith("http") || normalizedUrl.startsWith("/")) {
+    return normalizedUrl;
+  }
+
+  return `/icon/${normalizedUrl}`;
 };
 
 const MaterialCard = ({

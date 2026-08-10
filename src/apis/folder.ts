@@ -149,6 +149,7 @@ export type FolderMaterial = {
   summary: string;
   originalUrl: string;
   platformType: string;
+  platformImageUrl?: string;
   tags: FolderMaterialTag[];
   statusAi: string;
   createdAt: string;
