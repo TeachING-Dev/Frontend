@@ -9,6 +9,7 @@ import { withdrawMe } from "../../apis/users";
 import MyPageBackHeader from "../../components/myPage/MyPageBackHeader";
 import WithdrawalConfirmField from "../../components/myPage/WithdrawalConfirmField";
 import { clearTokens } from "../../utils/authToken";
+import { clearSubscriptionStatus } from "../../utils/subscription";
 
 const WITHDRAWAL_REASON_MAP = {
   rejoin: "REJOIN",
@@ -69,12 +70,14 @@ const MyPageWithdrawalConfirmPage = () => {
         reasonDetail,
         isConfirmed,
       });
+      clearSubscriptionStatus();
       clearTokens();
       try {
         await logout();
       } catch {
         // 탈퇴 후 세션 정리는 실패해도 로컬 토큰 삭제와 완료 이동은 진행합니다.
       }
+      clearSubscriptionStatus();
       clearTokens();
       navigate("/mypage/withdrawal-complete", {
         replace: true,

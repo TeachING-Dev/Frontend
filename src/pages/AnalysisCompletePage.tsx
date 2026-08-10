@@ -56,7 +56,12 @@ const AnalysisCompletePage = () => {
 
   const materialId =
     state?.materialId ??
-    analysisResult?.materialId;
+    analysisResult?.materialId ??
+    (analysisResult?.resultType ===
+      "ALREADY_ANALYZED" &&
+    analysisResult.existingFolderId == null
+      ? analysisResult.existingMaterialId
+      : null);
 
   const originalUrl =
     state?.originalUrl ??
