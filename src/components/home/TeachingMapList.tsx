@@ -32,6 +32,7 @@ const TeachingMapList = ({
           sourcePlatforms={
             teachingMap.sourcePlatforms
           }
+          extraCount={teachingMap.extraCount}
           onClick={() =>
             navigate(
               `/teaching-map/${teachingMap.teachingMapId}`,

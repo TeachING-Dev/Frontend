@@ -69,7 +69,7 @@ const TeachingMapAnalysisPanel = ({
   };
 
   return (
-    <aside className={mobile ? "w-full bg-[#090713]" : "flex h-full w-[535px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]"}>
+    <aside className={mobile ? "w-full bg-[#090713]" : "flex h-full w-[635px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]"}>
       <div className={mobile ? "px-[16px] pb-[40px] pt-[20px]" : "flex min-h-full flex-col px-[24px] pb-[32px] pt-[20px]"}>
         <div className={mobile ? "hidden" : "flex items-center justify-between"}>
           <h2 className="text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#F5F2FF]">

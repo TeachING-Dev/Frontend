@@ -1,3 +1,5 @@
+import SourceImage from "../common/SourceImage";
+
 type SourcePlatform = {
   type: string;
   imageUrl: string;
@@ -7,6 +9,7 @@ type TeachingMapItemProps = {
   title: string;
   description: string;
   sourcePlatforms: SourcePlatform[];
+  extraCount?: number;
   onClick?: () => void;
   onShortcutClick?: () => void;
 };
@@ -15,9 +18,19 @@ const TeachingMapItem = ({
   title,
   description,
   sourcePlatforms,
+  extraCount = 0,
   onClick,
   onShortcutClick,
 }: TeachingMapItemProps) => {
+  const visibleThumbnails = sourcePlatforms
+    .map((platform) => platform.imageUrl)
+    .slice(0, 3);
+  const extraThumbnailCount = Math.max(
+    extraCount,
+    sourcePlatforms.length - visibleThumbnails.length,
+    0,
+  );
+
   const handleShortcutClick = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -32,15 +45,26 @@ const TeachingMapItem = ({
     >
       {/* 썸네일 */}
       <div className="flex h-[38px] w-[60px] shrink-0 items-center justify-center gap-[4px] rounded-[6px] bg-[#1F212A] p-[6px] md:h-[60px] md:w-[98px] md:gap-[6px] md:rounded-[10px] md:p-[10px]">
-        {sourcePlatforms.map(
-          (platform) => (
-            <img
-              key={platform.type}
-              src={platform.imageUrl}
-              alt={platform.type}
-              className="min-w-0 flex-1 object-contain"
-            />
-          ),
+        {visibleThumbnails.length > 0 && (
+          <div className="relative flex items-center">
+            {visibleThumbnails.map((source, index) => (
+              <SourceImage
+                key={`${source}-${index}`}
+                src={source}
+                alt=""
+                className={[
+                  "relative h-[16.25px] w-[16.25px] rounded-full object-contain lg:h-9 lg:w-9",
+                  index === 0 ? "" : "-ml-[5px] lg:-ml-3",
+                ].join(" ")}
+                style={{ zIndex: visibleThumbnails.length - index }}
+              />
+            ))}
+            {extraThumbnailCount > 0 && (
+              <span className="relative z-0 -ml-[5px] flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-9 lg:min-w-9 lg:px-1 lg:text-[14px]">
+                +{extraThumbnailCount}
+              </span>
+            )}
+          </div>
         )}
       </div>
 

@@ -25,6 +25,7 @@ export type ActiveTeachingMap = {
   currentSteps: number;
   totalSteps: number;
   sourcePlatforms: SourcePlatform[];
+  extraCount?: number;
   createdAt: string;
 };
 

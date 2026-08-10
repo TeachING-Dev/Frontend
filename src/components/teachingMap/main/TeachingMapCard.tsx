@@ -108,7 +108,7 @@ const TeachingMapCard = ({
       ].join(" ")}
     >
       <div className="flex min-w-0 shrink-0 items-start gap-[5px] lg:gap-[10px]">
-        <div className="flex h-[35px] w-[45px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-[#1F212A] p-[4.5px] lg:h-[60px] lg:w-[98px] lg:rounded-[10px] lg:p-[10px]">
+        <div className="flex h-[35px] w-[45px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-[#1F212A] p-[4.5px] lg:h-[60px] lg:w-[110px] lg:rounded-[10px] lg:p-[10px]">
           {visibleThumbnails && visibleThumbnails.length > 0 ? (
             <div className="relative flex items-center">
               {visibleThumbnails.map((source, index) => (
@@ -118,13 +118,13 @@ const TeachingMapCard = ({
                   alt=""
                   className={[
                     "relative h-[16.25px] w-[16.25px] rounded-full object-contain lg:h-9 lg:w-9",
-                    index === 0 ? "" : "-ml-[5px] lg:-ml-3",
+                    index === 0 ? "" : "-ml-[5px] lg:-ml-4",
                   ].join(" ")}
                   style={{ zIndex: visibleThumbnails.length - index }}
                 />
               ))}
               {extraThumbnailCount > 0 && (
-                <span className="relative z-0 -ml-[5px] flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-9 lg:min-w-9 lg:px-1 lg:text-[14px]">
+                <span className="relative z-50 -ml-[5px] translate-y-[3px] flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-[28px] lg:min-w-[28px] lg:translate-y-[6px] lg:text-[12px]">
                   +{extraThumbnailCount}
                 </span>
               )}

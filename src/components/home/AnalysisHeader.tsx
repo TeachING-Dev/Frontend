@@ -130,7 +130,7 @@ const AnalysisHeader = ({
                   shrink-0
                   items-center
                   justify-center
-                  text-[16px]
+                  text-[20px]
                   leading-none
                   transition-opacity
                   hover:opacity-70

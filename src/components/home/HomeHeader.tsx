@@ -171,12 +171,52 @@ const HomeHeader = () => {
         result.resultType ===
         "ALREADY_ANALYZED"
       ) {
-        setExistingAnalysisResult(
-          result,
-        );
+        if (
+          result.existingFolderId != null
+        ) {
+          setExistingAnalysisResult(
+            result,
+          );
 
-        setIsDuplicateModalOpen(
-          true,
+          setIsDuplicateModalOpen(
+            true,
+          );
+
+          return;
+        }
+
+        if (
+          result.existingMaterialId == null
+        ) {
+          console.error(
+            "저장되지 않은 기존 분석 결과에 existingMaterialId가 없습니다.",
+            result,
+          );
+
+          setAnalysisFailType(
+            "analysisFailed",
+          );
+
+          return;
+        }
+
+        navigate(
+          "/analysis/complete",
+          {
+            state: {
+              originalUrl:
+                result.originalUrl ||
+                trimmedUrl,
+
+              materialId:
+                result.existingMaterialId,
+
+              materialAnalysisId:
+                result.materialAnalysisId,
+
+              result,
+            },
+          },
         );
 
         return;
