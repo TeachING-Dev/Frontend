@@ -13,6 +13,7 @@ interface MarkdownContentProps {
   highlights?: MarkdownHighlight[];
   onHighlightClick?: (highlightId: number) => void;
   className?: string;
+  imageClassName?: string;
 }
 
 const MarkdownContent = ({
@@ -20,6 +21,7 @@ const MarkdownContent = ({
   highlights = [],
   onHighlightClick,
   className = "",
+  imageClassName = "",
 }: MarkdownContentProps) => {
   const renderText = (value: string): ReactNode => {
     if (highlights.length === 0) return value;
@@ -93,6 +95,7 @@ const MarkdownContent = ({
         del: ({ children, ...props }) => <del {...props}>{renderChildren(children)}</del>,
         a: ({ children, ...props }) => <a className="text-[#A99AF2] underline underline-offset-2" target="_blank" rel="noreferrer" {...props}>{renderChildren(children)}</a>,
         code: ({ ...props }) => <code className="rounded bg-[#242630] px-[5px] py-[2px] text-[#F5F2FF]" {...props} />,
+        img: ({ ...props }) => <img className={imageClassName} {...props} />,
         hr: ({ ...props }) => <hr className="border-[#42444C]" {...props} />,
         table: ({ ...props }) => <div className="overflow-x-auto"><table className="w-full border-collapse" {...props} /></div>,
         th: ({ ...props }) => <th className="border border-[#42444C] bg-[#242630] px-[10px] py-[8px] text-left" {...props} />,
