@@ -68,8 +68,7 @@ const AnalysisCompletePage = () => {
     "AI가 분석한 내용을 요약해드릴게요.";
 
   const fullAnalysis =
-    analysisResult?.fullAnalysis ??
-    "";
+    analysisResult?.fullAnalysis ?? "";
 
   const [folders, setFolders] =
     useState<FolderOption[]>([]);
@@ -78,8 +77,7 @@ const AnalysisCompletePage = () => {
     selectedFolderId,
     setSelectedFolderId,
   ] = useState(
-    analysisResult?.recommendedFolderId ??
-      0,
+    analysisResult?.recommendedFolderId ?? 0,
   );
 
   const [
@@ -116,25 +114,21 @@ const AnalysisCompletePage = () => {
           await getFolders("recent");
 
         const mappedFolders: FolderOption[] =
-          folderData.map(
-            (folder) => ({
-              id: folder.folderId,
-              name: folder.folderName,
-            }),
-          );
+          folderData.map((folder) => ({
+            id: folder.folderId,
+            name: folder.folderName,
+          }));
 
         setFolders(mappedFolders);
 
         const recommendedFolderId =
-          analysisResult
-            ?.recommendedFolderId;
+          analysisResult?.recommendedFolderId;
 
         const hasRecommendedFolder =
           recommendedFolderId != null &&
           mappedFolders.some(
             (folder) =>
-              folder.id ===
-              recommendedFolderId,
+              folder.id === recommendedFolderId,
           );
 
         if (
@@ -163,24 +157,18 @@ const AnalysisCompletePage = () => {
 
     fetchFolders();
   }, [
-    analysisResult
-      ?.recommendedFolderId,
+    analysisResult?.recommendedFolderId,
   ]);
 
-  const handleOpenCreateFolder =
-    () => {
-      if (folders.length >= 6) {
-        setIsFolderLimitModalOpen(
-          true,
-        );
+  const handleOpenCreateFolder = () => {
+    if (folders.length >= 6) {
+      setIsFolderLimitModalOpen(true);
 
-        return;
-      }
+      return;
+    }
 
-      setIsCreateFolderModalOpen(
-        true,
-      );
-    };
+    setIsCreateFolderModalOpen(true);
+  };
 
   const handleCreateFolder = async (
     folderName: string,
@@ -203,9 +191,7 @@ const AnalysisCompletePage = () => {
         createdFolder.folderId,
       );
 
-      setIsCreateFolderModalOpen(
-        false,
-      );
+      setIsCreateFolderModalOpen(false);
     } catch (error) {
       console.error(
         "폴더 생성 실패:",
@@ -228,9 +214,7 @@ const AnalysisCompletePage = () => {
             false,
           );
 
-          setIsFolderLimitModalOpen(
-            true,
-          );
+          setIsFolderLimitModalOpen(true);
 
           return;
         }
@@ -279,10 +263,8 @@ const AnalysisCompletePage = () => {
         await finalizeMaterial(
           materialId,
           {
-            folderId:
-              selectedFolderId,
-            tagIds:
-              selectedTagIds,
+            folderId: selectedFolderId,
+            tagIds: selectedTagIds,
           },
         );
 
@@ -306,43 +288,44 @@ const AnalysisCompletePage = () => {
 
   return (
     <>
-      <main className="relative py-[55px]">
-        {!isFolderLoading && (
-          <AnalysisSidebar
-            folders={folders}
-            selectedFolderId={
-              selectedFolderId
-            }
-            onFolderChange={
-              setSelectedFolderId
-            }
-            recommendedFolderId={
-              analysisResult
-                ?.recommendedFolderId
-            }
-            recommendedFolderName={
-              analysisResult
-                ?.recommendedFolderName
-            }
-            onCreateFolder={
-              handleOpenCreateFolder
-            }
-          />
-        )}
+      <main className="py-[55px]">
+        {/* 사이드바 + 본문 */}
+        <div className="mx-auto flex w-full max-w-[1100px] items-start justify-center gap-[100px]">
+          {/* 사이드바 */}
+          {!isFolderLoading && (
+            <AnalysisSidebar
+              folders={folders}
+              selectedFolderId={
+                selectedFolderId
+              }
+              onFolderChange={
+                setSelectedFolderId
+              }
+              recommendedFolderId={
+                analysisResult
+                  ?.recommendedFolderId
+              }
+              recommendedFolderName={
+                analysisResult
+                  ?.recommendedFolderName
+              }
+              onCreateFolder={
+                handleOpenCreateFolder
+              }
+            />
+          )}
 
-        <section className="mx-auto w-[1100px]">
-          <div className="ml-[350px]">
+          {/* 본문 */}
+          <section className="min-w-0 flex-1">
             <AnalysisHeader
               date="2026-05-10"
               title={
-                analysisResult
-                  ?.title ??
+                analysisResult?.title ??
                 "분석된 콘텐츠"
               }
               originUrl={originalUrl}
               tags={
-                analysisResult
-                  ?.tags ?? []
+                analysisResult?.tags ?? []
               }
               onSelectedTagsChange={
                 setSelectedTags
@@ -389,8 +372,8 @@ const AnalysisCompletePage = () => {
                   : "저장하기"}
               </button>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
 
       {/* 새 폴더 생성 모달 */}
@@ -401,9 +384,7 @@ const AnalysisCompletePage = () => {
               false,
             )
           }
-          onCreate={
-            handleCreateFolder
-          }
+          onCreate={handleCreateFolder}
         />
       )}
 
