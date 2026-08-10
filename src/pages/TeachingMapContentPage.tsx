@@ -144,8 +144,8 @@ const TeachingMapContentPage = () => {
   }
 
   return (
-    <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_535px] bg-[#13151F] max-lg:block max-lg:h-auto max-lg:min-h-screen max-lg:bg-[#090713]">
-      <section className="min-w-0 overflow-y-auto bg-[#13151F] max-lg:overflow-visible max-lg:bg-[#090713]">
+    <main className="grid h-[calc(100vh-80px)] min-h-0 grid-cols-[minmax(0,1fr)_635px] bg-[#13151F] max-lg:block max-lg:h-auto max-lg:min-h-screen max-lg:bg-[#090713]">
+      <section className="scrollbar-hide min-w-0 overflow-y-auto bg-[#13151F] max-lg:overflow-visible max-lg:bg-[#090713]">
         <div className="w-full pb-[70px] pt-[40px] max-lg:pb-[40px] max-lg:pt-[24px]">
           <TeachingMapContentHeader title={title} createdAt={createdAt} originalUrl={originalUrl} />
 
