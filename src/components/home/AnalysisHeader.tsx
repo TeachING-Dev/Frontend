@@ -97,8 +97,9 @@ const AnalysisHeader = ({
               <span
                 className={`
                   font-['Montserrat']
-                  text-[12px]
+                  text-[15px]
                   font-semibold
+                  italic
                   leading-[150%]
                   tracking-[-0.36px]
                   ${

@@ -39,7 +39,7 @@ const AnalysisDetail = ({
             ),
 
             p: ({ children }) => (
-              <p className="mb-[12px] text-[20px] font-medium leading-[160%] text-[#A1A1A5] last:mb-0">
+              <p className="mb-[12px] text-[18px] font-medium leading-[160%] text-[#A1A1A5] last:mb-0">
                 {children}
               </p>
             ),

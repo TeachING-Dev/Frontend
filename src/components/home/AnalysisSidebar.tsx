@@ -29,7 +29,7 @@ const AnalysisSidebar = ({
   onCreateFolder,
 }: AnalysisSidebarProps) => {
   return (
-    <aside className="fixed left-[55px] top-[122px] z-30 w-[280px]">
+    <aside className="w-[280px] shrink-0">
       <FolderSelect
         folders={folders}
         selectedFolderId={

@@ -22,7 +22,7 @@ const AnalysisSummary = ({
       </div>
 
       {/* 내용 */}
-      <p className="mb-[15px] whitespace-pre-wrap break-words text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#D9CDFF]">
+      <p className="mb-[15px] whitespace-pre-wrap break-words text-[18px] font-normal leading-[160%] tracking-[-0.15px] text-[#D9CDFF]">
         {summary}
       </p>
     </section>
