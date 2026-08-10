@@ -630,7 +630,11 @@ const ChatbotPage = () => {
   };
 
   const handleSubscribeClick = () => {
-    navigate("/subscription");
+    navigate("/subscription", {
+      state: {
+        backTarget: "chatbot",
+      },
+    });
   };
 
   const handleCreateRoomClick = async () => {

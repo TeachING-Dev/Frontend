@@ -17,6 +17,11 @@ export const activateSubscription = () => {
   localStorage.removeItem(DAILY_QUESTION_COUNT_KEY);
 };
 
+export const clearSubscriptionStatus = () => {
+  localStorage.removeItem(SUBSCRIPTION_STATUS_KEY);
+  localStorage.removeItem(DAILY_QUESTION_COUNT_KEY);
+};
+
 export const isSubscriptionActive = () =>
   localStorage.getItem(SUBSCRIPTION_STATUS_KEY) ===
   "true";
