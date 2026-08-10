@@ -40,6 +40,14 @@ const EMPTY_PAGE: TrashPageState = {
   totalPages: 0,
 };
 
+const normalizeS3ImageUrl = (imageUrl: string) => {
+  const duplicatedUrlStart = imageUrl.indexOf("https://", "https://".length);
+
+  return duplicatedUrlStart === -1
+    ? imageUrl
+    : imageUrl.slice(duplicatedUrlStart);
+};
+
 const TrashContent = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
@@ -136,7 +144,7 @@ const TrashContent = () => {
             totalStep: teachingMap.totalStepCount ?? 0,
             type: teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
             thumbnails: (teachingMap.sourcePlatforms ?? [])
-              .map((source) => source.imageUrl)
+              .map((source) => normalizeS3ImageUrl(source.imageUrl))
               .filter(Boolean),
             extraThumbnailCount: teachingMap.extraCount ?? 0,
             deletedAt: teachingMap.deletedAt,
