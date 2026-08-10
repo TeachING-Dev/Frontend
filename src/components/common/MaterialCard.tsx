@@ -11,6 +11,7 @@ export interface MaterialCardProps {
   platformType: string;
   platformImageUrl?: string;
   extraMeta?: string;
+  extraMetaClassName?: string;
   variant?: "default" | "archive";
   sourceImageClassName?: string;
   sourceImageAlt?: string;
@@ -50,6 +51,7 @@ const MaterialCard = ({
   platformType,
   platformImageUrl,
   extraMeta,
+  extraMetaClassName = "",
   variant = "default",
   sourceImageClassName,
   sourceImageAlt = "",
@@ -114,7 +116,7 @@ const MaterialCard = ({
           </span>
           {extraMeta && (
             <span
-              className={isArchiveVariant ? undefined : "truncate"}
+              className={`${isArchiveVariant ? "" : "truncate"} ${extraMetaClassName}`}
             >
               {extraMeta}
             </span>

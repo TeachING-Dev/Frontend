@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type FolderLimitModalProps = {
   onClose: () => void;
@@ -9,6 +10,8 @@ const FolderLimitModal = ({
   onClose,
   onSubscribe,
 }: FolderLimitModalProps) => {
+  const navigate = useNavigate();
+
   // ESC 키로 모달 닫기
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -30,8 +33,7 @@ const FolderLimitModal = ({
       return;
     }
 
-    // TODO: 구독 페이지 경로에 맞게 수정
-    console.log("구독 페이지로 이동");
+    navigate("/subscription");
   };
 
   return (
