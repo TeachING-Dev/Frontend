@@ -5,10 +5,17 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import { readyKakaoPay } from "../apis/payments";
+import {
+  PaymentApiError,
+  readyKakaoPay,
+} from "../apis/payments";
 import { getMyProfile } from "../apis/users";
 import Toast from "../components/common/Toast";
-import { isSubscriptionActive } from "../utils/subscription";
+import {
+  activateSubscription,
+  isPremiumMembership,
+  isSubscriptionActive,
+} from "../utils/subscription";
 
 type Feature = {
   label: string;
@@ -74,7 +81,7 @@ const SubscriptionPage = () => {
   const selectedMobilePlanData =
     selectedMobilePlan === "plus" ? plans[1] : plans[0];
   const paymentButtonText = isPremiumUser
-    ? "Teaching Plus 구독 중"
+    ? "TeachING Plus 구독 중"
     : "TeachING Plus로 시작하기";
   const locationState = location.state as
     | { showMyPageBack?: boolean; backTarget?: "mypage" | "chatbot" }
@@ -106,9 +113,18 @@ const SubscriptionPage = () => {
     const loadSubscriptionStatus = async () => {
       try {
         const profile = await getMyProfile();
+        const hasPremiumMembership =
+          isPremiumMembership(
+            profile.membershipType,
+          );
+
+        if (hasPremiumMembership) {
+          activateSubscription();
+        }
+
         setIsPremiumUser(
           isSubscriptionActive() ||
-            profile.membershipType === "PREMIUM",
+            hasPremiumMembership,
         );
       } catch (error) {
         console.error(error);
@@ -129,6 +145,16 @@ const SubscriptionPage = () => {
       window.location.href = redirectUrl;
     } catch (error) {
       console.error(error);
+
+      if (
+        error instanceof PaymentApiError &&
+        error.code === "PAYMENT4091"
+      ) {
+        activateSubscription();
+        setIsPremiumUser(true);
+        setToastMessage("");
+        return;
+      }
       setToastMessage("결제가 취소되었습니다.");
     } finally {
       setIsPaymentReadyLoading(false);
