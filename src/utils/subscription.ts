@@ -2,6 +2,12 @@ const SUBSCRIPTION_STATUS_KEY =
   "teachingSubscriptionActive";
 const DAILY_QUESTION_COUNT_KEY =
   "chatbotDailyQuestionCount";
+const PREMIUM_MEMBERSHIP_TYPES = new Set([
+  "PREMIUM",
+  "PLUS",
+  "TEACHING_PLUS",
+  "TEACHINGPLUS",
+]);
 
 export const activateSubscription = () => {
   localStorage.setItem(
@@ -14,3 +20,10 @@ export const activateSubscription = () => {
 export const isSubscriptionActive = () =>
   localStorage.getItem(SUBSCRIPTION_STATUS_KEY) ===
   "true";
+
+export const isPremiumMembership = (
+  membershipType?: string | null,
+) =>
+  PREMIUM_MEMBERSHIP_TYPES.has(
+    membershipType?.trim().toUpperCase() ?? "",
+  );

@@ -28,13 +28,16 @@ import SourceList from "../components/chatbot/SourceList";
 import Toast from "../components/common/Toast";
 import type { SourceItem } from "../components/chatbot/SourceList";
 import { renderFormattedText } from "../utils/renderFormattedText";
+import { getMyProfile } from "../apis/users";
+import {
+  isPremiumMembership,
+  isSubscriptionActive,
+} from "../utils/subscription";
 
 const limitDescription = "요금제를 업그레이드하고 무제한으로 질문해 보세요!";
-const dailyQuestionLimit = 5;
+const chatRoomDailyQuestionLimit = 5;
 const chatRoomLimit = 10;
 const chatRoomListSize = 10;
-const dailyQuestionCountStorageKey =
-  "chatbotDailyQuestionCount";
 const fallbackNoticeMessage =
   "죄송합니다. 현재 보관하신 자료 중에서는 관련 답변을 찾지 못했습니다.";
 const fallbackSourceMessage =
@@ -65,44 +68,19 @@ type ChatbotLocationState = {
 const getTodayKey = () =>
   new Date().toLocaleDateString("sv-SE");
 
-const getStoredDailyQuestionCount = () => {
-  const storedValue = localStorage.getItem(
-    dailyQuestionCountStorageKey,
-  );
+const isToday = (dateValue: string) =>
+  new Date(dateValue).toLocaleDateString(
+    "sv-SE",
+  ) === getTodayKey();
 
-  if (!storedValue) {
-    return 0;
-  }
-
-  try {
-    const parsedValue = JSON.parse(
-      storedValue,
-    ) as {
-      date?: string;
-      count?: number;
-    };
-
-    if (parsedValue.date !== getTodayKey()) {
-      return 0;
-    }
-
-    return parsedValue.count ?? 0;
-  } catch {
-    return 0;
-  }
-};
-
-const setStoredDailyQuestionCount = (
-  count: number,
-) => {
-  localStorage.setItem(
-    dailyQuestionCountStorageKey,
-    JSON.stringify({
-      date: getTodayKey(),
-      count,
-    }),
-  );
-};
+const countTodayUserQuestions = (
+  messages: ChatHistoryMessage[],
+) =>
+  messages.filter(
+    (message) =>
+      message.role === "USER" &&
+      isToday(message.createdAt),
+  ).length;
 
 const isQuestionLimitError = (error: unknown) =>
   error instanceof ChatApiError &&
@@ -232,8 +210,9 @@ const ChatbotPage = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoomSummary[]>([]);
   const [isRoomLimitModalOpen, setIsRoomLimitModalOpen] = useState(false);
   const [isQuestionLimitModalOpen, setIsQuestionLimitModalOpen] = useState(false);
-  const [questionCount, setQuestionCount] = useState(
-    getStoredDailyQuestionCount,
+  const [questionCount, setQuestionCount] = useState(0);
+  const [isPremiumUser, setIsPremiumUser] = useState(
+    isSubscriptionActive,
   );
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(
@@ -280,6 +259,24 @@ const ChatbotPage = () => {
     };
   }, [isNavOpen]);
 
+  useEffect(() => {
+    const loadSubscriptionStatus = async () => {
+      try {
+        const profile = await getMyProfile();
+        setIsPremiumUser(
+          isSubscriptionActive() ||
+            isPremiumMembership(
+              profile.membershipType,
+            ),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadSubscriptionStatus();
+  }, []);
+
   const loadChatRooms = useCallback(async () => {
     try {
       const chatRoomList = await getChatRooms({
@@ -316,6 +313,11 @@ const ChatbotPage = () => {
             mapHistoryMessage,
           ),
         );
+        setQuestionCount(
+          countTodayUserQuestions(
+            chatHistory.messages,
+          ),
+        );
       } catch (error) {
         console.error(error);
 
@@ -328,6 +330,12 @@ const ChatbotPage = () => {
 
     void loadChatMessages();
   }, [chatRoomId, hasValidChatRoomId, navigate]);
+
+  useEffect(() => {
+    if (!hasValidChatRoomId) {
+      setQuestionCount(0);
+    }
+  }, [hasValidChatRoomId]);
 
   useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
@@ -355,12 +363,12 @@ const ChatbotPage = () => {
       return;
     }
 
-    const currentQuestionCount = Math.max(
-      questionCount,
-      getStoredDailyQuestionCount(),
-    );
+    const currentQuestionCount = questionCount;
 
-    if (currentQuestionCount >= dailyQuestionLimit) {
+    if (
+      !isPremiumUser &&
+      currentQuestionCount >= chatRoomDailyQuestionLimit
+    ) {
       setQuestionCount(currentQuestionCount);
       setIsQuestionLimitModalOpen(true);
       return;
@@ -368,6 +376,7 @@ const ChatbotPage = () => {
 
     if (
       !hasValidChatRoomId &&
+      !isPremiumUser &&
       chatRooms.length >= chatRoomLimit
     ) {
       setIsRoomLimitModalOpen(true);
@@ -448,24 +457,8 @@ const ChatbotPage = () => {
         ),
       );
 
-      const nextQuestionCount =
-        typeof askResult.remainingCount === "number"
-          ? Math.min(
-              dailyQuestionLimit,
-              Math.max(
-                0,
-                dailyQuestionLimit -
-                  askResult.remainingCount,
-              ),
-            )
-          : Math.min(
-              dailyQuestionLimit,
-              currentQuestionCount + 1,
-            );
-
-      setQuestionCount(nextQuestionCount);
-      setStoredDailyQuestionCount(
-        nextQuestionCount,
+      setQuestionCount(
+        currentQuestionCount + 1,
       );
 
       if (createdChatRoomId !== null) {
@@ -478,10 +471,14 @@ const ChatbotPage = () => {
     } catch (error) {
       console.error(error);
 
-      if (isQuestionLimitError(error)) {
-        setQuestionCount(dailyQuestionLimit);
-        setStoredDailyQuestionCount(
-          dailyQuestionLimit,
+      if (
+        !isPremiumUser &&
+        isQuestionLimitError(error) &&
+        currentQuestionCount >=
+          chatRoomDailyQuestionLimit
+      ) {
+        setQuestionCount(
+          chatRoomDailyQuestionLimit,
         );
         setMessages((prevMessages) =>
           prevMessages.filter(
@@ -495,7 +492,10 @@ const ChatbotPage = () => {
         return;
       }
 
-      if (isRoomLimitError(error)) {
+      if (
+        !isPremiumUser &&
+        isRoomLimitError(error)
+      ) {
         setMessages((prevMessages) =>
           prevMessages.filter(
             (message) =>
@@ -634,7 +634,10 @@ const ChatbotPage = () => {
   };
 
   const handleCreateRoomClick = async () => {
-    if (chatRooms.length >= chatRoomLimit) {
+    if (
+      !isPremiumUser &&
+      chatRooms.length >= chatRoomLimit
+    ) {
       setIsNavOpen(false);
       setIsRoomLimitModalOpen(true);
       return;
@@ -652,7 +655,13 @@ const ChatbotPage = () => {
     } catch (error) {
       console.error(error);
       setIsNavOpen(false);
-      setIsRoomLimitModalOpen(true);
+
+      if (
+        !isPremiumUser &&
+        isRoomLimitError(error)
+      ) {
+        setIsRoomLimitModalOpen(true);
+      }
     }
   };
 
@@ -934,7 +943,7 @@ const ChatbotPage = () => {
 
       <ChatLimitModal
         isOpen={isQuestionLimitModalOpen}
-        title="오늘의 질문을 모두 사용했어요"
+        title="이 대화방의 오늘 질문을 모두 사용했어요"
         description={limitDescription}
         onClose={() => setIsQuestionLimitModalOpen(false)}
         onSubscribe={handleSubscribeClick}
