@@ -858,8 +858,8 @@ const ChatbotPage = () => {
             </div>
           </div>
         ) : (
-          <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-center max-md:justify-start">
-            <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:mt-[286.49px] max-md:h-[100px] max-md:w-[120px]">
+          <div className="pointer-events-none absolute inset-x-0 bottom-[126px] top-0 flex flex-col items-center justify-center max-md:bottom-[190px] max-md:pt-[70px]">
+            <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[100px] max-md:w-[120px]">
               <img
                 src="/character/ConfidentTaka.svg"
                 alt="열공 티키"
@@ -867,10 +867,10 @@ const ChatbotPage = () => {
               />
             </div>
 
-            <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-[13.51px] max-md:leading-[150%]">
+            <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-3 max-md:leading-[150%]">
               내 자료에서 답을 찾아드립니다.
             </h1>
-            <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-[7.43px] max-md:leading-[150%]">
+            <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-2 max-md:leading-[150%]">
               정확한 키워드를 몰라도 괜찮아요 !
               <br />
               대략적인 상황이나 기억나는 단서만 입력하면,
