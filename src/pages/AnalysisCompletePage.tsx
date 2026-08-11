@@ -129,17 +129,7 @@ const AnalysisCompletePage = () => {
         const recommendedFolderId =
           analysisResult?.recommendedFolderId;
 
-        const hasRecommendedFolder =
-          recommendedFolderId != null &&
-          mappedFolders.some(
-            (folder) =>
-              folder.id === recommendedFolderId,
-          );
-
-        if (
-          hasRecommendedFolder &&
-          recommendedFolderId != null
-        ) {
+        if (recommendedFolderId != null) {
           setSelectedFolderId(
             recommendedFolderId,
           );
@@ -147,7 +137,14 @@ const AnalysisCompletePage = () => {
           return;
         }
 
-        setSelectedFolderId(0);
+        setSelectedFolderId((currentId) =>
+          mappedFolders.some(
+            (folder) =>
+              folder.id === currentId,
+          )
+            ? currentId
+            : 0,
+        );
       } catch (error) {
         console.error(
           "폴더 목록 조회 실패:",
@@ -293,12 +290,13 @@ const AnalysisCompletePage = () => {
 
   return (
     <>
-      <main className="py-[55px]">
+      <main className="px-[16px] pb-[100px] pt-0 lg:px-0 lg:py-[55px]">
         {/* 사이드바 + 본문 */}
-        <div className="mx-auto flex w-full max-w-[1100px] items-start justify-center gap-[100px]">
+        <div className="mx-auto flex w-full max-w-[1100px] items-start justify-center gap-0 lg:gap-[100px]">
           {/* 사이드바 */}
           {!isFolderLoading && (
             <AnalysisSidebar
+              className="hidden lg:block"
               folders={folders}
               selectedFolderId={
                 selectedFolderId
@@ -335,9 +333,34 @@ const AnalysisCompletePage = () => {
               onSelectedTagsChange={
                 setSelectedTags
               }
+              mobileFolderSelect={
+                !isFolderLoading ? (
+                  <AnalysisSidebar
+                    className="block lg:hidden"
+                    folders={folders}
+                    selectedFolderId={
+                      selectedFolderId
+                    }
+                    onFolderChange={
+                      setSelectedFolderId
+                    }
+                    recommendedFolderId={
+                      analysisResult
+                        ?.recommendedFolderId
+                    }
+                    recommendedFolderName={
+                      analysisResult
+                        ?.recommendedFolderName
+                    }
+                    onCreateFolder={
+                      handleOpenCreateFolder
+                    }
+                  />
+                ) : null
+              }
             />
 
-            <div className="mt-[20px] flex flex-col gap-[20px]">
+            <div className="flex flex-col gap-[20px] lg:mt-[20px]">
               <AnalysisSummary
                 summary={summary}
               />
@@ -356,20 +379,25 @@ const AnalysisCompletePage = () => {
                   !selectedFolderId
                 }
                 className="
-                  h-[54px]
+                  h-[44px]
                   w-full
                   rounded-[5px]
                   bg-[#917DEC]
                   text-center
-                  text-[24px]
-                  font-semibold
+                  text-[16px]
+                  font-normal
                   leading-[150%]
-                  tracking-[-0.72px]
+                  tracking-[-0.4px]
                   text-white
                   transition-colors
                   hover:bg-[#8269E7]
                   disabled:cursor-not-allowed
-                  disabled:opacity-50
+                  disabled:bg-[#2B2C35]
+                  disabled:text-[#717379]
+                  lg:h-[54px]
+                  lg:text-[24px]
+                  lg:font-semibold
+                  lg:tracking-[-0.72px]
                 "
               >
                 {isSaving

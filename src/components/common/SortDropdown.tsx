@@ -63,7 +63,7 @@ const SortDropdown = <T extends string>({
           src="/dropdown.svg"
           alt=""
           aria-hidden="true"
-          className={`h-5 w-5 shrink-0 ${iconClassName} ${isOpen ? "scale-[-1]" : ""}`}
+          className={`h-[16px] w-[16px] shrink-0 lg:h-5 lg:w-5 ${iconClassName} ${isOpen ? "scale-[-1]" : ""}`}
         />
       </button>
 

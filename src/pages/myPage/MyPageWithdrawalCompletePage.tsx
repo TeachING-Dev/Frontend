@@ -29,11 +29,16 @@ const MyPageWithdrawalCompletePage = () => {
               alt=""
               className="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 object-contain"
             />
+            <p className="absolute left-1/2 top-full mt-0 w-[361px] -translate-x-1/2 text-center font-['SUIT'] text-[16px] font-normal leading-[150%] text-white md:hidden">
+              탈퇴가 완료되었습니다.
+              <br />
+              다음에 또 만나요!
+            </p>
           </div>
         </div>
 
         <div className="mb-0 mt-auto flex w-full translate-y-[110px] flex-col items-center gap-6 max-md:absolute max-md:bottom-[66px] max-md:left-0 max-md:mt-0 max-md:translate-y-0 max-md:gap-0">
-          <p className="w-96 text-center font-['SUIT'] text-[20px] font-normal text-white max-md:mb-[193px] max-md:w-full max-md:text-[16px] max-md:leading-[150%]">
+          <p className="w-96 text-center font-['SUIT'] text-[20px] font-normal text-white max-md:hidden">
             탈퇴가 완료되었습니다.
             <br />
             다음에 또 만나요!

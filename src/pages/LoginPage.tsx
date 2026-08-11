@@ -92,12 +92,12 @@ const LoginPage = () => {
               onClick={handleKakaoLogin}
               className="flex h-[60px] w-[739px] items-center justify-center rounded-[5px] bg-[#FDE500] font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#13151F]"
             >
-              <span className="inline-flex -translate-x-[4px] items-center gap-[8px]">
+              <span className="grid grid-cols-[30px_auto] items-center gap-[8px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center">
                   <img
                     src="/KakaoLoginIcon.svg"
                     alt=""
-                    className="h-[30px] w-[30px] translate-y-[2px] shrink-0"
+                    className="h-[30px] w-[30px] shrink-0"
                   />
                 </span>
 
@@ -110,16 +110,16 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               className="flex h-[60px] w-[739px] items-center justify-center rounded-[5px] bg-[#2B2C35] font-['SUIT_Variable'] text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#A1A1A5]"
             >
-              <span className="inline-flex -translate-x-[4px] items-center gap-[8px]">
+              <span className="grid grid-cols-[30px_auto] items-center gap-[8px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center">
                   <img
                     src="/Google.svg"
                     alt=""
-                    className="h-[19.7px] w-[19.7px] translate-x-[4px] shrink-0"
+                    className="h-[19.7px] w-[19.7px] shrink-0"
                   />
                 </span>
 
-                <span className="translate-x-[4px]">Google로 시작하기</span>
+                <span>Google로 시작하기</span>
               </span>
             </button>
           </div>
@@ -131,7 +131,7 @@ const LoginPage = () => {
           <AuthBrandLogo gapClassName="gap-7" />
         </div>
 
-        <div className="absolute bottom-[75px] left-1/2 flex w-[361px] -translate-x-1/2 flex-col gap-[12px]">
+        <div className="absolute bottom-[75px] left-1/2 flex w-[calc(100%-32px)] max-w-[361px] -translate-x-1/2 flex-col gap-[12px]">
           <p className="mb-[8px] text-center font-['SUIT'] text-[14px] font-normal leading-[150%] tracking-[-0.42px] text-[#F5F2FF]">
             간편 로그인으로
             <br />
@@ -141,33 +141,27 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={handleKakaoLogin}
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
+            className="flex h-[50px] w-full items-center justify-center rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
           >
-            <span className="flex w-[30px] justify-center">
-              <img
-                src="/Kakao.svg"
-                alt=""
-                className="h-[30px] w-[30px] translate-y-[2px] shrink-0"
-              />
+            <span className="grid grid-cols-[30px_auto] items-center gap-[10px]">
+              <span className="flex h-[30px] w-[30px] items-center justify-center">
+                <img src="/Kakao.svg" alt="" className="h-[30px] w-[30px] shrink-0" />
+              </span>
+              <span>카카오로 시작하기</span>
             </span>
-
-            <span>카카오로 시작하기</span>
           </button>
 
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
+            className="flex h-[50px] w-full items-center justify-center rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
           >
-            <span className="flex w-[30px] justify-center">
-              <img
-                src="/Google.svg"
-                alt=""
-                className="h-[19.7px] w-[19.7px] shrink-0"
-              />
+            <span className="grid grid-cols-[30px_auto] items-center gap-[10px]">
+              <span className="flex h-[30px] w-[30px] items-center justify-center">
+                <img src="/Google.svg" alt="" className="h-[19.7px] w-[19.7px] shrink-0" />
+              </span>
+              <span>Google로 시작하기</span>
             </span>
-
-            <span>Google로 시작하기</span>
           </button>
         </div>
       </div>

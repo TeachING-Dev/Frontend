@@ -332,12 +332,6 @@ const ChatbotPage = () => {
   }, [chatRoomId, hasValidChatRoomId, navigate]);
 
   useEffect(() => {
-    if (!hasValidChatRoomId) {
-      setQuestionCount(0);
-    }
-  }, [hasValidChatRoomId]);
-
-  useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
 
     if (!chatScrollElement) {
@@ -363,7 +357,7 @@ const ChatbotPage = () => {
       return;
     }
 
-    const currentQuestionCount = questionCount;
+    const currentQuestionCount = hasValidChatRoomId ? questionCount : 0;
 
     if (
       !isPremiumUser &&
@@ -652,6 +646,7 @@ const ChatbotPage = () => {
         await createChatRoom();
       await loadChatRooms();
       setMessages([]);
+      setQuestionCount(0);
       navigate(
         `/chatbot/${createdChatRoom.chatroomId}`,
       );

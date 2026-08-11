@@ -55,7 +55,7 @@ const TeachingMapFilter = ({
               "flex h-[30px] w-[70px] shrink-0 items-center justify-center lg:h-[40px] lg:w-[102px]",
               "rounded-[5px] px-[5px] lg:p-[10px]",
               "whitespace-nowrap",
-              "font-['SUIT'] text-[14px] font-normal not-italic lg:text-[18px] lg:font-medium",
+              "font-['SUIT'] text-[13px] font-normal not-italic lg:text-[18px] lg:font-medium",
               "leading-[150%] tracking-[-0.35px] lg:leading-[27px] lg:tracking-[-0.54px]",
               "transition-colors duration-150",
               isActive

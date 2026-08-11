@@ -70,11 +70,11 @@ const TeachingMapItem = ({
 
       {/* 제목 + 설명 */}
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-left text-[12px] font-bold leading-[150%] tracking-[-0.12px] text-[#F5F2FF] md:mb-1 md:text-[24px] md:tracking-[-0.24px]">
+        <h3 className="truncate text-left text-[13px] font-bold leading-[150%] tracking-[-0.12px] text-[#F5F2FF] md:mb-1 md:text-[24px] md:tracking-[-0.24px]">
           {title}
         </h3>
 
-        <p className="truncate text-left text-[9px] font-medium leading-[150%] tracking-[-0.27px] text-[#717379] md:text-[16px] md:tracking-[-0.48px]">
+        <p className="truncate text-left text-[10px] font-medium leading-[150%] tracking-[-0.27px] text-[#717379] md:text-[16px] md:tracking-[-0.48px]">
           {description}
         </p>
       </div>

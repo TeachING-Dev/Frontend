@@ -61,7 +61,7 @@ const mobileMenuItems = [
     label: "타카",
     path: "/chatbot",
     icon: "/icon/AI챗봇.svg",
-    activeIcon: "/icon/AI챗봇.svg",
+    activeIcon: "/icon/AI챗봇_active.svg",
   },
   {
     label: "마이",

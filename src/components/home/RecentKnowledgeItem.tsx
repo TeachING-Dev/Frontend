@@ -64,7 +64,7 @@ const RecentKnowledgeItem = ({
         className="
           ml-[clamp(10px,2.5vw,17px)]
           shrink-0
-          text-[clamp(12px,3.2vw,22px)]
+          text-[clamp(14px,3.2vw,22px)]
           font-medium
           leading-[150%]
           tracking-[-0.36px]

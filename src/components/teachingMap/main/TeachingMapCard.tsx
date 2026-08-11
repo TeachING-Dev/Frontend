@@ -94,7 +94,10 @@ const TeachingMapCard = ({
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={[
-        "flex h-[65px] w-full cursor-pointer flex-col gap-[10px] lg:h-auto",
+        "flex w-full cursor-pointer flex-col lg:h-auto",
+        variant === "temporary"
+          ? "h-[45px] gap-0"
+          : "h-[65px] gap-[10px]",
         "rounded-[10px] bg-[#13151F] p-[5px] outline-none lg:border lg:p-5",
         "transition-[border-color,box-shadow,background-color]",
         "focus-visible:ring-2 focus-visible:ring-[#917DEC]",
@@ -108,8 +111,22 @@ const TeachingMapCard = ({
       ].join(" ")}
     >
       <div className="flex min-w-0 shrink-0 items-start gap-[5px] lg:gap-[10px]">
-        <div className="flex h-[35px] w-[45px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-[#1F212A] p-[4.5px] lg:h-[60px] lg:w-[110px] lg:rounded-[10px] lg:p-[10px]">
-          {visibleThumbnails && visibleThumbnails.length > 0 ? (
+        <div
+          className={[
+            "flex h-[35px] w-[45px] shrink-0 items-center justify-center overflow-hidden",
+            variant === "temporary"
+              ? "bg-transparent p-0 lg:h-[60px] lg:w-[110px]"
+              : "rounded-[5px] bg-[#1F212A] p-[4.5px] lg:h-[60px] lg:w-[110px] lg:rounded-[10px] lg:p-[10px]",
+          ].join(" ")}
+        >
+          {variant === "temporary" ? (
+            <img
+              src="/emptySelfCheck.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-[20px] w-[20px] object-contain lg:h-[36px] lg:w-[36px]"
+            />
+          ) : visibleThumbnails && visibleThumbnails.length > 0 ? (
             <div className="relative flex items-center">
               {visibleThumbnails.map((source, index) => (
                 <SourceImage
@@ -163,7 +180,8 @@ const TeachingMapCard = ({
         </div>
       </div>
 
-      <div className="flex h-[10px] w-full shrink-0 items-center gap-[5px] lg:h-auto lg:gap-5">
+      {variant !== "temporary" && (
+      <div className="flex h-[10px] w-full shrink-0 items-center gap-0 lg:h-auto lg:gap-5">
         <ProgressBar
           value={progress}
           ariaLabel="티칭맵 학습 진행률"
@@ -174,7 +192,7 @@ const TeachingMapCard = ({
           indicatorClassName="!rounded-[100px] !bg-[linear-gradient(90deg,#917DEC_0%,#C1AEFF_100%)] shadow-[0_0_8px_rgba(193,174,255,0.8)] transition-[width] duration-300"
         />
 
-        <div className="flex w-[45px] shrink-0 items-center justify-end whitespace-nowrap font-['SUIT'] text-[8px] font-normal leading-[140%] tracking-[-0.16px] lg:w-[130px] lg:justify-center lg:text-[16px] lg:leading-6 lg:tracking-[-0.48px]">
+        <div className="flex w-[47px] shrink-0 items-center justify-center whitespace-nowrap font-['SUIT'] text-[8px] font-normal leading-[140%] tracking-[-0.16px] lg:w-[130px] lg:text-[16px] lg:leading-6 lg:tracking-[-0.48px]">
           {isCompleted ? (
             <span className="whitespace-nowrap text-center text-[#917DEC]">
               Success !
@@ -190,6 +208,7 @@ const TeachingMapCard = ({
           )}
         </div>
       </div>
+      )}
     </article>
   );
 };
