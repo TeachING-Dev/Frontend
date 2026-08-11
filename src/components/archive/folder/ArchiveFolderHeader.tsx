@@ -271,7 +271,7 @@ const ArchiveFolderHeader = ({
           <button
             type="submit"
             aria-label="검색"
-            className="flex h-[30px] w-[30px] items-center justify-center rounded transition hover:bg-[#DDD6FF] lg:h-10 lg:w-10"
+            className="flex h-[33.281px] w-[33.281px] items-center justify-center rounded transition hover:bg-[#DDD6FF] lg:h-10 lg:w-10"
           >
             <Search
               size={20}

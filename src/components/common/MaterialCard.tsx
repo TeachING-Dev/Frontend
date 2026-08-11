@@ -125,14 +125,14 @@ const MaterialCard = ({
 
         {!selectable && (showAiButton || showOriginalButton) && (
           <div
-            className={`${isArchiveVariant ? "" : "ml-[20px]"} flex shrink-0 items-center gap-[10px]`}
+            className={`${isArchiveVariant ? "" : "ml-[20px]"} flex shrink-0 items-center gap-[5px] lg:gap-[10px]`}
           >
             {showAiButton && (
               <button
                 type="button"
                 disabled={!onAiAnalysis}
                 onClick={(event) => handleAction(event, onAiAnalysis)}
-                className="flex h-[25px] w-[96px] items-center justify-center gap-[4px] rounded-[4px] bg-[#917DEC] transition-colors hover:bg-[#806BDB] disabled:cursor-not-allowed disabled:opacity-40 lg:h-[40px] lg:w-[164px] lg:gap-[8px] lg:rounded-[8px]"
+                className="flex items-center justify-center gap-[4px] rounded-[2px] bg-[#917DEC] px-[5px] py-[2px] transition-colors hover:bg-[#806BDB] disabled:cursor-not-allowed disabled:opacity-40 lg:h-[40px] lg:w-[164px] lg:gap-[8px] lg:rounded-[8px] lg:px-0 lg:py-0"
               >
                 <img
                   src="/icon/AI.svg"
@@ -150,7 +150,7 @@ const MaterialCard = ({
                 type="button"
                 disabled={!onOpenOriginal && !isArchiveVariant}
                 onClick={(event) => handleAction(event, onOpenOriginal)}
-                className={`flex h-[25px] w-[96px] items-center justify-center gap-[4px] rounded-[4px] bg-[#24242E] transition-colors hover:bg-[#343444] disabled:cursor-not-allowed disabled:opacity-40 lg:h-[40px] lg:w-[164px] lg:gap-[8px] lg:rounded-[8px] ${isArchiveVariant ? "lg:h-[42px]" : ""}`}
+                className={`flex items-center justify-center gap-[4px] rounded-[2px] bg-[#24242E] px-[5px] py-[2px] transition-colors hover:bg-[#343444] disabled:cursor-not-allowed disabled:opacity-40 lg:h-[40px] lg:w-[164px] lg:gap-[8px] lg:rounded-[8px] lg:px-0 lg:py-0 ${isArchiveVariant ? "lg:h-[42px]" : ""}`}
               >
                 <Globe className="h-4 w-4 shrink-0 text-[#FAFAFA] lg:h-[22px] lg:w-[22px]" />
                 <span

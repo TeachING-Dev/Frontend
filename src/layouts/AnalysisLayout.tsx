@@ -51,7 +51,7 @@ const AnalysisLayout = ({
       />
 
       {/* 실제 페이지 내용 */}
-      <main className="relative z-10 min-h-screen pt-16">
+      <main className="relative z-10 min-h-screen lg:pt-16">
         <Outlet />
       </main>
     </div>

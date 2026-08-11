@@ -634,13 +634,13 @@ const HomeHeader = () => {
             disabled={isAnalyzing}
             className="
               relative
-              h-[45px]
+              h-[51px]
               w-full
               rounded-[10px]
               border
               border-[#917DEC]
               bg-[#11111B]
-              px-4
+              px-[10px]
               pr-[64px]
               text-[15px]
               font-semibold

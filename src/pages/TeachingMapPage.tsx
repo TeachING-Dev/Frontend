@@ -383,7 +383,7 @@ const TeachingMapPage = () => {
                 onCancelClick={handleDeleteModeCancel}
               />
             ) : (
-              <div className="flex w-full items-center gap-[16px] lg:justify-between lg:gap-0">
+              <div className="flex w-full items-end gap-[16px] lg:justify-between lg:gap-0">
                 <TeachingMapFilter
                   selectedFilter={selectedFilter}
                   onFilterChange={handleFilterChange}

@@ -54,7 +54,7 @@ const HomePage = () => {
         max-w-[1120px]
         flex-col
         gap-[40px]
-        px-[20px]
+        px-[10px]
         pb-[100px]
         pt-[30px]
         md:gap-[15px]
