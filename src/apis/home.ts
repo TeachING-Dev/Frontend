@@ -4,7 +4,6 @@ export type RecentMaterial = {
   materialId: number;
   folderId: number;
   title: string;
-  summary: string;
   platformType: string;
   platformImageUrl: string;
   aiStatus: string;
@@ -22,10 +21,8 @@ export type ActiveTeachingMap = {
   description: string;
   type: string;
   status: string;
-  currentSteps: number;
-  totalSteps: number;
   sourcePlatforms: SourcePlatform[];
-  extraCount?: number;
+  extraCount: number;
   createdAt: string;
 };
 

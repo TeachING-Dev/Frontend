@@ -9,7 +9,7 @@ type TeachingMapItemProps = {
   title: string;
   description: string;
   sourcePlatforms: SourcePlatform[];
-  extraCount?: number;
+  extraCount: number;
   onClick?: () => void;
   onShortcutClick?: () => void;
 };
@@ -18,7 +18,7 @@ const TeachingMapItem = ({
   title,
   description,
   sourcePlatforms,
-  extraCount = 0,
+  extraCount,
   onClick,
   onShortcutClick,
 }: TeachingMapItemProps) => {
@@ -44,7 +44,7 @@ const TeachingMapItem = ({
       className="group flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] px-[23px] py-[8px] transition-colors hover:bg-white/5 md:gap-[15px] md:px-5 md:py-[10px]"
     >
       {/* 썸네일 */}
-      <div className="flex h-[38px] w-[60px] shrink-0 items-center justify-center gap-[4px] rounded-[6px] bg-[#1F212A] p-[6px] md:h-[60px] md:w-[98px] md:gap-[6px] md:rounded-[10px] md:p-[10px]">
+      <div className="flex h-[35px] w-[45px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-[#1F212A] p-[4.5px] lg:h-[60px] lg:w-[110px] lg:rounded-[10px] lg:p-[10px]">
         {visibleThumbnails.length > 0 && (
           <div className="relative flex items-center">
             {visibleThumbnails.map((source, index) => (
@@ -54,13 +54,13 @@ const TeachingMapItem = ({
                 alt=""
                 className={[
                   "relative h-[16.25px] w-[16.25px] rounded-full object-contain lg:h-9 lg:w-9",
-                  index === 0 ? "" : "-ml-[5px] lg:-ml-3",
+                  index === 0 ? "" : "-ml-[5px] lg:-ml-4",
                 ].join(" ")}
                 style={{ zIndex: visibleThumbnails.length - index }}
               />
             ))}
             {extraThumbnailCount > 0 && (
-              <span className="relative z-0 -ml-[5px] flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-9 lg:min-w-9 lg:px-1 lg:text-[14px]">
+              <span className="relative z-50 -ml-[5px] flex h-[16px] min-w-[16px] translate-y-[3px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-[28px] lg:min-w-[28px] lg:translate-y-[6px] lg:text-[12px]">
                 +{extraThumbnailCount}
               </span>
             )}

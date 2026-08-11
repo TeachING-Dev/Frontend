@@ -224,6 +224,14 @@ const ArchiveDataAnalysis = ({
                   {children}
                 </code>
               ),
+
+              img: ({ alt, ...props }) => (
+                <img
+                  {...props}
+                  alt={alt ?? ""}
+                  className="h-auto max-w-full lg:max-w-[700px]"
+                />
+              ),
             }}
           >
             {fullAnalysis}

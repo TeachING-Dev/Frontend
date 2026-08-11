@@ -22,8 +22,8 @@ const TeachingMapContentSectionItem = ({
         type: section.highlightType,
       }))}
       onHighlightClick={onHighlightClick}
-      className="mt-[16px] text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#A1A1A5] max-lg:mt-0 max-lg:text-[13px] max-lg:leading-[150%]"
-      imageClassName="mx-auto block max-h-full w-auto max-w-[300px] rounded-[8px] object-contain"
+      className="mt-[10px] text-[20px] font-light leading-[180%] tracking-[-0.15px] text-[#A1A1A5] max-lg:mt-0 max-lg:text-[13px] max-lg:leading-[150%]"
+      imageClassName="mx-auto block max-h-full w-auto max-w-[500px] rounded-[8px] object-contain"
     />
   </article>
 );
