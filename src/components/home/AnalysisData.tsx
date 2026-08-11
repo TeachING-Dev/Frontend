@@ -79,6 +79,14 @@ const AnalysisDetail = ({
                 {children}
               </code>
             ),
+
+            img: ({ alt, ...props }) => (
+              <img
+                {...props}
+                alt={alt ?? ""}
+                className="h-auto max-w-full lg:max-w-[500px]"
+              />
+            ),
           }}
         >
           {content}

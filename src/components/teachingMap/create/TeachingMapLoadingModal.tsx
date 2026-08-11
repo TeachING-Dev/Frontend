@@ -67,7 +67,7 @@ const TeachingMapLoadingModal = ({
             className="flex h-6 w-6 shrink-0 items-center justify-center lg:h-9 lg:w-9"
           >
             <img
-              src="/icon/cancel.png"
+              src="/icon/cancel2.png"
               alt=""
               aria-hidden="true"
               className="h-6 w-6 object-contain lg:h-9 lg:w-9"

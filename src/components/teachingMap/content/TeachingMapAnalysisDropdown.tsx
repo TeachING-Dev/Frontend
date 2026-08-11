@@ -19,7 +19,7 @@ const TeachingMapAnalysisDropdown = ({
         isOpen ? "border border-[#917DEC]" : "border border-transparent",
       ].join(" ")}
     >
-      <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-left text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#F5F2FF]">
+      <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-left text-[15px] font-light leading-[180%] tracking-[-0.15px] text-[#F5F2FF]">
         {title}
       </span>
 

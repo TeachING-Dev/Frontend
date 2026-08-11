@@ -153,7 +153,7 @@ const TeachingMapContentPage = () => {
             <TeachingMapTagList tags={tags} />
           </div>
 
-          <div className="mt-[20px] h-px w-full bg-[#42444C] max-lg:hidden" />
+          <div className="mx-[30px] mt-[20px] h-px w-[calc(100%-60px)] bg-[#42444C] max-lg:hidden" />
 
           <div className="mx-[16px] mt-[32px] hidden h-[35px] max-lg:flex">
             {(["content", "analysis"] as const).map((tab) => {
@@ -171,11 +171,11 @@ const TeachingMapContentPage = () => {
             })}
           </div>
 
-          <div className={`mt-[54px] px-[30px] max-lg:mt-[20px] max-lg:px-0 ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
+          <div className={`mt-[10px] px-[30px] max-lg:mt-[20px] max-lg:px-0 ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
             <TeachingMapContentLegend />
           </div>
 
-          <div className={`mt-[20px] ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
+          <div className={`mt-[0px] ${mobileTab === "analysis" ? "max-lg:hidden" : ""}`}>
             <TeachingMapContentSectionList
               title={title}
               summary={detailAnalysis}
