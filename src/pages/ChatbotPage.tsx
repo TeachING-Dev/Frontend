@@ -691,7 +691,7 @@ const ChatbotPage = () => {
         type="button"
         aria-label="챗봇 사이드바 열기"
         onClick={() => setIsNavOpen(true)}
-        className="absolute left-4 top-[70px] z-10 hidden h-9 w-8 max-md:block"
+        className="absolute left-4 top-[70px] z-10 hidden h-9 w-8 max-md:fixed max-md:top-[44px] max-md:z-50 max-md:block"
       >
         <img
           src="/logo/logo.png"
