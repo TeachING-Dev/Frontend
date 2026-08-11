@@ -332,12 +332,6 @@ const ChatbotPage = () => {
   }, [chatRoomId, hasValidChatRoomId, navigate]);
 
   useEffect(() => {
-    if (!hasValidChatRoomId) {
-      setQuestionCount(0);
-    }
-  }, [hasValidChatRoomId]);
-
-  useEffect(() => {
     const chatScrollElement = chatScrollRef.current;
 
     if (!chatScrollElement) {
@@ -363,7 +357,9 @@ const ChatbotPage = () => {
       return;
     }
 
-    const currentQuestionCount = questionCount;
+    const currentQuestionCount = hasValidChatRoomId
+      ? questionCount
+      : 0;
 
     if (
       !isPremiumUser &&
@@ -858,25 +854,27 @@ const ChatbotPage = () => {
             </div>
           </div>
         ) : (
-          <div className="pointer-events-none absolute inset-x-0 bottom-[126px] top-0 flex flex-col items-center justify-center max-md:bottom-[190px] max-md:pt-[70px]">
-            <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[100px] max-md:w-[120px]">
-              <img
-                src="/character/ConfidentTaka.svg"
-                alt="열공 티키"
-                className="h-[130px] w-[150px] object-contain max-md:h-full max-md:w-full"
-              />
-            </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-[126px] top-0 max-md:pointer-events-auto max-md:bottom-[190px] max-md:overflow-y-auto max-md:overscroll-contain">
+            <div className="flex min-h-full flex-col items-center justify-center max-md:pt-[70px]">
+              <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[100px] max-md:w-[120px]">
+                <img
+                  src="/character/ConfidentTaka.svg"
+                  alt="열공 티키"
+                  className="h-[130px] w-[150px] object-contain max-md:h-full max-md:w-full"
+                />
+              </div>
 
-            <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-3 max-md:leading-[150%]">
-              내 자료에서 답을 찾아드립니다.
-            </h1>
-            <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-2 max-md:leading-[150%]">
-              정확한 키워드를 몰라도 괜찮아요 !
-              <br />
-              대략적인 상황이나 기억나는 단서만 입력하면,
-              <br className="md:hidden" />
-              타카가 관련 자료를 찾아 답변해 드립니다.
-            </p>
+              <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-3 max-md:leading-[150%]">
+                내 자료에서 답을 찾아드립니다.
+              </h1>
+              <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-2 max-md:leading-[150%]">
+                정확한 키워드를 몰라도 괜찮아요 !
+                <br />
+                대략적인 상황이나 기억나는 단서만 입력하면,
+                <br className="md:hidden" />
+                타카가 관련 자료를 찾아 답변해 드립니다.
+              </p>
+            </div>
           </div>
         )}
         {isCopyToastVisible ? (
