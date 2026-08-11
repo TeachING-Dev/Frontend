@@ -364,7 +364,7 @@ const TrashContent = () => {
       <PageContainer className="relative z-10 pb-[120px] pt-10">
         <TrashHeader />
 
-        <div className="mt-5 flex items-center justify-between gap-[6px] lg:gap-0">
+        <div className="mt-5 flex items-end justify-between gap-[6px] lg:gap-0">
           <TrashCategoryTabs
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}

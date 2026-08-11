@@ -86,6 +86,10 @@ function App() {
             path="/subscribe/complete"
             element={<SubscriptionCompletePage />}
           />
+          <Route
+            path="/mypage/withdrawal-complete"
+            element={<MyPageWithdrawalCompletePage />}
+          />
 
           {/* 홈 전용 레이아웃 */}
           <Route element={<HomeLayout />}>
@@ -177,10 +181,6 @@ function App() {
             <Route
               path="/mypage/withdrawal-confirm"
               element={<MyPageWithdrawalConfirmPage />}
-            />
-            <Route
-              path="/mypage/withdrawal-complete"
-              element={<MyPageWithdrawalCompletePage />}
             />
           </Route>
 

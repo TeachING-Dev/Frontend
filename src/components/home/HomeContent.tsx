@@ -22,12 +22,13 @@ const HomeContent = ({
   activeTeachingMaps,
   isLoading = false,
 }: HomeContentProps) => {
-  const [selectedTab, setSelectedTab] = useState<HomeTab>("knowledge");
+  const [selectedTab, setSelectedTab] =
+    useState<HomeTab>("knowledge");
 
   const navigate = useNavigate();
 
   const tabButtonClass =
-    "flex h-[30px] w-full min-w-0 items-center justify-center gap-[4px] rounded-[5px] border px-[10px] py-[5px] text-[10px] transition-colors md:min-h-[40px] md:h-auto md:w-auto md:gap-[10px] md:text-[16px]";
+    "flex h-[31px] w-[147px] shrink-0 box-border items-center justify-center gap-[10px] rounded-[5px] border px-[10px] py-[5px] font-normal text-[14px] leading-[21px] tracking-[-0.35px] text-[#A1A1A5] transition-colors md:h-[40px] md:w-auto md:text-[16px] md:leading-[24px] md:tracking-normal";
 
   const handleViewAll = () => {
     if (selectedTab === "knowledge") {
@@ -45,35 +46,30 @@ const HomeContent = ({
         overflow-hidden
         rounded-[10px]
         bg-[#171722]/80
+        p-[10px]
+        md:p-0
         lg:h-[380px]
       "
     >
-      {/* 상단 */}
       <div
         className="
           flex
           flex-row
           items-center
-          gap-[12px]
-          px-[15px]
-          pt-[15px]
+          gap-[10px]
           md:px-[20px]
           md:py-[15px]
-          lg:flex-row
-          lg:items-center
           lg:justify-between
           lg:gap-0
         "
       >
-        {/* 탭 */}
         <div
           className="
-            grid
+            flex
             min-w-0
             flex-1
-            grid-cols-2
+            gap-[4px]
             md:gap-[12px]
-            lg:flex
             lg:w-auto
             lg:gap-[19px]
           "
@@ -83,18 +79,20 @@ const HomeContent = ({
             onClick={() => setSelectedTab("knowledge")}
             className={`${tabButtonClass} ${
               selectedTab === "knowledge"
-                ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
-                : "border-[#2B2C35] bg-transparent text-[#A1A1A5]"
+                ? "border-transparent bg-[#2B2C35]"
+                : "border-[#2B2C35] bg-transparent"
             }`}
           >
             <img
               src="/icon/최근에 저장한 지식.svg"
               alt=""
               aria-hidden="true"
-              className="h-5 w-5 shrink-0"
+              className="h-[20px] w-[20px] shrink-0"
             />
 
-            <span className="break-keep">최근에 저장한 지식</span>
+            <span className="whitespace-nowrap">
+              최근에 저장한 지식
+            </span>
           </button>
 
           <button
@@ -102,28 +100,30 @@ const HomeContent = ({
             onClick={() => setSelectedTab("teachingMap")}
             className={`${tabButtonClass} ${
               selectedTab === "teachingMap"
-                ? "border-transparent bg-[#2B2C35] text-[#A1A1A5]"
-                : "border-[#2B2C35] bg-transparent text-[#A1A1A5]"
+                ? "border-transparent bg-[#2B2C35]"
+                : "border-[#2B2C35] bg-transparent"
             }`}
           >
             <img
               src="/icon/티칭맵3.png"
               alt=""
               aria-hidden="true"
-              className="h-5 w-5 shrink-0"
+              className="h-[20px] w-[20px] shrink-0"
             />
 
-            <span className="break-keep">학습 중인 티칭맵</span>
+            <span className="whitespace-nowrap">
+              학습 중인 티칭맵
+            </span>
           </button>
         </div>
 
-        {/* 전체보기 */}
         <button
           type="button"
           onClick={handleViewAll}
           className="
             ml-auto
             flex
+            shrink-0
             items-center
             gap-1
             text-[14px]
@@ -143,13 +143,12 @@ const HomeContent = ({
           <ChevronRight
             size={20}
             strokeWidth={2.5}
-            className="md:h-6 md:w-6"
+            className="hidden md:block md:h-6 md:w-6"
           />
         </button>
       </div>
 
-      {/* 내용 */}
-      <div className="md:pt-[5px] md:px-[10px]">
+      <div className="pt-[10px] md:px-[10px] md:pt-[5px]">
         {isLoading ? (
           <div className="flex min-h-[280px] items-center justify-center">
             <p className="text-[16px] font-medium text-[#717379]">
@@ -157,9 +156,13 @@ const HomeContent = ({
             </p>
           </div>
         ) : selectedTab === "knowledge" ? (
-          <RecentKnowledgeList materials={recentMaterials.slice(0, 5)} />
+          <RecentKnowledgeList
+            materials={recentMaterials.slice(0, 5)}
+          />
         ) : (
-          <TeachingMapList teachingMaps={activeTeachingMaps} />
+          <TeachingMapList
+            teachingMaps={activeTeachingMaps}
+          />
         )}
       </div>
     </section>

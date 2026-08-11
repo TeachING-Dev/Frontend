@@ -54,9 +54,9 @@ const ArchiveHeader = ({
           <button
             type="submit"
             aria-label="폴더 검색"
-            className="flex h-[34px] w-[34px] shrink-0 items-center justify-center lg:h-10 lg:w-10"
+            className="flex h-[33.281px] w-[33.281px] shrink-0 items-center justify-center lg:h-10 lg:w-10"
           >
-            <Search className="h-[33px] w-[33px] text-[#8B6DFF] lg:h-6 lg:w-6" />
+            <Search className="h-5 w-5 text-[#8B6DFF] lg:h-6 lg:w-6" />
           </button>
         </form>
 

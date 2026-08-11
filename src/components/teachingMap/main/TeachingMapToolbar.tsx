@@ -18,7 +18,7 @@ const TeachingMapToolbar = ({
   onDeleteModeStart,
 }: TeachingMapToolbarProps) => {
   return (
-    <div className="flex h-10 items-center gap-[5px] py-1 lg:gap-2 lg:px-2">
+    <div className="flex h-10 items-end gap-[5px] py-1 lg:gap-2 lg:px-2">
       <SortDropdown
         ariaLabel="티칭맵 정렬"
         value={sortType}
