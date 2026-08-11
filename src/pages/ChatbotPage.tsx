@@ -691,7 +691,7 @@ const ChatbotPage = () => {
         type="button"
         aria-label="챗봇 사이드바 열기"
         onClick={() => setIsNavOpen(true)}
-        className="absolute left-4 top-[70px] z-10 hidden h-9 w-8 max-md:block"
+        className="absolute left-4 top-[70px] z-10 hidden h-9 w-8 max-md:fixed max-md:top-[44px] max-md:z-50 max-md:block"
       >
         <img
           src="/logo/logo.png"
@@ -856,7 +856,7 @@ const ChatbotPage = () => {
         ) : (
           <div className="pointer-events-none absolute inset-x-0 bottom-[126px] top-0 max-md:pointer-events-auto max-md:bottom-[190px] max-md:overflow-y-auto max-md:overscroll-contain">
             <div className="flex min-h-full flex-col items-center justify-center max-md:pt-[70px]">
-              <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[100px] max-md:w-[120px]">
+              <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[90px] max-md:w-[108px]">
                 <img
                   src="/character/ConfidentTaka.svg"
                   alt="열공 티키"
@@ -864,10 +864,10 @@ const ChatbotPage = () => {
                 />
               </div>
 
-              <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-3 max-md:leading-[150%]">
+              <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-2 max-md:text-[18px] max-md:leading-[150%]">
                 내 자료에서 답을 찾아드립니다.
               </h1>
-              <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-2 max-md:leading-[150%]">
+              <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-1.5 max-md:text-[13px] max-md:leading-[150%]">
                 정확한 키워드를 몰라도 괜찮아요 !
                 <br />
                 대략적인 상황이나 기억나는 단서만 입력하면,
