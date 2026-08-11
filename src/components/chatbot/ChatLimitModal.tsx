@@ -19,7 +19,7 @@ const ChatLimitModal = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#05040B]/75 backdrop-brightness-50 max-md:items-start">
-      <div className="translate-y-5 flex h-[403px] w-[484px] flex-col items-center rounded-[10px] bg-[#090713] px-5 pb-5 pt-10 shadow-[0_0_50px_rgba(145,125,236,0.45)] max-md:mt-[310.74px] max-md:h-[263px] max-md:w-[315px] max-md:translate-y-0 max-md:px-5 max-md:pb-5 max-md:pt-5">
+      <div className="translate-y-5 flex h-[403px] w-[484px] flex-col items-center rounded-[10px] bg-[#090713] px-5 pb-5 pt-10 shadow-[0_0_50px_rgba(145,125,236,0.45)] max-md:mt-[290.74px] max-md:h-[263px] max-md:w-[315px] max-md:translate-y-0 max-md:px-5 max-md:pb-5 max-md:pt-5">
         {/* 제목 */}
         <h2 className="text-center font-['SUIT'] text-[24px] font-normal leading-[150%] tracking-[-0.6px] text-white max-md:text-[18px]">
           {title}

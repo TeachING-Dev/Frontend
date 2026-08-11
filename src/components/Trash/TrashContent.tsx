@@ -388,10 +388,10 @@ const TrashContent = () => {
                   className="flex h-[35px] w-[35px] shrink-0 items-center justify-center rounded-[5px] font-suit text-[#D0D0D2] hover:bg-white/5 lg:h-10 lg:w-[147px] lg:gap-2 lg:px-2 lg:py-1 lg:text-[20px] lg:font-medium lg:leading-[30px] lg:tracking-[-0.6px]"
                 >
                   <img
-                    src="/icon/flip-left.svg"
+                    src="/icon/flip-left2.svg"
                     alt=""
                     aria-hidden="true"
-                    className="h-4 w-4 shrink-0 lg:h-6 lg:w-6"
+                    className="h-4 w-4 shrink-0 lg:h-8 lg:w-8"
                   />
                   <span className="sr-only lg:not-sr-only">복구하기</span>
                 </button>

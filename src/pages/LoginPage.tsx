@@ -147,11 +147,11 @@ const LoginPage = () => {
               <img
                 src="/Kakao.svg"
                 alt=""
-                className="h-[30px] w-[30px] translate-y-[2px] shrink-0"
+                className="h-[30px] w-[30px] -translate-x-[3px] translate-y-[2px] shrink-0"
               />
             </span>
 
-            <span>카카오로 시작하기</span>
+            <span className="-translate-x-[2px]">카카오로 시작하기</span>
           </button>
 
           <button
