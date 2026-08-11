@@ -71,7 +71,12 @@ const MyPage = () => {
           aria-label="알림 보기"
           className="flex h-[40px] w-[40px] items-center justify-center lg:hidden"
         >
-          <img src="/Alarm.svg" alt="" className="h-[24px] w-[24px]" />
+          <img
+            src="/icon/Alarm2.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-[40px] w-[40px] object-contain"
+          />
         </button>
       </div>
 

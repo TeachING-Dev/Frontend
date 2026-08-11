@@ -11,7 +11,7 @@ const AnalysisDetail = ({
   return (
     <section className="w-full rounded-[10px] bg-[#13151F] px-[20px] py-[10px]">
       {/* 제목 */}
-      <h2 className="mb-[10px] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#F5F2FF]">
+      <h2 className="mb-[10px] text-[20px] font-medium leading-[150%] tracking-[-0.4px] text-[#F5F2FF] lg:text-[24px] lg:font-bold lg:tracking-[-0.24px]">
         AI 상세 분석
       </h2>
 
@@ -21,25 +21,25 @@ const AnalysisDetail = ({
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
-              <h1 className="mb-[16px] mt-[24px] font-['SUIT_Variable'] text-[24px] font-bold leading-[160%] text-[#D0D0D2] first:mt-0">
+              <h1 className="mb-[12px] mt-[20px] font-['SUIT_Variable'] text-[16px] font-bold leading-[150%] text-[#D0D0D2] first:mt-0 lg:mb-[16px] lg:mt-[24px] lg:text-[24px] lg:leading-[160%]">
                 {children}
               </h1>
             ),
 
             h2: ({ children }) => (
-              <h2 className="mb-[12px] mt-[24px] font-['SUIT_Variable'] text-[22px] font-bold leading-[160%] text-[#D0D0D2] first:mt-0">
+              <h2 className="mb-[10px] mt-[20px] font-['SUIT_Variable'] text-[15px] font-bold leading-[150%] text-[#D0D0D2] first:mt-0 lg:mb-[12px] lg:mt-[24px] lg:text-[22px] lg:leading-[160%]">
                 {children}
               </h2>
             ),
 
             h3: ({ children }) => (
-              <h3 className="mb-[10px] mt-[20px] font-['SUIT_Variable'] text-[20px] font-semibold leading-[160%] text-[#D0D0D2] first:mt-0">
+              <h3 className="mb-[8px] mt-[16px] font-['SUIT_Variable'] text-[14px] font-semibold leading-[150%] text-[#D0D0D2] first:mt-0 lg:mb-[10px] lg:mt-[20px] lg:text-[20px] lg:leading-[160%]">
                 {children}
               </h3>
             ),
 
             p: ({ children }) => (
-              <p className="mb-[12px] text-[18px] font-medium leading-[160%] text-[#A1A1A5] last:mb-0">
+              <p className="mb-[10px] text-[13px] font-normal leading-[150%] tracking-[-0.26px] text-[#A1A1A5] last:mb-0 lg:mb-[12px] lg:text-[18px] lg:font-medium lg:leading-[160%] lg:tracking-normal">
                 {children}
               </p>
             ),
@@ -63,7 +63,7 @@ const AnalysisDetail = ({
             ),
 
             li: ({ children }) => (
-              <li className="text-[20px] font-medium leading-[160%]">
+              <li className="text-[13px] font-normal leading-[150%] tracking-[-0.26px] lg:text-[20px] lg:font-medium lg:leading-[160%] lg:tracking-normal">
                 {children}
               </li>
             ),

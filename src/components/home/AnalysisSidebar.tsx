@@ -3,6 +3,7 @@ import FolderSelect, {
 } from "./FolderSelect";
 
 type AnalysisSidebarProps = {
+  className?: string;
   folders: FolderOption[];
   selectedFolderId: number;
   onFolderChange: (
@@ -21,6 +22,7 @@ type AnalysisSidebarProps = {
 };
 
 const AnalysisSidebar = ({
+  className = "",
   folders,
   selectedFolderId,
   onFolderChange,
@@ -29,7 +31,7 @@ const AnalysisSidebar = ({
   onCreateFolder,
 }: AnalysisSidebarProps) => {
   return (
-    <aside className="w-[280px] shrink-0">
+    <aside className={`w-full shrink-0 lg:w-[280px] ${className}`}>
       <FolderSelect
         folders={folders}
         selectedFolderId={
