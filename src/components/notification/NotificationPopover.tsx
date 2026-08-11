@@ -48,9 +48,9 @@ const NotificationPopover = ({
           onClick={(event) =>
             event.stopPropagation()
           }
-          className="z-50 min-h-[503px] w-[384px] rounded-[5px] bg-[#13151F] shadow-[0_0_40px_rgba(134,111,241,0.35)] outline-none"
+          className="z-50 min-h-[503px] w-[calc(100vw-32px)] max-w-[384px] rounded-[5px] bg-[#13151F] shadow-[0_0_40px_rgba(134,111,241,0.35)] outline-none"
         >
-          <div className="flex min-h-[503px] w-[384px] flex-col px-[20px] pb-[20px] pt-[10px]">
+          <div className="flex min-h-[503px] w-full flex-col px-[20px] pb-[20px] pt-[10px]">
             {/* 헤더 */}
             <div className="flex items-center justify-between px-[10px] pb-[15px] pt-[10px]">
               <h2 className="text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#F5F2FF]">

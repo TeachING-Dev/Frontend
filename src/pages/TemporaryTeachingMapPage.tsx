@@ -325,7 +325,7 @@ const TemporaryTeachingMapPage = () => {
               onCancelClick={handleDeleteModeCancel}
             />
           ) : (
-            <div className="flex w-full items-end gap-[16px] lg:justify-between lg:gap-0">
+            <div className="flex w-full items-end justify-between gap-[20px] lg:gap-0">
               <TeachingMapFilter
                 selectedFilter={selectedFilter}
                 onFilterChange={handleFilterChange}

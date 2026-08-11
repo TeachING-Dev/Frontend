@@ -2,7 +2,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   getNotifications,
@@ -26,6 +26,8 @@ const Header = ({
   onMenuClick,
 }: HeaderProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const hideMobileNotification = location.pathname.startsWith("/mypage");
 
   const [notifications, setNotifications] =
     useState<Notification[]>([]);
@@ -128,8 +130,34 @@ const handleNotificationClick = async (
     navigate("/mypage");
   };
 
+  const notificationTrigger = (
+    <button
+      type="button"
+      aria-label="알림"
+      className="flex size-[40px] items-center justify-center overflow-hidden hover:opacity-80"
+    >
+      <img
+        src={hasUnread ? "/icon/Alarm2.svg" : "/icon/Alarm3.png"}
+        alt=""
+        className="size-[40px] object-contain"
+      />
+    </button>
+  );
+
   return (
-    <header className="relative hidden h-16 items-center justify-between bg-[#090713] px-8 shadow-[0_0_80px_rgba(145,125,236,0.1)] lg:flex">
+    <header className="relative flex h-[56px] items-center justify-end bg-transparent lg:h-16 lg:justify-between lg:bg-[#090713] lg:px-8 lg:shadow-[0_0_80px_rgba(145,125,236,0.1)]">
+      {showRightIcons && !hideMobileNotification && (
+        <div className="mr-4 flex h-[56px] w-[40px] items-center justify-center lg:hidden">
+          <NotificationPopover
+            notifications={notifications}
+            onItemClick={handleNotificationClick}
+            onViewAll={handleViewAll}
+            trigger={notificationTrigger}
+          />
+        </div>
+      )}
+
+      <div className="hidden w-full items-center justify-between lg:flex">
       {showMenuIcon ? (
         <button
           type="button"
@@ -174,35 +202,19 @@ const handleNotificationClick = async (
               handleNotificationClick
             }
             onViewAll={handleViewAll}
-            trigger={
-              <button
-                type="button"
-                aria-label="알림"
-                className="flex size-10 items-center justify-center overflow-hidden hover:opacity-80"
-              >
-                <img
-                  src={
-                    hasUnread
-                      ? "/icon/Alarm2.svg"
-                      : "/icon/Alarm3.png"
-                  }
-                  alt=""
-                  className="size-[40px] object-contain"
-                />
-              </button>
-            }
+            trigger={notificationTrigger}
           />
 
           <button
             type="button"
             aria-label="마이페이지"
             onClick={handleMyPageClick}
-            className="flex size-10 items-center justify-center overflow-hidden hover:opacity-80"
+      className="flex size-[24px] items-center justify-center overflow-hidden hover:opacity-80 lg:size-10"
           >
             <img
               src="/Mypage.svg"
               alt=""
-              className="size-10 object-contain"
+        className="size-[24px] object-contain lg:size-10"
             />
           </button>
         </div>
@@ -212,6 +224,7 @@ const handleNotificationClick = async (
           aria-hidden="true"
         />
       )}
+      </div>
     </header>
   );
 };

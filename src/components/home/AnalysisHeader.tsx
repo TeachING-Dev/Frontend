@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import type { MaterialTag } from "../../apis/material";
 
@@ -10,6 +10,7 @@ type AnalysisHeaderProps = {
   onSelectedTagsChange?: (
     tags: MaterialTag[],
   ) => void;
+  mobileFolderSelect?: ReactNode;
 };
 
 const AnalysisHeader = ({
@@ -18,6 +19,7 @@ const AnalysisHeader = ({
   originUrl,
   tags,
   onSelectedTagsChange,
+  mobileFolderSelect,
 }: AnalysisHeaderProps) => {
   const [removedTagIds, setRemovedTagIds] =
     useState<number[]>([]);
@@ -47,9 +49,9 @@ const AnalysisHeader = ({
   };
 
   return (
-    <header className="mb-[46px] min-w-0">
+    <header className="mb-[20px] min-w-0 lg:mb-[46px]">
       {/* 날짜 */}
-      <p className="mb-[6px] text-[18px] font-medium italic leading-[150%] tracking-[-0.54px] text-[#B8B9BC]">
+      <p className="mb-[6px] text-[16px] font-medium italic leading-[150%] tracking-[-0.48px] text-[#B8B9BC] lg:text-[18px] lg:tracking-[-0.54px]">
         {date}
       </p>
 
@@ -59,12 +61,12 @@ const AnalysisHeader = ({
       </h1>
 
       {/* 태그 제목 */}
-      <div className="mb-[12px] flex items-center gap-[5px]">
+      <div className="mb-[8px] flex items-center gap-[5px] lg:mb-[12px]">
         <img
           src="/icon/tag.png"
           alt=""
           aria-hidden="true"
-          className="h-[20px] w-[20px] object-contain"
+          className="h-[24px] w-[24px] object-contain lg:h-[20px] lg:w-[20px]"
         />
 
         <span className="font-['Pretendard'] text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
@@ -73,7 +75,7 @@ const AnalysisHeader = ({
       </div>
 
       {/* 태그 목록 */}
-      <div className="mb-[20px] flex flex-wrap items-center gap-[12px]">
+      <div className="-mx-[16px] mb-[22px] flex items-center gap-[8px] overflow-x-auto px-[16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:mb-[20px] lg:flex-wrap lg:gap-[12px] lg:overflow-visible lg:px-0">
         {tags.map((tag) => {
           const isRemoved =
             removedTagIds.includes(
@@ -84,20 +86,20 @@ const AnalysisHeader = ({
             <div
               key={tag.tagId}
               className={`
-                flex h-[32px] items-center
+                flex h-[24px] shrink-0 items-center lg:h-[32px]
                 rounded-full
-                pl-[12px] pr-[8px]
+                px-[5px] lg:pl-[12px] lg:pr-[8px]
                 ${
                   isRemoved
-                    ? "border border-dashed border-[#4B3F72]"
-                    : "border border-solid border-[#917DEC]"
+                    ? "border-[0.5px] border-dashed border-[#4B3F72] lg:border"
+                    : "border-[0.5px] border-solid border-[#917DEC] lg:border"
                 }
               `}
             >
               <span
                 className={`
                   font-['Montserrat']
-                  text-[15px]
+                  text-[12px] lg:text-[15px]
                   font-semibold
                   italic
                   leading-[150%]
@@ -126,11 +128,11 @@ const AnalysisHeader = ({
                 }
                 className={`
                   ml-[2px]
-                  flex h-[16px] w-[16px]
+                  flex h-[10px] w-[10px] lg:h-[16px] lg:w-[16px]
                   shrink-0
                   items-center
                   justify-center
-                  text-[20px]
+                  text-[14px] lg:text-[20px]
                   leading-none
                   transition-opacity
                   hover:opacity-70
@@ -148,22 +150,24 @@ const AnalysisHeader = ({
         })}
       </div>
 
+      {mobileFolderSelect}
+
       {/* URL */}
       {originUrl && (
         <a
           href={originUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-w-0 items-center gap-[8px] text-[#717379] transition-opacity hover:opacity-80"
+          className="mt-[20px] flex min-w-0 items-center gap-[5px] text-[#717379] transition-opacity hover:opacity-80 lg:mt-0 lg:gap-[8px]"
         >
           <img
             src="/icon/링크.svg"
             alt=""
             aria-hidden="true"
-            className="h-[24px] w-[24px] shrink-0 object-contain"
+            className="h-[16px] w-[16px] shrink-0 object-contain lg:h-[24px] lg:w-[24px]"
           />
 
-          <span className="truncate font-['Montserrat'] text-[14px] font-medium italic leading-[150%] tracking-[-0.42px] text-[#42444C]">
+          <span className="truncate font-['SUIT_Variable'] text-[10px] font-normal leading-[140%] tracking-[-0.2px] text-[#42444C] lg:font-['Montserrat'] lg:text-[14px] lg:font-medium lg:italic lg:leading-[150%] lg:tracking-[-0.42px]">
             {originUrl}
           </span>
         </a>

@@ -39,7 +39,7 @@ const TrashRestoreToolbar = ({
           }
           alt=""
           aria-hidden="true"
-          className="h-[25px] w-[25px] shrink-0 lg:h-9 lg:w-9"
+          className="h-4 w-4 shrink-0 lg:h-9 lg:w-9"
         />
 
         <span className="font-suit text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#917DEC] lg:text-[20px] lg:leading-[30px] lg:tracking-[-0.6px]">

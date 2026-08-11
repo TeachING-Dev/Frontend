@@ -26,8 +26,8 @@ const HomeLayout = ({
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#090713]">
-      {/* PC 상단 고정 헤더 */}
-      <div className="fixed inset-x-0 top-0 z-50 hidden lg:block">
+      {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
+      <div className="relative z-50 h-[56px] bg-transparent lg:fixed lg:inset-x-0 lg:top-0 lg:h-16">
         <Header
           showRightIcons={showRightIcons}
           insetMenu={insetMenu}
@@ -48,7 +48,7 @@ const HomeLayout = ({
           fixed
           inset-x-0
           bottom-0
-          top-[56px]
+          top-0
           z-0
           bg-[linear-gradient(to_bottom,#090713_0%,#090713_72%,#18152D_88%,#30265F_100%)]
           lg:top-[64px]
@@ -74,7 +74,7 @@ const HomeLayout = ({
             pointer-events-none
             absolute
             left-1/2
-            top-[40px]
+            top-[50px]
             z-0
             w-[700px]
             max-w-none

@@ -28,11 +28,22 @@ const FolderSelect = ({
   const [searchKeyword, setSearchKeyword] =
     useState("");
 
-  const selectedFolder =
+  const selectedFolderFromList =
     folders.find(
       (folder) =>
         folder.id === selectedFolderId,
-    ) ?? null;
+      ) ?? null;
+
+  const selectedFolder =
+    selectedFolderFromList ??
+    (recommendedFolderId ===
+      selectedFolderId &&
+    recommendedFolderName
+      ? {
+          id: recommendedFolderId,
+          name: recommendedFolderName,
+        }
+      : null);
 
   const hasFolders =
     folders.length > 0;
@@ -77,7 +88,7 @@ const FolderSelect = ({
     };
 
   return (
-    <div className="relative w-[300px]">
+    <div className="relative w-full lg:w-[300px]">
       {/* 선택된 폴더 */}
       <button
         type="button"
@@ -86,25 +97,27 @@ const FolderSelect = ({
         }
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        className="flex h-[40px] w-full items-center justify-between rounded-[5px] bg-[#13151F] px-[12px] text-left"
+        className="flex h-[48px] w-full items-center justify-between rounded-[5px] bg-[#13151F] px-[16px] text-left lg:h-[40px] lg:px-[12px]"
       >
         <span className="flex min-w-0 items-center gap-[10px]">
           <img
             src="/folder/folder1.png"
             alt=""
             aria-hidden="true"
-            className="h-[24px] w-[24px] shrink-0 object-contain"
+            className="h-[28px] w-[28px] shrink-0 object-contain lg:h-[24px] lg:w-[24px]"
           />
 
-          <span className="truncate text-[20px] font-medium leading-[150%] tracking-[-0.6px] text-[#F5F2FF]">
+          <span className="truncate text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#F5F2FF] lg:text-[20px] lg:font-medium lg:tracking-[-0.6px]">
             {selectedFolder?.name ??
               "폴더 선택"}
           </span>
         </span>
 
-        <span
+        <img
+          src="/dropdown.svg"
+          alt=""
           aria-hidden="true"
-          className={`h-0 w-0 shrink-0 border-x-[8px] border-t-[9px] border-x-transparent border-t-[#917DEC] ${
+          className={`h-[28px] w-[28px] shrink-0 object-contain transition-transform lg:h-[20px] lg:w-[20px] ${
             isOpen
               ? "rotate-180"
               : ""
@@ -150,31 +163,31 @@ const FolderSelect = ({
                     onClick={
                       handleRecommendedFolderSelect
                     }
-                    className="flex h-[40px] w-full items-center gap-[8px] rounded-[5px] px-[8px] text-left transition hover:bg-white/5"
+                    className="flex h-[36px] w-full items-center gap-[8px] rounded-[5px] px-[8px] text-left transition hover:bg-white/5 lg:h-[40px]"
                   >
                     <img
                       src="/folder/folder1.png"
                       alt=""
                       aria-hidden="true"
-                      className="h-[24px] w-[24px] shrink-0 object-contain"
+                      className="h-[19px] w-[19px] shrink-0 object-contain lg:h-[24px] lg:w-[24px]"
                     />
 
-                    <span className="truncate text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#917DEC]">
+                    <span className="truncate text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#917DEC] lg:text-[18px] lg:font-medium lg:tracking-[-0.54px]">
                       {
                         recommendedFolderName
                       }
                     </span>
                   </button>
                 ) : (
-                  <div className="flex h-[40px] w-full items-center gap-[8px] px-[8px]">
+                  <div className="flex h-[36px] w-full items-center gap-[8px] px-[8px] lg:h-[40px]">
                     <img
                       src="/folder/folder1.png"
                       alt=""
                       aria-hidden="true"
-                      className="h-[24px] w-[24px] shrink-0 object-contain opacity-50"
+                      className="h-[19px] w-[19px] shrink-0 object-contain opacity-50 lg:h-[24px] lg:w-[24px]"
                     />
 
-                    <span className="text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#42444C]">
+                    <span className="text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#42444C] lg:text-[18px] lg:font-medium lg:tracking-[-0.54px]">
                       AI가 추천하는 폴더
                     </span>
                   </div>
@@ -214,7 +227,7 @@ const FolderSelect = ({
                                 folder.id,
                               )
                             }
-                            className={`flex h-[40px] w-full items-center gap-[8px] rounded-[5px] px-[10px] text-left transition ${
+                            className={`flex h-[36px] w-full items-center gap-[8px] rounded-[5px] px-[8px] text-left transition lg:h-[40px] lg:px-[10px] ${
                               isSelected
                                 ? "bg-[#1F212A]"
                                 : "hover:bg-white/5"
@@ -224,10 +237,10 @@ const FolderSelect = ({
                               src="/folder/folder1.png"
                               alt=""
                               aria-hidden="true"
-                              className="h-[24px] w-[24px] shrink-0 object-contain"
+                              className="h-[19px] w-[19px] shrink-0 object-contain lg:h-[24px] lg:w-[24px]"
                             />
 
-                            <span className="truncate text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#917DEC]">
+                            <span className="truncate text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#F5F2FF] lg:text-[18px] lg:font-medium lg:tracking-[-0.54px] lg:text-[#917DEC]">
                               {
                                 folder.name
                               }
