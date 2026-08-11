@@ -143,12 +143,15 @@ const LoginPage = () => {
             onClick={handleKakaoLogin}
             className="flex h-[50px] w-full items-center justify-center rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
           >
-            <span className="grid grid-cols-[30px_auto] items-center gap-[10px]">
-              <span className="flex h-[30px] w-[30px] items-center justify-center">
-                <img src="/Kakao.svg" alt="" className="h-[30px] w-[30px] shrink-0" />
-              </span>
-              <span>카카오로 시작하기</span>
+            <span className="flex w-[30px] justify-center">
+              <img
+                src="/Kakao.svg"
+                alt=""
+                className="h-[30px] w-[30px] -translate-x-[3px] translate-y-[2px] shrink-0"
+              />
             </span>
+
+            <span className="-translate-x-[2px]">카카오로 시작하기</span>
           </button>
 
           <button

@@ -23,7 +23,7 @@ const TemporaryTeachingMapHeader = () => {
         임시 보관함
       </h1>
 
-      <p className="text-[13px] font-normal leading-[140%] tracking-[-0.26px] text-[#717379] lg:text-[24px] lg:font-semibold lg:leading-[150%] lg:tracking-[-0.72px]">
+      <p className="text-[13px] font-normal leading-[140%] tracking-[-0.26px] text-[#717379] lg:text-[20px] lg:font-semibold lg:leading-[150%] lg:tracking-[-0.72px]">
         학습 로드맵을 만들고 관리하세요.
       </p>
     </section>
