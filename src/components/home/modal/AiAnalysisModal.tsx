@@ -88,9 +88,7 @@ const AiAnalysisLoadingModal = ({
           w-[352px]
           rounded-[10px]
           bg-[#090713]
-          px-[20px]
-          pb-[30px]
-          pt-[20px]
+          p-[20px]
           shadow-[0_0_80px_rgba(134,111,241,0.35)]
         "
       >
@@ -132,12 +130,12 @@ const AiAnalysisLoadingModal = ({
         </div>
 
         {/* 별 + 로딩 바 */}
-        <div className="relative mt-[24px] pt-[65px]">
+        <div className="relative mt-[10px] pt-[65px]">
           {/* 진행률을 따라가는 별 */}
           <div
             className="
               absolute
-              inset-x-[15px]
+              inset-x-0
               top-0
               h-[54px]
             "
@@ -168,6 +166,7 @@ const AiAnalysisLoadingModal = ({
           <div
             className="
               mt-[2px]
+              p-[0px]
               h-[7px]
               w-full
               overflow-hidden
@@ -195,12 +194,12 @@ const AiAnalysisLoadingModal = ({
         {/* 안내 문구 */}
         <p
           className="
-            mt-[16px]
+            mt-[10px]
             text-center
-            text-[18px]
+            text-[13px]
             font-medium
             leading-[150%]
-            tracking-[-0.54px]
+            tracking-[-0.325px]
             text-[#917DEC]
           "
         >

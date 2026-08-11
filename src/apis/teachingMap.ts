@@ -56,6 +56,16 @@ export interface CreateTeachingMapResult {
   createdAt: string;
 }
 
+export interface SaveTemporaryTeachingMapRequest {
+  teachingMapId?: number;
+  folderId: number;
+  title: string;
+  description: string;
+  type: TeachingMapType;
+}
+
+export type SaveTemporaryTeachingMapResult = CreateTeachingMapResult;
+
 export interface TeachingMapDetailStep {
   stepId: number;
   order: number;
@@ -161,6 +171,17 @@ export const createTeachingMap = async (
     "/api/v1/teaching-maps",
     request,
     { signal },
+  );
+
+  return data.result;
+};
+
+export const saveTemporaryTeachingMap = async (
+  request: SaveTemporaryTeachingMapRequest,
+): Promise<SaveTemporaryTeachingMapResult> => {
+  const { data } = await api.post<ApiResponse<SaveTemporaryTeachingMapResult>>(
+    "/api/v1/teaching-maps/temp",
+    request,
   );
 
   return data.result;

@@ -41,7 +41,7 @@ const TeachingMapItem = ({
   return (
     <article
       onClick={onClick}
-      className="group flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] px-[23px] py-[8px] transition-colors hover:bg-white/5 md:gap-[15px] md:px-5 md:py-[10px]"
+      className="group flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] p-[10px] transition-colors hover:bg-white/5 md:gap-[15px] md:px-5 md:py-[10px]"
     >
       {/* 썸네일 */}
       <div className="flex h-[38px] w-[60px] shrink-0 items-center justify-center gap-[4px] rounded-[6px] bg-[#1F212A] p-[6px] md:h-[60px] md:w-[98px] md:gap-[6px] md:rounded-[10px] md:p-[10px]">
@@ -83,7 +83,7 @@ const TeachingMapItem = ({
       <button
         type="button"
         onClick={handleShortcutClick}
-        className="shrink-0 rounded-[6px] border border-[#917DEC] px-[8px] py-[3px] text-[9px] font-semibold leading-[140%] tracking-[-0.27px] text-[#917DEC] transition-colors hover:bg-[#917DEC]/10 md:rounded-[8px] md:px-3 md:py-1.5 md:text-[20px] md:tracking-[-0.6px]"
+        className="flex h-[20px] w-[54px] shrink-0 items-center justify-center rounded-[6px] border-[0.6px] border-[#917DEC] px-[4px] py-[2px] font-suit text-[10px] font-normal leading-[14px] tracking-[-0.2px] text-[#917DEC] transition-colors hover:bg-[#917DEC]/10 md:h-auto md:w-auto md:rounded-[8px] md:border md:px-3 md:py-1.5 md:text-[20px] md:font-semibold md:leading-[140%] md:tracking-[-0.6px]"
       >
         Short-cut
       </button>

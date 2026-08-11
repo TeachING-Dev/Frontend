@@ -3,7 +3,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getFolders } from "../apis/folder";
-import { createTeachingMap, getTeachingMaps } from "../apis/teachingMap";
+import {
+  createTeachingMap,
+  getTeachingMaps,
+  saveTemporaryTeachingMap,
+} from "../apis/teachingMap";
 import FolderLimitModal from "../components/teachingMap/create/FolderLimitModal";
 import TeachingMapCreateButton from "../components/teachingMap/create/TeachingMapCreateButton";
 
@@ -73,6 +77,9 @@ const TeachingMapCreatePage = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [toastTitle, setToastTitle] = useState("티칭맵 생성에 실패했습니다.");
   const [isTemporarySaveSuccess, setIsTemporarySaveSuccess] = useState(false);
+  const [savedTeachingMapId, setSavedTeachingMapId] = useState<number | undefined>(
+    draftId === undefined ? undefined : Number(draftId),
+  );
   const generationTimerRef = useRef<number | null>(null);
   const generationAbortControllerRef = useRef<AbortController | null>(null);
   const defaultFolderId =
@@ -197,35 +204,37 @@ const TeachingMapCreatePage = () => {
     setIsToastOpen(true);
   };
 
-  const handleTemporarySave = () => {
-    if (!canTemporarySave) {
+  const handleTemporarySave = async () => {
+    if (!canTemporarySave || selectedFolderId === null) {
       return;
     }
 
-    const temporaryTeachingMapData = {
-      id: temporaryTeachingMap?.id ?? Date.now(),
+    try {
+      const savedTeachingMap = await saveTemporaryTeachingMap({
+        ...(savedTeachingMapId === undefined
+          ? {}
+          : { teachingMapId: savedTeachingMapId }),
+        folderId: selectedFolderId,
+        title: title.trim(),
+        description: description.trim(),
+        type: selectedType === "deepDive" ? "DEEPDIVE" : "SHORTCUT",
+      });
 
-      title: title.trim(),
-
-      description: description.trim(),
-
-      folderId: selectedFolderId,
-
-      type: selectedType,
-
-      savedAt: new Date().toISOString(),
-    };
-
-    console.log(
-      isTemporaryEditMode ? "수정할 임시 티칭맵:" : "임시 저장할 티칭맵:",
-      temporaryTeachingMapData,
-    );
-
-    // TODO: 티칭맵 임시 저장 및 수정 API 연결
-    setToastTitle("임시저장 되었습니다.");
-    setToastMessage("");
-    setIsTemporarySaveSuccess(true);
-    setIsToastOpen(true);
+      setSavedTeachingMapId(savedTeachingMap.teachingMapId);
+      setToastTitle("임시저장 되었습니다.");
+      setToastMessage("");
+      setIsTemporarySaveSuccess(true);
+      setIsToastOpen(true);
+    } catch (error) {
+      setToastTitle("임시저장에 실패했습니다.");
+      setToastMessage(
+        error instanceof Error
+          ? error.message
+          : "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
+      setIsTemporarySaveSuccess(false);
+      setIsToastOpen(true);
+    }
   };
 
   const handleCreate = async () => {

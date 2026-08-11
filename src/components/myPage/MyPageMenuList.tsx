@@ -26,6 +26,11 @@ const MyPageMenuList = () => {
       label: "구독하기",
       path: "/subscription",
     },
+    {
+      label: "휴지통",
+      path: "/trash",
+      mobileOnly: true,
+    },
   ];
 
   const handleMenuClick = (path: string) => {
@@ -42,11 +47,12 @@ const MyPageMenuList = () => {
   return (
     <div className="flex w-full flex-col gap-[10px] lg:w-[736px]">
       {menuItems.map((menuItem) => (
-        <MyPageMenuItem
-          key={menuItem.label}
-          label={menuItem.label}
-          onClick={() => handleMenuClick(menuItem.path)}
-        />
+        <div key={menuItem.label} className={menuItem.mobileOnly ? "lg:hidden" : undefined}>
+          <MyPageMenuItem
+            label={menuItem.label}
+            onClick={() => handleMenuClick(menuItem.path)}
+          />
+        </div>
       ))}
     </div>
   );

@@ -245,8 +245,8 @@ const ArchiveDataPage = () => {
 
   if (isLoading) {
     return (
-      <main className="py-10">
-        <div className="mx-auto w-[1120px]">
+      <main className="px-4 py-10 pb-[122px] lg:px-0 lg:pb-10">
+        <div className="mx-auto w-full lg:w-[1120px]">
           자료를 불러오는 중입니다.
         </div>
       </main>
@@ -258,8 +258,8 @@ const ArchiveDataPage = () => {
     !materialAnalysis
   ) {
     return (
-      <main className="py-10">
-        <div className="mx-auto w-[1120px]">
+      <main className="px-4 py-10 pb-[122px] lg:px-0 lg:pb-10">
+        <div className="mx-auto w-full lg:w-[1120px]">
           {errorMessage ||
             "자료 정보가 없습니다."}
         </div>
@@ -268,8 +268,8 @@ const ArchiveDataPage = () => {
   }
 
   return (
-    <main className="py-10">
-      <div className="mx-auto w-[1120px]">
+    <main className="px-4 py-10 pb-[122px] lg:px-0 lg:pb-10">
+      <div className="mx-auto w-full lg:w-[1120px]">
         <ArchiveDataHeader
           date={
             materialAnalysis.generatedAt
@@ -302,14 +302,14 @@ const ArchiveDataPage = () => {
         />
 
         {isAnalysisLoading ? (
-          <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
-            <div className="flex h-[60px] items-center px-[20px]">
-              <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
+          <section className="w-full overflow-hidden rounded-[10px] border border-[#3A3946] bg-[#1F212A] lg:rounded-[12px]">
+            <div className="flex h-[40px] items-center px-[20px] lg:h-[60px]">
+              <h2 className="font-['SUIT_Variable'] text-[16px] font-normal leading-[150%] text-[#D9CDFF] lg:text-[24px] lg:font-bold lg:tracking-[-0.24px]">
                 AI 상세 분석
               </h2>
             </div>
 
-            <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[40px] text-center text-[18px] text-[#A1A1A5]">
+            <div className="rounded-t-[10px] bg-[#13151F] px-[20px] pb-[10px] pt-[20px] text-center text-[13px] leading-[19.5px] text-[#A1A1A5] lg:px-[30px] lg:py-[40px] lg:text-[18px]">
               AI 분석을 불러오는
               중입니다.
             </div>
@@ -324,14 +324,14 @@ const ArchiveDataPage = () => {
             }
           />
         ) : (
-          <section className="w-full overflow-hidden rounded-[12px] border border-[#3A3946] bg-[#1F212A]">
-            <div className="flex h-[60px] items-center px-[20px]">
-              <h2 className="font-['SUIT_Variable'] text-[24px] font-bold leading-[150%] tracking-[-0.24px] text-[#D9CDFF]">
+          <section className="w-full overflow-hidden rounded-[10px] border border-[#3A3946] bg-[#1F212A] lg:rounded-[12px]">
+            <div className="flex h-[40px] items-center px-[20px] lg:h-[60px]">
+              <h2 className="font-['SUIT_Variable'] text-[16px] font-normal leading-[150%] text-[#D9CDFF] lg:text-[24px] lg:font-bold lg:tracking-[-0.24px]">
                 AI 상세 분석
               </h2>
             </div>
 
-            <div className="rounded-t-[10px] bg-[#13151F] px-[30px] py-[40px] text-center text-[18px] text-[#A1A1A5]">
+            <div className="rounded-t-[10px] bg-[#13151F] px-[20px] pb-[10px] pt-[20px] text-center text-[13px] leading-[19.5px] text-[#A1A1A5] lg:px-[30px] lg:py-[40px] lg:text-[18px]">
               {
                 analysisErrorMessage
               }

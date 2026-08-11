@@ -9,23 +9,18 @@ type RecentKnowledgeListProps = {
 };
 
 const formatSavedAt = (createdAt: string) => {
-  const utcCreatedAt =
-    createdAt.endsWith("Z")
-      ? createdAt
-      : `${createdAt}Z`;
+  const utcCreatedAt = createdAt.endsWith("Z")
+    ? createdAt
+    : `${createdAt}Z`;
 
-  const createdDate =
-    new Date(utcCreatedAt);
-
+  const createdDate = new Date(utcCreatedAt);
   const now = new Date();
 
   const differenceInMilliseconds =
-    now.getTime() -
-    createdDate.getTime();
+    now.getTime() - createdDate.getTime();
 
   const differenceInMinutes = Math.floor(
-    differenceInMilliseconds /
-      (1000 * 60),
+    differenceInMilliseconds / (1000 * 60),
   );
 
   if (differenceInMinutes < 1) {
@@ -52,9 +47,7 @@ const formatSavedAt = (createdAt: string) => {
     return `${differenceInDays}일 전`;
   }
 
-  return createdDate.toLocaleDateString(
-    "ko-KR",
-  );
+  return createdDate.toLocaleDateString("ko-KR");
 };
 
 const RecentKnowledgeList = ({
@@ -72,23 +65,20 @@ const RecentKnowledgeList = ({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col gap-y-[10px]">
       {materials.map((material) => (
         <RecentKnowledgeItem
           key={material.materialId}
           title={material.title}
-          savedAt={formatSavedAt(
-            material.createdAt,
-          )}
+          savedAt={formatSavedAt(material.createdAt)}
           iconSrc={
-            material.platformImageUrl
-              ? material.platformImageUrl
-              : "/icon/최근에 저장한 지식3.png"
+            material.platformImageUrl ||
+            "/icon/최근에 저장한 지식3.png"
           }
           onClick={() =>
             navigate(
               `/archive/folder/${material.folderId}/materials/${material.materialId}`,
-          )
+            )
           }
         />
       ))}
