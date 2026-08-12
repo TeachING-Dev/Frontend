@@ -1,4 +1,5 @@
 import api from "./axios";
+import { saveMembershipType } from "../utils/subscription";
 
 export { logout } from "./auth";
 
@@ -68,12 +69,15 @@ const getResult = <T>(
   return response.data.result;
 };
 
-export const getMyProfile = async () =>
-  getResult(
+export const getMyProfile = async () => {
+  const profile = getResult(
     await api.get<ApiResponse<MyProfile>>(
       "/users/me",
     ),
   );
+  saveMembershipType(profile.membershipType);
+  return profile;
+};
 
 export const checkNickname = (
   nickname: string,

@@ -31,7 +31,6 @@ import { renderFormattedText } from "../utils/renderFormattedText";
 import { getMyProfile } from "../apis/users";
 import {
   isPremiumMembership,
-  isSubscriptionActive,
 } from "../utils/subscription";
 
 const limitDescription = "요금제를 업그레이드하고 무제한으로 질문해 보세요!";
@@ -82,24 +81,44 @@ const countTodayUserQuestions = (
       isToday(message.createdAt),
   ).length;
 
-const isQuestionLimitMessage = (message: string) =>
-  (message.includes("무료") ||
-    message.includes("제한") ||
-    message.includes("하루")) &&
-  (message.includes("5") ||
-    message.includes("질문") ||
-    message.includes("메시지") ||
-    message.includes("메세지"));
+const countUserMessages = (
+  messages: ChatMessage[],
+) =>
+  messages.filter(
+    (message) => message.role === "user",
+  ).length;
 
-const isQuestionLimitError = (error: unknown) =>
+const isQuestionLimitMessage = (message: string) => {
+  const normalizedMessage =
+    message.trim().toLowerCase();
+
+  const hasFreeLimitContext =
+    normalizedMessage.includes("무료") ||
+    normalizedMessage.includes("요금제") ||
+    normalizedMessage.includes("제한") ||
+    normalizedMessage.includes("하루");
+  const hasQuestionContext =
+    normalizedMessage.includes("질문") ||
+    normalizedMessage.includes("메시지") ||
+    normalizedMessage.includes("메세지") ||
+    normalizedMessage.includes("가능") ||
+    normalizedMessage.includes("초과") ||
+    normalizedMessage.includes("사용");
+  const hasFiveLimit =
+    normalizedMessage.includes("5") ||
+    normalizedMessage.includes("다섯");
+
+  return (
+    hasFreeLimitContext &&
+    hasQuestionContext &&
+    hasFiveLimit
+  );
+};
+
+const isRoomLimitError = (error: unknown) =>
   error instanceof Error &&
   ((error instanceof ChatApiError &&
     error.code?.includes("LIMIT")) ||
-    isQuestionLimitMessage(error.message));
-
-const isRoomLimitError = (error: unknown) =>
-  error instanceof ChatApiError &&
-  (error.code?.includes("LIMIT") ||
     error.message.includes("대화방") ||
     error.message.includes("채팅방") ||
     error.message.includes("10"));
@@ -205,6 +224,17 @@ const mapHistoryMessage = (
       : undefined,
 });
 
+const removeQuestionLimitMessages = (
+  messages: ChatMessage[],
+) =>
+  messages.filter(
+    (message) =>
+      !(
+        message.role === "assistant" &&
+        isQuestionLimitMessage(message.content)
+      ),
+  );
+
 const ChatbotPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -218,20 +248,23 @@ const ChatbotPage = () => {
   const [isRoomLimitModalOpen, setIsRoomLimitModalOpen] = useState(false);
   const [isQuestionLimitModalOpen, setIsQuestionLimitModalOpen] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
-  const [isPremiumUser, setIsPremiumUser] = useState(
-    isSubscriptionActive,
-  );
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [isCopyToastVisible, setIsCopyToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(
     "✓ 복사 완료! 원문에서 붙여넣기(Ctrl+V)로 위치를 확인하세요.",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
+  const questionCountRef = useRef(0);
+  const temporaryMessageIdRef = useRef(-1);
   const contentMarginClass = isNavOpen ? "ml-[204px] max-md:ml-0" : "ml-20 max-md:ml-0";
   const emptyStateCenterClass = isNavOpen
     ? "md:-translate-x-[102px]"
     : "md:-translate-x-10";
-  const hasConversation = messages.length > 0;
+  const hasPremiumAccess = isPremiumUser;
+  const visibleMessages =
+    removeQuestionLimitMessages(messages);
+  const hasConversation = visibleMessages.length > 0;
   const locationState =
     location.state as ChatbotLocationState;
   const chatRoomIdValue =
@@ -274,10 +307,9 @@ const ChatbotPage = () => {
       try {
         const profile = await getMyProfile();
         setIsPremiumUser(
-          isSubscriptionActive() ||
-            isPremiumMembership(
-              profile.membershipType,
-            ),
+          isPremiumMembership(
+            profile.membershipType,
+          ),
         );
       } catch (error) {
         console.error(error);
@@ -319,20 +351,27 @@ const ChatbotPage = () => {
           await getChatRoomMessages(chatRoomId);
 
         setMessages(
-          chatHistory.messages.map(
-            mapHistoryMessage,
+          removeQuestionLimitMessages(
+            chatHistory.messages.map(
+              mapHistoryMessage,
+            ),
           ),
         );
-        setQuestionCount(
+        const todayQuestionCount =
           countTodayUserQuestions(
             chatHistory.messages,
-          ),
-        );
+          );
+
+        questionCountRef.current =
+          todayQuestionCount;
+        setQuestionCount(todayQuestionCount);
       } catch (error) {
         console.error(error);
 
         if (isForbiddenChatError(error)) {
           setMessages([]);
+          questionCountRef.current = 0;
+          setQuestionCount(0);
           navigate("/chatbot", { replace: true });
         }
       }
@@ -354,6 +393,10 @@ const ChatbotPage = () => {
     });
   }, [messages]);
 
+  useEffect(() => {
+    questionCountRef.current = questionCount;
+  }, [questionCount]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -368,28 +411,71 @@ const ChatbotPage = () => {
     }
 
     const currentQuestionCount = hasValidChatRoomId
-      ? questionCount
+      ? Math.max(
+          questionCountRef.current,
+          questionCount,
+          countUserMessages(messages),
+          countUserMessages(visibleMessages),
+        )
       : 0;
 
     if (
-      !isPremiumUser &&
+      !hasPremiumAccess &&
       currentQuestionCount >= chatRoomDailyQuestionLimit
     ) {
+      questionCountRef.current =
+        currentQuestionCount;
       setQuestionCount(currentQuestionCount);
       setIsQuestionLimitModalOpen(true);
       return;
     }
 
     if (
+      !hasPremiumAccess &&
+      hasValidChatRoomId
+    ) {
+      try {
+        const chatHistory =
+          await getChatRoomMessages(chatRoomId);
+        const latestQuestionCount =
+          countTodayUserQuestions(
+            chatHistory.messages,
+          );
+
+        questionCountRef.current =
+          latestQuestionCount;
+        setQuestionCount(latestQuestionCount);
+
+        if (
+          latestQuestionCount >=
+          chatRoomDailyQuestionLimit
+        ) {
+          setMessages(
+            removeQuestionLimitMessages(
+              chatHistory.messages.map(
+                mapHistoryMessage,
+              ),
+            ),
+          );
+          setIsQuestionLimitModalOpen(true);
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (
       !hasValidChatRoomId &&
-      !isPremiumUser &&
+      !hasPremiumAccess &&
       chatRooms.length >= chatRoomLimit
     ) {
       setIsRoomLimitModalOpen(true);
       return;
     }
 
-    const now = Date.now();
+    const now = temporaryMessageIdRef.current;
+    temporaryMessageIdRef.current -= 2;
     const userMessage: ChatMessage = {
       id: now,
       role: "user",
@@ -433,7 +519,7 @@ const ChatbotPage = () => {
         });
 
       if (
-        !isPremiumUser &&
+        !hasPremiumAccess &&
         isQuestionLimitMessage(
           askResult.aiMessage.content,
         )
@@ -484,9 +570,11 @@ const ChatbotPage = () => {
         ),
       );
 
-      setQuestionCount(
-        currentQuestionCount + 1,
-      );
+      const nextQuestionCount =
+        currentQuestionCount + 1;
+      questionCountRef.current =
+        nextQuestionCount;
+      setQuestionCount(nextQuestionCount);
 
       if (createdChatRoomId !== null) {
         await loadChatRooms();
@@ -499,37 +587,21 @@ const ChatbotPage = () => {
       console.error(error);
 
       if (
-        !isPremiumUser &&
-        isQuestionLimitError(error)
+        !hasPremiumAccess &&
+        (isRoomLimitError(error) ||
+          chatRooms.length >= chatRoomLimit)
       ) {
-        setQuestionCount(
-          chatRoomDailyQuestionLimit,
-        );
-        setMessages((prevMessages) =>
-          prevMessages.filter(
-            (message) =>
-              message.id !== userMessage.id &&
-              message.id !== loadingMessage.id,
-          ),
-        );
-        setQuestion(nextQuestion);
-        setIsQuestionLimitModalOpen(true);
+        setIsRoomLimitModalOpen(true);
         return;
       }
 
-      if (
-        !isPremiumUser &&
-        isRoomLimitError(error)
-      ) {
-        setMessages((prevMessages) =>
-          prevMessages.filter(
-            (message) =>
-              message.id !== userMessage.id &&
-              message.id !== loadingMessage.id,
-          ),
+      if (!hasPremiumAccess) {
+        questionCountRef.current =
+          chatRoomDailyQuestionLimit;
+        setQuestionCount(
+          chatRoomDailyQuestionLimit,
         );
-        setQuestion(nextQuestion);
-        setIsRoomLimitModalOpen(true);
+        setIsQuestionLimitModalOpen(true);
         return;
       }
 
@@ -662,9 +734,51 @@ const ChatbotPage = () => {
     });
   };
 
+  const refreshPremiumStatus = async () => {
+    try {
+      const profile = await getMyProfile();
+      const hasPremiumMembership =
+        isPremiumMembership(
+          profile.membershipType,
+        );
+
+      setIsPremiumUser(hasPremiumMembership);
+      return hasPremiumMembership;
+    } catch (error) {
+      console.error(error);
+      return isPremiumUser;
+    }
+  };
+
   const handleCreateRoomClick = async () => {
+    const hasPremiumMembership =
+      await refreshPremiumStatus();
+
+    if (!hasPremiumMembership) {
+      const latestChatRooms =
+        await getChatRooms({
+          size: chatRoomLimit + 1,
+        }).catch((error: unknown) => {
+          console.error(error);
+          return {
+            chatrooms: chatRooms,
+            nextCursor: null,
+          };
+        });
+
+      if (
+        latestChatRooms.chatrooms.length >=
+        chatRoomLimit
+      ) {
+        setChatRooms(latestChatRooms.chatrooms);
+        setIsNavOpen(false);
+        setIsRoomLimitModalOpen(true);
+        return;
+      }
+    }
+
     if (
-      !isPremiumUser &&
+      !hasPremiumMembership &&
       chatRooms.length >= chatRoomLimit
     ) {
       setIsNavOpen(false);
@@ -686,8 +800,9 @@ const ChatbotPage = () => {
       setIsNavOpen(false);
 
       if (
-        !isPremiumUser &&
-        isRoomLimitError(error)
+        !hasPremiumMembership &&
+        (isRoomLimitError(error) ||
+          chatRooms.length >= chatRoomLimit)
       ) {
         setIsRoomLimitModalOpen(true);
       }
@@ -752,7 +867,7 @@ const ChatbotPage = () => {
             }`}
           >
             <div className="flex w-full flex-col gap-8 max-md:gap-[80px]">
-              {messages.map((message) =>
+              {visibleMessages.map((message) =>
                 message.role === "user" ? (
                   <ChatBubble
                     key={message.id}
