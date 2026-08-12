@@ -25,9 +25,9 @@ const NotificationLayout = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#090713]">
-      {/* PC 상단 고정 헤더 */}
-      <div className="fixed inset-x-0 top-0 z-50 hidden lg:block">
+    <div className="min-h-screen bg-[#0B0A18]">
+      {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
+      <div className="hidden lg:fixed lg:inset-x-0 lg:top-0 lg:z-50 lg:block lg:h-16">
         <Header
           showRightIcons={showRightIcons}
           insetMenu={insetMenu}
@@ -40,7 +40,7 @@ const NotificationLayout = ({
         onClose={handleCloseSidebar}
       />
 
-      <main className="relative min-h-screen pt-16">
+      <main className="relative min-h-screen lg:pt-16">
         <Outlet />
       </main>
     </div>

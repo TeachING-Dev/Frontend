@@ -791,6 +791,7 @@ const ChatbotPage = () => {
         await createChatRoom();
       await loadChatRooms();
       setMessages([]);
+      setQuestionCount(0);
       navigate(
         `/chatbot/${createdChatRoom.chatroomId}`,
       );

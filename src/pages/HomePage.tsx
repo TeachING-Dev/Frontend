@@ -22,8 +22,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const homeData =
-          await getHome();
+        const homeData = await getHome();
 
         setRecentMaterials(
           homeData.recentMaterials,
@@ -54,27 +53,23 @@ const HomePage = () => {
         max-w-[1120px]
         flex-col
         gap-[40px]
-        px-[20px]
+        px-[10px]
         pb-[100px]
-        pt-[30px]
+        pt-[40px]
         md:gap-[15px]
         md:px-[40px]
         md:pt-[45px]
+        lg:gap-[30px]
         lg:px-0
         lg:pb-[75px]
         lg:pt-[60px]
-        lg:gap-[30px]
       "
     >
       <HomeHeader />
 
       <HomeContent
-        recentMaterials={
-          recentMaterials
-        }
-        activeTeachingMaps={
-          activeTeachingMaps
-        }
+        recentMaterials={recentMaterials}
+        activeTeachingMaps={activeTeachingMaps}
         isLoading={isLoading}
       />
     </main>

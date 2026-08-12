@@ -31,9 +31,14 @@ const TeachingMapAnalysisPanel = ({
   ) => {
     if (groupedSections.length === 0) return null;
 
+    const labelColor =
+      groupedSections[0].highlightType === "MAIN"
+        ? "text-[#83E2FF]"
+        : "text-[#FAC3A5]";
+
     return (
       <section>
-        <p className="text-[15px] leading-[160%] text-white">{label}</p>
+        <p className={`text-[15px] leading-[160%] ${labelColor}`}>{label}</p>
         <div className="mt-[12px] flex flex-col gap-[12px]">
           {groupedSections.map((section) => {
             const isOpen = openAnalysisIds.includes(section.id);
@@ -54,7 +59,8 @@ const TeachingMapAnalysisPanel = ({
                       >
                         <MarkdownContent
                           content={description}
-                          className="text-[15px] font-normal leading-[160%] tracking-[-0.15px] text-[#F5F2FF]"
+                          className="text-[15px] font-light leading-[180%] tracking-[-0.15px] text-[#F5F2FF]"
+                          imageClassName="mx-auto max-h-[200px] w-auto max-w-full rounded-[8px] object-contain"
                         />
                       </div>
                     ))}
@@ -69,7 +75,7 @@ const TeachingMapAnalysisPanel = ({
   };
 
   return (
-    <aside className={mobile ? "w-full bg-[#090713]" : "flex h-full w-[535px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]"}>
+    <aside className={mobile ? "w-full bg-[#090713]" : "flex h-full w-[635px] shrink-0 flex-col overflow-y-auto bg-[#1F212A]"}>
       <div className={mobile ? "px-[16px] pb-[40px] pt-[20px]" : "flex min-h-full flex-col px-[24px] pb-[32px] pt-[20px]"}>
         <div className={mobile ? "hidden" : "flex items-center justify-between"}>
           <h2 className="text-[28px] font-bold leading-[150%] tracking-[-0.84px] text-[#F5F2FF]">

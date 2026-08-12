@@ -27,6 +27,7 @@ const TrashDataList = ({
         platformType={data.platformType}
         platformImageUrl={data.platformImageUrl}
         extraMeta={formatDeletedAt(data.deletedAt)}
+        extraMetaClassName="pr-1"
         selectable={isRestoreMode}
         selected={selectedItemIds.includes(data.id)}
         onSelect={() => onSelect(data.id)}

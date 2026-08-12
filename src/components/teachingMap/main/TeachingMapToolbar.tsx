@@ -18,7 +18,7 @@ const TeachingMapToolbar = ({
   onDeleteModeStart,
 }: TeachingMapToolbarProps) => {
   return (
-    <div className="flex h-10 items-center gap-[5px] py-1 lg:gap-2 lg:px-2">
+    <div className="flex h-10 items-end gap-[5px] py-1 lg:gap-2 lg:px-2">
       <SortDropdown
         ariaLabel="티칭맵 정렬"
         value={sortType}
@@ -39,7 +39,7 @@ const TeachingMapToolbar = ({
           src="/icon/Trashcan.svg"
           alt=""
           aria-hidden="true"
-          className="h-5 w-5 lg:h-[22px] lg:w-[22px]"
+          className="h-4 w-4 lg:h-[22px] lg:w-[22px]"
         />
 
         <span>휴지통으로 이동</span>

@@ -40,6 +40,14 @@ const EMPTY_PAGE: TrashPageState = {
   totalPages: 0,
 };
 
+const normalizeS3ImageUrl = (imageUrl: string) => {
+  const duplicatedUrlStart = imageUrl.indexOf("https://", "https://".length);
+
+  return duplicatedUrlStart === -1
+    ? imageUrl
+    : imageUrl.slice(duplicatedUrlStart);
+};
+
 const TrashContent = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
@@ -136,7 +144,7 @@ const TrashContent = () => {
             totalStep: teachingMap.totalStepCount ?? 0,
             type: teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
             thumbnails: (teachingMap.sourcePlatforms ?? [])
-              .map((source) => source.imageUrl)
+              .map((source) => normalizeS3ImageUrl(source.imageUrl))
               .filter(Boolean),
             extraThumbnailCount: teachingMap.extraCount ?? 0,
             deletedAt: teachingMap.deletedAt,
@@ -356,14 +364,14 @@ const TrashContent = () => {
       <PageContainer className="relative z-10 pb-[120px] pt-10">
         <TrashHeader />
 
-        <div className="mt-5 flex items-center justify-between gap-[6px] lg:gap-0">
+        <div className="mt-5 flex items-end justify-between gap-[20px] lg:gap-0">
           <TrashCategoryTabs
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
 
           {!isRestoreMode && (
-            <div className="flex min-w-0 shrink-0 items-center gap-[10px]">
+            <div className="flex min-w-0 shrink-0 items-center gap-[5px] lg:gap-[10px]">
               <TrashSortDropdown
                 sortType={sortType}
                 onSortChange={handleSortChange}
@@ -380,10 +388,10 @@ const TrashContent = () => {
                   className="flex h-[35px] w-[35px] shrink-0 items-center justify-center rounded-[5px] font-suit text-[#D0D0D2] hover:bg-white/5 lg:h-10 lg:w-[147px] lg:gap-2 lg:px-2 lg:py-1 lg:text-[20px] lg:font-medium lg:leading-[30px] lg:tracking-[-0.6px]"
                 >
                   <img
-                    src="/icon/flip-left.svg"
+                    src="/icon/flip-left2.svg"
                     alt=""
                     aria-hidden="true"
-                    className="h-4 w-4 shrink-0 lg:h-6 lg:w-6"
+                    className="h-4 w-4 shrink-0 lg:h-8 lg:w-8"
                   />
                   <span className="sr-only lg:not-sr-only">복구하기</span>
                 </button>

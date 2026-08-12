@@ -119,14 +119,15 @@ const AnalysisFailModal = ({
         className="
           relative
           flex
-          h-[379px]
-          w-[450px]
+          w-[315px]
           flex-col
           rounded-[10px]
           bg-[#090713]
-          px-5
-          py-[30px]
-          shadow-[0_0_80px_rgba(134,111,241,0.35)]
+          px-[10px]
+          py-5
+          shadow-[0_0_50px_rgba(145,125,236,0.5)]
+          lg:h-[379px] lg:w-[450px] lg:px-5 lg:py-[30px]
+          lg:shadow-[0_0_80px_rgba(134,111,241,0.35)]
         "
       >
 
@@ -135,11 +136,12 @@ const AnalysisFailModal = ({
           id="analysis-fail-title"
           className="
             text-center
-            text-[24px]
+            text-[16px]
             font-semibold
             leading-[150%]
-            tracking-[-0.72px]
+            tracking-[-0.4px]
             text-[#FAFAFA]
+            lg:text-[24px] lg:tracking-[-0.72px]
           "
         >
           {content.message}
@@ -151,28 +153,29 @@ const AnalysisFailModal = ({
             mt-[5px]
             whitespace-pre-line
             text-center
-            text-[16px]
+            text-[12px]
             font-medium
-            leading-[150%]
-            tracking-[-0.48px]
+            leading-[135%]
+            tracking-[-0.3px]
             text-[#717379]
+            lg:text-[16px] lg:leading-[150%] lg:tracking-[-0.48px]
           "
         >
           {content.description}
         </p>
 
         {/* 이미지 */}
-        <div className="mt-[18px] flex justify-center">
+        <div className="mt-[10px] flex justify-center lg:mt-[18px]">
           <img
             src="/character/SadStar.png"
             alt=""
             aria-hidden="true"
-            className="h-[160px] w-[160px]"
+            className="h-[112px] w-[112px] lg:h-[160px] lg:w-[160px]"
           />
         </div>
 
         {/* 버튼 */}
-        <div className="mt-[30px] flex gap-3">
+        <div className="mt-[10px] flex gap-[10px] lg:mt-[30px] lg:gap-3">
           <button
             type="button"
             onClick={
@@ -180,19 +183,20 @@ const AnalysisFailModal = ({
             }
             className="
               flex
-              h-[44px]
+              h-[35px]
               flex-1
               items-center
               justify-center
               rounded-[5px]
               bg-[#42444C]
-              text-[16px]
+              text-[14px]
               font-medium
               leading-[150%]
               tracking-[-0.48px]
               text-[#D0D0D2]
               transition
               hover:bg-[#353640]
+              lg:h-[44px] lg:text-[16px]
             "
           >
             {
@@ -207,19 +211,20 @@ const AnalysisFailModal = ({
             }
             className="
               flex
-              h-[44px]
+              h-[35px]
               flex-1
               items-center
               justify-center
               rounded-[5px]
               bg-[#917DEC]
-              text-[16px]
+              text-[14px]
               font-medium
               leading-[150%]
               tracking-[-0.48px]
               text-[#F5F2FF]
               transition
               hover:bg-[#A38BFF]
+              lg:h-[44px] lg:text-[16px]
             "
           >
             {

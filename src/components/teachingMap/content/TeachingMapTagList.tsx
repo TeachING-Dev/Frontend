@@ -17,10 +17,10 @@ const TeachingMapTagList = ({ tags }: TeachingMapTagListProps) => {
         {tags.map((tag, index) => (
           <span
             key={`${tag}-${index}`}
-            className="flex h-[32px] max-w-full shrink-0 items-center justify-center rounded-[24px] border border-[#917DEC] px-[12px] text-[#917DEC] max-lg:h-[24px] max-lg:px-[8px]"
+            className="flex h-[32px] max-w-full shrink-0 items-center justify-center rounded-[24px] border border-[#917DEC] px-[12px] text-[#917DEC] italic max-lg:h-[24px] max-lg:px-[8px]"
           >
-            <span className="break-all text-[16px] font-normal leading-[24px] tracking-[-0.48px] max-lg:text-[12px] max-lg:leading-[16px]">
-              {tag}
+            <span className="relative top-[1px] right-[1px]">
+              #{tag}
             </span>
           </span>
         ))}

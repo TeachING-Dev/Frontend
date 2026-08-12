@@ -29,7 +29,7 @@ const MyPageBackHeader = ({
           />
         </button>
 
-        <h1 className="text-[24px] font-bold leading-[150%] tracking-[-0.72px] text-[#E8E8E8] lg:text-[36px] lg:tracking-[-1.08px]">
+        <h1 className="text-[16px] font-bold leading-[150%] tracking-[-0.4px] text-[#E8E8E8] lg:text-[36px] lg:tracking-[-1.08px]">
           {title}
         </h1>
       </div>

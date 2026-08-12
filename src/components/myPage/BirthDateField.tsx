@@ -118,7 +118,7 @@ const BirthDateDropdown = ({
       >
         <span
           className={[
-            "min-w-0 flex-1 font-['SUIT'] text-[13px] font-medium leading-[150%] tracking-[-0.325px] lg:text-[28px] lg:font-semibold lg:leading-[42px] lg:tracking-[-0.84px]",
+            "min-w-0 flex-1 font-['SUIT'] text-[13px] font-medium leading-[150%] tracking-[-0.325px] lg:text-[20px] lg:font-semibold lg:leading-[42px] lg:tracking-[-0.84px]",
             value ? "text-[#D0D0D2]" : "text-[#42444C]",
           ].join(" ")}
         >

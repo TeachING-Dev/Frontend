@@ -94,31 +94,32 @@ const NotificationPage = () => {
   };
 
   return (
-    <section className="mx-auto w-full max-w-[1120px] py-[40px]">
+    <section className="mx-auto w-full max-w-[1120px] px-[20px] pb-[40px] pt-[10px] lg:px-0 lg:py-[40px]">
       {/* 제목 + 뒤로가기 */}
-      <div className="mb-[30px] flex items-center gap-[5px]">
+      <div className="flex h-[56px] items-center gap-0 lg:mb-[30px] lg:h-auto lg:gap-[5px]">
         <button
           type="button"
           onClick={() => navigate(-1)}
           aria-label="뒤로가기"
-          className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded transition hover:bg-white/10"
+          className="flex size-[24px] shrink-0 items-center justify-center transition hover:opacity-80 lg:size-[40px] lg:rounded lg:hover:bg-white/10"
         >
           <ChevronLeft
-            size={40}
+            className="size-[24px] text-[#FAFAFA] lg:size-[40px] lg:text-[#E8E8E8]"
             strokeWidth={1}
-            className="text-[#E8E8E8]"
           />
         </button>
 
-        <h1 className="text-[36px] font-bold leading-[150%] tracking-[-1.08px] text-[#E8E8E8]">
+        <h1 className="text-[24px] font-medium leading-[150%] tracking-[-0.6px] text-[#FAFAFA] lg:text-[36px] lg:font-bold lg:tracking-[-1.08px] lg:text-[#E8E8E8]">
           알림
         </h1>
       </div>
 
-      <NotificationPageList
-        notifications={notifications}
-        onItemClick={handleNotificationClick}
-      />
+      <div className="mt-[40px] lg:mt-0">
+        <NotificationPageList
+          notifications={notifications}
+          onItemClick={handleNotificationClick}
+        />
+      </div>
     </section>
   );
 };

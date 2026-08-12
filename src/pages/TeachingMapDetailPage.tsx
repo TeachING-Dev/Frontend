@@ -190,7 +190,7 @@ const TeachingMapDetailPage = () => {
         ].join(" ")}
       />
 
-      <div className="relative z-10 px-5 pb-[80px] pt-10 lg:px-[160px] lg:pb-[160px]">
+      <div className="relative z-10 mx-auto w-full max-w-[1000px] px-5 pb-[80px] pt-10 lg:px-0 lg:pb-[160px]">
         <TeachingMapDetailHeader
           title={teachingMapTitle}
           description={teachingMapDescription}
@@ -203,7 +203,6 @@ const TeachingMapDetailPage = () => {
             {saveError}
           </p>
         )}
-
         <section className="relative mt-[80px] w-full lg:mt-[111px] lg:w-[1000px]">
           {toggleError && (
             <p role="alert" className="mb-4 text-[16px] text-[#F07A7A]">

@@ -244,7 +244,10 @@ export type RestoreMaterialsRequest = {
 };
 
 export type RestoreMaterialsResult = {
-  restoredIds: number[];
+  restored: {
+    materialId: number;
+    folderName: string;
+  }[];
   failedIds: number[];
 };
 

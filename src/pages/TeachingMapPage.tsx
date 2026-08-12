@@ -372,7 +372,7 @@ const TeachingMapPage = () => {
         />
 
         <>
-          <div className="mt-[55px]">
+          <div className="mt-[20px] lg:mt-[55px]">
             {isDeleteMode ? (
               <TeachingMapDeleteToolbar
                 selectedCount={selectedTeachingMapIds.length}
@@ -383,7 +383,7 @@ const TeachingMapPage = () => {
                 onCancelClick={handleDeleteModeCancel}
               />
             ) : (
-              <div className="flex w-full items-center gap-[16px] lg:justify-between lg:gap-0">
+              <div className="flex w-full items-end justify-between gap-[20px] lg:gap-0">
                 <TeachingMapFilter
                   selectedFilter={selectedFilter}
                   onFilterChange={handleFilterChange}

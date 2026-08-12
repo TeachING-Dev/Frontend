@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   useCallback,
   useEffect,
@@ -30,6 +31,7 @@ import ArchiveFolderHeader from "../components/archive/folder/ArchiveFolderHeade
 import EmptyArchiveData from "../components/archive/folder/EmptyArchiveData";
 import MoveDataModal from "../components/archive/modal/MoveDataModal";
 import EmptyState from "../components/common/EmptyState";
+import Pagination from "../components/common/Pagination";
 import Toast from "../components/common/Toast";
 import TeachingMapDeleteToolbar from "../components/teachingMap/main/TeachingMapDeleteToolbar";
 
@@ -68,6 +70,12 @@ const ArchiveFolderPage = () => {
 
   const [materials, setMaterials] =
     useState<ArchiveData[]>([]);
+
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
+  const [totalPages, setTotalPages] =
+    useState(0);
 
   const [
     totalMaterialCount,
@@ -171,7 +179,7 @@ const ArchiveFolderPage = () => {
           keyword:
             keyword || undefined,
           sort,
-          page: 0,
+          page: currentPage - 1,
           size: 10,
         },
       );
@@ -179,6 +187,7 @@ const ArchiveFolderPage = () => {
       getParsedFolderId,
       keyword,
       sort,
+      currentPage,
     ]);
 
   const refetchFolderPageData =
@@ -220,6 +229,9 @@ const ArchiveFolderPage = () => {
 
       setMaterials(
         convertedMaterials,
+      );
+      setTotalPages(
+        materialsResult.totalPages,
       );
 
       if (!keyword) {
@@ -286,6 +298,9 @@ const ArchiveFolderPage = () => {
           setMaterials(
             convertedMaterials,
           );
+          setTotalPages(
+            materialsResult.totalPages,
+          );
 
           if (!keyword) {
             setTotalMaterialCount(
@@ -307,6 +322,7 @@ const ArchiveFolderPage = () => {
 
           setFolder(null);
           setMaterials([]);
+          setTotalPages(0);
 
           setErrorMessage(
             error instanceof Error
@@ -351,6 +367,7 @@ const ArchiveFolderPage = () => {
    * 검색
    */
   const handleSearch = () => {
+    setCurrentPage(1);
     setKeyword(
       searchInput.trim(),
     );
@@ -362,6 +379,7 @@ const ArchiveFolderPage = () => {
   const handleSortChange = (
     newSort: FolderMaterialSort,
   ) => {
+    setCurrentPage(1);
     setSort(newSort);
   };
 
@@ -419,6 +437,21 @@ const ArchiveFolderPage = () => {
         );
 
         setLastAction(null);
+
+        if (
+          axios.isAxiosError<{
+            code?: string;
+            message?: string;
+          }>(error) &&
+          error.response?.data?.code ===
+            "FOLDER4091"
+        ) {
+          setToastMessage(
+            "이미 존재하는 폴더명입니다.",
+          );
+
+          return;
+        }
 
         setToastMessage(
           "폴더 수정에 실패했어요.",
@@ -801,34 +834,43 @@ const ArchiveFolderPage = () => {
           );
         }
 
-        if (
-          actionToUndo.type ===
-          "trash"
-        ) {
-          const restoreResult =
-            await restoreMaterials(
-              actionToUndo.fromFolderId,
-              {
-                materialIds:
-                  actionToUndo.materialIds,
-              },
-            );
+        if (actionToUndo.type === "trash") {
+          await restoreMaterials(
+            actionToUndo.fromFolderId,
+            {
+              materialIds:
+                actionToUndo.materialIds,
+            },
+          );
 
           restoredCount =
-            restoreResult.restoredIds.length;
+            actionToUndo.materialIds.length;
+        }
 
-          if (
-            restoreResult.failedIds.length >
-            0
-          ) {
-            console.warn(
-              "복구 실패 자료:",
-              restoreResult.failedIds,
-            );
+        let refreshError: unknown = null;
+
+        for (let attempt = 0; attempt < 5; attempt += 1) {
+          try {
+            await refetchFolderPageData();
+            refreshError = null;
+            break;
+          } catch (error) {
+            refreshError = error;
+
+            if (attempt < 4) {
+              await new Promise<void>((resolve) => {
+                window.setTimeout(resolve, 300);
+              });
+            }
           }
         }
 
-        await refetchFolderPageData();
+        if (refreshError) {
+          console.error(
+            "실행 취소 후 자료 목록 갱신 실패:",
+            refreshError,
+          );
+        }
 
         if (keyword) {
           setTotalMaterialCount(
@@ -956,7 +998,7 @@ const ArchiveFolderPage = () => {
                   message="검색결과가 존재하지 않습니다."
                   containerClassName="flex flex-col items-center pt-[180px]"
                   imageClassName="mb-[10px] h-[91.2px] w-[95.9px] object-contain lg:mb-8 lg:h-[200px] lg:w-[200px]"
-                  messageClassName="w-full whitespace-nowrap text-center font-['SUIT'] text-[14px] font-normal leading-[150%] tracking-[-0.35px] text-[#717379] lg:font-['42dot_Sans'] lg:text-[28px] lg:font-semibold lg:tracking-[-0.84px] lg:text-[#F5F2FF]"
+                  messageClassName="w-full whitespace-nowrap text-center text-[14px] font-normal not-italic leading-[150%] tracking-[-0.35px] text-[#717379] lg:text-[24px] lg:font-semibold lg:tracking-[-0.72px]"
                 />
               ) : (
                 <EmptyArchiveData />
@@ -980,6 +1022,18 @@ const ArchiveFolderPage = () => {
                   handleOpenOriginal
                 }
               />
+            )}
+
+            {materials.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page) => {
+                    setCurrentPage(page);
+                    setSelectedItemIds([]);
+                    setSelectMode(null);
+                  }}
+                />
             )}
           </div>
         </div>

@@ -3,7 +3,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getFolders } from "../apis/folder";
-import { createTeachingMap, getTeachingMaps } from "../apis/teachingMap";
+import { getMyProfile } from "../apis/users";
+import {
+  createTeachingMap,
+  getTeachingMap,
+  getTeachingMaps,
+  saveTemporaryTeachingMap,
+} from "../apis/teachingMap";
 import FolderLimitModal from "../components/teachingMap/create/FolderLimitModal";
 import TeachingMapCreateButton from "../components/teachingMap/create/TeachingMapCreateButton";
 
@@ -18,8 +24,10 @@ import TeachingMapFolderSelect from "../components/teachingMap/create/TeachingMa
 import TeachingMapLoadingModal from "../components/teachingMap/create/TeachingMapLoadingModal";
 import TeachingMapTitleInput from "../components/teachingMap/create/TeachingMapTitleInput";
 import TeachingMapTypeSelect from "../components/teachingMap/create/TeachingMapTypeSelect";
-
-import { TEMPORARY_TEACHING_MAPS } from "../constants/temporaryTeachingMaps";
+import {
+  isPremiumMembership,
+  isSubscriptionActive,
+} from "../utils/subscription";
 
 const FREE_TEACHING_MAP_LIMIT = 5;
 
@@ -38,28 +46,20 @@ const TeachingMapCreatePage = () => {
     draftId?: string;
   }>();
 
-  const temporaryTeachingMap = TEMPORARY_TEACHING_MAPS.find(
-    (teachingMap) => teachingMap.id === Number(draftId),
-  );
-
   // URL에 draftId가 있으면 데이터 조회 여부와 상관없이
   // 임시보관함에서 진입한 수정 모드로 처리
   const isTemporaryEditMode = draftId !== undefined;
 
-  const [title, setTitle] = useState(temporaryTeachingMap?.title ?? "");
+  const [title, setTitle] = useState("");
 
-  const [description, setDescription] = useState(
-    temporaryTeachingMap?.description ?? "",
-  );
+  const [description, setDescription] = useState("");
 
-  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(
-    temporaryTeachingMap?.folderId ?? null,
-  );
+  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
 
   const [folders, setFolders] = useState<TeachingMapFolderOption[]>([]);
 
   const [selectedType, setSelectedType] = useState<TeachingMapType>(
-    temporaryTeachingMap?.type ?? DEFAULT_TEACHING_MAP_TYPE,
+    DEFAULT_TEACHING_MAP_TYPE,
   );
 
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
@@ -68,22 +68,105 @@ const TeachingMapCreatePage = () => {
 
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
 
+  const [isPremiumUser, setIsPremiumUser] = useState(
+    isSubscriptionActive,
+  );
+
+  const [isMembershipLoading, setIsMembershipLoading] = useState(true);
+
   const [isToastOpen, setIsToastOpen] = useState(false);
 
   const [toastMessage, setToastMessage] = useState("");
   const [toastTitle, setToastTitle] = useState("티칭맵 생성에 실패했습니다.");
   const [isTemporarySaveSuccess, setIsTemporarySaveSuccess] = useState(false);
+  const parsedDraftId = draftId === undefined ? undefined : Number(draftId);
+  const [savedTeachingMapId, setSavedTeachingMapId] = useState<
+    number | undefined
+  >(
+    parsedDraftId !== undefined && Number.isFinite(parsedDraftId)
+      ? parsedDraftId
+      : undefined,
+  );
   const generationTimerRef = useRef<number | null>(null);
   const generationAbortControllerRef = useRef<AbortController | null>(null);
-  const defaultFolderId =
-    temporaryTeachingMap?.folderId ?? folders[0]?.id ?? null;
-
   useEffect(() => {
     return () => {
       if (generationTimerRef.current !== null) {
         window.clearTimeout(generationTimerRef.current);
       }
       generationAbortControllerRef.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (parsedDraftId === undefined || !Number.isFinite(parsedDraftId)) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    const loadTemporaryTeachingMap = async () => {
+      try {
+        const teachingMap = await getTeachingMap(parsedDraftId);
+
+        if (isCancelled) {
+          return;
+        }
+
+        setTitle(teachingMap.title ?? "");
+        setDescription(teachingMap.description ?? "");
+        setSelectedFolderId(teachingMap.folderId);
+        setSelectedType(
+          teachingMap.type === "DEEPDIVE" ? "deepDive" : "shortcut",
+        );
+        setSavedTeachingMapId(teachingMap.teachingMapId);
+      } catch (error) {
+        if (!isCancelled) {
+          setToastTitle("임시저장 내용을 불러오지 못했습니다.");
+          setToastMessage(
+            error instanceof Error
+              ? error.message
+              : "잠시 후 다시 시도해주세요.",
+          );
+          setIsTemporarySaveSuccess(false);
+          setIsToastOpen(true);
+        }
+      }
+    };
+
+    void loadTemporaryTeachingMap();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [parsedDraftId]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadMembership = async () => {
+      try {
+        const profile = await getMyProfile();
+
+        if (!isCancelled) {
+          setIsPremiumUser(
+            isSubscriptionActive() ||
+              isPremiumMembership(profile.membershipType),
+          );
+        }
+      } catch (error) {
+        console.error("구독 정보 조회 실패:", error);
+      } finally {
+        if (!isCancelled) {
+          setIsMembershipLoading(false);
+        }
+      }
+    };
+
+    void loadMembership();
+
+    return () => {
+      isCancelled = true;
     };
   }, []);
 
@@ -171,12 +254,6 @@ const TeachingMapCreatePage = () => {
     };
   }, []);
 
-  const canTemporarySave =
-    title.trim().length > 0 ||
-    description.trim().length > 0 ||
-    selectedFolderId !== defaultFolderId ||
-    selectedType !== DEFAULT_TEACHING_MAP_TYPE;
-
   const isFormCompleted = useMemo(() => {
     return (
       title.trim().length > 0 &&
@@ -197,35 +274,46 @@ const TeachingMapCreatePage = () => {
     setIsToastOpen(true);
   };
 
-  const handleTemporarySave = () => {
-    if (!canTemporarySave) {
+  const handleTemporarySave = async () => {
+    if (!isFormCompleted) {
+      setToastTitle("모든 항목을 입력해야 임시저장 됩니다.");
+      setToastMessage("");
+      setIsTemporarySaveSuccess(false);
+      setIsToastOpen(true);
       return;
     }
 
-    const temporaryTeachingMapData = {
-      id: temporaryTeachingMap?.id ?? Date.now(),
+    if (!selectedFolder || selectedFolder.count < 3) {
+      showFailureToast("티칭맵을 생성하려면 최소 3개 이상의 자료가 필요해요.");
+      return;
+    }
 
-      title: title.trim(),
+    try {
+      const savedTeachingMap = await saveTemporaryTeachingMap({
+        ...(savedTeachingMapId === undefined
+          ? {}
+          : { teachingMapId: savedTeachingMapId }),
+        folderId: selectedFolder.id,
+        title: title.trim(),
+        description: description.trim(),
+        type: selectedType === "deepDive" ? "DEEPDIVE" : "SHORTCUT",
+      });
 
-      description: description.trim(),
-
-      folderId: selectedFolderId,
-
-      type: selectedType,
-
-      savedAt: new Date().toISOString(),
-    };
-
-    console.log(
-      isTemporaryEditMode ? "수정할 임시 티칭맵:" : "임시 저장할 티칭맵:",
-      temporaryTeachingMapData,
-    );
-
-    // TODO: 티칭맵 임시 저장 및 수정 API 연결
-    setToastTitle("임시저장 되었습니다.");
-    setToastMessage("");
-    setIsTemporarySaveSuccess(true);
-    setIsToastOpen(true);
+      setSavedTeachingMapId(savedTeachingMap.teachingMapId);
+      setToastTitle("임시저장 되었습니다.");
+      setToastMessage("");
+      setIsTemporarySaveSuccess(true);
+      setIsToastOpen(true);
+    } catch (error) {
+      setToastTitle("임시저장에 실패했습니다.");
+      setToastMessage(
+        error instanceof Error
+          ? error.message
+          : "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
+      setIsTemporarySaveSuccess(false);
+      setIsToastOpen(true);
+    }
   };
 
   const handleCreate = async () => {
@@ -233,7 +321,10 @@ const TeachingMapCreatePage = () => {
       return;
     }
 
-    if (currentTeachingMapCount >= FREE_TEACHING_MAP_LIMIT) {
+    if (
+      !isPremiumUser &&
+      currentTeachingMapCount >= FREE_TEACHING_MAP_LIMIT
+    ) {
       setIsLimitModalOpen(true);
       return;
     }
@@ -335,8 +426,8 @@ const TeachingMapCreatePage = () => {
 
         <div className="mt-10 w-full lg:mt-10">
           <TeachingMapCreateButton
-            isSaveDisabled={!canTemporarySave}
-            isCreateDisabled={!isFormCompleted}
+            isSaveDisabled={false}
+            isCreateDisabled={!isFormCompleted || isMembershipLoading}
             onSave={handleTemporarySave}
             onCreate={handleCreate}
           />

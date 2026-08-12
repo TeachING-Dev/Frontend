@@ -86,6 +86,10 @@ function App() {
             path="/subscribe/complete"
             element={<SubscriptionCompletePage />}
           />
+          <Route
+            path="/mypage/withdrawal-complete"
+            element={<MyPageWithdrawalCompletePage />}
+          />
 
           {/* 홈 전용 레이아웃 */}
           <Route element={<HomeLayout />}>
@@ -178,10 +182,6 @@ function App() {
               path="/mypage/withdrawal-confirm"
               element={<MyPageWithdrawalConfirmPage />}
             />
-            <Route
-              path="/mypage/withdrawal-complete"
-              element={<MyPageWithdrawalCompletePage />}
-            />
           </Route>
 
           {/* 티칭맵 콘텐츠 상세에서만 모바일 하단 내비게이션 미노출 */}
@@ -193,14 +193,14 @@ function App() {
           </Route>
 
           {/* 챗봇 전용 레이아웃 */}
-          <Route element={<MainLayout insetMenu />}>
+          <Route element={<MainLayout insetMenu hideHeaderOnMobile />}>
             <Route path="/chatbot" element={<ChatbotPage />} />
 
             <Route path="/chatbot/:chatRoomId" element={<ChatbotPage />} />
           </Route>
 
           {/* 구독 */}
-          <Route element={<MainLayout hideMobileNav />}>
+          <Route element={<MainLayout hideMobileNav hideHeaderOnMobile />}>
             <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="/subscribe" element={<SubscriptionPage />} />
           </Route>
