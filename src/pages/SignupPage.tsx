@@ -269,10 +269,10 @@ const SignupPage = () => {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:min-h-screen">
+    <section className="relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:min-h-[100dvh]">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
-       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.8] px-20 max-md:left-0 max-md:top-[72px] max-md:h-[calc(100vh-72px)] max-md:w-full max-md:translate-x-0 max-md:scale-100 max-md:px-5">
+       <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.8] px-20 max-md:left-0 max-md:top-[72px] max-md:h-[calc(100dvh-72px)] max-md:w-full max-md:translate-x-0 max-md:scale-100 max-md:px-5">
         <div className="mb-10 mt-[30px] flex items-center gap-2.5 max-md:mb-[30px] max-md:mt-0 max-md:gap-2">
           <button
             type="button"

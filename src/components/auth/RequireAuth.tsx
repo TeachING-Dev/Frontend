@@ -77,7 +77,7 @@ const RequireAuth = () => {
 
   if (authStatus === "checking") {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#090713] font-['SUIT'] text-xl text-violet-50">
+      <main className="flex min-h-[100dvh] items-center justify-center bg-[#090713] font-['SUIT'] text-xl text-violet-50 lg:min-h-screen">
         로그인 확인 중...
       </main>
     );

@@ -75,7 +75,7 @@ const TrashFolderPage = () => {
   }, [numericFolderId, isInvalidFolder, page, sort]);
 
   return (
-    <main className="min-h-[calc(100vh-80px)] bg-[#0B0A18]">
+    <main className="min-h-[calc(100dvh-56px)] bg-[#0B0A18] lg:min-h-[calc(100vh-80px)]">
       <PageContainer className="pb-[120px] pt-10">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-[5px]">
