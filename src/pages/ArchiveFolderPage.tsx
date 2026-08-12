@@ -834,34 +834,43 @@ const ArchiveFolderPage = () => {
           );
         }
 
-        if (
-          actionToUndo.type ===
-          "trash"
-        ) {
-          const restoreResult =
-            await restoreMaterials(
-              actionToUndo.fromFolderId,
-              {
-                materialIds:
-                  actionToUndo.materialIds,
-              },
-            );
+        if (actionToUndo.type === "trash") {
+          await restoreMaterials(
+            actionToUndo.fromFolderId,
+            {
+              materialIds:
+                actionToUndo.materialIds,
+            },
+          );
 
           restoredCount =
-            restoreResult.restoredIds.length;
+            actionToUndo.materialIds.length;
+        }
 
-          if (
-            restoreResult.failedIds.length >
-            0
-          ) {
-            console.warn(
-              "복구 실패 자료:",
-              restoreResult.failedIds,
-            );
+        let refreshError: unknown = null;
+
+        for (let attempt = 0; attempt < 5; attempt += 1) {
+          try {
+            await refetchFolderPageData();
+            refreshError = null;
+            break;
+          } catch (error) {
+            refreshError = error;
+
+            if (attempt < 4) {
+              await new Promise<void>((resolve) => {
+                window.setTimeout(resolve, 300);
+              });
+            }
           }
         }
 
-        await refetchFolderPageData();
+        if (refreshError) {
+          console.error(
+            "실행 취소 후 자료 목록 갱신 실패:",
+            refreshError,
+          );
+        }
 
         if (keyword) {
           setTotalMaterialCount(

@@ -65,7 +65,7 @@ const RecentKnowledgeList = ({
   }
 
   return (
-    <div className="flex w-full flex-col gap-y-[10px]">
+    <div className="flex w-full flex-col gap-y-[0px]">
       {materials.map((material) => (
         <RecentKnowledgeItem
           key={material.materialId}

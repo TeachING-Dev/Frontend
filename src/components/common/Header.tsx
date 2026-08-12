@@ -148,12 +148,18 @@ const handleNotificationClick = async (
     <header className="relative flex h-[56px] items-center justify-end bg-transparent lg:h-16 lg:justify-between lg:bg-[#090713] lg:px-8 lg:shadow-[0_0_80px_rgba(145,125,236,0.1)]">
       {showRightIcons && !hideMobileNotification && (
         <div className="mr-4 flex h-[56px] w-[40px] items-center justify-center lg:hidden">
-          <NotificationPopover
-            notifications={notifications}
-            onItemClick={handleNotificationClick}
-            onViewAll={handleViewAll}
-            trigger={notificationTrigger}
-          />
+          <button
+            type="button"
+            aria-label="알림 페이지로 이동"
+            onClick={handleViewAll}
+            className="flex size-[40px] items-center justify-center overflow-hidden hover:opacity-80"
+          >
+            <img
+              src={hasUnread ? "/icon/Alarm2.svg" : "/icon/Alarm3.png"}
+              alt=""
+              className="size-[40px] object-contain"
+            />
+          </button>
         </div>
       )}
 

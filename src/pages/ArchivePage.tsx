@@ -329,6 +329,9 @@ const ArchivePage = () => {
                 onMoveToTrash={
                   handleMoveToTrash
                 }
+                isSearching={
+                  keyword.length > 0
+                }
               />
             ) : (
               <ArchiveFolderGrid

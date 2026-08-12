@@ -193,14 +193,14 @@ function App() {
           </Route>
 
           {/* 챗봇 전용 레이아웃 */}
-          <Route element={<MainLayout insetMenu />}>
+          <Route element={<MainLayout insetMenu hideHeaderOnMobile />}>
             <Route path="/chatbot" element={<ChatbotPage />} />
 
             <Route path="/chatbot/:chatRoomId" element={<ChatbotPage />} />
           </Route>
 
           {/* 구독 */}
-          <Route element={<MainLayout hideMobileNav />}>
+          <Route element={<MainLayout hideMobileNav hideHeaderOnMobile />}>
             <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="/subscribe" element={<SubscriptionPage />} />
           </Route>

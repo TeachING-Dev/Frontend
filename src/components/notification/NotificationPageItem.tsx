@@ -44,7 +44,13 @@ const NotificationPageItem = ({
 
   return (
     <div
-      className={`relative flex h-[90px] w-full overflow-hidden items-start gap-[20px] px-[10px] transition hover:bg-[#171722] ${
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") onClick?.();
+      }}
+      className={`relative flex h-[75px] w-full cursor-pointer items-start gap-[5px] overflow-hidden px-0 transition hover:bg-[#171722] lg:h-[90px] lg:gap-[20px] lg:px-[10px] ${
         isRead ? "opacity-50" : "opacity-100"
       }`}
     >
@@ -53,38 +59,40 @@ const NotificationPageItem = ({
         src="/logo/logo.png"
         alt=""
         aria-hidden="true"
-        className="mt-[10px] size-[70px] shrink-0 object-contain"
+        className="mt-[18px] size-[39px] shrink-0 object-contain lg:mt-[10px] lg:size-[70px]"
       />
       {/* 오른쪽 알림 정보 */}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 pt-[2px] lg:pt-0">
         {/* 상단: 제목 + 화살표 */}
         <div className="flex items-center justify-between">
-          <span className="inline-flex h-[40px] min-w-[110px] items-center justify-center rounded-[4px] border border-[#917DEC] px-[12px] font-[SUIT] text-[20px] font-semibold leading-[140%] tracking-[-0.6px] text-[#917DEC]">
+          <span className="inline-flex items-center justify-center rounded-[2.22px] border border-[#917DEC] px-[4px] py-[2px] font-[SUIT] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#917DEC] lg:h-[40px] lg:min-w-[110px] lg:rounded-[4px] lg:px-[12px] lg:py-0 lg:text-[20px] lg:font-semibold lg:leading-[140%] lg:tracking-[-0.6px]">
             {title}
           </span>
 
           <button
             type="button"
-            onClick={onClick}
+            onClick={(event) => {
+              event.stopPropagation();
+              onClick?.();
+            }}
             aria-label="알림 상세 보기"
-            className="-mr-[10px] shrink-0"
+            className="shrink-0 lg:-mr-[10px]"
           >
             <ChevronRight
-              size={40}
+              className="size-[18px] text-[#917DEC] lg:size-[40px]"
               strokeWidth={1}
-              className="text-[#917DEC]"
               aria-hidden="true"
             />
           </button>
         </div>
 
         {/* 내용 + 시간 */}
-        <div className="mt-[10px] flex items-center justify-between gap-4">
-          <p className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-[SUIT] text-[18px] font-medium leading-[150%] tracking-[-0.54px] text-[#F5F2FF]">
+        <div className="mt-[5px] flex h-[38px] items-end justify-between gap-[5px] lg:mt-[10px] lg:h-auto lg:items-center lg:gap-4">
+          <p className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap pb-[13px] font-[SUIT] text-[12px] font-medium leading-[135%] tracking-[-0.3px] text-[#F5F2FF] lg:pb-0 lg:text-[18px] lg:leading-[150%] lg:tracking-[-0.54px]">
             {message}
           </p>
 
-          <span className="shrink-0 text-center font-[Poppins] text-[16px] font-normal leading-[150%] tracking-[-0.4px] text-[#717379]">
+          <span className="flex h-[38px] w-[53px] shrink-0 flex-col justify-end pb-[5px] text-center font-[Poppins] text-[8.884px] italic font-normal leading-[150%] tracking-[-0.222px] text-[#717379] opacity-60 lg:block lg:h-auto lg:w-auto lg:pb-0 lg:text-[16px] lg:not-italic lg:tracking-[-0.4px] lg:opacity-100">
             {formatCreatedAt(createdAt)}
           </span>
         </div>

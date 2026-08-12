@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getFolders } from "../apis/folder";
+import { getMyProfile } from "../apis/users";
 import {
   createTeachingMap,
   getTeachingMap,
@@ -23,6 +24,10 @@ import TeachingMapFolderSelect from "../components/teachingMap/create/TeachingMa
 import TeachingMapLoadingModal from "../components/teachingMap/create/TeachingMapLoadingModal";
 import TeachingMapTitleInput from "../components/teachingMap/create/TeachingMapTitleInput";
 import TeachingMapTypeSelect from "../components/teachingMap/create/TeachingMapTypeSelect";
+import {
+  isPremiumMembership,
+  isSubscriptionActive,
+} from "../utils/subscription";
 
 const FREE_TEACHING_MAP_LIMIT = 5;
 
@@ -62,6 +67,12 @@ const TeachingMapCreatePage = () => {
   const [currentTeachingMapCount, setCurrentTeachingMapCount] = useState(0);
 
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  const [isPremiumUser, setIsPremiumUser] = useState(
+    isSubscriptionActive,
+  );
+
+  const [isMembershipLoading, setIsMembershipLoading] = useState(true);
 
   const [isToastOpen, setIsToastOpen] = useState(false);
 
@@ -129,6 +140,35 @@ const TeachingMapCreatePage = () => {
       isCancelled = true;
     };
   }, [parsedDraftId]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadMembership = async () => {
+      try {
+        const profile = await getMyProfile();
+
+        if (!isCancelled) {
+          setIsPremiumUser(
+            isSubscriptionActive() ||
+              isPremiumMembership(profile.membershipType),
+          );
+        }
+      } catch (error) {
+        console.error("구독 정보 조회 실패:", error);
+      } finally {
+        if (!isCancelled) {
+          setIsMembershipLoading(false);
+        }
+      }
+    };
+
+    void loadMembership();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -281,7 +321,10 @@ const TeachingMapCreatePage = () => {
       return;
     }
 
-    if (currentTeachingMapCount >= FREE_TEACHING_MAP_LIMIT) {
+    if (
+      !isPremiumUser &&
+      currentTeachingMapCount >= FREE_TEACHING_MAP_LIMIT
+    ) {
       setIsLimitModalOpen(true);
       return;
     }
@@ -384,7 +427,7 @@ const TeachingMapCreatePage = () => {
         <div className="mt-10 w-full lg:mt-10">
           <TeachingMapCreateButton
             isSaveDisabled={false}
-            isCreateDisabled={!isFormCompleted}
+            isCreateDisabled={!isFormCompleted || isMembershipLoading}
             onSave={handleTemporarySave}
             onCreate={handleCreate}
           />
