@@ -27,7 +27,7 @@ const NotificationLayout = ({
   return (
     <div className="min-h-screen bg-[#0B0A18]">
       {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
-      <div className="relative z-50 h-[56px] bg-transparent lg:fixed lg:inset-x-0 lg:top-0 lg:h-16">
+      <div className="hidden lg:fixed lg:inset-x-0 lg:top-0 lg:z-50 lg:block lg:h-16">
         <Header
           showRightIcons={showRightIcons}
           insetMenu={insetMenu}

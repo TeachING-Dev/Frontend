@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { logout } from "../../apis/auth";
 import { getMyProfile } from "../../apis/users";
+import { getNotificationSummary } from "../../apis/notification";
 import MyPageMenuList from "../../components/myPage/MyPageMenuList";
 import MyPageProfile from "../../components/myPage/MyPageProfile";
 import { clearTokens } from "../../utils/authToken";
@@ -14,6 +15,7 @@ const MyPage = () => {
     useState("");
   const [isLoggingOut, setIsLoggingOut] =
     useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -29,6 +31,17 @@ const MyPage = () => {
     };
 
     void loadProfile();
+
+    const loadNotificationSummary = async () => {
+      try {
+        const summary = await getNotificationSummary();
+        setHasUnread(summary.hasUnread);
+      } catch (error) {
+        console.error("알림 요약 조회 실패:", error);
+      }
+    };
+
+    void loadNotificationSummary();
   }, []);
 
   const handleLogout = async () => {
@@ -72,7 +85,7 @@ const MyPage = () => {
           className="flex h-[40px] w-[40px] items-center justify-center lg:hidden"
         >
           <img
-            src="/icon/Alarm2.svg"
+            src={hasUnread ? "/icon/Alarm2.svg" : "/icon/Alarm3.png"}
             alt=""
             aria-hidden="true"
             className="h-[40px] w-[40px] object-contain"
