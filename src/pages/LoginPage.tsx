@@ -141,33 +141,37 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={handleKakaoLogin}
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
+            className="flex h-[50px] w-[361px] items-center justify-center rounded-[5px] bg-[#FDE500] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#13151F]"
           >
-            <span className="flex w-[30px] justify-center">
-              <img
-                src="/Kakao.svg"
-                alt=""
-                className="h-[30px] w-[30px] -translate-x-[3px] translate-y-[2px] shrink-0"
-              />
-            </span>
+            <span className="relative h-[30px] w-[178px]">
+              <span className="absolute left-0 top-1/2 flex w-[30px] -translate-y-1/2 justify-start">
+                <img
+                  src="/Kakao.svg"
+                  alt=""
+                  className="h-[30px] w-[30px] -translate-x-[6px] translate-y-[2px] shrink-0"
+                />
+              </span>
 
-            <span className="-translate-x-[2px]">카카오로 시작하기</span>
+              <span className="absolute left-[44px] top-1/2 -translate-y-1/2">카카오로 시작하기</span>
+            </span>
           </button>
 
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex h-[50px] w-[361px] items-center justify-center gap-[14px] rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
+            className="flex h-[50px] w-[361px] items-center justify-center rounded-[5px] bg-[#2B2C35] font-['SUIT'] text-[16px] font-medium leading-[150%] tracking-[-0.48px] text-[#A1A1A5]"
           >
-            <span className="flex w-[30px] justify-center">
-              <img
-                src="/Google.svg"
-                alt=""
-                className="h-[19.7px] w-[19.7px] shrink-0"
-              />
-            </span>
+            <span className="relative h-[30px] w-[178px]">
+              <span className="absolute left-0 top-1/2 flex w-[30px] -translate-y-1/2 justify-start">
+                <img
+                  src="/Google.svg"
+                  alt=""
+                  className="h-[19.7px] w-[19.7px] shrink-0"
+                />
+              </span>
 
-            <span>Google로 시작하기</span>
+              <span className="absolute left-[44px] top-1/2 -translate-y-1/2">Google로 시작하기</span>
+            </span>
           </button>
         </div>
       </div>

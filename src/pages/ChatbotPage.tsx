@@ -221,6 +221,9 @@ const ChatbotPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const contentMarginClass = isNavOpen ? "ml-[204px] max-md:ml-0" : "ml-20 max-md:ml-0";
+  const emptyStateCenterClass = isNavOpen
+    ? "md:-translate-x-[102px]"
+    : "md:-translate-x-10";
   const hasConversation = messages.length > 0;
   const locationState =
     location.state as ChatbotLocationState;
@@ -855,19 +858,19 @@ const ChatbotPage = () => {
           </div>
         ) : (
           <div className="pointer-events-none absolute inset-x-0 bottom-[126px] top-0 max-md:pointer-events-auto max-md:bottom-[190px] max-md:overflow-y-auto max-md:overscroll-contain">
-            <div className="flex min-h-full flex-col items-center justify-center max-md:pt-[70px]">
-              <div className="flex h-[130px] w-[150px] shrink-0 items-center justify-center max-md:h-[90px] max-md:w-[108px]">
+            <div className={`flex min-h-full translate-y-5 flex-col items-center justify-center max-md:translate-y-0 max-md:pt-[70px] ${emptyStateCenterClass}`}>
+              <div className="flex h-[110px] w-[127px] shrink-0 items-center justify-center max-md:h-[90px] max-md:w-[108px]">
                 <img
                   src="/character/ConfidentTaka.svg"
                   alt="열공 티키"
-                  className="h-[130px] w-[150px] object-contain max-md:h-full max-md:w-full"
+                  className="h-[110px] w-[127px] object-contain max-md:h-full max-md:w-full"
                 />
               </div>
 
-              <h1 className="mt-3 text-center font-['SUIT'] text-[20px] font-normal leading-[180%] tracking-normal text-white max-md:mt-2 max-md:text-[18px] max-md:leading-[150%]">
+              <h1 className="mt-2.5 text-center font-['SUIT'] text-[18px] font-normal leading-[180%] tracking-normal text-white max-md:mt-2 max-md:text-[18px] max-md:leading-[150%]">
                 내 자료에서 답을 찾아드립니다.
               </h1>
-              <p className="mt-2 text-center font-['SUIT'] text-[14px] font-normal leading-4 text-[#717379] max-md:mt-1.5 max-md:text-[13px] max-md:leading-[150%]">
+              <p className="mt-1.5 text-center font-['SUIT'] text-[13px] font-normal leading-4 text-[#717379] max-md:mt-1.5 max-md:text-[13px] max-md:leading-[150%]">
                 정확한 키워드를 몰라도 괜찮아요 !
                 <br />
                 대략적인 상황이나 기억나는 단서만 입력하면,
