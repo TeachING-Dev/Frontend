@@ -25,6 +25,7 @@ import AnalysisData from "../components/home/AnalysisData";
 import AnalysisHeader from "../components/home/AnalysisHeader";
 import AnalysisSidebar from "../components/home/AnalysisSidebar";
 import AnalysisSummary from "../components/home/AnalysisSummary";
+import DataLimitModal from "../components/home/modal/DataLimitModal";
 
 type FolderOption = {
   id: number;
@@ -109,6 +110,11 @@ const AnalysisCompletePage = () => {
 
   const [isSaving, setIsSaving] =
     useState(false);
+
+  const [
+    isDataLimitModalOpen,
+    setIsDataLimitModalOpen,
+  ] = useState(false);
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -283,6 +289,16 @@ const AnalysisCompletePage = () => {
         "자료 저장 실패:",
         error,
       );
+
+      if (
+        axios.isAxiosError<FolderErrorResponse>(
+          error,
+        ) &&
+        error.response?.data?.code ===
+          "MATERIAL4012"
+      ) {
+        setIsDataLimitModalOpen(true);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -431,6 +447,17 @@ const AnalysisCompletePage = () => {
           }
         />
       )}
+
+      <DataLimitModal
+        isOpen={isDataLimitModalOpen}
+        onClose={() =>
+          setIsDataLimitModalOpen(false)
+        }
+        onSubscribe={() => {
+          setIsDataLimitModalOpen(false);
+          navigate("/subscription");
+        }}
+      />
     </>
   );
 };
