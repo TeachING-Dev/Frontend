@@ -52,7 +52,7 @@ const MarkdownContent = ({
           key={`${highlight.id}-${index}`}
           type="button"
           onClick={() => onHighlightClick?.(highlight.id)}
-          className={`inline cursor-pointer underline underline-offset-[3px] ${
+          className={`inline cursor-pointer break-words [overflow-wrap:anywhere] underline underline-offset-[3px] ${
             highlight.type === "MAIN"
               ? "text-[#83E2FF] decoration-[#83E2FF]"
               : "text-[#FAC3A5] decoration-[#FAC3A5]"
@@ -78,7 +78,7 @@ const MarkdownContent = ({
   );
 
   return (
-    <div className={`space-y-[12px] break-words ${className}`}>
+    <div className={`min-w-0 max-w-full space-y-[12px] break-words [overflow-wrap:anywhere] ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -93,9 +93,9 @@ const MarkdownContent = ({
         strong: ({ children, ...props }) => <strong {...props}>{renderChildren(children)}</strong>,
         em: ({ children, ...props }) => <em {...props}>{renderChildren(children)}</em>,
         del: ({ children, ...props }) => <del {...props}>{renderChildren(children)}</del>,
-        a: ({ children, ...props }) => <a className="text-[#A99AF2] underline underline-offset-2" target="_blank" rel="noreferrer" {...props}>{renderChildren(children)}</a>,
-        code: ({ ...props }) => <code className="rounded bg-[#242630] px-[5px] py-[2px] text-[#F5F2FF]" {...props} />,
-        img: ({ ...props }) => <img className={imageClassName} {...props} />,
+        a: ({ children, ...props }) => <a className="break-words [overflow-wrap:anywhere] text-[#A99AF2] underline underline-offset-2" target="_blank" rel="noreferrer" {...props}>{renderChildren(children)}</a>,
+        code: ({ ...props }) => <code className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded bg-[#242630] px-[5px] py-[2px] text-[#F5F2FF]" {...props} />,
+        img: ({ ...props }) => <img className={`max-w-full ${imageClassName}`} {...props} />,
         hr: ({ ...props }) => <hr className="border-[#42444C]" {...props} />,
         table: ({ ...props }) => <div className="overflow-x-auto"><table className="w-full border-collapse" {...props} /></div>,
         th: ({ ...props }) => <th className="border border-[#42444C] bg-[#242630] px-[10px] py-[8px] text-left" {...props} />,

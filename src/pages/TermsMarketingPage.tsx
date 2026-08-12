@@ -21,7 +21,7 @@ const TermsMarketingPage = () => {
   const signupState = location.state;
 
   return (
-    <main className="min-h-screen overflow-y-auto bg-[#0B0A18] text-[#D0D0D2]">
+    <main className="min-h-[100dvh] overflow-y-auto bg-[#0B0A18] text-[#D0D0D2] lg:min-h-screen">
       <section className="mx-auto w-full max-w-[1440px] px-[120px] py-0 max-md:px-4">
         <button
           type="button"

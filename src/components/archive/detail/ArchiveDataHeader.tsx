@@ -107,7 +107,7 @@ const ArchiveDataHeader = ({
           className="h-4 w-4 object-contain lg:h-[20px] lg:w-[20px]"
         />
 
-        <span className="font-['Pretendard'] text-[14px] font-medium leading-[21px] text-[#717379] lg:text-[20px] lg:leading-normal lg:tracking-[-0.4px]">
+        <span className="font-suit text-[14px] font-medium leading-[21px] text-[#717379] lg:text-[20px] lg:leading-normal lg:tracking-[-0.4px]">
           태그
         </span>
       </div>

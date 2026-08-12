@@ -25,7 +25,7 @@ const NotificationLayout = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0A18]">
+    <div className="min-h-[100dvh] bg-[#0B0A18] lg:min-h-screen">
       {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
       <div className="hidden lg:fixed lg:inset-x-0 lg:top-0 lg:z-50 lg:block lg:h-16">
         <Header
@@ -40,7 +40,7 @@ const NotificationLayout = ({
         onClose={handleCloseSidebar}
       />
 
-      <main className="relative min-h-screen lg:pt-16">
+      <main className="relative min-h-[100dvh] lg:min-h-screen lg:pt-16">
         <Outlet />
       </main>
     </div>
