@@ -82,13 +82,20 @@ const countTodayUserQuestions = (
       isToday(message.createdAt),
   ).length;
 
+const isQuestionLimitMessage = (message: string) =>
+  (message.includes("무료") ||
+    message.includes("제한") ||
+    message.includes("하루")) &&
+  (message.includes("5") ||
+    message.includes("질문") ||
+    message.includes("메시지") ||
+    message.includes("메세지"));
+
 const isQuestionLimitError = (error: unknown) =>
-  error instanceof ChatApiError &&
-  (error.code?.includes("LIMIT") ||
-    error.message.includes("제한") ||
-    error.message.includes("하루") ||
-    error.message.includes("무료") ||
-    error.message.includes("5"));
+  error instanceof Error &&
+  ((error instanceof ChatApiError &&
+    error.code?.includes("LIMIT")) ||
+    isQuestionLimitMessage(error.message));
 
 const isRoomLimitError = (error: unknown) =>
   error instanceof ChatApiError &&
@@ -425,6 +432,27 @@ const ChatbotPage = () => {
           content: nextQuestion,
         });
 
+      if (
+        !isPremiumUser &&
+        isQuestionLimitMessage(
+          askResult.aiMessage.content,
+        )
+      ) {
+        setQuestionCount(
+          chatRoomDailyQuestionLimit,
+        );
+        setMessages((prevMessages) =>
+          prevMessages.filter(
+            (message) =>
+              message.id !== userMessage.id &&
+              message.id !== loadingMessage.id,
+          ),
+        );
+        setQuestion(nextQuestion);
+        setIsQuestionLimitModalOpen(true);
+        return;
+      }
+
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
           message.id === userMessage.id
@@ -472,9 +500,7 @@ const ChatbotPage = () => {
 
       if (
         !isPremiumUser &&
-        isQuestionLimitError(error) &&
-        currentQuestionCount >=
-          chatRoomDailyQuestionLimit
+        isQuestionLimitError(error)
       ) {
         setQuestionCount(
           chatRoomDailyQuestionLimit,
