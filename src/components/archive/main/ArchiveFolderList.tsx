@@ -6,6 +6,7 @@ type ArchiveFolderListProps = {
   folders: Folder[];
   onAddFolder: () => void;
   onMoveToTrash?: (folderId: number) => void;
+  isSearching?: boolean;
 };
 
 const formatDate = (date: string) => {
@@ -23,11 +24,14 @@ const ArchiveFolderList = ({
   folders,
   onAddFolder,
   onMoveToTrash,
+  isSearching = false,
 }: ArchiveFolderListProps) => {
   return (
     <section className="w-full space-y-0 lg:space-y-0">
       {/* 새 폴더 추가 */}
-      <AddFolderList onClick={onAddFolder} />
+      {!isSearching && (
+        <AddFolderList onClick={onAddFolder} />
+      )}
 
       {/* 기존 폴더 목록 */}
       {folders.map((folder) => (
