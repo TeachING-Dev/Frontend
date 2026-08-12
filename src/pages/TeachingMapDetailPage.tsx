@@ -157,7 +157,7 @@ const TeachingMapDetailPage = () => {
 
   if (!hasValidTeachingMapId) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A]">
+      <main className="flex min-h-[100dvh] items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A] lg:min-h-screen">
         유효하지 않은 티칭맵입니다.
       </main>
     );
@@ -165,7 +165,7 @@ const TeachingMapDetailPage = () => {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#C1AEFF]">
+      <main className="flex min-h-[100dvh] items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#C1AEFF] lg:min-h-screen">
         티칭맵을 불러오는 중입니다.
       </main>
     );
@@ -173,14 +173,14 @@ const TeachingMapDetailPage = () => {
 
   if (loadError) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A]">
+      <main className="flex min-h-[100dvh] items-center justify-center bg-[#0B0A18] font-suit text-[18px] text-[#F07A7A] lg:min-h-screen">
         {loadError}
       </main>
     );
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0B0A18]">
+    <main className="relative min-h-[calc(100dvh-56px)] overflow-hidden bg-[#0B0A18] lg:min-h-screen">
       <div
         aria-hidden="true"
         className={[

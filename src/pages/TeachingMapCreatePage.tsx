@@ -189,10 +189,7 @@ const TeachingMapCreatePage = () => {
 
         setFolders(folderOptions);
         setSelectedFolderId((currentFolderId) => {
-          if (
-            currentFolderId !== null &&
-            folderOptions.some((folder) => folder.id === currentFolderId)
-          ) {
+          if (currentFolderId !== null) {
             return currentFolderId;
           }
 
@@ -384,7 +381,7 @@ const TeachingMapCreatePage = () => {
   };
 
   return (
-    <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[#0B0A18]">
+    <main className="relative min-h-[calc(100dvh-56px)] overflow-hidden bg-[#0B0A18] lg:min-h-[calc(100vh-80px)]">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[195px] bg-[linear-gradient(180deg,rgba(134,111,241,0)_0%,rgba(134,111,241,0.3)_100%)]"

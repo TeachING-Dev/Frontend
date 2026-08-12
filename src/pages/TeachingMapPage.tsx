@@ -353,7 +353,7 @@ const TeachingMapPage = () => {
   const isEmpty = filteredTeachingMaps.length === 0;
 
   return (
-    <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[#0B0A18]">
+    <main className="relative min-h-[calc(100dvh-56px)] overflow-hidden bg-[#0B0A18] lg:min-h-[calc(100vh-80px)]">
       <div
         aria-hidden="true"
         className={[

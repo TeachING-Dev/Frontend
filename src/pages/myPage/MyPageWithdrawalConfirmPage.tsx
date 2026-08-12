@@ -14,7 +14,7 @@ import { clearSubscriptionStatus } from "../../utils/subscription";
 const WITHDRAWAL_REASON_MAP = {
   rejoin: "REJOIN",
   unused: "RARELY_USED",
-  accuracy: "LOW_ACCURANCY",
+  accuracy: "LOW_ACCURACY",
   other: "ETC",
 } as const;
 
