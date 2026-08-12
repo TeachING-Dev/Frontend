@@ -57,7 +57,7 @@ const SignupCompletePage = () => {
             onClick={() => navigate("/")}
             className="!flex !h-[48px] !w-full !max-w-none items-center justify-center gap-[10px] rounded-[5px] px-[50px] py-[20px] !font-['SUIT'] !text-[16px] !font-normal !leading-[150%] !tracking-[-0.48px]"
           >
-            동의하고 가입하기
+            학습 시작하기
           </PrimaryButton>
         </div>
       </div>
