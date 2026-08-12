@@ -55,28 +55,28 @@ const ChatSidebar = ({
         </div>
 
         {isOpen ? (
-          <nav className="mt-[50px] flex w-[200px] min-w-[200px] flex-col items-start overflow-hidden max-md:mt-[72px] max-md:w-full max-md:min-w-0 max-md:pl-[30px]">
+          <nav className="mt-[50px] flex min-h-0 w-[200px] min-w-[200px] flex-1 flex-col items-start overflow-hidden max-md:mt-[72px] max-md:w-full max-md:min-w-0 max-md:pl-[30px]">
             <button
               type="button"
               aria-label="새 채팅 만들기"
               onClick={onCreateRoomClick}
-              className="flex h-9 items-center justify-start gap-[6px] hover:opacity-80 max-md:h-[30px] max-md:gap-2.5"
+              className="flex h-9 shrink-0 items-center justify-start gap-[6px] hover:opacity-80 max-md:h-[30px] max-md:gap-2.5"
             >
               <img src="/NewFileDesign.svg" alt="" className="h-8 w-7 object-contain max-md:size-[30px]" />
               <span className="whitespace-nowrap font-['SUIT'] text-[18px] font-semibold leading-[150%] tracking-[-0.72px] text-[#917DEC] max-md:text-[20px] max-md:font-normal">
                 새 채팅
               </span>
             </button>
-            <span className="mt-[16.7px] font-['SUIT'] text-[12px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379] max-md:mt-[25px] max-md:text-[16px] max-md:font-normal">
+            <span className="mt-[16.7px] shrink-0 font-['SUIT'] text-[12px] font-medium leading-[150%] tracking-[-0.48px] text-[#717379] max-md:mt-[25px] max-md:text-[16px] max-md:font-normal">
               최근
             </span>
-            <div className="mt-[15px] flex w-full flex-col gap-[16.7px] max-md:mt-2.5 max-md:gap-[15px]">
+            <div className="mt-[15px] flex min-h-0 w-full flex-1 flex-col gap-[16.7px] overflow-y-auto pr-1 max-md:mt-2.5 max-md:gap-[15px] max-md:pb-8">
               {files.map((fileName, index) => (
                 <button
                   type="button"
                   key={`${fileName}-${index}`}
                   onClick={() => onFileClick?.(index)}
-                  className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-left font-['SUIT'] text-[18px] font-medium leading-5 text-violet-50 hover:text-[#917DEC] max-md:text-[16px] max-md:font-normal"
+                  className="w-full shrink-0 overflow-hidden text-ellipsis whitespace-nowrap text-left font-['SUIT'] text-[18px] font-medium leading-5 text-violet-50 hover:text-[#917DEC] max-md:text-[16px] max-md:font-normal"
                 >
                   {fileName}
                 </button>

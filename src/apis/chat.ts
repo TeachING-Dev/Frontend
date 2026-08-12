@@ -218,7 +218,11 @@ export const askChatRoomMessage = async (
   const data = response.data;
 
   if (!data.isSuccess) {
-    throw new Error(data.message);
+    throw new ChatApiError(
+      data.message,
+      undefined,
+      data.code,
+    );
   }
 
   return data.result;

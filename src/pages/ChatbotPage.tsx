@@ -35,8 +35,7 @@ import {
 
 const limitDescription = "요금제를 업그레이드하고 무제한으로 질문해 보세요!";
 const chatRoomDailyQuestionLimit = 5;
-const chatRoomLimit = 10;
-const chatRoomListSize = 10;
+const chatRoomListSize = 50;
 const fallbackNoticeMessage =
   "죄송합니다. 현재 보관하신 자료 중에서는 관련 답변을 찾지 못했습니다.";
 const fallbackSourceMessage =
@@ -280,6 +279,28 @@ const ChatbotPage = () => {
     chatRoomId !== null &&
     !Number.isNaN(chatRoomId);
 
+  const refreshPremiumStatus = useCallback(async () => {
+    try {
+      const profile = await getMyProfile();
+      const hasPremiumMembership =
+        isPremiumMembership(
+          profile.membershipType,
+        );
+
+      setIsPremiumUser(hasPremiumMembership);
+
+      if (hasPremiumMembership) {
+        setIsQuestionLimitModalOpen(false);
+        setIsRoomLimitModalOpen(false);
+      }
+
+      return hasPremiumMembership;
+    } catch (error) {
+      console.error(error);
+      return isPremiumUser;
+    }
+  }, [isPremiumUser]);
+
   useEffect(() => {
     document.body.classList.toggle(
       "chatbot-search-focused",
@@ -303,29 +324,72 @@ const ChatbotPage = () => {
   }, [isNavOpen]);
 
   useEffect(() => {
-    const loadSubscriptionStatus = async () => {
-      try {
-        const profile = await getMyProfile();
-        setIsPremiumUser(
-          isPremiumMembership(
-            profile.membershipType,
-          ),
-        );
-      } catch (error) {
-        console.error(error);
+    const syncTimeoutId = window.setTimeout(() => {
+      void refreshPremiumStatus();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(syncTimeoutId);
+    };
+  }, [refreshPremiumStatus, location.key]);
+
+  useEffect(() => {
+    const syncPremiumStatus = () => {
+      void refreshPremiumStatus();
+    };
+
+    const syncWhenVisible = () => {
+      if (!document.hidden) {
+        syncPremiumStatus();
       }
     };
 
-    void loadSubscriptionStatus();
-  }, []);
+    window.addEventListener(
+      "focus",
+      syncPremiumStatus,
+    );
+    window.addEventListener(
+      "pageshow",
+      syncPremiumStatus,
+    );
+    document.addEventListener(
+      "visibilitychange",
+      syncWhenVisible,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "focus",
+        syncPremiumStatus,
+      );
+      window.removeEventListener(
+        "pageshow",
+        syncPremiumStatus,
+      );
+      document.removeEventListener(
+        "visibilitychange",
+        syncWhenVisible,
+      );
+    };
+  }, [refreshPremiumStatus]);
 
   const loadChatRooms = useCallback(async () => {
     try {
-      const chatRoomList = await getChatRooms({
-        size: chatRoomListSize,
-      });
-      setChatRooms(chatRoomList.chatrooms);
-      return chatRoomList.chatrooms;
+      const loadedChatRooms: ChatRoomSummary[] = [];
+      let nextCursor: number | null | undefined = null;
+
+      do {
+        const chatRoomList = await getChatRooms({
+          cursor: nextCursor,
+          size: chatRoomListSize,
+        });
+
+        loadedChatRooms.push(...chatRoomList.chatrooms);
+        nextCursor = chatRoomList.nextCursor;
+      } while (nextCursor !== null && nextCursor !== undefined);
+
+      setChatRooms(loadedChatRooms);
+      return loadedChatRooms;
     } catch (error) {
       console.error(error);
       return [];
@@ -410,6 +474,10 @@ const ChatbotPage = () => {
       return;
     }
 
+    const hasCurrentPremiumAccess =
+      hasPremiumAccess ||
+      (await refreshPremiumStatus());
+
     const currentQuestionCount = hasValidChatRoomId
       ? Math.max(
           questionCountRef.current,
@@ -418,61 +486,6 @@ const ChatbotPage = () => {
           countUserMessages(visibleMessages),
         )
       : 0;
-
-    if (
-      !hasPremiumAccess &&
-      currentQuestionCount >= chatRoomDailyQuestionLimit
-    ) {
-      questionCountRef.current =
-        currentQuestionCount;
-      setQuestionCount(currentQuestionCount);
-      setIsQuestionLimitModalOpen(true);
-      return;
-    }
-
-    if (
-      !hasPremiumAccess &&
-      hasValidChatRoomId
-    ) {
-      try {
-        const chatHistory =
-          await getChatRoomMessages(chatRoomId);
-        const latestQuestionCount =
-          countTodayUserQuestions(
-            chatHistory.messages,
-          );
-
-        questionCountRef.current =
-          latestQuestionCount;
-        setQuestionCount(latestQuestionCount);
-
-        if (
-          latestQuestionCount >=
-          chatRoomDailyQuestionLimit
-        ) {
-          setMessages(
-            removeQuestionLimitMessages(
-              chatHistory.messages.map(
-                mapHistoryMessage,
-              ),
-            ),
-          );
-          setIsQuestionLimitModalOpen(true);
-          return;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    if (
-      !hasValidChatRoomId &&
-      !hasPremiumAccess &&
-      chatRooms.length >= chatRoomLimit
-    ) {
-      setIsRoomLimitModalOpen(true);
-      return;
-    }
 
     const now = temporaryMessageIdRef.current;
     temporaryMessageIdRef.current -= 2;
@@ -517,27 +530,6 @@ const ChatbotPage = () => {
         await askChatRoomMessage(activeChatRoomId, {
           content: nextQuestion,
         });
-
-      if (
-        !hasPremiumAccess &&
-        isQuestionLimitMessage(
-          askResult.aiMessage.content,
-        )
-      ) {
-        setQuestionCount(
-          chatRoomDailyQuestionLimit,
-        );
-        setMessages((prevMessages) =>
-          prevMessages.filter(
-            (message) =>
-              message.id !== userMessage.id &&
-              message.id !== loadingMessage.id,
-          ),
-        );
-        setQuestion(nextQuestion);
-        setIsQuestionLimitModalOpen(true);
-        return;
-      }
 
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
@@ -586,25 +578,6 @@ const ChatbotPage = () => {
     } catch (error) {
       console.error(error);
 
-      if (
-        !hasPremiumAccess &&
-        (isRoomLimitError(error) ||
-          chatRooms.length >= chatRoomLimit)
-      ) {
-        setIsRoomLimitModalOpen(true);
-        return;
-      }
-
-      if (!hasPremiumAccess) {
-        questionCountRef.current =
-          chatRoomDailyQuestionLimit;
-        setQuestionCount(
-          chatRoomDailyQuestionLimit,
-        );
-        setIsQuestionLimitModalOpen(true);
-        return;
-      }
-
       if (isForbiddenChatError(error)) {
         setMessages((prevMessages) =>
           prevMessages.filter(
@@ -615,6 +588,27 @@ const ChatbotPage = () => {
         );
         setQuestion(nextQuestion);
         navigate("/chatbot", { replace: true });
+        return;
+      }
+
+      if (
+        !hasCurrentPremiumAccess &&
+        isRoomLimitError(error)
+      ) {
+        setIsRoomLimitModalOpen(true);
+        return;
+      }
+
+      if (
+        !hasCurrentPremiumAccess &&
+        error instanceof ChatApiError
+      ) {
+        questionCountRef.current =
+          chatRoomDailyQuestionLimit;
+        setQuestionCount(
+          chatRoomDailyQuestionLimit,
+        );
+        setIsQuestionLimitModalOpen(true);
         return;
       }
 
@@ -727,6 +721,8 @@ const ChatbotPage = () => {
   };
 
   const handleSubscribeClick = () => {
+    setIsQuestionLimitModalOpen(false);
+    setIsRoomLimitModalOpen(false);
     navigate("/subscription", {
       state: {
         backTarget: "chatbot",
@@ -734,62 +730,26 @@ const ChatbotPage = () => {
     });
   };
 
-  const refreshPremiumStatus = async () => {
-    try {
-      const profile = await getMyProfile();
-      const hasPremiumMembership =
-        isPremiumMembership(
-          profile.membershipType,
-        );
-
-      setIsPremiumUser(hasPremiumMembership);
-      return hasPremiumMembership;
-    } catch (error) {
-      console.error(error);
-      return isPremiumUser;
-    }
-  };
-
   const handleCreateRoomClick = async () => {
     const hasPremiumMembership =
       await refreshPremiumStatus();
 
-    if (!hasPremiumMembership) {
-      const latestChatRooms =
-        await getChatRooms({
-          size: chatRoomLimit + 1,
-        }).catch((error: unknown) => {
-          console.error(error);
-          return {
-            chatrooms: chatRooms,
-            nextCursor: null,
-          };
-        });
-
-      if (
-        latestChatRooms.chatrooms.length >=
-        chatRoomLimit
-      ) {
-        setChatRooms(latestChatRooms.chatrooms);
-        setIsNavOpen(false);
-        setIsRoomLimitModalOpen(true);
-        return;
-      }
-    }
-
-    if (
-      !hasPremiumMembership &&
-      chatRooms.length >= chatRoomLimit
-    ) {
-      setIsNavOpen(false);
-      setIsRoomLimitModalOpen(true);
-      return;
-    }
-
     try {
       const createdChatRoom =
         await createChatRoom();
-      await loadChatRooms();
+      setChatRooms((prevChatRooms) => [
+        {
+          chatroomId: createdChatRoom.chatroomId,
+          title: createdChatRoom.title,
+          lastMessageAt: createdChatRoom.createdAt,
+        },
+        ...prevChatRooms.filter(
+          (chatRoom) =>
+            chatRoom.chatroomId !==
+            createdChatRoom.chatroomId,
+        ),
+      ]);
+      void loadChatRooms();
       setMessages([]);
       setQuestionCount(0);
       navigate(
@@ -802,8 +762,7 @@ const ChatbotPage = () => {
 
       if (
         !hasPremiumMembership &&
-        (isRoomLimitError(error) ||
-          chatRooms.length >= chatRoomLimit)
+        error instanceof ChatApiError
       ) {
         setIsRoomLimitModalOpen(true);
       }
