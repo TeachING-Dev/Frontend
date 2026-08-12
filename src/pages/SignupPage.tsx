@@ -504,7 +504,7 @@ const SignupPage = () => {
     } max-md:!h-[48px] max-md:!text-[16px] max-md:!tracking-[-0.48px]`}
   >
     <span className="max-md:hidden">다음</span>
-    <span className="hidden max-md:inline">{step === "terms" ? "동의하고 가입하기" : "다음"}</span>
+    <span className="hidden max-md:inline">다음</span>
   </PrimaryButton>
 </div>
         </div>

@@ -120,20 +120,41 @@ export const getChatRoomMessages = async (
   const data = response.data;
 
   if (!data.isSuccess) {
-    throw new Error(data.message);
+    throw new ChatApiError(
+      data.message,
+      undefined,
+      data.code,
+    );
   }
 
   return data.result;
 };
 
 export const createChatRoom = async () => {
-  const response = await api.post<
-    ApiResponse<ChatRoom>
-  >("/chatrooms");
+  const response = await api
+    .post<ApiResponse<ChatRoom>>(
+      "/chatrooms",
+    )
+    .catch((error: unknown) => {
+      if (isAxiosError<ApiResponse<null>>(error)) {
+        throw new ChatApiError(
+          error.response?.data.message ||
+            error.message,
+          error.response?.status,
+          error.response?.data.code,
+        );
+      }
+
+      throw error;
+    });
   const data = response.data;
 
   if (!data.isSuccess) {
-    throw new Error(data.message);
+    throw new ChatApiError(
+      data.message,
+      undefined,
+      data.code,
+    );
   }
 
   return data.result;
@@ -197,7 +218,11 @@ export const askChatRoomMessage = async (
   const data = response.data;
 
   if (!data.isSuccess) {
-    throw new Error(data.message);
+    throw new ChatApiError(
+      data.message,
+      undefined,
+      data.code,
+    );
   }
 
   return data.result;
