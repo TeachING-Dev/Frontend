@@ -25,7 +25,7 @@ const HomeLayout = ({
   };
 
   return (
-    <div className="min-h-[100dvh] overflow-x-hidden bg-[#090713] lg:min-h-screen">
+    <div className="min-h-screen overflow-x-hidden bg-[#090713]">
       {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
       <div className="relative z-50 h-[56px] bg-transparent lg:fixed lg:inset-x-0 lg:top-0 lg:h-16">
         <Header
@@ -59,7 +59,7 @@ const HomeLayout = ({
         className="
           relative
           z-10
-          min-h-[calc(100dvh-56px)]
+          min-h-[calc(100vh-56px)]
           overflow-hidden
           lg:min-h-screen
           lg:pt-16

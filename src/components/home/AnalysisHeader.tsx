@@ -69,7 +69,7 @@ const AnalysisHeader = ({
           className="h-[24px] w-[24px] object-contain lg:h-[20px] lg:w-[20px]"
         />
 
-        <span className="font-suit text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
+        <span className="font-['Pretendard'] text-[20px] font-medium leading-normal tracking-[-0.4px] text-[#717379]">
           태그
         </span>
       </div>

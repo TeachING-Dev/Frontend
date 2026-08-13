@@ -242,7 +242,7 @@ const BirthDateField = ({
           placeholder="YYYY"
           value={dateParts.year}
           options={yearOptions}
-          widthClassName="min-w-0 flex-1 min-[394px]:basis-0 min-[394px]:grow-[5] lg:w-[332px] lg:flex-none"
+          widthClassName="min-w-0 flex-1 lg:w-[332px] lg:flex-none"
           onChange={(year) => updateDatePart("year", year)}
         />
         <BirthDateDropdown
@@ -250,7 +250,7 @@ const BirthDateField = ({
           placeholder="MM"
           value={dateParts.month}
           options={monthOptions}
-          widthClassName="w-[87px] shrink-0 min-[394px]:w-auto min-[394px]:min-w-0 min-[394px]:basis-0 min-[394px]:grow-[3] lg:w-[182px] lg:flex-none"
+          widthClassName="w-[87px] shrink-0 lg:w-[182px]"
           onChange={(month) => updateDatePart("month", month)}
         />
         <BirthDateDropdown
@@ -258,7 +258,7 @@ const BirthDateField = ({
           placeholder="DD"
           value={dateParts.day}
           options={dayOptions}
-          widthClassName="w-[87px] shrink-0 min-[394px]:w-auto min-[394px]:min-w-0 min-[394px]:basis-0 min-[394px]:grow-[3] lg:w-[182px] lg:flex-none"
+          widthClassName="w-[87px] shrink-0 lg:w-[182px]"
           onChange={(day) => updateDatePart("day", day)}
         />
       </div>

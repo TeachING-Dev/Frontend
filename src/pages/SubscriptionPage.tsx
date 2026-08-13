@@ -195,7 +195,7 @@ const SubscriptionPage = () => {
   };
 
   return (
-    <section className="relative h-[100dvh] overflow-hidden px-6 text-violet-50 lg:h-[calc(100vh-64px)]">
+    <section className="relative h-[calc(100vh-64px)] overflow-hidden px-6 text-violet-50">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-52 bg-gradient-to-b from-[#917DEC00] to-[#30265F]" />
 
       <button

@@ -88,7 +88,7 @@ const OAuthCallbackPage = () => {
   }, [location.hash, location.search, navigate]);
 
   return (
-    <main className="flex h-[100dvh] items-center justify-center bg-[#090713] font-['SUIT'] text-xl text-violet-50 lg:h-screen">
+    <main className="flex h-screen items-center justify-center bg-[#090713] font-['SUIT'] text-xl text-violet-50">
       로그인 처리 중...
     </main>
   );

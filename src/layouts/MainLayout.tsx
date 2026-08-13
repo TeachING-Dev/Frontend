@@ -27,9 +27,6 @@ const MainLayout = ({
   const usesPageOwnedMobileHeader =
     !usesBranchScreenLayout &&
     (location.pathname.startsWith("/mypage") || hideHeaderOnMobile);
-  const usesMyPageMobileFrame =
-    location.pathname.startsWith("/mypage/") &&
-    location.pathname !== "/mypage/withdrawal-complete";
 
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
@@ -44,7 +41,7 @@ const MainLayout = ({
 
   return (
     <div
-      className={`min-h-[100dvh] lg:min-h-screen ${
+      className={`min-h-screen ${
         usesBranchScreenLayout ? "bg-[#090713]" : "bg-[#0B0A18]"
       }`}
     >
@@ -87,14 +84,10 @@ const MainLayout = ({
       <main
         className={
           usesBranchScreenLayout
-            ? `relative z-10 min-h-[100dvh] lg:min-h-screen ${
+            ? `relative z-10 min-h-screen ${
                 hideHeaderOnMobile ? "lg:pt-16" : "pt-16"
               }`
-            : `relative z-10 ${
-                usesMyPageMobileFrame
-                  ? "h-[100dvh] min-h-0 overflow-x-hidden overflow-y-auto lg:h-auto lg:min-h-screen lg:overflow-visible"
-                  : "min-h-[100dvh] lg:min-h-screen"
-              } lg:pt-16`
+            : "relative z-10 min-h-screen lg:pt-16"
         }
       >
         <Outlet />
