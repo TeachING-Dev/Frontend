@@ -176,12 +176,6 @@ const AnalysisCompletePage = () => {
   ]);
 
   const handleOpenCreateFolder = () => {
-    if (folders.length >= 6) {
-      setIsFolderLimitModalOpen(true);
-
-      return;
-    }
-
     setIsCreateFolderModalOpen(true);
   };
 
