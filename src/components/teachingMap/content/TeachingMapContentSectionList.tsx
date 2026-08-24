@@ -15,7 +15,7 @@ const TeachingMapContentSectionList = ({
   onHighlightClick,
 }: TeachingMapContentSectionListProps) => {
   return (
-    <div className="flex min-w-0 max-w-full flex-col items-start gap-[54px] overflow-x-hidden px-[30px] pb-[10px] pt-[10px] max-lg:w-full max-lg:px-[16px] max-lg:pt-[20px]">
+    <div className="flex w-full flex-col items-start gap-[54px] px-[30px] pb-[10px] pt-[10px] max-lg:px-[16px] max-lg:pt-[20px]">
       <TeachingMapContentSectionItem
         title={title}
         summary={summary}

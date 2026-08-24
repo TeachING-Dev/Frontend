@@ -67,7 +67,7 @@ const LoginPage = () => {
   };
 
   return (
-    <AuthPageLayout contentClassName="relative min-h-full">
+    <AuthPageLayout contentClassName="relative min-h-screen">
       <div className="absolute left-1/2 top-0 hidden h-[1019.6px] w-full origin-top -translate-x-1/2 scale-[0.8] md:block">
         {/* 로고: 원본 기준 상단 206px */}
         <div className="absolute left-1/2 top-[190px] -translate-x-1/2">

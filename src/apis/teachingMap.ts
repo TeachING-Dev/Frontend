@@ -3,8 +3,7 @@ import api from "./axios";
 
 export type TeachingMapStatus = "IN_PROGRESS" | "FINISHED" | "TEMPORARY";
 
-export type TeachingMapType = "SHORTCUT" | "DEEPDIVE";
-export type TeachingMapFilterType = "ALL" | TeachingMapType;
+export type TeachingMapType = "ALL" | "SHORTCUT" | "DEEPDIVE";
 
 export type TeachingMapSort = "LATEST" | "OLDEST";
 
@@ -30,14 +29,14 @@ export interface TeachingMapListItem {
 
 export interface TeachingMapListResult {
   currentStatus: TeachingMapStatus;
-  currentType: TeachingMapFilterType;
+  currentType: TeachingMapType;
   currentSort: TeachingMapSort;
   teachingMaps: TeachingMapListItem[];
 }
 
 export interface GetTeachingMapsParams {
   status?: TeachingMapStatus;
-  type?: TeachingMapFilterType;
+  type?: TeachingMapType;
   sort?: TeachingMapSort;
 }
 
@@ -155,7 +154,7 @@ export const getTeachingMaps = async ({
 };
 
 export const getTemporaryTeachingMaps = async (
-  type: TeachingMapFilterType = "ALL",
+  type: TeachingMapType = "ALL",
   sort: TeachingMapSort = "LATEST",
 ): Promise<TeachingMapListResult> =>
   getTeachingMaps({

@@ -76,13 +76,6 @@ const AnalysisCompletePage = () => {
   const fullAnalysis =
     analysisResult?.fullAnalysis ?? "";
 
-  const generatedDate = new Date();
-  const analysisDate = [
-    generatedDate.getFullYear(),
-    String(generatedDate.getMonth() + 1).padStart(2, "0"),
-    String(generatedDate.getDate()).padStart(2, "0"),
-  ].join("-");
-
   const [folders, setFolders] =
     useState<FolderOption[]>([]);
 
@@ -338,7 +331,7 @@ const AnalysisCompletePage = () => {
           {/* 본문 */}
           <section className="min-w-0 flex-1">
             <AnalysisHeader
-              date={analysisDate}
+              date="2026-05-10"
               title={
                 analysisResult?.title ??
                 "분석된 콘텐츠"

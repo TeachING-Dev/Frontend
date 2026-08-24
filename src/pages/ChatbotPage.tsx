@@ -781,7 +781,7 @@ const ChatbotPage = () => {
   };
 
   return (
-    <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:-mt-16 max-md:h-[100dvh]">
+    <section className="relative h-[calc(100vh-64px)] overflow-hidden bg-[#090713] max-md:-mt-16 max-md:h-screen">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-violet-500/0 to-violet-500/30" />
 
       {isNavOpen ? (
@@ -815,7 +815,7 @@ const ChatbotPage = () => {
       />
 
       <main
-        className={`relative z-0 flex h-[calc(100vh-64px)] min-h-0 flex-col items-center overflow-hidden px-14 pb-6 pt-16 transition-[margin] duration-200 max-md:h-[100dvh] max-md:px-0 max-md:pt-0 ${contentMarginClass}`}
+        className={`relative z-0 flex h-[calc(100vh-64px)] min-h-0 flex-col items-center overflow-hidden px-14 pb-6 pt-16 transition-[margin] duration-200 max-md:h-screen max-md:px-0 max-md:pt-0 ${contentMarginClass}`}
       >
         {hasConversation ? (
           <div

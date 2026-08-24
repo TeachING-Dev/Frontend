@@ -60,7 +60,7 @@ const TeachingMapItem = ({
               />
             ))}
             {extraThumbnailCount > 0 && (
-              <span className="relative z-50 -ml-[5px] flex h-[12px] w-[12px] shrink-0 items-center justify-center rounded-[9px] bg-[#2B2C35] p-0 font-suit text-[6px] font-normal leading-[9px] tracking-[-0.36px] text-white lg:-ml-3 lg:h-[28px] lg:w-auto lg:min-w-[28px] lg:translate-y-[6px] lg:px-0.5 lg:text-[12px] lg:font-medium lg:leading-normal lg:tracking-normal">
+              <span className="relative z-50 -ml-[5px] flex h-[16px] min-w-[16px] translate-y-[3px] items-center justify-center rounded-full bg-[#2B2C35] px-0.5 text-[6px] font-medium text-white lg:-ml-3 lg:h-[28px] lg:min-w-[28px] lg:translate-y-[6px] lg:text-[12px]">
                 +{extraThumbnailCount}
               </span>
             )}

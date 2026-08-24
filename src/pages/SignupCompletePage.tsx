@@ -7,8 +7,8 @@ const SignupCompletePage = () => {
   const navigate = useNavigate();
 
   return (
-    <AuthPageLayout contentClassName="relative min-h-full">
-      <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75] max-md:left-0 max-md:h-[100dvh] max-md:w-full max-md:translate-x-0 max-md:scale-100">
+    <AuthPageLayout contentClassName="relative min-h-screen">
+      <div className="absolute left-1/2 top-0 h-[1019.6px] w-[1440px] origin-top -translate-x-1/2 scale-[0.75] max-md:left-0 max-md:h-screen max-md:w-full max-md:translate-x-0 max-md:scale-100">
         {/* TeachING 로고 */}
         <div className="absolute left-1/2 top-[120px] -translate-x-1/2 max-md:top-[172.5px] max-md:h-[95.2px] max-md:w-[215px]">
           <AuthBrandLogo

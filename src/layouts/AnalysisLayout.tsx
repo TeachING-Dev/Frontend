@@ -17,7 +17,7 @@ const AnalysisLayout = ({
     useState(false);
 
   return (
-    <div className="min-h-[100dvh] bg-[#0B0A18] lg:min-h-screen">
+    <div className="min-h-screen bg-[#0B0A18]">
       {/* 모바일은 56px 투명 헤더, PC는 64px 고정 헤더 */}
       <div className="relative z-50 h-[56px] bg-transparent lg:fixed lg:inset-x-0 lg:top-0 lg:h-16">
         <Header
@@ -51,7 +51,7 @@ const AnalysisLayout = ({
       />
 
       {/* 실제 페이지 내용 */}
-      <main className="relative z-10 min-h-[calc(100dvh-56px)] lg:min-h-screen lg:pt-16">
+      <main className="relative z-10 min-h-screen lg:pt-16">
         <Outlet />
       </main>
     </div>

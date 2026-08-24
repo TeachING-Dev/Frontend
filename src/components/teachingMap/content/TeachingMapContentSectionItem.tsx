@@ -13,7 +13,7 @@ const TeachingMapContentSectionItem = ({
   sections,
   onHighlightClick,
 }: TeachingMapContentSectionItemProps) => (
-  <article className="min-w-0 max-w-full pb-[40px]">
+  <article className="pb-[40px]">
     <MarkdownContent
       content={summary}
       highlights={sections.map((section) => ({
